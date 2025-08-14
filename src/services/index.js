@@ -1,7 +1,8 @@
 import http from './http';
 
 export const register = async (payload) => {
-  const { data } = await http.post(`/auth/register`, payload);
+  console.log(payload, 'Come here to registered?');
+  const { data } = await http.post(`http://localhost:3000/api/auth/register`, payload);
   return data;
 };
 export const verifyOTP = async (payload) => {
