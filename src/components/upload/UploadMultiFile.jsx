@@ -43,7 +43,7 @@ UploadMultiFile.propTypes = {
 
 export default function UploadMultiFile({ ...props }) {
   const { error, files, onRemove, blob, isEdit, onRemoveAll, loading, sx, ...other } = props;
-  const hasFile = files.length > 0;
+  const hasFile = files?.length > 0;
   const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
     ...other
   });
@@ -74,7 +74,7 @@ export default function UploadMultiFile({ ...props }) {
       </DropZoneStyle>
 
       <List disablePadding sx={{ ...(hasFile && { my: 3 }) }}>
-        {(loading ? [...Array(isEdit ? files.length + blob.length : blob.length)] : files).map((file, i) => (
+        {(loading ? [...Array(isEdit ? files.length + blob.length : blob.length)] : files)?.map((file, i) => (
           <React.Fragment key={'image' + i}>
             {loading ? (
               <ListItem

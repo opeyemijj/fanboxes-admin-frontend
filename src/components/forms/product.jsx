@@ -81,54 +81,21 @@ export default function ProductForm({
     }
   );
   const NewProductSchema = Yup.object().shape({
-    name: Yup.string().required('Product name is required'),
-    code: Yup.string().required('Product code is required'),
-    tags: Yup.array().min(1, 'Tags is required'),
-    status: Yup.string().required('Status is required'),
+    title: Yup.string().required('Box title is required'),
     description: Yup.string().required('Description is required'),
-    category: Yup.string().required('Category is required'),
     shop: isVendor ? Yup.string().nullable().notRequired() : Yup.string().required('Shop is required'),
-    subCategory: Yup.string().required('Sub Category is required'),
     slug: Yup.string().required('Slug is required'),
-    brand: Yup.string().required('brand is required'),
-    metaTitle: Yup.string().required('Meta title is required'),
-    metaDescription: Yup.string().required('Meta description is required'),
-    images: Yup.array().min(1, 'Images is required'),
-    sku: Yup.string().required('Sku is required'),
-    available: Yup.number().required('Quantaty is required'),
-    colors: Yup.array().required('Color is required'),
-    sizes: Yup.array().required('Size is required'),
-    price: Yup.number().required('Price is required'),
-    priceSale: Yup.number()
-      .required('Sale price is required')
-      .lessThan(Yup.ref('price'), 'Sale price should be smaller than price')
+    price: Yup.number().required('Price is required')
   });
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      name: currentProduct?.name || '',
+      title: currentProduct?.title || '',
       description: currentProduct?.description || '',
-      code: currentProduct?.code || '',
       slug: currentProduct?.slug || '',
-      metaTitle: currentProduct?.metaTitle || '',
-      metaDescription: currentProduct?.metaDescription || '',
-      brand: currentProduct?.brand || brands[0]?._id || '',
-      tags: currentProduct?.tags || [],
-      gender: currentProduct?.gender || '',
-      category: currentProduct?.category || (categories.length && categories[0]?._id) || '',
       shop: isVendor ? null : currentProduct?.shop || (shops?.length && shops[0]?._id) || '',
-      subCategory: currentProduct?.subCategory || (categories.length && categories[0].subCategories[0]?._id) || '',
-      status: currentProduct?.status || STATUS_OPTIONS[0],
-      blob: currentProduct?.blob || [],
-      isFeatured: currentProduct?.isFeatured || false,
-      sku: currentProduct?.sku || '',
-      price: currentProduct?.price || '',
-      priceSale: currentProduct?.priceSale || '',
-      colors: currentProduct?.colors || '',
-      sizes: currentProduct?.sizes || '',
-      available: currentProduct?.available || '',
-      images: currentProduct?.images || []
+      price: currentProduct?.price?.amount || ''
     },
 
     validationSchema: NewProductSchema,
@@ -137,7 +104,6 @@ export default function ProductForm({
       try {
         mutate({
           ...rest,
-          priceSale: values.priceSale || values.price,
           ...(currentProduct && { currentSlug: currentProduct.slug })
         });
       } catch (error) {
@@ -254,7 +220,7 @@ export default function ProductForm({
                         <Skeleton variant="text" width={140} />
                       ) : (
                         <LabelStyle component={'label'} htmlFor="product-name">
-                          {'Product Name'}
+                          {'Box Name'}
                         </LabelStyle>
                       )}
                       {isInitialized ? (
@@ -370,247 +336,7 @@ export default function ProductForm({
                             )}
                           </FormControl>
                         </Grid>
-                        <Grid item xs={12} md={6}>
-                          <FormControl fullWidth>
-                            {isInitialized ? (
-                              <Skeleton variant="text" width={100} />
-                            ) : (
-                              <LabelStyle component={'label'} htmlFor="brand-name">
-                                {'Brand'}
-                              </LabelStyle>
-                            )}
 
-                            <Select native {...getFieldProps('brand')} value={values.brand} id="grouped-native-select">
-                              {brands?.map((brand) => (
-                                <option key={brand._id} value={brand._id}>
-                                  {brand.name}
-                                </option>
-                              ))}
-                            </Select>
-
-                            {touched.brand && errors.brand && (
-                              <FormHelperText error sx={{ px: 2, mx: 0 }}>
-                                {touched.brand && errors.brand}
-                              </FormHelperText>
-                            )}
-                          </FormControl>
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                          <LabelStyle component={'label'} htmlFor="size">
-                            {'Sizes'}
-                          </LabelStyle>
-
-                          <Autocomplete
-                            id="size"
-                            multiple
-                            freeSolo
-                            value={values.sizes}
-                            onChange={(event, newValue) => {
-                              setFieldValue('sizes', newValue);
-                            }}
-                            options={[]}
-                            renderTags={(value, getTagProps) =>
-                              value.map((option, index) => (
-                                <Chip {...getTagProps({ index })} key={option} size="small" label={option} />
-                              ))
-                            }
-                            renderInput={(params) => (
-                              <TextField
-                                id=""
-                                {...params}
-                                error={Boolean(touched.sizes && errors.sizes)}
-                                helperText={touched.sizes && errors.sizes}
-                              />
-                            )}
-                          />
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                          <LabelStyle component={'label'} htmlFor="color">
-                            {'Colors'}
-                          </LabelStyle>
-
-                          <Autocomplete
-                            id="color"
-                            multiple
-                            freeSolo
-                            value={values.colors}
-                            onChange={(event, newValue) => {
-                              setFieldValue('colors', newValue);
-                            }}
-                            options={[]}
-                            renderTags={(value, getTagProps) =>
-                              value.map((option, index) => (
-                                <Chip {...getTagProps({ index })} key={option} size="small" label={option} />
-                              ))
-                            }
-                            renderInput={(params) => (
-                              <TextField
-                                id=""
-                                {...params}
-                                error={Boolean(touched.colors && errors.colors)}
-                                helperText={touched.colors && errors.colors}
-                              />
-                            )}
-                          />
-                        </Grid>
-
-                        <Grid item xs={12} md={6}>
-                          <FormControl fullWidth>
-                            {isInitialized ? (
-                              <Skeleton variant="text" width={80} />
-                            ) : (
-                              <LabelStyle component={'label'} htmlFor="gander">
-                                {'Gender'}
-                              </LabelStyle>
-                            )}
-                            {isInitialized ? (
-                              <Skeleton variant="rectangular" width="100%" height={56} />
-                            ) : (
-                              <Select
-                                id="gander"
-                                native
-                                {...getFieldProps('gender')}
-                                error={Boolean(touched.gender && errors.gender)}
-                              >
-                                <option value={''}>
-                                  <em>None</em>
-                                </option>
-                                {GENDER_OPTION.map((gender) => (
-                                  <option key={gender} value={gender}>
-                                    {capitalCase(gender)}
-                                  </option>
-                                ))}
-                              </Select>
-                            )}
-                          </FormControl>
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                          <FormControl fullWidth>
-                            {isInitialized ? (
-                              <Skeleton variant="text" width={80} />
-                            ) : (
-                              <LabelStyle component={'label'} htmlFor="status">
-                                {'Status'}
-                              </LabelStyle>
-                            )}
-                            {isInitialized ? (
-                              <Skeleton variant="rectangular" width="100%" height={56} />
-                            ) : (
-                              <Select
-                                id="status"
-                                native
-                                {...getFieldProps('status')}
-                                error={Boolean(touched.status && errors.status)}
-                              >
-                                <option value="" style={{ display: 'none' }} />
-                                {STATUS_OPTIONS.map((status) => (
-                                  <option key={status} value={status}>
-                                    {capitalCase(status)}
-                                  </option>
-                                ))}
-                              </Select>
-                            )}
-                            {touched.status && errors.status && (
-                              <FormHelperText error sx={{ px: 2, mx: 0 }}>
-                                {touched.status && errors.status}
-                              </FormHelperText>
-                            )}
-                          </FormControl>
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                          <div>
-                            {isInitialized ? (
-                              <Skeleton variant="text" width={120} />
-                            ) : (
-                              <LabelStyle component={'label'} htmlFor="product-code">
-                                {'Product Code'}
-                              </LabelStyle>
-                            )}
-                            {isInitialized ? (
-                              <Skeleton variant="rectangular" width="100%" height={56} />
-                            ) : (
-                              <TextField
-                                id="product-code"
-                                fullWidth
-                                {...getFieldProps('code')}
-                                error={Boolean(touched.code && errors.code)}
-                                helperText={touched.code && errors.code}
-                              />
-                            )}
-                          </div>
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                          <div>
-                            <LabelStyle component={'label'} htmlFor="product-sku">
-                              {'Product Sku'}
-                            </LabelStyle>
-                            <TextField
-                              id="product-sku"
-                              fullWidth
-                              {...getFieldProps('sku')}
-                              error={Boolean(touched.sku && errors.sku)}
-                              helperText={touched.sku && errors.sku}
-                            />
-                          </div>
-                        </Grid>
-                        <Grid item xs={12} md={12}>
-                          {isInitialized ? (
-                            <Skeleton variant="text" width={70} />
-                          ) : (
-                            <LabelStyle component={'label'} htmlFor="tags">
-                              {'Tags'}
-                            </LabelStyle>
-                          )}
-                          {isInitialized ? (
-                            <Skeleton variant="rectangular" width="100%" height={56} />
-                          ) : (
-                            <Autocomplete
-                              id="tags"
-                              multiple
-                              freeSolo
-                              value={values.tags}
-                              onChange={(event, newValue) => {
-                                setFieldValue('tags', newValue);
-                              }}
-                              options={[]}
-                              renderTags={(value, getTagProps) =>
-                                value.map((option, index) => (
-                                  <Chip {...getTagProps({ index })} key={option} size="small" label={option} />
-                                ))
-                              }
-                              renderInput={(params) => (
-                                <TextField
-                                  id=""
-                                  {...params}
-                                  error={Boolean(touched.tags && errors.tags)}
-                                  helperText={touched.tags && errors.tags}
-                                />
-                              )}
-                            />
-                          )}
-                        </Grid>
-                        <Grid item xs={12} md={12}>
-                          <div>
-                            {isInitialized ? (
-                              <Skeleton variant="text" width={100} />
-                            ) : (
-                              <LabelStyle component={'label'} htmlFor="meta-title">
-                                {'Meta Title'}
-                              </LabelStyle>
-                            )}
-                            {isInitialized ? (
-                              <Skeleton variant="rectangular" width="100%" height={56} />
-                            ) : (
-                              <TextField
-                                id="meta-title"
-                                fullWidth
-                                {...getFieldProps('metaTitle')}
-                                error={Boolean(touched.metaTitle && errors.metaTitle)}
-                                helperText={touched.metaTitle && errors.metaTitle}
-                              />
-                            )}
-                          </div>
-                        </Grid>
                         <Grid item xs={12} md={12}>
                           <div>
                             {isInitialized ? (
@@ -638,7 +364,7 @@ export default function ProductForm({
                         <Grid item xs={12} md={12}>
                           <div>
                             <LabelStyle component={'label'} htmlFor="product-image">
-                              {'Products Images'} <span>1080 * 1080</span>
+                              {'Box Image'} <span>1080 * 1080</span>
                             </LabelStyle>
                             <UploadMultiFile
                               id="product-image"
@@ -670,80 +396,6 @@ export default function ProductForm({
               <Card sx={{ p: 3 }}>
                 <Stack spacing={3} pb={1}>
                   <div>
-                    {isInitialized ? (
-                      <Skeleton variant="text" width={70} />
-                    ) : (
-                      <LabelStyle component={'label'} htmlFor="slug">
-                        {'Slug'}
-                      </LabelStyle>
-                    )}
-                    {isInitialized ? (
-                      <Skeleton variant="rectangular" width="100%" height={56} />
-                    ) : (
-                      <TextField
-                        id="slug"
-                        fullWidth
-                        {...getFieldProps('slug')}
-                        error={Boolean(touched.slug && errors.slug)}
-                        helperText={touched.slug && errors.slug}
-                      />
-                    )}
-                  </div>
-                  <div>
-                    {isInitialized ? (
-                      <Skeleton variant="text" width={140} />
-                    ) : (
-                      <LabelStyle component={'label'} htmlFor="meta-description">
-                        {'Meta Description'}{' '}
-                      </LabelStyle>
-                    )}
-                    {isInitialized ? (
-                      <Skeleton variant="rectangular" width="100%" height={240} />
-                    ) : (
-                      <TextField
-                        id="meta-description"
-                        fullWidth
-                        {...getFieldProps('metaDescription')}
-                        error={Boolean(touched.metaDescription && errors.metaDescription)}
-                        helperText={touched.metaDescription && errors.metaDescription}
-                        rows={9}
-                        multiline
-                      />
-                    )}
-                  </div>
-
-                  <div>
-                    <LabelStyle component={'label'} htmlFor="quantity">
-                      {'Quantity'}
-                    </LabelStyle>
-                    <TextField
-                      id="quantity"
-                      fullWidth
-                      type="number"
-                      {...getFieldProps('available')}
-                      error={Boolean(touched.available && errors.available)}
-                      helperText={touched.available && errors.available}
-                    />
-                  </div>
-
-                  <div>
-                    <LabelStyle component={'label'} htmlFor="regular-price">
-                      {'Regular Price'}
-                    </LabelStyle>
-                    <TextField
-                      id="regular-price"
-                      fullWidth
-                      placeholder="0.00"
-                      {...getFieldProps('price')}
-                      InputProps={{
-                        startAdornment: <InputAdornment position="start">{fCurrency(0)?.split('0')[0]}</InputAdornment>,
-                        type: 'number'
-                      }}
-                      error={Boolean(touched.price && errors.price)}
-                      helperText={touched.price && errors.price}
-                    />
-                  </div>
-                  <div>
                     <LabelStyle component={'label'} htmlFor="sale-price">
                       {'Sale Price'}
                     </LabelStyle>
@@ -769,7 +421,7 @@ export default function ProductForm({
                             checked={values.isFeatured}
                           />
                         }
-                        label={'Featured Product'}
+                        label={'Featured Box'}
                       />
                     </FormGroup>
                   </div>
@@ -778,7 +430,7 @@ export default function ProductForm({
                       <Skeleton variant="rectangular" width="100%" height={56} />
                     ) : (
                       <LoadingButton type="submit" variant="contained" size="large" fullWidth loading={updateLoading}>
-                        {currentProduct ? 'Update Product' : 'Create Product'}
+                        {currentProduct ? 'Update Box' : 'Create Box'}
                       </LoadingButton>
                     )}
                   </Stack>

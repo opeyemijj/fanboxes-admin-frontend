@@ -99,7 +99,9 @@ export default function ProductRow({ isLoading, row, handleClickOpen, isVendor }
         {isLoading ? (
           <Skeleton variant="text" />
         ) : (
-          <Rating name="text-feedback" size="small" value={row?.averageRating || 0} readOnly precision={0.5} />
+          // <Rating name="text-feedback" size="small" value={row?.averageRating || 0} readOnly precision={0.5} />
+          // vendor/product/slug (slug of box) from api
+          <Typography>{row?.items?.length || 0} Item(s)</Typography>
         )}
       </TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : fCurrency(row?.priceSale || row?.price)}</TableCell>

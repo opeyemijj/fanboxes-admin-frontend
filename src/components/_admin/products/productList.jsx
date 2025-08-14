@@ -15,10 +15,10 @@ import * as api from 'src/services';
 import { useQuery } from 'react-query';
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Product', alignRight: false, sort: true },
+  { id: 'name', label: 'Box', alignRight: false, sort: true },
   { id: 'createdAt', label: 'Date', alignRight: false, sort: true },
   { id: 'inventoryType', label: 'Status', alignRight: false, sort: false },
-  { id: 'rating', label: 'Rating', alignRight: false, sort: true },
+  { id: 'items', label: 'Items', alignRight: false, sort: true },
   { id: 'price', label: 'Price', alignRight: false, sort: true },
   { id: '', label: 'Actions', alignRight: true }
 ];
