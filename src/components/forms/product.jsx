@@ -85,7 +85,7 @@ export default function ProductForm({
     description: Yup.string().required('Description is required'),
     shop: isVendor ? Yup.string().nullable().notRequired() : Yup.string().required('Shop is required'),
     slug: Yup.string().required('Slug is required'),
-    price: Yup.number().required('Price is required'),
+    priceSale: Yup.number().required('Sale price is required'),
     images: Yup.array().min(1, 'Images is required')
   });
 
@@ -97,7 +97,7 @@ export default function ProductForm({
       description: currentProduct?.description || '',
       slug: currentProduct?.slug || '',
       shop: isVendor ? null : currentProduct?.shop || (shops?.length && shops[0]?._id) || '',
-      price: currentProduct?.price?.amount || '',
+      priceSale: currentProduct?.priceSale || '',
       images: currentProduct?.images || [],
       blob: currentProduct?.blob || []
     },
