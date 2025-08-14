@@ -81,21 +81,25 @@ export default function ProductForm({
     }
   );
   const NewProductSchema = Yup.object().shape({
-    title: Yup.string().required('Box title is required'),
+    name: Yup.string().required('Box title is required'),
     description: Yup.string().required('Description is required'),
     shop: isVendor ? Yup.string().nullable().notRequired() : Yup.string().required('Shop is required'),
     slug: Yup.string().required('Slug is required'),
-    price: Yup.number().required('Price is required')
+    price: Yup.number().required('Price is required'),
+    images: Yup.array().min(1, 'Images is required')
   });
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      title: currentProduct?.title || '',
+      name: currentProduct?.name || '',
+      category: currentProduct?.category || (categories.length && categories[0]?._id) || '',
       description: currentProduct?.description || '',
       slug: currentProduct?.slug || '',
       shop: isVendor ? null : currentProduct?.shop || (shops?.length && shops[0]?._id) || '',
-      price: currentProduct?.price?.amount || ''
+      price: currentProduct?.price?.amount || '',
+      images: currentProduct?.images || [],
+      blob: currentProduct?.blob || []
     },
 
     validationSchema: NewProductSchema,

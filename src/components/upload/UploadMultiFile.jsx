@@ -74,7 +74,7 @@ export default function UploadMultiFile({ ...props }) {
       </DropZoneStyle>
 
       <List disablePadding sx={{ ...(hasFile && { my: 3 }) }}>
-        {(loading ? [...Array(isEdit ? files.length + blob.length : blob.length)] : files)?.map((file, i) => (
+        {(loading ? [...Array(isEdit ? files.length + blob.length : blob?.length)] : files)?.map((file, i) => (
           <React.Fragment key={'image' + i}>
             {loading ? (
               <ListItem

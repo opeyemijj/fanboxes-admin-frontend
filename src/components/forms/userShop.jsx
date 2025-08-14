@@ -166,11 +166,9 @@ export default function CreateShopSettingFrom() {
     }
     setFieldValue('file', file);
     try {
-      console.log('AAAAA1');
       const uploaded = await uploadToSpaces(file, (progress) => {
         setstate({ ...state, logoLoading: progress });
       });
-      console.log('AAAAA2');
 
       setFieldValue('logo', uploaded);
 
