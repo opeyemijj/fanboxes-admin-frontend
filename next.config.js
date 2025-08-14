@@ -21,7 +21,7 @@ const nextConfig = {
     DO_SPACES_SECRET: process.env.DO_SPACES_SECRET
   },
   images: {
-    domains: ['nextall.vercel.app"', 'res.cloudinary.com']
+    domains: ['nextall.vercel.app"', 'res.cloudinary.com', 'shouttymedia.nyc3.digitaloceanspaces.com']
   }
 };
 
