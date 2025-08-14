@@ -20,7 +20,7 @@ const uploadToSpaces = (file, onProgress) => {
   });
 
   return new Promise((resolve, reject) => {
-    const fileKey = `track/${Date.now()}-${file.name}`;
+    const fileKey = `fanbox/${Date.now()}-${file.name}`;
 
     const upload = s3.upload({
       Bucket: process.env.DO_SPACES_BUCKET,
