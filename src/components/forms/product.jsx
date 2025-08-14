@@ -35,6 +35,7 @@ import axios from 'axios';
 // components
 import UploadMultiFile from 'src/components/upload/UploadMultiFile';
 import { fCurrency } from 'src/utils/formatNumber';
+import uploadToSpaces from 'src/utils/upload';
 // ----------------------------------------------------------------------
 
 const GENDER_OPTION = ['men', 'women', 'kids', 'others'];
@@ -151,26 +152,65 @@ export default function ProductForm({
     }
   });
   // handle drop
-  const handleDrop = (acceptedFiles) => {
-    setloading(true);
-    const uploaders = acceptedFiles.map((file) => {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('upload_preset', 'my-uploads');
-      setFieldValue('blob', values.blob.concat(acceptedFiles));
-      return axios.post(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`, formData);
-    });
+  // const handleDrop = (acceptedFiles) => {
+  //   setloading(true);
+  //   const uploaders = acceptedFiles.map((file) => {
+  //     const formData = new FormData();
+  //     formData.append('file', file);
+  //     formData.append('upload_preset', 'my-uploads');
+  //     setFieldValue('blob', values.blob.concat(acceptedFiles));
+  //     return axios.post(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`, formData);
+  //   });
 
-    axios.all(uploaders).then((data) => {
-      const newImages = data.map(({ data }) => ({
-        url: data.secure_url,
-        _id: data.public_id
-        // blob: blobs[i],
+  //   axios.all(uploaders).then((data) => {
+  //     const newImages = data.map(({ data }) => ({
+  //       url: data.secure_url,
+  //       _id: data.public_id
+  //       // blob: blobs[i],
+  //     }));
+  //     setloading(false);
+  //     setFieldValue('images', values.images.concat(newImages));
+  //   });
+  // };
+
+  const handleDrop = async (acceptedFiles) => {
+    setloading(true);
+
+    try {
+      // Add previews for each file
+      const filesWithPreview = acceptedFiles.map((file) => {
+        Object.assign(file, { preview: URL.createObjectURL(file) });
+        return file;
+      });
+
+      // Update blob state immediately
+      setFieldValue('blob', values.blob.concat(filesWithPreview));
+
+      // Upload all files in parallel using uploadToSpaces
+      const uploads = await Promise.all(
+        filesWithPreview.map((file) =>
+          uploadToSpaces(file, (progress) => {
+            // Optional: You can show total progress if needed
+            console.log(`Uploading ${file.name}: ${progress}%`);
+          })
+        )
+      );
+
+      // Format uploaded data
+      const newImages = uploads.map((uploaded) => ({
+        url: uploaded.url,
+        _id: uploaded._id
       }));
-      setloading(false);
+
+      // Merge with existing images
       setFieldValue('images', values.images.concat(newImages));
-    });
+    } catch (err) {
+      console.error('Upload failed:', err);
+    } finally {
+      setloading(false);
+    }
   };
+
   // handleAddVariants
 
   // handleRemoveAll
