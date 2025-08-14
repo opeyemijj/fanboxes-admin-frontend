@@ -21,6 +21,7 @@ import axios from 'axios';
 import { Form, FormikProvider, useFormik } from 'formik';
 // api
 import * as api from 'src/services';
+import uploadToSpaces from 'src/utils/upload';
 
 CreateShopSettingFrom.propTypes = {
   data: PropTypes.object,
@@ -119,8 +120,44 @@ export default function CreateShopSettingFrom() {
   });
   const { errors, values, touched, handleSubmit, setFieldValue, getFieldProps } = formik;
   // handle drop logo
+  // const handleDropLogo = async (acceptedFiles) => {
+  //   setstate({ ...state, loading: 2 });
+  //   const file = acceptedFiles[0];
+  //   if (file) {
+  //     Object.assign(file, {
+  //       preview: URL.createObjectURL(file)
+  //     });
+  //   }
+  //   setFieldValue('file', file);
+  //   const formData = new FormData();
+  //   formData.append('file', file);
+  //   formData.append('upload_preset', 'my-uploads');
+  //   const config = {
+  //     onUploadProgress: (progressEvent) => {
+  //       const { loaded, total } = progressEvent;
+  //       const percentage = Math.floor((loaded * 100) / total);
+  //       setstate({ ...state, logoLoading: percentage });
+  //     }
+  //   };
+  //   await axios
+  //     .post(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`, formData, config)
+  //     .then(({ data }) => {
+  //       setFieldValue('logo', {
+  //         _id: data.public_id,
+  //         url: data.secure_url
+  //       });
+  //       setstate({ ...state, loading: false });
+  //     })
+  //     .then(() => {
+  //       // if (values.file) {
+  //       //   deleteMutate(values.logo._id);
+  //       // }
+  //       setstate({ ...state, loading: false });
+  //     });
+  // };
+
   const handleDropLogo = async (acceptedFiles) => {
-    setstate({ ...state, loading: 2 });
+    setstate({ ...state, logoLoading: 2 });
     const file = acceptedFiles[0];
     if (file) {
       Object.assign(file, {
@@ -128,33 +165,61 @@ export default function CreateShopSettingFrom() {
       });
     }
     setFieldValue('file', file);
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', 'my-uploads');
-    const config = {
-      onUploadProgress: (progressEvent) => {
-        const { loaded, total } = progressEvent;
-        const percentage = Math.floor((loaded * 100) / total);
-        setstate({ ...state, logoLoading: percentage });
-      }
-    };
-    await axios
-      .post(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`, formData, config)
-      .then(({ data }) => {
-        setFieldValue('logo', {
-          _id: data.public_id,
-          url: data.secure_url
-        });
-        setstate({ ...state, loading: false });
-      })
-      .then(() => {
-        // if (values.file) {
-        //   deleteMutate(values.logo._id);
-        // }
-        setstate({ ...state, loading: false });
+    try {
+      const uploaded = await uploadToSpaces(file, (progress) => {
+        setstate({ ...state, logoLoading: progress });
       });
+
+      setFieldValue('logo', uploaded);
+
+      if (values.file && values.logo?._id) {
+        deleteMutate(values.logo._id);
+      }
+
+      setstate({ ...state, logoLoading: false });
+    } catch (err) {
+      console.error('Upload failed:', err);
+      setstate({ ...state, logoLoading: false });
+    }
   };
+
   // handle drop cover
+  // const handleDropCover = async (acceptedFiles) => {
+  //   setstate({ ...state, loading: 2 });
+  //   const file = acceptedFiles[0];
+  //   if (file) {
+  //     Object.assign(file, {
+  //       preview: URL.createObjectURL(file)
+  //     });
+  //   }
+  //   setFieldValue('file', file);
+  //   const formData = new FormData();
+  //   formData.append('file', file);
+  //   formData.append('upload_preset', 'my-uploads');
+  //   const config = {
+  //     onUploadProgress: (progressEvent) => {
+  //       const { loaded, total } = progressEvent;
+  //       const percentage = Math.floor((loaded * 100) / total);
+  //       setstate({ ...state, loading: percentage });
+  //     }
+  //   };
+  //   await axios
+  //     .post(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`, formData, config)
+  //     .then(({ data }) => {
+  //       setFieldValue('cover', {
+  //         _id: data.public_id,
+  //         url: data.secure_url
+  //       });
+  //       setstate({ ...state, loading: false });
+  //     })
+  //     .then(() => {
+  //       // if (values.file) {
+  //       //   deleteMutate(values.cover._id);
+  //       // }
+  //       setstate({ ...state, loading: false });
+  //     });
+  // };
+
   const handleDropCover = async (acceptedFiles) => {
     setstate({ ...state, loading: 2 });
     const file = acceptedFiles[0];
@@ -164,32 +229,24 @@ export default function CreateShopSettingFrom() {
       });
     }
     setFieldValue('file', file);
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', 'my-uploads');
-    const config = {
-      onUploadProgress: (progressEvent) => {
-        const { loaded, total } = progressEvent;
-        const percentage = Math.floor((loaded * 100) / total);
-        setstate({ ...state, loading: percentage });
-      }
-    };
-    await axios
-      .post(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`, formData, config)
-      .then(({ data }) => {
-        setFieldValue('cover', {
-          _id: data.public_id,
-          url: data.secure_url
-        });
-        setstate({ ...state, loading: false });
-      })
-      .then(() => {
-        // if (values.file) {
-        //   deleteMutate(values.cover._id);
-        // }
-        setstate({ ...state, loading: false });
+    try {
+      const uploaded = await uploadToSpaces(file, (progress) => {
+        setstate({ ...state, loading: progress });
       });
+
+      setFieldValue('cover', uploaded);
+
+      if (values.file && values.cover?._id) {
+        deleteMutate(values.cover._id);
+      }
+
+      setstate({ ...state, loading: false });
+    } catch (err) {
+      console.error('Upload failed:', err);
+      setstate({ ...state, loading: false });
+    }
   };
+
   const handleTitleChange = (event) => {
     const title = event.target.value;
     const slug = title
