@@ -59,7 +59,7 @@ export default function AddItemForm({
   isVendor,
   boxDetails
 }) {
-  console.log(boxDetails, 'Box details in item add form? 2');
+  // console.log(boxDetails, 'Box details in item add form? 2');
   const router = useRouter();
   const [loading, setloading] = React.useState(false);
   const { mutate, isLoading: updateLoading } = useMutation(
@@ -75,7 +75,7 @@ export default function AddItemForm({
       onSuccess: (data) => {
         toast.success(data.message);
 
-        // router.push((isVendor ? '/vendor' : '/admin') + '/products');
+        router.push((isVendor ? '/vendor' : '/admin') + '/products' + '/box' + `/${boxDetails?.slug}`);
       },
       onError: (error) => {
         console.log(error, 'Check the error');
