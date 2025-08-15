@@ -6,9 +6,9 @@ import AccountGeneral from 'src/components/_main/profile/edit/accountGeneral';
 
 // Meta information
 export const metadata = {
-  title: 'Setting - Nextall',
-  applicationName: 'Nextall',
-  authors: 'Nextall'
+  title: 'Setting - Fanboxes',
+  applicationName: 'Fanboxes',
+  authors: 'Fanboxes'
 };
 export default function page() {
   return (

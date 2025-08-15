@@ -129,7 +129,7 @@ export default function Dashboard({ isVendor }) {
           <Grid item xs={12} sm={isVendor ? 12 : 6} md={3}>
             <DashboardCard
               color="#AFB42B"
-              title="Retruned Orders"
+              title="Returned Orders"
               value={totalReturnOrders}
               icon={<LuFileInput size={24} />}
               isLoading={isLoading}

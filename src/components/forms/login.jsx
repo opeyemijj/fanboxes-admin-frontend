@@ -80,52 +80,7 @@ export default function LoginForm() {
   const { errors, touched, setFieldValue, values, handleSubmit, getFieldProps } = formik;
   return (
     <>
-      <Stack
-        mb={3}
-        gap={2}
-        sx={{
-          '& .MuiAlert-action': {
-            alignItems: 'center'
-          }
-        }}
-      >
-        <Alert
-          severity="primary"
-          action={
-            <Button
-              color="inherit"
-              size="small"
-              onClick={() => {
-                setFieldValue('email', 'admin@nextall.com');
-                setFieldValue('password', 'test1234');
-              }}
-            >
-              Copy
-            </Button>
-          }
-        >
-          <AlertTitle>Admin</AlertTitle>
-          <b>Email:</b> admin@test.com | <b>password:</b> test1234
-        </Alert>
-        <Alert
-          severity="secondary"
-          action={
-            <Button
-              color="inherit"
-              size="small"
-              onClick={() => {
-                setFieldValue('email', 'vendor@nextall.com');
-                setFieldValue('password', 'test1234');
-              }}
-            >
-              Copy
-            </Button>
-          }
-        >
-          <AlertTitle>Vendor</AlertTitle>
-          <b>Email:</b> vendor@test.com | <b>password:</b> test1234
-        </Alert>
-      </Stack>
+      
 
       <FormikProvider value={formik}>
         <Form autoComplete="off" noValidate onSubmit={handleSubmit}>

@@ -6,9 +6,9 @@ import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
 
 // Meta information
 export const metadata = {
-  title: 'Products - Nextall',
-  applicationName: 'Nextall',
-  authors: 'Nextall'
+  title: 'Products - Fanboxes',
+  applicationName: 'Fanboxes',
+  authors: 'Fanboxes'
 };
 export default async function AdminProducts() {
   return (

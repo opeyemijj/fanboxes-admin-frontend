@@ -6,9 +6,9 @@ import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
 
 // Meta information
 export const metadata = {
-  title: 'Brands - Nextall',
-  applicationName: 'Nextall',
-  authors: 'Nextall'
+  title: 'Brands - Fanboxes',
+  applicationName: 'Fanboxes',
+  authors: 'Fanboxes'
 };
 
 export default function Brands() {

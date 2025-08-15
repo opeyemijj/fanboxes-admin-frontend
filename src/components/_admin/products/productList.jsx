@@ -17,7 +17,7 @@ import { useQuery } from 'react-query';
 const TABLE_HEAD = [
   { id: 'name', label: 'Box', alignRight: false, sort: true },
   { id: 'createdAt', label: 'Date', alignRight: false, sort: true },
-  { id: 'inventoryType', label: 'Status', alignRight: false, sort: false },
+  // { id: 'inventoryType', label: 'Status', alignRight: false, sort: false },
   { id: 'items', label: 'Items', alignRight: false, sort: true },
   { id: 'price', label: 'Price', alignRight: false, sort: true },
   { id: '', label: 'Actions', alignRight: true }

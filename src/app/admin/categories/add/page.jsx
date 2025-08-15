@@ -6,9 +6,9 @@ import AddCategory from 'src/components/_admin/categories/addCategory';
 
 // Meta information
 export const metadata = {
-  title: 'Add Categories - Nextall',
-  applicationName: 'Nextall',
-  authors: 'Nextall'
+  title: 'Add Categories - Fanboxes',
+  applicationName: 'Fanboxes',
+  authors: 'Fanboxes'
 };
 
 export default function page() {

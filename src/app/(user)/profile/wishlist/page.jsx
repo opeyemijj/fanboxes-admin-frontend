@@ -29,8 +29,8 @@ const WishlistMain = dynamic(() => import('src/components/_main/profile/wishlist
 // Meta information
 export const metadata = {
   title: 'Wishlist | Nextall - Save Your Favorite Items for Later',
-  applicationName: 'Nextall',
-  authors: 'Nextall'
+  applicationName: 'Fanboxes',
+  authors: 'Fanboxes'
 };
 
 export default function Wishlist() {

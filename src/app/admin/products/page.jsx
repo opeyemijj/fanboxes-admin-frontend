@@ -9,9 +9,9 @@ import * as api from 'src/services';
 
 // Meta information
 export const metadata = {
-  title: 'Products - Nextall',
-  applicationName: 'Nextall',
-  authors: 'Nextall'
+  title: 'Products - Fanboxes',
+  applicationName: 'Fanboxes',
+  authors: 'Fanboxes'
 };
 
 export default async function AdminProducts() {
@@ -23,19 +23,19 @@ export default async function AdminProducts() {
     <>
       <HeaderBreadcrumbs
         admin
-        heading="Products List"
+        heading="Box List"
         links={[
           {
             name: 'Dashboard',
             href: '/admin'
           },
           {
-            name: 'Products'
+            name: 'Boxes'
           }
         ]}
         action={{
           href: `/admin/products/add`,
-          title: 'Add Product'
+          title: 'Add Box'
         }}
       />
       <ProductList categories={categories} shops={shops} brands={brands} />

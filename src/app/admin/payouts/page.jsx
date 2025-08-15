@@ -9,9 +9,9 @@ import * as api from 'src/services';
 
 // Meta information
 export const metadata = {
-  title: 'Payouts - Nextall',
-  applicationName: 'Nextall',
-  authors: 'Nextall'
+  title: 'Payouts - Fanboxes',
+  applicationName: 'Fanboxes',
+  authors: 'Fanboxes'
 };
 export default async function page() {
   const { data: shops } = await api.getAllShopsByAdmin();

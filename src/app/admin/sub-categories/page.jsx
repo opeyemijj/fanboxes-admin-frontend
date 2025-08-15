@@ -9,9 +9,9 @@ import * as api from 'src/services';
 
 // Meta information
 export const metadata = {
-  title: 'Sub Categories - Nextall',
-  applicationName: 'Nextall',
-  authors: 'Nextall'
+  title: 'Sub Categories - Fanboxes',
+  applicationName: 'Fanboxes',
+  authors: 'Fanboxes'
 };
 
 export default async function Categories() {

@@ -6,9 +6,9 @@ import NewsletterList from 'src/components/_admin/newsletter/newsletterList';
 
 // Meta information
 export const metadata = {
-  title: 'Newsletter - Nextall',
-  applicationName: 'Nextall',
-  authors: 'Nextall'
+  title: 'Newsletter - Fanboxes',
+  applicationName: 'Fanboxes',
+  authors: 'Fanboxes'
 };
 export default function page() {
   return (

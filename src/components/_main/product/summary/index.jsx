@@ -261,13 +261,13 @@ export default function ProductDetailsSumary({ ...props }) {
                   <Stack direction="row" alignItems="center" spacing={1} mt={1.5}>
                     <Typography variant="subtitle1">Brand:</Typography>
                     <Typography variant="subtitle1" color="text.secondary" fontWeight={400}>
-                      {brand?.name || 'Nextall'}
+                      {brand?.name || 'Fanboxes'}
                     </Typography>
                   </Stack>
                   <Stack direction="row" alignItems="center" spacing={1}>
                     <Typography variant="subtitle1">Category:</Typography>
                     <Typography variant="subtitle1" color="text.secondary" fontWeight={400}>
-                      {category?.name || 'Nextall'}
+                      {category?.name || 'Fanboxes'}
                     </Typography>
                   </Stack>
                   {product?.price > product?.priceSale && (

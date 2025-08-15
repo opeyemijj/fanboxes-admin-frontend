@@ -8,7 +8,7 @@ export const metadata = {
   title: 'Nextall - Dashboard',
   description: 'Welcome to the Nextall Dashboard. Manage your e-commerce operations with ease.',
   applicationName: 'Nextall Dashboard',
-  authors: 'Nextall',
+  authors: 'Fanboxes',
   keywords: 'dashboard, e-commerce, management, Nextall',
   icons: {
     icon: '/favicon.png'

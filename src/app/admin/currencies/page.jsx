@@ -6,9 +6,9 @@ import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
 
 // Meta information
 export const metadata = {
-  title: 'Currencies - Nextall',
-  applicationName: 'Nextall',
-  authors: 'Nextall'
+  title: 'Currencies - Fanboxes',
+  applicationName: 'Fanboxes',
+  authors: 'Fanboxes'
 };
 export default function Currencies() {
   return (

@@ -14,8 +14,8 @@ export const metadata = {
   title: 'Nextall E-commerce Script | Your Gateway to Seamless Shopping and Secure Transactions',
   description:
     'Log in to Nextall for secure access to your account. Enjoy seamless shopping, personalized experiences, and hassle-free transactions. Your trusted portal to a world of convenience awaits. Login now!',
-  applicationName: 'Nextall',
-  authors: 'Nextall',
+  applicationName: 'Fanboxes',
+  authors: 'Fanboxes',
   keywords: 'ecommerce, Nextall, Commerce, Login Nextall, LoginFrom Nextall',
   icons: {
     icon: '/favicon.png'

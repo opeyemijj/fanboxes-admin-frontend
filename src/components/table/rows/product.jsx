@@ -13,7 +13,6 @@ import {
   IconButton,
   Rating,
   Tooltip,
-  Link
 } from '@mui/material';
 
 // redux
@@ -28,10 +27,15 @@ import BlurImage from 'src/components/blurImage';
 import { MdEdit } from 'react-icons/md';
 import { MdDelete } from 'react-icons/md';
 import { IoEye } from 'react-icons/io5';
-export default function ProductRow({ isLoading, row, handleClickOpen, isVendor }) {
+import Link from 'next/link';
+
+
+export default function ProductRow({ isLoading, row, handleClickOpen, isVendor, sn }) {
   const router = useRouter();
   return (
     <TableRow hover key={Math.random()}>
+            <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
+
       <TableCell component="th" scope="row" sx={{ maxWidth: 300 }}>
         <Box
           sx={{
@@ -76,7 +80,7 @@ export default function ProductRow({ isLoading, row, handleClickOpen, isVendor }
         <Skeleton variant="text" />
       </TableCell> */}
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{fDateShort(row?.createdAt, enUS)}</>}</TableCell>
-      <TableCell>
+      {/* <TableCell>
         {isLoading ? (
           <Skeleton variant="text" />
         ) : (
@@ -94,14 +98,16 @@ export default function ProductRow({ isLoading, row, handleClickOpen, isVendor }
               (row?.available >= 20 && 'In stock')}
           </Label>
         )}
-      </TableCell>
+      </TableCell> */}
       <TableCell align="left">
         {isLoading ? (
           <Skeleton variant="text" />
         ) : (
           // <Rating name="text-feedback" size="small" value={row?.averageRating || 0} readOnly precision={0.5} />
           // vendor/product/slug (slug of box) from api
-          <Typography>{row?.items?.length || 0} Item(s)</Typography>
+          <Link href={`products/box/${row?.slug}`} passHref>
+            <Typography>{row?.items?.length || 0} Item(s)</Typography>
+          </Link>
         )}
       </TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : fCurrency(row?.priceSale || row?.price)}</TableCell>

@@ -12,8 +12,8 @@ export const metadata = {
   title: 'Nextall Shopping Cart | Nextall - Convenient Shopping Cart for Easy Checkout',
   description:
     'View your shopping cart on Nextall for easy checkout. Add, remove, and manage items effortlessly. Enjoy a seamless shopping experience with secure transactions and personalized recommendations. Explore your cart now!',
-  applicationName: 'Nextall',
-  authors: 'Nextall',
+  applicationName: 'Fanboxes',
+  authors: 'Fanboxes',
   keywords:
     'shopping cart, Nextall, view cart, cart items, add to cart, remove from cart, manage cart, checkout, online shopping, secure transactions, personalized recommendations, seamless shopping, convenient shopping'
 };
