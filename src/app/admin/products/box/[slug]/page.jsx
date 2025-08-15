@@ -15,7 +15,7 @@ export const metadata = {
 };
 
 export default async function AdminProducts() {
-  const { data: categories } = await api.getAllCategoriesByAdmin();
+  // const { data: categories } = await api.getAllCategoriesByAdmin();
   const { data: brands } = await api.getAllBrandsByAdmin();
   const { data: shops } = await api.getAllShopsByAdmin();
 
@@ -38,7 +38,7 @@ export default async function AdminProducts() {
           title: 'Add Box Item'
         }}
       />
-      <ProductList categories={categories} shops={shops} brands={brands} />
+      <ProductList categories={null} shops={shops} brands={brands} />
     </>
   );
 }

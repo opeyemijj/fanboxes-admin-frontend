@@ -3,17 +3,7 @@ import { useRouter } from 'next-nprogress-bar';
 import { enUS } from 'date-fns/locale';
 
 // mui
-import {
-  Box,
-  TableRow,
-  Skeleton,
-  TableCell,
-  Typography,
-  Stack,
-  IconButton,
-  Rating,
-  Tooltip,
-} from '@mui/material';
+import { Box, TableRow, Skeleton, TableCell, Typography, Stack, IconButton, Rating, Tooltip } from '@mui/material';
 
 // redux
 import { fCurrency } from 'src/utils/formatNumber';
@@ -29,12 +19,12 @@ import { MdDelete } from 'react-icons/md';
 import { IoEye } from 'react-icons/io5';
 import Link from 'next/link';
 
-
 export default function ProductRow({ isLoading, row, handleClickOpen, isVendor, sn }) {
   const router = useRouter();
+
   return (
     <TableRow hover key={Math.random()}>
-            <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
 
       <TableCell component="th" scope="row" sx={{ maxWidth: 300 }}>
         <Box
