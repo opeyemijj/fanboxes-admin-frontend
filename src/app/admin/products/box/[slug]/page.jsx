@@ -1,7 +1,7 @@
 import React from 'react';
 
 // components
-import ProductList from 'src/components/_admin/products/productList';
+import BoxItemList from 'src/components/_admin/products/boxItemList';
 import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
 
 // api
@@ -14,16 +14,18 @@ export const metadata = {
   authors: 'Fanboxes'
 };
 
-export default async function AdminProducts() {
-  // const { data: categories } = await api.getAllCategoriesByAdmin();
+export default async function AdminBoxeItems() {
+  const { data: productDetails } = await api.getProductDetails('box-name-1');
   const { data: brands } = await api.getAllBrandsByAdmin();
   const { data: shops } = await api.getAllShopsByAdmin();
+
+  console.log(productDetails, 'Getting the detail?asdfsdf');
 
   return (
     <>
       <HeaderBreadcrumbs
         admin
-        heading="Box Item List"
+        heading={productDetails?.name}
         links={[
           {
             name: 'Dashboard',
@@ -38,7 +40,7 @@ export default async function AdminProducts() {
           title: 'Add Box Item'
         }}
       />
-      <ProductList categories={null} shops={shops} brands={brands} />
+      <BoxItemList boxDetails={productDetails} categories={null} shops={shops} brands={brands} />
     </>
   );
 }
