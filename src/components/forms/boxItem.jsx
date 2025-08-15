@@ -81,23 +81,24 @@ export default function AddItemForm({
     }
   );
   const NewProductSchema = Yup.object().shape({
-    name: Yup.string().required('Box title is required'),
+    name: Yup.string().required('Item name is required'),
+    value: Yup.string().required('Item value is required'),
+    weight: Yup.string().required('Item weight is required'),
+    odd: Yup.string().required('Item odd is required'),
     description: Yup.string().required('Description is required'),
-    shop: isVendor ? Yup.string().nullable().notRequired() : Yup.string().required('Shop is required'),
     slug: Yup.string().required('Slug is required'),
-    priceSale: Yup.number().required('Sale price is required'),
-    images: Yup.array().min(1, 'Images is required')
+    images: Yup.array().min(1, 'Image is required')
   });
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
       name: currentProduct?.name || '',
-      category: currentProduct?.category || (categories.length && categories[0]?._id) || '',
       description: currentProduct?.description || '',
       slug: currentProduct?.slug || '',
-      shop: isVendor ? null : currentProduct?.shop || (shops?.length && shops[0]?._id) || '',
-      priceSale: currentProduct?.priceSale || '',
+      value: currentProduct?.value || '',
+      weight: currentProduct?.weight || '',
+      odd: currentProduct?.odd || '',
       images: currentProduct?.images || [],
       blob: currentProduct?.blob || []
     },
@@ -248,32 +249,6 @@ export default function AddItemForm({
                               {isInitialized ? (
                                 <Skeleton variant="text" width={140} />
                               ) : (
-                                <LabelStyle component={'label'} htmlFor="value">
-                                  {'Value'}
-                                </LabelStyle>
-                              )}
-                              {isInitialized ? (
-                                <Skeleton variant="rectangular" width="100%" height={56} />
-                              ) : (
-                                <TextField
-                                  id="value"
-                                  fullWidth
-                                  {...getFieldProps('value')}
-                                  onChange={handleTitleChange} // add onChange handler for title
-                                  error={Boolean(touched.name && errors.name)}
-                                  helperText={touched.name && errors.name}
-                                />
-                              )}
-                            </div>
-                          </FormControl>
-                        </Grid>
-
-                        <Grid item xs={12} md={6}>
-                          <FormControl fullWidth>
-                            <div>
-                              {isInitialized ? (
-                                <Skeleton variant="text" width={140} />
-                              ) : (
                                 <LabelStyle component={'label'} htmlFor="weight">
                                   {'Weight'}
                                 </LabelStyle>
@@ -286,8 +261,8 @@ export default function AddItemForm({
                                   fullWidth
                                   {...getFieldProps('weight')}
                                   onChange={handleTitleChange} // add onChange handler for title
-                                  error={Boolean(touched.name && errors.name)}
-                                  helperText={touched.name && errors.name}
+                                  error={Boolean(touched.weight && errors.weight)}
+                                  helperText={touched.weight && errors.weight}
                                 />
                               )}
                             </div>
@@ -312,8 +287,8 @@ export default function AddItemForm({
                                   fullWidth
                                   {...getFieldProps('odd')}
                                   onChange={handleTitleChange} // add onChange handler for title
-                                  error={Boolean(touched.name && errors.name)}
-                                  helperText={touched.name && errors.name}
+                                  error={Boolean(touched.odd && errors.odd)}
+                                  helperText={touched.odd && errors.odd}
                                 />
                               )}
                             </div>
@@ -379,20 +354,20 @@ export default function AddItemForm({
               <Card sx={{ p: 3 }}>
                 <Stack spacing={3} pb={1}>
                   <div>
-                    <LabelStyle component={'label'} htmlFor="sale-price">
-                      {'Sale Price'}
+                    <LabelStyle component={'label'} htmlFor="value">
+                      {'Value'}
                     </LabelStyle>
                     <TextField
-                      id="sale-price"
+                      id="value"
                       fullWidth
                       placeholder="0.00"
-                      {...getFieldProps('priceSale')}
+                      {...getFieldProps('value')}
                       InputProps={{
                         startAdornment: <InputAdornment position="start">{fCurrency(0)?.split('0')[0]}</InputAdornment>,
                         type: 'number'
                       }}
-                      error={Boolean(touched.priceSale && errors.priceSale)}
-                      helperText={touched.priceSale && errors.priceSale}
+                      error={Boolean(touched.value && errors.value)}
+                      helperText={touched.value && errors.value}
                     />
                   </div>
                   <div>
