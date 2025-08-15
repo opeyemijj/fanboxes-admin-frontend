@@ -1,45 +1,50 @@
-import React from 'react';
+'use client';
+import React, { useEffect, useState } from 'react';
 
 // components
 import BoxItemList from 'src/components/_admin/products/boxItemList';
 import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
+import { useParams } from 'next/navigation';
 
 // api
 import * as api from 'src/services';
 
-// Meta information
-export const metadata = {
-  title: 'Products - Fanboxes',
-  applicationName: 'Fanboxes',
-  authors: 'Fanboxes'
-};
+export default function AdminBoxItems() {
+  const { slug } = useParams();
 
-export default async function AdminBoxeItems() {
-  const { data: productDetails } = await api.getProductDetails('box-name-1');
-  const { data: brands } = await api.getAllBrandsByAdmin();
-  const { data: shops } = await api.getAllShopsByAdmin();
+  const [productDetails, setProductDetails] = useState(null);
+  const [brands, setBrands] = useState([]);
+  const [shops, setShops] = useState([]);
 
-  console.log(productDetails, 'Getting the detail?asdfsdf');
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const { data: productData } = await api.getProductDetails(slug);
+        const { data: brandData } = await api.getAllBrandsByAdmin();
+        const { data: shopData } = await api.getAllShopsByAdmin();
+
+        setProductDetails(productData);
+        setBrands(brandData);
+        setShops(shopData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+    fetchData();
+  }, []);
 
   return (
     <>
       <HeaderBreadcrumbs
         admin
-        heading={productDetails?.name}
-        links={[
-          {
-            name: 'Dashboard',
-            href: '/admin'
-          },
-          {
-            name: 'Boxes'
-          }
-        ]}
+        heading={productDetails?.name || 'Loading...'}
+        links={[{ name: 'Dashboard', href: '/admin' }, { name: 'Boxes' }]}
         action={{
           href: `/admin/products/add`,
           title: 'Add Box Item'
         }}
       />
+
       <BoxItemList boxDetails={productDetails} categories={null} shops={shops} brands={brands} />
     </>
   );
