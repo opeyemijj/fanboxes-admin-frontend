@@ -275,6 +275,7 @@ export const getVendorProductBySlug = async (slug) => {
   const { data } = await http.get(`/vendor/products/${slug}`);
   return data;
 };
+
 export const getVendorShop = async () => {
   const { data } = await http.get(`/vendor/shop`);
   return data;
@@ -297,6 +298,10 @@ export const deleteVendorProduct = async (slug) => {
 };
 export const createVendorProduct = async (payload) => {
   const { data: response } = await http.post(`/vendor/products`, payload);
+  return response;
+};
+export const createVendorBoxItem = async (payload) => {
+  const { data: response } = await http.post(`/vendor/boxItem`, payload);
   return response;
 };
 export const updateVendorProduct = async ({ currentSlug, ...payload }) => {

@@ -56,8 +56,10 @@ export default function AddItemForm({
   isInitialized = false,
   brands,
   shops,
-  isVendor
+  isVendor,
+  boxDetails
 }) {
+  console.log(boxDetails, 'Box details in item add form? 2');
   const router = useRouter();
   const [loading, setloading] = React.useState(false);
   const { mutate, isLoading: updateLoading } = useMutation(
@@ -67,15 +69,16 @@ export default function AddItemForm({
         ? api.updateVendorProduct
         : api.updateProductByAdmin
       : isVendor
-        ? api.createVendorProduct
-        : api.createProductByAdmin,
+        ? api.createVendorBoxItem
+        : api.createVendorBoxItem,
     {
       onSuccess: (data) => {
         toast.success(data.message);
 
-        router.push((isVendor ? '/vendor' : '/admin') + '/products');
+        // router.push((isVendor ? '/vendor' : '/admin') + '/products');
       },
       onError: (error) => {
+        console.log(error, 'Check the error');
         toast.error(error.response.data.message);
       }
     }
@@ -83,8 +86,8 @@ export default function AddItemForm({
   const NewProductSchema = Yup.object().shape({
     name: Yup.string().required('Item name is required'),
     value: Yup.string().required('Item value is required'),
-    weight: Yup.string().required('Item weight is required'),
-    odd: Yup.string().required('Item odd is required'),
+    weight: Yup.number().required('Item weight is required'),
+    odd: Yup.number().required('Item odd is required'),
     description: Yup.string().required('Description is required'),
     slug: Yup.string().required('Slug is required'),
     images: Yup.array().min(1, 'Image is required')
@@ -95,6 +98,7 @@ export default function AddItemForm({
     initialValues: {
       name: currentProduct?.name || '',
       description: currentProduct?.description || '',
+      boxSlug: boxDetails?.slug || '',
       slug: currentProduct?.slug || '',
       value: currentProduct?.value || '',
       weight: currentProduct?.weight || '',
@@ -105,6 +109,7 @@ export default function AddItemForm({
 
     validationSchema: NewProductSchema,
     onSubmit: async (values) => {
+      console.log(values, 'Check the values');
       const { ...rest } = values;
       try {
         mutate({
@@ -122,27 +127,6 @@ export default function AddItemForm({
       toast.error(error.response.data.message);
     }
   });
-  // handle drop
-  // const handleDrop = (acceptedFiles) => {
-  //   setloading(true);
-  //   const uploaders = acceptedFiles.map((file) => {
-  //     const formData = new FormData();
-  //     formData.append('file', file);
-  //     formData.append('upload_preset', 'my-uploads');
-  //     setFieldValue('blob', values.blob.concat(acceptedFiles));
-  //     return axios.post(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`, formData);
-  //   });
-
-  //   axios.all(uploaders).then((data) => {
-  //     const newImages = data.map(({ data }) => ({
-  //       url: data.secure_url,
-  //       _id: data.public_id
-  //       // blob: blobs[i],
-  //     }));
-  //     setloading(false);
-  //     setFieldValue('images', values.images.concat(newImages));
-  //   });
-  // };
 
   const handleDrop = async (acceptedFiles) => {
     setloading(true);
@@ -263,6 +247,9 @@ export default function AddItemForm({
                                   onChange={handleTitleChange} // add onChange handler for title
                                   error={Boolean(touched.weight && errors.weight)}
                                   helperText={touched.weight && errors.weight}
+                                  InputProps={{
+                                    type: 'number'
+                                  }}
                                 />
                               )}
                             </div>
@@ -289,6 +276,9 @@ export default function AddItemForm({
                                   onChange={handleTitleChange} // add onChange handler for title
                                   error={Boolean(touched.odd && errors.odd)}
                                   helperText={touched.odd && errors.odd}
+                                  InputProps={{
+                                    type: 'number'
+                                  }}
                                 />
                               )}
                             </div>
@@ -405,8 +395,7 @@ AddItemForm.propTypes = {
   categories: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      subCategories: PropTypes.array.isRequired
+      name: PropTypes.string.isRequired
       // ... add other required properties for category
     })
   ).isRequired,
@@ -414,35 +403,12 @@ AddItemForm.propTypes = {
     _id: PropTypes.string,
     name: PropTypes.string,
     description: PropTypes.string,
-    code: PropTypes.string,
     slug: PropTypes.string,
-    metaTitle: PropTypes.string,
-    metaDescription: PropTypes.string,
-    brand: PropTypes.string,
-    tags: PropTypes.arrayOf(PropTypes.string),
-    gender: PropTypes.string,
-    category: PropTypes.string,
-    subCategory: PropTypes.string,
-    status: PropTypes.string,
+    boxSlug: PropTypes.string,
     blob: PropTypes.array,
     isFeatured: PropTypes.bool,
-    sku: PropTypes.string,
-    price: PropTypes.number,
-    priceSale: PropTypes.number,
-    colors: PropTypes.arrayOf(PropTypes.string),
-    sizes: PropTypes.arrayOf(PropTypes.string),
-    available: PropTypes.number,
+    value: PropTypes.number,
     images: PropTypes.array
     // ... add other optional properties for currentProduct
-  }),
-  categoryLoading: PropTypes.bool,
-  isInitialized: PropTypes.bool,
-  isVendor: PropTypes.bool,
-  brands: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired
-      // ... add other required properties for brands
-    })
-  )
+  })
 };

@@ -2,7 +2,8 @@ import React from 'react';
 // components
 import AddItemForm from 'src/components/forms/boxItem';
 
-export default function addBoxItem({ brands, categories, subCategories, isVendor, shops }) {
+export default function addBoxItem({ boxDetails, brands, categories, subCategories, isVendor, shops }) {
+  console.log(boxDetails, 'Box details in item add form? 1');
   return (
     <div>
       <AddItemForm
@@ -11,6 +12,7 @@ export default function addBoxItem({ brands, categories, subCategories, isVendor
         subCategories={subCategories}
         shops={shops}
         isVendor={isVendor}
+        boxDetails={boxDetails}
       />
     </div>
   );
