@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation';
 
 // components
 import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
-import AddProduct from 'src/components/_admin/products/addProduct';
+import AddBoxItem from 'src/components/_admin/products/addBoxItem';
 
 // api
 import * as api from 'src/services';
@@ -48,7 +48,7 @@ export default function Page() {
         links={[{ name: 'Dashboard', href: '/admin' }, { name: 'Box', href: '/admin/products' }, { name: 'Add Item' }]}
       />
       {/* Uncomment when ready */}
-      <AddProduct boxDetails={productDetails} brands={brands} shops={shops} categories={categories} />
+      <AddBoxItem boxDetails={productDetails} brands={brands} shops={shops} categories={categories} />
     </div>
   );
 }
