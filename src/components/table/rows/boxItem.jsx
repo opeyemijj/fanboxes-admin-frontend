@@ -19,7 +19,7 @@ import { MdDelete } from 'react-icons/md';
 import { IoEye } from 'react-icons/io5';
 import Link from 'next/link';
 
-export default function ProductRow({ isLoading, row, handleClickOpen, isVendor, sn }) {
+export default function BoxItemRow({ isLoading, row, handleClickOpen, isVendor, sn }) {
   console.log(row, 'Check the row?');
   const router = useRouter();
 
@@ -55,8 +55,8 @@ export default function ProductRow({ isLoading, row, handleClickOpen, isVendor, 
               <BlurImage
                 alt={row?.name}
                 placeholder="blur"
-                blurDataURL={row?.image.blurDataURL}
-                src={row?.image.url}
+                blurDataURL={row?.images[0]?.blurDataURL}
+                src={row?.images[0]?.url}
                 layout="fill"
                 objectFit="cover"
               />
@@ -70,54 +70,17 @@ export default function ProductRow({ isLoading, row, handleClickOpen, isVendor, 
       {/* <TableCell>
         <Skeleton variant="text" />
       </TableCell> */}
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{fDateShort(row?.createdAt, enUS)}</>}</TableCell>
-      {/* <TableCell>
-        {isLoading ? (
-          <Skeleton variant="text" />
-        ) : (
-          <Label
-            variant={'filled'}
-            color={
-              (row?.available < 1 && 'error') ||
-              (row?.available < 20 && 'warning') ||
-              (row?.available >= 20 && 'success') ||
-              'primary'
-            }
-          >
-            {(row?.available < 1 && 'Out of stock') ||
-              (row?.available < 20 && 'Low stock') ||
-              (row?.available >= 20 && 'In stock')}
-          </Label>
-        )}
-      </TableCell> */}
+
       <TableCell align="left">
-        {isLoading ? (
-          <Skeleton variant="text" />
-        ) : (
-          // <Rating name="text-feedback" size="small" value={row?.averageRating || 0} readOnly precision={0.5} />
-          // vendor/product/slug (slug of box) from api
-          <Link href={`products/box/${row?.slug}`} passHref>
-            <Typography>{row?.items?.length || 0} Item(s)</Typography>
-          </Link>
-        )}
+        {isLoading ? <Skeleton variant="text" /> : <Typography>{row?.weight} </Typography>}
       </TableCell>
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : fCurrency(row?.priceSale || row?.price)}</TableCell>
-      {/* <TableCell>
-        {isLoading ? (
-          <Skeleton variant="text" />
-        ) : (
-          <Switch
-            {...label}
-            defaultChecked={row.isFeatured}
-            onChange={() => {
-              mutate({
-                isFeatured: !row.isFeatured,
-                id: row._id,
-              });
-            }}
-          />
-        )}
-      </TableCell> */}
+      <TableCell>
+        <Typography>{row?.value} </Typography>
+      </TableCell>
+      <TableCell>
+        <Typography>{row?.odd} </Typography>
+      </TableCell>
+
       <TableCell align="right">
         {isLoading ? (
           <Stack direction="row" justifyContent="flex-end">
@@ -150,7 +113,7 @@ export default function ProductRow({ isLoading, row, handleClickOpen, isVendor, 
     </TableRow>
   );
 }
-ProductRow.propTypes = {
+BoxItemRow.propTypes = {
   isLoading: PropTypes.bool.isRequired,
 
   row: PropTypes.shape({

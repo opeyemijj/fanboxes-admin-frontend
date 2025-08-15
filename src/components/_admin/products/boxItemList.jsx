@@ -9,32 +9,38 @@ import { Dialog, Stack } from '@mui/material';
 import DeleteDialog from 'src/components/dialog/delete';
 // components
 import Table from 'src/components/table/table';
-import Product from 'src/components/table/rows/product';
+import BoxItem from 'src/components/table/rows/boxItem';
 // api
 import * as api from 'src/services';
 import { useQuery } from 'react-query';
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Box', alignRight: false, sort: true },
-  { id: 'createdAt', label: 'Date', alignRight: false, sort: true },
+  { id: 'name', label: 'Name', alignRight: false, sort: true },
   // { id: 'inventoryType', label: 'Status', alignRight: false, sort: false },
-  { id: 'items', label: 'Items', alignRight: false, sort: true },
-  { id: 'price', label: 'Price', alignRight: false, sort: true },
+  { id: 'weight', label: 'Weight', alignRight: false, sort: true },
+  { id: 'value', label: 'Value', alignRight: false, sort: true },
+  { id: 'odd', label: 'Odd', alignRight: false, sort: true },
   { id: '', label: 'Actions', alignRight: true }
 ];
 export default function AdminBoxeItems({ boxDetails, brands, categories, shops, isVendor }) {
+  // console.log(boxDetails, 'Check the box details');
   const searchParams = useSearchParams();
 
   const [open, setOpen] = useState(false);
   const [apicall, setApicall] = useState(false);
   const [id, setId] = useState(null);
-  const { data, isLoading } = useQuery(
-    ['admin-products', apicall, searchParams.toString()],
-    () => api[isVendor ? 'getVendorProducts' : 'getProductsByAdmin'](searchParams.toString()),
-    {
-      onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
-    }
-  );
+  // const { data, isLoading } = useQuery(
+  //   ['admin-products', apicall, searchParams.toString()],
+  //   () => api[isVendor ? 'getVendorProducts' : 'getProductsByAdmin'](searchParams.toString()),
+  //   {
+  //     onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
+  //   }
+  // );
+
+  // console.log(data, 'Check the data');
+  let data = { data: null };
+  data.data = boxDetails?.items;
+  console.log(data, 'Check the data');
 
   const handleClickOpen = (prop) => () => {
     setId(prop);
@@ -64,11 +70,11 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
       <Table
         headData={TABLE_HEAD}
         data={data}
-        isLoading={isLoading}
-        row={Product}
+        isLoading={false}
+        row={BoxItem}
         handleClickOpen={handleClickOpen}
-        brands={isVendor ? [] : brands}
-        categories={isVendor ? [] : categories}
+        brands={[]}
+        categories={[]}
         isVendor={isVendor}
         filters={
           isVendor
