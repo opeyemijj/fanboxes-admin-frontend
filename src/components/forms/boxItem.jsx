@@ -244,7 +244,6 @@ export default function AddItemForm({
                                   id="weight"
                                   fullWidth
                                   {...getFieldProps('weight')}
-                                  onChange={handleTitleChange} // add onChange handler for title
                                   error={Boolean(touched.weight && errors.weight)}
                                   helperText={touched.weight && errors.weight}
                                   InputProps={{
@@ -273,7 +272,6 @@ export default function AddItemForm({
                                   id="odd"
                                   fullWidth
                                   {...getFieldProps('odd')}
-                                  onChange={handleTitleChange} // add onChange handler for title
                                   error={Boolean(touched.odd && errors.odd)}
                                   helperText={touched.odd && errors.odd}
                                   InputProps={{
