@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { useRouter } from 'next-nprogress-bar';
 import { enUS } from 'date-fns/locale';
+import { useDispatch, useSelector } from 'react-redux';
 
 // mui
 import { Box, TableRow, Skeleton, TableCell, Typography, Stack, IconButton, Rating, Tooltip } from '@mui/material';
@@ -18,8 +19,10 @@ import { MdEdit } from 'react-icons/md';
 import { MdDelete } from 'react-icons/md';
 import { IoEye } from 'react-icons/io5';
 import Link from 'next/link';
+import { selectBoxAndItem } from 'src/redux/slices/product';
 
-export default function BoxItemRow({ isLoading, row, handleClickOpen, isVendor, sn }) {
+export default function BoxItemRow({ isLoading, row, handleClickOpen, isVendor, sn, boxDetails }) {
+  const dispatch = useDispatch();
   const router = useRouter();
 
   return (
@@ -66,9 +69,6 @@ export default function BoxItemRow({ isLoading, row, handleClickOpen, isVendor, 
           </Typography>
         </Box>
       </TableCell>
-      {/* <TableCell>
-        <Skeleton variant="text" />
-      </TableCell> */}
 
       <TableCell align="left">
         {isLoading ? <Skeleton variant="text" /> : <Typography>{row?.weight} </Typography>}
@@ -97,7 +97,13 @@ export default function BoxItemRow({ isLoading, row, handleClickOpen, isVendor, 
               </Link>
             </Tooltip>
             <Tooltip title="Edit">
-              <IconButton onClick={() => router.push(`/${isVendor ? 'vendor' : 'admin'}/products/${row.slug}`)}>
+              <IconButton
+                onClick={() => {
+                  const tempData = { item: row, slug: boxDetails.slug };
+                  dispatch(selectBoxAndItem(tempData));
+                  router.push(`/${isVendor ? 'vendor' : 'admin'}/products/editItem/${row.slug}`);
+                }}
+              >
                 <MdEdit />
               </IconButton>
             </Tooltip>

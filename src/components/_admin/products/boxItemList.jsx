@@ -96,7 +96,7 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
                 }
               ]
         }
-        isSearch
+        boxDetails={boxDetails}
       />
     </>
   );

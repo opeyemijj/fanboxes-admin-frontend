@@ -50,16 +50,13 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function AddItemForm({
-  categories,
   currentProduct,
   categoryLoading = false,
   isInitialized = false,
-  brands,
-  shops,
   isVendor,
   boxDetails
 }) {
-  // console.log(boxDetails, 'Box details in item add form? 2');
+  console.log(currentProduct, 'Check the current product');
   const router = useRouter();
   const [loading, setloading] = React.useState(false);
   const { mutate, isLoading: updateLoading } = useMutation(
@@ -390,13 +387,6 @@ export default function AddItemForm({
   );
 }
 AddItemForm.propTypes = {
-  categories: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired
-      // ... add other required properties for category
-    })
-  ).isRequired,
   currentProduct: PropTypes.shape({
     _id: PropTypes.string,
     name: PropTypes.string,
