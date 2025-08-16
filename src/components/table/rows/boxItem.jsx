@@ -91,7 +91,7 @@ export default function BoxItemRow({ isLoading, row, handleClickOpen, isVendor, 
         ) : (
           <Stack direction="row" justifyContent="flex-end">
             <Tooltip title="Preview">
-              <Link target="_blank" href={`/product/${row.slug}`}>
+              <Link target="_blank" href={`/product/${row?.slug}`}>
                 <IconButton>
                   <IoEye />
                 </IconButton>
@@ -103,7 +103,7 @@ export default function BoxItemRow({ isLoading, row, handleClickOpen, isVendor, 
               </IconButton>
             </Tooltip>
             <Tooltip title="Delete">
-              <IconButton onClick={handleClickOpen(row.slug)}>
+              <IconButton onClick={handleClickOpen(row?.slug)}>
                 <MdDelete />
               </IconButton>
             </Tooltip>

@@ -36,7 +36,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
     }
   );
 
-  console.log(data, 'Check the table');
+  console.log(data, 'Check the table data');
 
   const handleClickOpen = (prop) => () => {
     setId(prop);
