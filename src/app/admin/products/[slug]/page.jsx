@@ -16,7 +16,7 @@ export default async function page({ params }) {
     <div>
       <HeaderBreadcrumbs
         admin
-        heading="Box List"
+        heading="Edit Box"
         links={[
           {
             name: 'Dashboard',
@@ -27,7 +27,7 @@ export default async function page({ params }) {
             href: '/admin/products'
           },
           {
-            name: 'Add Product'
+            name: 'Edit Box'
           }
         ]}
       />

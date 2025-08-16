@@ -40,7 +40,6 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
   // console.log(data, 'Check the data');
   let data = { data: null };
   data.data = boxDetails?.items;
-  console.log(data, 'Check the data');
 
   const handleClickOpen = (prop) => () => {
     setId(prop);

@@ -20,7 +20,6 @@ import { IoEye } from 'react-icons/io5';
 import Link from 'next/link';
 
 export default function BoxItemRow({ isLoading, row, handleClickOpen, isVendor, sn }) {
-  console.log(row, 'Check the row?');
   const router = useRouter();
 
   return (
