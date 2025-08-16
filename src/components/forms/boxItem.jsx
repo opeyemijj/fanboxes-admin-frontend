@@ -56,7 +56,6 @@ export default function AddItemForm({
   isVendor,
   boxDetails
 }) {
-  console.log(currentProduct, 'Check the current product');
   const router = useRouter();
   const [loading, setloading] = React.useState(false);
   const { mutate, isLoading: updateLoading } = useMutation(
@@ -64,14 +63,13 @@ export default function AddItemForm({
     currentProduct
       ? isVendor
         ? api.updateVendorProduct
-        : api.updateProductByAdmin
+        : api.updateItemBoxByAdmin
       : isVendor
         ? api.createVendorBoxItem
         : api.createVendorBoxItem,
     {
       onSuccess: (data) => {
         toast.success(data.message);
-
         router.push((isVendor ? '/vendor' : '/admin') + '/products' + '/box' + `/${boxDetails?.slug}`);
       },
       onError: (error) => {
@@ -106,7 +104,6 @@ export default function AddItemForm({
 
     validationSchema: NewProductSchema,
     onSubmit: async (values) => {
-      console.log(values, 'Check the values');
       const { ...rest } = values;
       try {
         mutate({
@@ -184,12 +181,14 @@ export default function AddItemForm({
   };
 
   const handleTitleChange = (event) => {
-    const title = event.target.value;
-    const slug = title
-      .toLowerCase()
-      .replace(/[^a-zA-Z0-9\s]+/g, '')
-      .replace(/\s+/g, '-'); // convert to lowercase, remove special characters, and replace spaces with hyphens
-    formik.setFieldValue('slug', slug); // set the value of slug in the formik state
+    if (!currentProduct) {
+      const title = event.target.value;
+      const slug = title
+        .toLowerCase()
+        .replace(/[^a-zA-Z0-9\s]+/g, '')
+        .replace(/\s+/g, '-'); // convert to lowercase, remove special characters, and replace spaces with hyphens
+      formik.setFieldValue('slug', slug); // set the value of slug in the formik state
+    }
     formik.handleChange(event); // handle the change in formik
   };
   return (
