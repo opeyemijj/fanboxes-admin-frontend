@@ -14,9 +14,6 @@ export default function Page() {
   const slug = searchParams.get('slug');
 
   const [productDetails, setProductDetails] = useState(null);
-  const [brands, setBrands] = useState([]);
-  const [shops, setShops] = useState([]);
-  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     if (!slug) return; // wait until slug is available
@@ -42,7 +39,7 @@ export default function Page() {
         links={[{ name: 'Dashboard', href: '/admin' }, { name: 'Box', href: '/admin/products' }, { name: 'Add Item' }]}
       />
       {/* Uncomment when ready */}
-      <AddBoxItem boxDetails={productDetails} />
+      <AddBoxItem boxDetails={productDetails} isVendor />
     </div>
   );
 }

@@ -94,6 +94,7 @@ export default function ProductForm({
     initialValues: {
       name: currentProduct?.name || '',
       category: currentProduct?.category || (categories.length && categories[0]?._id) || '',
+      subCategory: currentProduct?.subCategory || (categories.length && categories[0].subCategories[0]?._id) || '',
       description: currentProduct?.description || '',
       slug: currentProduct?.slug || '',
       shop: isVendor ? null : currentProduct?.shop || (shops?.length && shops[0]?._id) || '',
@@ -468,6 +469,7 @@ ProductForm.propTypes = {
     tags: PropTypes.arrayOf(PropTypes.string),
     gender: PropTypes.string,
     category: PropTypes.string,
+    subCategory: PropTypes.string,
     subCategory: PropTypes.string,
     status: PropTypes.string,
     blob: PropTypes.array,

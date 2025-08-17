@@ -49,20 +49,14 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function AddItemForm({
-  currentProduct,
-  categoryLoading = false,
-  isInitialized = false,
-  isVendor,
-  boxDetails
-}) {
+export default function AddItemForm({ currentProduct, isInitialized = false, isVendor, boxDetails }) {
   const router = useRouter();
   const [loading, setloading] = React.useState(false);
   const { mutate, isLoading: updateLoading } = useMutation(
     currentProduct ? 'update' : 'new',
     currentProduct
       ? isVendor
-        ? api.updateVendorProduct
+        ? api.updateItemBoxByAdmin
         : api.updateItemBoxByAdmin
       : isVendor
         ? api.createVendorBoxItem
