@@ -56,7 +56,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
           endPoint={isVendor ? 'deleteVendorProduct' : 'deleteProductByAdmin'}
           type={'Product deleted'}
           deleteMessage={
-            'Are you really sure you want to remove this product? Just making sure before we go ahead with it.'
+            'Are you really sure you want to remove this box? Just making sure before we go ahead with it.'
           }
         />
       </Dialog>
