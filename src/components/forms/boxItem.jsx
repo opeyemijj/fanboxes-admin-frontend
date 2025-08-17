@@ -116,6 +116,20 @@ export default function AddItemForm({ currentProduct, isInitialized = false, isV
     }
   });
 
+  function convertWeightOdd({ weight = null, odd = null, factor = 2 }) {
+    if (weight !== null && odd === null) {
+      // Convert weight -> odd
+      const convertedOdd = weight * factor;
+      setFieldValue('odd', convertedOdd);
+    } else if (odd !== null && weight === null) {
+      // Convert odd → weight
+      const convertedWeight = odd / factor;
+      setFieldValue('weight', convertedWeight);
+    } else {
+      throw new Error('Pass either weight or odd, not both.');
+    }
+  }
+
   const handleDrop = async (acceptedFiles) => {
     setloading(true);
 
@@ -239,6 +253,11 @@ export default function AddItemForm({ currentProduct, isInitialized = false, isV
                                   InputProps={{
                                     type: 'number'
                                   }}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    convertWeightOdd({ weight: value, factor: 2 });
+                                    getFieldProps('weight').onChange(e); // 👈 still update Formik state
+                                  }}
                                 />
                               )}
                             </div>
@@ -266,6 +285,11 @@ export default function AddItemForm({ currentProduct, isInitialized = false, isV
                                   helperText={touched.odd && errors.odd}
                                   InputProps={{
                                     type: 'number'
+                                  }}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    convertWeightOdd({ odd: value, factor: 2 });
+                                    getFieldProps('odd').onChange(e); // 👈 still update Formik state
                                   }}
                                 />
                               )}
