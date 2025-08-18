@@ -86,10 +86,7 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
     cover: Yup.mixed().required('Cover is required'),
     logo: Yup.mixed().required('logo is required'),
     slug: Yup.string().required('Slug is required'),
-    message: Yup.string().min(10, 'Message must be at least 10 words').max(50, 'Message must be at most 50 words'),
     description: Yup.string().required('Description is required'),
-    metaTitle: Yup.string().required('Meta title is required'),
-    metaDescription: Yup.string().required('Meta description is required'),
     phone: Yup.string().required('Phone Number is required'),
     paymentInfo: Yup.object().shape({
       holderName: Yup.string().required('Holder Name is required'),
@@ -107,11 +104,9 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
   const formik = useFormik({
     initialValues: {
       title: currentShop?.title || '',
-      metaTitle: currentShop?.metaTitle || '',
       cover: currentShop?.cover || null,
       logo: currentShop?.logo || null,
       description: currentShop?.description || '',
-      metaDescription: currentShop?.metaDescription || '',
       ...(currentShop && {
         status: currentShop ? currentShop.status : STATUS_OPTIONS[0], // Only include message if currentShop exists
         message:
@@ -211,8 +206,8 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
   };
 
   const handleTitleChange = (event) => {
-    const title = event.target.value;
-    const slug = title
+    const name = event.target.value;
+    const slug = name
       .toLowerCase()
       .replace(/[^a-zA-Z0-9\s]+/g, '')
       .replace(/\s+/g, '-'); // convert to lowercase, remove special characters, and replace spaces with hyphens
@@ -276,8 +271,8 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                       {shopLoading ? (
                         <Skeleton variant="text" width={140} />
                       ) : (
-                        <LabelStyle component={'label'} htmlFor="title">
-                          Title
+                        <LabelStyle component={'label'} htmlFor="name">
+                          Shop Name
                         </LabelStyle>
                       )}
                       {shopLoading ? (
@@ -287,7 +282,7 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                           id="title"
                           fullWidth
                           {...getFieldProps('title')}
-                          onChange={handleTitleChange} // add onChange handler for title
+                          onChange={handleTitleChange} // add onChange handler for name
                           error={Boolean(touched.title && errors.title)}
                           helperText={touched.title && errors.title}
                           sx={{ mt: 1 }}
@@ -315,26 +310,6 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                         />
                       )}
                     </div>
-                    <div>
-                      {shopLoading ? (
-                        <Skeleton variant="text" width={100} />
-                      ) : (
-                        <LabelStyle component={'label'} htmlFor="meta-title">
-                          {'Meta Title'}
-                        </LabelStyle>
-                      )}
-                      {shopLoading ? (
-                        <Skeleton variant="rectangular" width="100%" height={56} />
-                      ) : (
-                        <TextField
-                          id="meta-title"
-                          fullWidth
-                          {...getFieldProps('metaTitle')}
-                          error={Boolean(touched.metaTitle && errors.metaTitle)}
-                          helperText={touched.metaTitle && errors.metaTitle}
-                        />
-                      )}
-                    </div>
                   </Box>
                 </Stack>
                 <Stack mt={3} spacing={3} direction="row" flexGrow="wrap">
@@ -356,29 +331,6 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                         {...getFieldProps('description')}
                         error={Boolean(touched.description && errors.description)}
                         helperText={touched.description && errors.description}
-                        rows={9}
-                        multiline
-                      />
-                    )}
-                  </Box>
-                  <Box sx={{ width: '100%' }}>
-                    {shopLoading ? (
-                      <Skeleton variant="text" width={150} />
-                    ) : (
-                      <LabelStyle component={'label'} htmlFor="meta-description">
-                        {' '}
-                        {'Meta Description'}{' '}
-                      </LabelStyle>
-                    )}
-                    {shopLoading ? (
-                      <Skeleton variant="rectangular" width="100%" height={240} />
-                    ) : (
-                      <TextField
-                        id="meta-description"
-                        fullWidth
-                        {...getFieldProps('metaDescription')}
-                        error={Boolean(touched.metaDescription && errors.metaDescription)}
-                        helperText={touched.metaDescription && errors.metaDescription}
                         rows={9}
                         multiline
                       />
@@ -439,7 +391,7 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                           <Skeleton variant="text" width={150} />
                         ) : (
                           <LabelStyle component={'label'} htmlFor="holder-name">
-                            Holder Name
+                            Name
                           </LabelStyle>
                         )}
                         {shopLoading ? (
@@ -459,7 +411,7 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                           <Skeleton variant="text" width={150} />
                         ) : (
                           <LabelStyle component={'label'} htmlFor="holder-email">
-                            Holder Email
+                            Email
                           </LabelStyle>
                         )}
                         {shopLoading ? (
@@ -471,6 +423,26 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                             {...getFieldProps('paymentInfo.holderEmail')}
                             error={Boolean(touched.paymentInfo?.holderEmail && errors.paymentInfo?.holderEmail)}
                             helperText={touched.paymentInfo?.holderEmail && errors.paymentInfo?.holderEmail}
+                          />
+                        )}
+                      </div>
+                      <div>
+                        {shopLoading ? (
+                          <Skeleton variant="text" width={150} />
+                        ) : (
+                          <LabelStyle component={'label'} htmlFor="phone">
+                            Phone Number
+                          </LabelStyle>
+                        )}
+                        {shopLoading ? (
+                          <Skeleton variant="rectangular" width="100%" height={240} />
+                        ) : (
+                          <TextField
+                            id="phone"
+                            fullWidth
+                            {...getFieldProps('phone')}
+                            error={Boolean(touched.phone && errors.phone)}
+                            helperText={touched.phone && errors.phone}
                           />
                         )}
                       </div>
@@ -514,26 +486,7 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                           />
                         )}
                       </div>
-                      <div>
-                        {shopLoading ? (
-                          <Skeleton variant="text" width={150} />
-                        ) : (
-                          <LabelStyle component={'label'} htmlFor="phone">
-                            Phone Number
-                          </LabelStyle>
-                        )}
-                        {shopLoading ? (
-                          <Skeleton variant="rectangular" width="100%" height={240} />
-                        ) : (
-                          <TextField
-                            id="phone"
-                            fullWidth
-                            {...getFieldProps('phone')}
-                            error={Boolean(touched.phone && errors.phone)}
-                            helperText={touched.phone && errors.phone}
-                          />
-                        )}
-                      </div>
+
                       <div>
                         {shopLoading ? (
                           <Skeleton variant="text" width={150} />
