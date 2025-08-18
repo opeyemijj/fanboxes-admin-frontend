@@ -9,7 +9,9 @@ export function fDateShortMonth(date) {
   return format(new Date(date), 'MM/dd/yyyy'); // Change format here (e.g., 'dd MMM yyyy')
 }
 export function fDateShort(date) {
-  return format(new Date(date), 'dd MMM yyyy');
+  if (date) {
+    return format(new Date(date), 'dd MMM yyyy');
+  } else return null;
 }
 export function fDateTime(date) {
   return format(new Date(date), 'dd MMM yyyy HH:mm');

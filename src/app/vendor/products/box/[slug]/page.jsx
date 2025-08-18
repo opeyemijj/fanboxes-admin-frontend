@@ -13,19 +13,14 @@ export default function AdminBoxItems() {
   const { slug } = useParams();
 
   const [productDetails, setProductDetails] = useState(null);
-  const [brands, setBrands] = useState([]);
-  const [shops, setShops] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
       try {
         const { data: productData } = await api.getProductDetails(slug);
-        const { data: brandData } = await api.getAllBrandsByAdmin();
-        const { data: shopData } = await api.getAllShopsByAdmin();
+        console.log(productData, 'Getting prodcut data?');
 
         setProductDetails(productData);
-        setBrands(brandData);
-        setShops(shopData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -40,12 +35,12 @@ export default function AdminBoxItems() {
         heading={productDetails?.name || 'Loading...'}
         links={[{ name: 'Dashboard', href: '/admin' }, { name: 'Boxes' }]}
         action={{
-          href: `/admin/products/addItem?slug=${productDetails?.slug}`,
+          href: `/vendor/products/addItem?slug=${productDetails?.slug}`,
           title: 'Add Box Item'
         }}
       />
 
-      <BoxItemList boxDetails={productDetails} categories={null} shops={shops} brands={brands} />
+      <BoxItemList boxDetails={productDetails} categories={null} />
     </>
   );
 }

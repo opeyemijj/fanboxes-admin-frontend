@@ -25,7 +25,7 @@ import BlurImageAvatar from 'src/components/avatar';
 import { MdEdit } from 'react-icons/md';
 import { MdDelete } from 'react-icons/md';
 import { IoEye } from 'react-icons/io5';
-export default function ProductRow({ isLoading, row, handleClickOpen }) {
+export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
   const router = useRouter();
   return (
     <TableRow hover key={Math.random()}>
@@ -89,9 +89,9 @@ export default function ProductRow({ isLoading, row, handleClickOpen }) {
               objectFit="cover"
             />
           ) : (
-            <Avatar size="small">{row.vendor.firstName.toUpperCase().slice(0, 1)}</Avatar>
+            <Avatar size="small">{row.vendor?.firstName.toUpperCase().slice(0, 1)}</Avatar>
           )}
-          {isLoading ? <Skeleton variant="text" width={100} /> : `${row.vendor.firstName} ${row.vendor.lastName}`}
+          {isLoading ? <Skeleton variant="text" width={100} /> : `${row.vendor?.firstName} ${row.vendor?.lastName}`}
         </Box>
       </TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row.products.length || 0}</>}</TableCell>

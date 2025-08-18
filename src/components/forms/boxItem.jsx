@@ -49,56 +49,49 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function ProductForm({
-  categories,
-  currentProduct,
-  categoryLoading = false,
-  isInitialized = false,
-  brands,
-  shops,
-  isVendor
-}) {
+export default function AddItemForm({ currentProduct, isInitialized = false, isVendor, boxDetails }) {
   const router = useRouter();
   const [loading, setloading] = React.useState(false);
   const { mutate, isLoading: updateLoading } = useMutation(
     currentProduct ? 'update' : 'new',
     currentProduct
       ? isVendor
-        ? api.updateVendorProduct
-        : api.updateProductByAdmin
+        ? api.updateItemBoxByAdmin
+        : api.updateItemBoxByAdmin
       : isVendor
-        ? api.createVendorProduct
-        : api.createProductByAdmin,
+        ? api.createVendorBoxItem
+        : api.createVendorBoxItem,
     {
       onSuccess: (data) => {
         toast.success(data.message);
-
-        router.push((isVendor ? '/vendor' : '/admin') + '/products');
+        router.push((isVendor ? '/vendor' : '/admin') + '/products' + '/box' + `/${boxDetails?.slug}`);
       },
       onError: (error) => {
+        console.log(error, 'Check the error');
         toast.error(error.response.data.message);
       }
     }
   );
   const NewProductSchema = Yup.object().shape({
-    name: Yup.string().required('Box title is required'),
+    name: Yup.string().required('Item name is required'),
+    value: Yup.string().required('Item value is required'),
+    weight: Yup.number().max(100, 'Max Limit 100').required('Item weight is required'),
+    odd: Yup.number().max(1, 'Max Limit 1').required('Item odd is required'),
     description: Yup.string().required('Description is required'),
-    shop: isVendor ? Yup.string().nullable().notRequired() : Yup.string().required('Shop is required'),
     slug: Yup.string().required('Slug is required'),
-    priceSale: Yup.number().required('Sale price is required'),
-    images: Yup.array().min(1, 'Images is required')
+    images: Yup.array().min(1, 'Image is required')
   });
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
       name: currentProduct?.name || '',
-      category: currentProduct?.category || (categories.length && categories[0]?._id) || '',
-      subCategory: currentProduct?.subCategory || (categories.length && categories[0].subCategories[0]?._id) || '',
       description: currentProduct?.description || '',
+      boxSlug: boxDetails?.slug || '',
       slug: currentProduct?.slug || '',
-      shop: isVendor ? null : currentProduct?.shop || (shops?.length && shops[0]?._id) || '',
-      priceSale: currentProduct?.priceSale || '',
+      value: currentProduct?.value || '',
+      weight: currentProduct?.weight || '',
+      odd: currentProduct?.odd || '',
       images: currentProduct?.images || [],
       blob: currentProduct?.blob || []
     },
@@ -122,27 +115,20 @@ export default function ProductForm({
       toast.error(error.response.data.message);
     }
   });
-  // handle drop
-  // const handleDrop = (acceptedFiles) => {
-  //   setloading(true);
-  //   const uploaders = acceptedFiles.map((file) => {
-  //     const formData = new FormData();
-  //     formData.append('file', file);
-  //     formData.append('upload_preset', 'my-uploads');
-  //     setFieldValue('blob', values.blob.concat(acceptedFiles));
-  //     return axios.post(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`, formData);
-  //   });
 
-  //   axios.all(uploaders).then((data) => {
-  //     const newImages = data.map(({ data }) => ({
-  //       url: data.secure_url,
-  //       _id: data.public_id
-  //       // blob: blobs[i],
-  //     }));
-  //     setloading(false);
-  //     setFieldValue('images', values.images.concat(newImages));
-  //   });
-  // };
+  function convertWeightOdd({ weight = null, odd = null }) {
+    if (weight !== null && odd === null) {
+      // Convert weight → odd
+      const convertedOdd = weight / 100;
+      setFieldValue('odd', convertedOdd);
+    } else if (odd !== null && weight === null) {
+      // Convert odd → weight
+      const convertedWeight = odd * 100;
+      setFieldValue('weight', convertedWeight);
+    } else {
+      throw new Error('Pass either weight or odd, not both.');
+    }
+  }
 
   const handleDrop = async (acceptedFiles) => {
     setloading(true);
@@ -203,12 +189,14 @@ export default function ProductForm({
   };
 
   const handleTitleChange = (event) => {
-    const title = event.target.value;
-    const slug = title
-      .toLowerCase()
-      .replace(/[^a-zA-Z0-9\s]+/g, '')
-      .replace(/\s+/g, '-'); // convert to lowercase, remove special characters, and replace spaces with hyphens
-    formik.setFieldValue('slug', slug); // set the value of slug in the formik state
+    if (!currentProduct) {
+      const title = event.target.value;
+      const slug = title
+        .toLowerCase()
+        .replace(/[^a-zA-Z0-9\s]+/g, '')
+        .replace(/\s+/g, '-'); // convert to lowercase, remove special characters, and replace spaces with hyphens
+      formik.setFieldValue('slug', slug); // set the value of slug in the formik state
+    }
     formik.handleChange(event); // handle the change in formik
   };
   return (
@@ -225,7 +213,7 @@ export default function ProductForm({
                         <Skeleton variant="text" width={140} />
                       ) : (
                         <LabelStyle component={'label'} htmlFor="product-name">
-                          {'Box Name'}
+                          {'Item Name'}
                         </LabelStyle>
                       )}
                       {isInitialized ? (
@@ -243,102 +231,69 @@ export default function ProductForm({
                     </div>
                     <div>
                       <Grid container spacing={2}>
-                        {isVendor ? null : (
-                          <Grid item xs={12} md={6}>
-                            <FormControl fullWidth>
+                        <Grid item xs={12} md={6}>
+                          <FormControl fullWidth>
+                            <div>
                               {isInitialized ? (
-                                <Skeleton variant="text" width={100} />
+                                <Skeleton variant="text" width={140} />
                               ) : (
-                                <LabelStyle component={'label'} htmlFor="shop-select">
-                                  {'Shop'}
+                                <LabelStyle component={'label'} htmlFor="weight">
+                                  {'Weight'}
                                 </LabelStyle>
                               )}
-
-                              <Select native {...getFieldProps('shop')} value={values.shop} id="shop-select">
-                                {shops?.map((shop) => (
-                                  <option key={shop._id} value={shop._id}>
-                                    {shop.title}
-                                  </option>
-                                ))}
-                              </Select>
-
-                              {touched.shop && errors.shop && (
-                                <FormHelperText error sx={{ px: 2, mx: 0 }}>
-                                  {touched.shop && errors.shop}
-                                </FormHelperText>
+                              {isInitialized ? (
+                                <Skeleton variant="rectangular" width="100%" height={56} />
+                              ) : (
+                                <TextField
+                                  id="weight"
+                                  fullWidth
+                                  {...getFieldProps('weight')}
+                                  error={Boolean(touched.weight && errors.weight)}
+                                  helperText={touched.weight && errors.weight}
+                                  InputProps={{
+                                    type: 'number'
+                                  }}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    convertWeightOdd({ weight: value, factor: 2 });
+                                    getFieldProps('weight').onChange(e); // 👈 still update Formik state
+                                  }}
+                                />
                               )}
-                            </FormControl>
-                          </Grid>
-                        )}
-
-                        <Grid item xs={12} md={6}>
-                          <FormControl fullWidth>
-                            {isInitialized ? (
-                              <Skeleton variant="text" width={100} />
-                            ) : (
-                              <LabelStyle component={'label'} htmlFor="grouped-native-select">
-                                {'Category'}
-                              </LabelStyle>
-                            )}
-                            {!categoryLoading ? (
-                              <Select
-                                native
-                                {...getFieldProps('category')}
-                                value={values.category}
-                                id="grouped-native-select"
-                              >
-                                {categories?.map((category) => (
-                                  <option key={category._id} value={category._id}>
-                                    {category.name}
-                                  </option>
-
-                                  // </optgroup>
-                                ))}
-                              </Select>
-                            ) : (
-                              <Skeleton variant="rectangular" width={'100%'} height={56} />
-                            )}
-                            {touched.category && errors.category && (
-                              <FormHelperText error sx={{ px: 2, mx: 0 }}>
-                                {touched.category && errors.category}
-                              </FormHelperText>
-                            )}
+                            </div>
                           </FormControl>
                         </Grid>
+
                         <Grid item xs={12} md={6}>
                           <FormControl fullWidth>
-                            {isInitialized ? (
-                              <Skeleton variant="text" width={100} />
-                            ) : (
-                              <LabelStyle component={'label'} htmlFor="grouped-native-select-subCategory">
-                                {'Sub Category'}
-                              </LabelStyle>
-                            )}
-                            {!categoryLoading ? (
-                              <Select
-                                native
-                                {...getFieldProps('subCategory')}
-                                value={values.subCategory}
-                                id="grouped-native-select-subCategory"
-                              >
-                                {categories
-                                  .find((v) => v._id.toString() === values.category)
-                                  ?.subCategories?.map((subCategory) => (
-                                    <option key={subCategory._id} value={subCategory._id}>
-                                      {subCategory.name}
-                                    </option>
-
-                                    // </optgroup>
-                                  ))}
-                              </Select>
-                            ) : (
-                              <Skeleton variant="rectangular" width={'100%'} height={56} />
-                            )}
-                            {touched.subCategory && errors.subCategory && (
-                              <FormHelperText error sx={{ px: 2, mx: 0 }}>
-                                {touched.subCategory && errors.subCategory}
-                              </FormHelperText>
-                            )}
+                            <div>
+                              {isInitialized ? (
+                                <Skeleton variant="text" width={140} />
+                              ) : (
+                                <LabelStyle component={'label'} htmlFor="odd">
+                                  {'Odd'}
+                                </LabelStyle>
+                              )}
+                              {isInitialized ? (
+                                <Skeleton variant="rectangular" width="100%" height={56} />
+                              ) : (
+                                <TextField
+                                  id="odd"
+                                  fullWidth
+                                  {...getFieldProps('odd')}
+                                  error={Boolean(touched.odd && errors.odd)}
+                                  helperText={touched.odd && errors.odd}
+                                  InputProps={{
+                                    type: 'number'
+                                  }}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    convertWeightOdd({ odd: value, factor: 2 });
+                                    getFieldProps('odd').onChange(e); // 👈 still update Formik state
+                                  }}
+                                />
+                              )}
+                            </div>
                           </FormControl>
                         </Grid>
 
@@ -369,7 +324,7 @@ export default function ProductForm({
                         <Grid item xs={12} md={12}>
                           <div>
                             <LabelStyle component={'label'} htmlFor="product-image">
-                              {'Box Image'} <span>1080 * 1080</span>
+                              {'Item Image'}
                             </LabelStyle>
                             <UploadMultiFile
                               id="product-image"
@@ -401,20 +356,20 @@ export default function ProductForm({
               <Card sx={{ p: 3 }}>
                 <Stack spacing={3} pb={1}>
                   <div>
-                    <LabelStyle component={'label'} htmlFor="sale-price">
-                      {'Sale Price'}
+                    <LabelStyle component={'label'} htmlFor="value">
+                      {'Value'}
                     </LabelStyle>
                     <TextField
-                      id="sale-price"
+                      id="value"
                       fullWidth
                       placeholder="0.00"
-                      {...getFieldProps('priceSale')}
+                      {...getFieldProps('value')}
                       InputProps={{
                         startAdornment: <InputAdornment position="start">{fCurrency(0)?.split('0')[0]}</InputAdornment>,
                         type: 'number'
                       }}
-                      error={Boolean(touched.priceSale && errors.priceSale)}
-                      helperText={touched.priceSale && errors.priceSale}
+                      error={Boolean(touched.value && errors.value)}
+                      helperText={touched.value && errors.value}
                     />
                   </div>
                   <div>
@@ -426,7 +381,7 @@ export default function ProductForm({
                             checked={values.isFeatured}
                           />
                         }
-                        label={'Featured Box'}
+                        label={'Featured Item'}
                       />
                     </FormGroup>
                   </div>
@@ -435,7 +390,7 @@ export default function ProductForm({
                       <Skeleton variant="rectangular" width="100%" height={56} />
                     ) : (
                       <LoadingButton type="submit" variant="contained" size="large" fullWidth loading={updateLoading}>
-                        {currentProduct ? 'Update Box' : 'Create Box'}
+                        {currentProduct ? 'Update Item' : 'Create Item'}
                       </LoadingButton>
                     )}
                   </Stack>
@@ -448,49 +403,17 @@ export default function ProductForm({
     </Stack>
   );
 }
-ProductForm.propTypes = {
-  categories: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      subCategories: PropTypes.array.isRequired
-      // ... add other required properties for category
-    })
-  ).isRequired,
+AddItemForm.propTypes = {
   currentProduct: PropTypes.shape({
     _id: PropTypes.string,
     name: PropTypes.string,
     description: PropTypes.string,
-    code: PropTypes.string,
     slug: PropTypes.string,
-    metaTitle: PropTypes.string,
-    metaDescription: PropTypes.string,
-    brand: PropTypes.string,
-    tags: PropTypes.arrayOf(PropTypes.string),
-    gender: PropTypes.string,
-    category: PropTypes.string,
-    subCategory: PropTypes.string,
-    subCategory: PropTypes.string,
-    status: PropTypes.string,
+    boxSlug: PropTypes.string,
     blob: PropTypes.array,
     isFeatured: PropTypes.bool,
-    sku: PropTypes.string,
-    price: PropTypes.number,
-    priceSale: PropTypes.number,
-    colors: PropTypes.arrayOf(PropTypes.string),
-    sizes: PropTypes.arrayOf(PropTypes.string),
-    available: PropTypes.number,
+    value: PropTypes.number,
     images: PropTypes.array
     // ... add other optional properties for currentProduct
-  }),
-  categoryLoading: PropTypes.bool,
-  isInitialized: PropTypes.bool,
-  isVendor: PropTypes.bool,
-  brands: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired
-      // ... add other required properties for brands
-    })
-  )
+  })
 };

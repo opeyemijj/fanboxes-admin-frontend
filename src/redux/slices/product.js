@@ -13,7 +13,8 @@ const initialState = {
     discount: 0,
     shipping: shippingFee,
     billing: null
-  }
+  },
+  boxAndItemData: {}
 };
 
 const slice = createSlice({
@@ -59,6 +60,11 @@ const slice = createSlice({
         });
       }
       state.checkout.cart = uniqBy([...state.checkout.cart, updatedProduct], 'sku');
+    },
+
+    selectBoxAndItem: (state, action) => {
+      console.log(state, 'Check the redux settings');
+      state.boxAndItemData = action.payload;
     },
 
     clearCart(state, action) {
@@ -139,5 +145,6 @@ export const {
   createBilling,
   applyDiscount,
   increaseQuantity,
-  decreaseQuantity
+  decreaseQuantity,
+  selectBoxAndItem
 } = slice.actions;

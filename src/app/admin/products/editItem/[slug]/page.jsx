@@ -1,22 +1,23 @@
+'use client';
 import React from 'react';
 
 // components
 import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
-import EditProduct from 'src/components/_admin/products/editProduct';
+import EditItem from 'src/components/_admin/products/editItem';
 
 // api
 import * as api from 'src/services';
+import { useSelector } from 'react-redux';
 
-export default async function page({ params }) {
-  const { data: categories } = await api.getAllCategories();
-  const { data: brands } = await api.getAllBrandsByAdmin();
-  const { data: shops } = await api.getAllShopsByAdmin();
+export default function page({ params }) {
+  const selectedBoxAndItemData = useSelector(({ product }) => product?.boxAndItemData);
+  // console.log(selectedBoxAndItemData, 'Okk SEE this state');
 
   return (
     <div>
       <HeaderBreadcrumbs
         admin
-        heading="Edit Box"
+        heading="Edit Item"
         links={[
           {
             name: 'Dashboard',
@@ -27,11 +28,11 @@ export default async function page({ params }) {
             href: '/admin/products'
           },
           {
-            name: 'Edit Box'
+            name: 'Edit Item'
           }
         ]}
       />
-      <EditProduct brands={brands} shops={shops} categories={categories} slug={params.slug} />
+      <EditItem selectedBoxAndItemData={selectedBoxAndItemData} slug={params.slug} />
     </div>
   );
 }

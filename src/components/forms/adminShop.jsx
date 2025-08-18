@@ -32,6 +32,7 @@ import { Form, FormikProvider, useFormik } from 'formik';
 import * as api from 'src/services';
 // countries
 import countries from 'src/components/_main/checkout/countries.json';
+import uploadToSpaces from 'src/utils/upload';
 
 AdminShopForm.propTypes = {
   data: PropTypes.object,
@@ -81,17 +82,13 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
     }
   });
   const ShopSettingScema = Yup.object().shape({
-    title: Yup.string().required('title is required'),
+    title: Yup.string().required('name is required'),
     cover: Yup.mixed().required('Cover is required'),
     logo: Yup.mixed().required('logo is required'),
     slug: Yup.string().required('Slug is required'),
-    message: Yup.string().min(10, 'Message must be at least 10 words').max(50, 'Message must be at most 50 words'),
     description: Yup.string().required('Description is required'),
-    metaTitle: Yup.string().required('Meta title is required'),
-    metaDescription: Yup.string().required('Meta description is required'),
     phone: Yup.string().required('Phone Number is required'),
     paymentInfo: Yup.object().shape({
-      holderName: Yup.string().required('Holder Name is required'),
       holderEmail: Yup.string().required('Holder email is required'),
       bankName: Yup.string().required('Bank name is required'),
       AccountNo: Yup.number().required('Account No is required')
@@ -106,11 +103,9 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
   const formik = useFormik({
     initialValues: {
       title: currentShop?.title || '',
-      metaTitle: currentShop?.metaTitle || '',
       cover: currentShop?.cover || null,
       logo: currentShop?.logo || null,
       description: currentShop?.description || '',
-      metaDescription: currentShop?.metaDescription || '',
       ...(currentShop && {
         status: currentShop ? currentShop.status : STATUS_OPTIONS[0], // Only include message if currentShop exists
         message:
@@ -125,7 +120,6 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
       slug: currentShop?.slug || '',
       phone: currentShop?.phone || Number,
       paymentInfo: {
-        holderName: currentShop?.paymentInfo?.holderName || '',
         holderEmail: currentShop?.paymentInfo?.holderEmail || '',
         bankName: currentShop?.paymentInfo?.bankName || '',
         AccountNo: currentShop?.paymentInfo?.AccountNo || Number
@@ -156,7 +150,7 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
   const { errors, values, touched, handleSubmit, setFieldValue, getFieldProps } = formik;
   // handle drop logo
   const handleDropLogo = async (acceptedFiles) => {
-    setstate({ ...state, loading: 2 });
+    setstate({ ...state, logoLoading: 2 });
     const file = acceptedFiles[0];
     if (file) {
       Object.assign(file, {
@@ -164,31 +158,22 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
       });
     }
     setFieldValue('file', file);
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', 'my-uploads');
-    const config = {
-      onUploadProgress: (progressEvent) => {
-        const { loaded, total } = progressEvent;
-        const percentage = Math.floor((loaded * 100) / total);
-        setstate({ ...state, logoLoading: percentage });
-      }
-    };
-    await axios
-      .post(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`, formData, config)
-      .then(({ data }) => {
-        setFieldValue('logo', {
-          _id: data.public_id,
-          url: data.secure_url
-        });
-        setstate({ ...state, loading: false });
-      })
-      .then(() => {
-        if (values?.fileLogo) {
-          deleteMutate(values.logo._id);
-        }
-        setstate({ ...state, loading: false });
+    try {
+      const uploaded = await uploadToSpaces(file, (progress) => {
+        setstate({ ...state, logoLoading: progress });
       });
+
+      setFieldValue('logo', uploaded);
+
+      if (values.file && values.logo?._id) {
+        deleteMutate(values.logo._id);
+      }
+
+      setstate({ ...state, logoLoading: false });
+    } catch (err) {
+      console.error('Upload failed:', err);
+      setstate({ ...state, logoLoading: false });
+    }
   };
   // handle drop cover
   const handleDropCover = async (acceptedFiles) => {
@@ -200,35 +185,27 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
       });
     }
     setFieldValue('file', file);
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', 'my-uploads');
-    const config = {
-      onUploadProgress: (progressEvent) => {
-        const { loaded, total } = progressEvent;
-        const percentage = Math.floor((loaded * 100) / total);
-        setstate({ ...state, loading: percentage });
-      }
-    };
-    await axios
-      .post(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`, formData, config)
-      .then(({ data }) => {
-        setFieldValue('cover', {
-          _id: data.public_id,
-          url: data.secure_url
-        });
-        setstate({ ...state, loading: false });
-      })
-      .then(() => {
-        if (values.fileCover) {
-          deleteMutate(values.cover._id);
-        }
-        setstate({ ...state, loading: false });
+    try {
+      const uploaded = await uploadToSpaces(file, (progress) => {
+        setstate({ ...state, loading: progress });
       });
+
+      setFieldValue('cover', uploaded);
+
+      if (values.file && values.cover?._id) {
+        deleteMutate(values.cover._id);
+      }
+
+      setstate({ ...state, loading: false });
+    } catch (err) {
+      console.error('Upload failed:', err);
+      setstate({ ...state, loading: false });
+    }
   };
+
   const handleTitleChange = (event) => {
-    const title = event.target.value;
-    const slug = title
+    const name = event.target.value;
+    const slug = name
       .toLowerCase()
       .replace(/[^a-zA-Z0-9\s]+/g, '')
       .replace(/\s+/g, '-'); // convert to lowercase, remove special characters, and replace spaces with hyphens
@@ -252,48 +229,12 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
               <Card sx={{ p: 3 }}>
                 <Stack direction="row" spacing={3} flexGrow="wrap">
                   <Box sx={{ width: '100%' }}>
-                    <Stack direction="row" justifyContent="space-between">
-                      {shopLoading ? (
-                        <Skeleton variant="text" width={150} />
-                      ) : (
-                        <LabelStyle variant="body1" component={'label'} color="text.primary">
-                          Logo
-                        </LabelStyle>
-                      )}
-                      {shopLoading ? (
-                        <Skeleton variant="text" width={150} />
-                      ) : (
-                        <LabelStyle component={'label'} htmlFor="file">
-                          <span>512 * 512</span>
-                        </LabelStyle>
-                      )}
-                    </Stack>
-                    {shopLoading ? (
-                      <Skeleton variant="rectangular" width="100%" height={225} />
-                    ) : (
-                      <UploadSingleFile
-                        id="fileLogo"
-                        file={values.logo}
-                        onDrop={handleDropLogo}
-                        error={Boolean(touched.logo && errors.logo)}
-                        category
-                        accept="image/*"
-                        loading={state.logoLoading}
-                      />
-                    )}
-                    {touched.logo && errors.logo && (
-                      <FormHelperText error sx={{ px: 2, mx: 0 }}>
-                        {touched.logo && errors.logo}
-                      </FormHelperText>
-                    )}
-                  </Box>
-                  <Box sx={{ width: '100%' }}>
                     <div>
                       {shopLoading ? (
                         <Skeleton variant="text" width={140} />
                       ) : (
                         <LabelStyle component={'label'} htmlFor="title">
-                          Title
+                          Name
                         </LabelStyle>
                       )}
                       {shopLoading ? (
@@ -303,51 +244,10 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                           id="title"
                           fullWidth
                           {...getFieldProps('title')}
-                          onChange={handleTitleChange} // add onChange handler for title
+                          onChange={handleTitleChange} // add onChange handler for name
                           error={Boolean(touched.title && errors.title)}
                           helperText={touched.title && errors.title}
                           sx={{ mt: 1 }}
-                        />
-                      )}
-                    </div>
-                    <div>
-                      {shopLoading ? (
-                        <Skeleton variant="text" width={70} />
-                      ) : (
-                        <LabelStyle component={'label'} htmlFor="slug">
-                          {' '}
-                          {'Slug'}
-                        </LabelStyle>
-                      )}
-                      {shopLoading ? (
-                        <Skeleton variant="rectangular" width="100%" height={56} />
-                      ) : (
-                        <TextField
-                          fullWidth
-                          id="slug"
-                          {...getFieldProps('slug')}
-                          error={Boolean(touched.slug && errors.slug)}
-                          helperText={touched.slug && errors.slug}
-                        />
-                      )}
-                    </div>
-                    <div>
-                      {shopLoading ? (
-                        <Skeleton variant="text" width={100} />
-                      ) : (
-                        <LabelStyle component={'label'} htmlFor="meta-title">
-                          {'Meta Title'}
-                        </LabelStyle>
-                      )}
-                      {shopLoading ? (
-                        <Skeleton variant="rectangular" width="100%" height={56} />
-                      ) : (
-                        <TextField
-                          id="meta-title"
-                          fullWidth
-                          {...getFieldProps('metaTitle')}
-                          error={Boolean(touched.metaTitle && errors.metaTitle)}
-                          helperText={touched.metaTitle && errors.metaTitle}
                         />
                       )}
                     </div>
@@ -377,27 +277,42 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                       />
                     )}
                   </Box>
+                </Stack>
+                <Stack mt={3} direction="row" spacing={3} flexGrow="wrap">
                   <Box sx={{ width: '100%' }}>
+                    <Stack direction="row" justifyContent="space-between">
+                      {shopLoading ? (
+                        <Skeleton variant="text" width={150} />
+                      ) : (
+                        <LabelStyle variant="body1" component={'label'} color="text.primary">
+                          Logo
+                        </LabelStyle>
+                      )}
+                      {shopLoading ? (
+                        <Skeleton variant="text" width={150} />
+                      ) : (
+                        <LabelStyle component={'label'} htmlFor="file">
+                          {/* <span>512 * 512</span> */}
+                        </LabelStyle>
+                      )}
+                    </Stack>
                     {shopLoading ? (
-                      <Skeleton variant="text" width={150} />
+                      <Skeleton variant="rectangular" width="100%" height={225} />
                     ) : (
-                      <LabelStyle component={'label'} htmlFor="meta-description">
-                        {' '}
-                        {'Meta Description'}{' '}
-                      </LabelStyle>
-                    )}
-                    {shopLoading ? (
-                      <Skeleton variant="rectangular" width="100%" height={240} />
-                    ) : (
-                      <TextField
-                        id="meta-description"
-                        fullWidth
-                        {...getFieldProps('metaDescription')}
-                        error={Boolean(touched.metaDescription && errors.metaDescription)}
-                        helperText={touched.metaDescription && errors.metaDescription}
-                        rows={9}
-                        multiline
+                      <UploadSingleFile
+                        id="fileLogo"
+                        file={values.logo}
+                        onDrop={handleDropLogo}
+                        error={Boolean(touched.logo && errors.logo)}
+                        category
+                        accept="image/*"
+                        loading={state.logoLoading}
                       />
+                    )}
+                    {touched.logo && errors.logo && (
+                      <FormHelperText error sx={{ px: 2, mx: 0 }}>
+                        {touched.logo && errors.logo}
+                      </FormHelperText>
                     )}
                   </Box>
                 </Stack>
@@ -414,7 +329,7 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                       <Skeleton variant="text" width={150} />
                     ) : (
                       <LabelStyle component={'label'} htmlFor="file">
-                        <span>990 * 300</span>
+                        {/* <span>990 * 300</span> */}
                       </LabelStyle>
                     )}
                   </Stack>
@@ -454,28 +369,8 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                         {shopLoading ? (
                           <Skeleton variant="text" width={150} />
                         ) : (
-                          <LabelStyle component={'label'} htmlFor="holder-name">
-                            Holder Name
-                          </LabelStyle>
-                        )}
-                        {shopLoading ? (
-                          <Skeleton variant="rectangular" width="100%" height={240} />
-                        ) : (
-                          <TextField
-                            id="holder-name"
-                            fullWidth
-                            {...getFieldProps('paymentInfo.holderName')}
-                            error={Boolean(touched.paymentInfo?.holderName && errors.paymentInfo?.holderName)}
-                            helperText={touched.paymentInfo?.holderName && errors.paymentInfo?.holderName}
-                          />
-                        )}
-                      </div>
-                      <div>
-                        {shopLoading ? (
-                          <Skeleton variant="text" width={150} />
-                        ) : (
                           <LabelStyle component={'label'} htmlFor="holder-email">
-                            Holder Email
+                            Email
                           </LabelStyle>
                         )}
                         {shopLoading ? (
@@ -487,6 +382,26 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                             {...getFieldProps('paymentInfo.holderEmail')}
                             error={Boolean(touched.paymentInfo?.holderEmail && errors.paymentInfo?.holderEmail)}
                             helperText={touched.paymentInfo?.holderEmail && errors.paymentInfo?.holderEmail}
+                          />
+                        )}
+                      </div>
+                      <div>
+                        {shopLoading ? (
+                          <Skeleton variant="text" width={150} />
+                        ) : (
+                          <LabelStyle component={'label'} htmlFor="phone">
+                            Phone Number
+                          </LabelStyle>
+                        )}
+                        {shopLoading ? (
+                          <Skeleton variant="rectangular" width="100%" height={240} />
+                        ) : (
+                          <TextField
+                            id="phone"
+                            fullWidth
+                            {...getFieldProps('phone')}
+                            error={Boolean(touched.phone && errors.phone)}
+                            helperText={touched.phone && errors.phone}
                           />
                         )}
                       </div>
@@ -530,26 +445,7 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                           />
                         )}
                       </div>
-                      <div>
-                        {shopLoading ? (
-                          <Skeleton variant="text" width={150} />
-                        ) : (
-                          <LabelStyle component={'label'} htmlFor="phone">
-                            Phone Number
-                          </LabelStyle>
-                        )}
-                        {shopLoading ? (
-                          <Skeleton variant="rectangular" width="100%" height={240} />
-                        ) : (
-                          <TextField
-                            id="phone"
-                            fullWidth
-                            {...getFieldProps('phone')}
-                            error={Boolean(touched.phone && errors.phone)}
-                            helperText={touched.phone && errors.phone}
-                          />
-                        )}
-                      </div>
+
                       <div>
                         {shopLoading ? (
                           <Skeleton variant="text" width={150} />
