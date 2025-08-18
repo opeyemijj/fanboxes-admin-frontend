@@ -62,36 +62,22 @@ export const navlinks = [
     isSearch: true
   },
   {
-    id: 3,
-    title: 'Brands',
-    slug: 'brands',
-    icon: <FaRegBuilding />,
-    isSearch: true
-  },
-  {
     id: 4,
-    title: 'Products',
+    title: 'Boxes',
     slug: 'products',
     icon: <BsShop />,
     isSearch: true
   },
-
+  
   {
     id: 5,
-    title: 'Orders',
-    slug: 'orders',
-    icon: <BsCart3 />,
-    isSearch: true
-  },
-  {
-    id: 6,
-    title: 'Shops',
+    title: 'Influencers',
     slug: 'shops',
     icon: <BsBuildings />,
     isSearch: true
   },
   {
-    id: 7,
+    id: 6,
     title: 'Users',
     slug: 'users',
     icon: <LuUsers />,
@@ -103,6 +89,22 @@ export const navlinks = [
     slug: 'payouts',
     icon: <BsCashCoin />,
     isSearch: false
+  },
+  {
+    id: 7,
+    title: 'Brands',
+    slug: 'brands',
+    icon: <FaRegBuilding />,
+    isSearch: true
+  },
+  
+
+  {
+    id: 8,
+    title: 'Orders',
+    slug: 'orders',
+    icon: <BsCart3 />,
+    isSearch: true
   },
   {
     id: 9,

@@ -18,7 +18,7 @@ const InvoiceHistory = dynamic(() => import('src/components/_main/profile/invoic
 
 // Meta information
 export const metadata = {
-  title: 'Invoice | Nextall - Your Order Details and Payment Confirmation',
+  title: 'Invoice | Fanboxes - Your Order Details and Payment Confirmation',
   applicationName: 'Fanboxes',
   authors: 'Fanboxes'
 };

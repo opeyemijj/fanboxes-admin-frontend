@@ -26,19 +26,19 @@ const TermsAndConditions = () => {
         Terms and Conditions
       </Typography>
       <Typography variant="body1" paragraph>
-        Welcome to Nextall! These terms and conditions outline the rules and regulations for the use of Nextall's
+        Welcome to Fanboxes! These terms and conditions outline the rules and regulations for the use of Fanboxes's
         Website.
       </Typography>
       <Typography variant="body1" paragraph>
-        By accessing this website we assume you accept these terms and conditions. Do not continue to use Nextall if you
+        By accessing this website we assume you accept these terms and conditions. Do not continue to use Fanboxes if you
         do not agree to take all of the terms and conditions stated on this page.
       </Typography>
       <Typography variant="h6" component="h2" gutterBottom>
         License
       </Typography>
       <Typography variant="body1" paragraph>
-        Unless otherwise stated, Nextall and/or its licensors own the intellectual property rights for all material on
-        Nextall. All intellectual property rights are reserved. You may access this from Nextall for your own personal
+        Unless otherwise stated, Fanboxes and/or its licensors own the intellectual property rights for all material on
+        Fanboxes. All intellectual property rights are reserved. You may access this from Fanboxes for your own personal
         use subjected to restrictions set in these terms and conditions.
       </Typography>
       <Typography variant="h6" component="h2" gutterBottom>
@@ -46,8 +46,8 @@ const TermsAndConditions = () => {
       </Typography>
       <Typography variant="body1" paragraph>
         Certain parts of this website offer the opportunity for users to post and exchange opinions and information in
-        certain areas of the website. Nextall does not filter, edit, publish or review Comments prior to their presence
-        on the website. Comments do not reflect the views and opinions of Nextall, its agents, and/or affiliates.
+        certain areas of the website. Fanboxes does not filter, edit, publish or review Comments prior to their presence
+        on the website. Comments do not reflect the views and opinions of Fanboxes, its agents, and/or affiliates.
         Comments reflect the views and opinions of the person who post their views and opinions.
       </Typography>
       <Typography variant="h6" component="h2" gutterBottom>

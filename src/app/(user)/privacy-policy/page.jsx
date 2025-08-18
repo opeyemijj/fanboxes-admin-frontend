@@ -27,7 +27,7 @@ const PrivacyPolicy = () => {
         Privacy Policy
       </Typography>
       <Typography variant="body1" paragraph>
-        Welcome to Nextall! We are committed to protecting your privacy. This Privacy Policy explains how we collect,
+        Welcome to Fanboxes! We are committed to protecting your privacy. This Privacy Policy explains how we collect,
         use, and safeguard your information when you visit our website.
       </Typography>
       <Typography variant="h6" component="h2" gutterBottom>

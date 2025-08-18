@@ -111,7 +111,7 @@ export default function InvoicePDF({ data }) {
         <View style={[styles.gridContainer, styles.mb40]}>
           <View style={styles.col6}>
             <Text style={[styles.overline, styles.mb8]}>Invoice from</Text>
-            <Text style={styles.body1}>Nextall</Text>
+            <Text style={styles.body1}>Fanboxes</Text>
             <Text style={styles.body1}>London, England</Text>
             <Text style={styles.body1}>+123 4567 890</Text>
             <Text style={styles.body1}> info@nextall.com</Text>

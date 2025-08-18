@@ -73,7 +73,7 @@ export default function AdminDialog({ isOpen }) {
               }}
               textAlign="center"
             >
-              WELCOME TO Nextall
+              WELCOME TO Fanboxes
             </DialogTitle>
             <Typography variant="body1" textAlign="center" color="GrayText">
               Attention: Please ensure all necessary environment variables are set.

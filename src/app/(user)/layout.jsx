@@ -11,12 +11,12 @@ import ActionBar from 'src/layout/_main/actionbar';
 
 // Meta information
 export const metadata = {
-  title: 'Nextall E-commerce Script | Your Gateway to Seamless Shopping and Secure Transactions',
+  title: 'Fanboxes E-commerce Script | Your Gateway to Seamless Shopping and Secure Transactions',
   description:
-    'Log in to Nextall for secure access to your account. Enjoy seamless shopping, personalized experiences, and hassle-free transactions. Your trusted portal to a world of convenience awaits. Login now!',
+    'Log in to Fanboxes for secure access to your account. Enjoy seamless shopping, personalized experiences, and hassle-free transactions. Your trusted portal to a world of convenience awaits. Login now!',
   applicationName: 'Fanboxes',
   authors: 'Fanboxes',
-  keywords: 'ecommerce, Nextall, Commerce, Login Nextall, LoginFrom Nextall',
+  keywords: 'ecommerce, Fanboxes, Commerce, Login Fanboxes, LoginFrom Fanboxes',
   icons: {
     icon: '/favicon.png'
   },

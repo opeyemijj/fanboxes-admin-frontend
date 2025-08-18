@@ -8,12 +8,12 @@ import LoginMain from 'src/components/_main/auth/login';
 
 // Meta information
 export const metadata = {
-  title: 'Login to Nextall | Your Gateway to Seamless Shopping and Secure Transactions',
+  title: 'Login to Fanboxes | Your Gateway to Seamless Shopping and Secure Transactions',
   description:
-    'Log in to Nextall for secure access to your account. Enjoy seamless shopping, personalized experiences, and hassle-free transactions. Your trusted portal to a world of convenience awaits. Login now!',
+    'Log in to Fanboxes for secure access to your account. Enjoy seamless shopping, personalized experiences, and hassle-free transactions. Your trusted portal to a world of convenience awaits. Login now!',
   applicationName: 'Fanboxes',
   authors: 'Fanboxes',
-  keywords: 'ecommerce, Nextall, Commerce, Login Nextall, LoginFrom Nextall'
+  keywords: 'ecommerce, Fanboxes, Commerce, Login Fanboxes, LoginFrom Fanboxes'
 };
 
 export default async function Login() {

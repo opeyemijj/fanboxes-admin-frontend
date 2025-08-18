@@ -20,7 +20,7 @@ const HeaderBreadcrumbs = dynamic(() => import('src/components/headerBreadcrumbs
 
 // Meta information
 export const metadata = {
-  title: 'Nextall - Your Gateway to Seamless Shopping and Secure Transactions',
+  title: 'Fanboxes - Your Gateway to Seamless Shopping and Secure Transactions',
   applicationName: 'Fanboxes',
   authors: 'Fanboxes'
 };

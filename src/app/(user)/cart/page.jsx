@@ -9,13 +9,13 @@ import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
 
 // Meta information
 export const metadata = {
-  title: 'Nextall Shopping Cart | Nextall - Convenient Shopping Cart for Easy Checkout',
+  title: 'Fanboxes Shopping Cart | Fanboxes - Convenient Shopping Cart for Easy Checkout',
   description:
-    'View your shopping cart on Nextall for easy checkout. Add, remove, and manage items effortlessly. Enjoy a seamless shopping experience with secure transactions and personalized recommendations. Explore your cart now!',
+    'View your shopping cart on Fanboxes for easy checkout. Add, remove, and manage items effortlessly. Enjoy a seamless shopping experience with secure transactions and personalized recommendations. Explore your cart now!',
   applicationName: 'Fanboxes',
   authors: 'Fanboxes',
   keywords:
-    'shopping cart, Nextall, view cart, cart items, add to cart, remove from cart, manage cart, checkout, online shopping, secure transactions, personalized recommendations, seamless shopping, convenient shopping'
+    'shopping cart, Fanboxes, view cart, cart items, add to cart, remove from cart, manage cart, checkout, online shopping, secure transactions, personalized recommendations, seamless shopping, convenient shopping'
 };
 
 export default async function Cart() {
