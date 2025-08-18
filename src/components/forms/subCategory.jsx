@@ -92,22 +92,15 @@ export default function SubCategoryForm({
   });
   const NewCategorySchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
-    cover: Yup.mixed().required('Cover is required'),
     slug: Yup.string().required('Slug is required'),
-    description: Yup.string().required('Description is required'),
-    metaTitle: Yup.string().required('Meta title is required'),
-    metaDescription: Yup.string().required('Meta description is required'),
+    description: Yup.string().optional('Description is required'),
     parentCategory: Yup.string().required('Category is required')
   });
 
   const formik = useFormik({
     initialValues: {
       name: currentCategory?.name || '',
-      metaTitle: currentCategory?.metaTitle || '',
-      cover: currentCategory?.cover || null,
       description: currentCategory?.description || '',
-      metaDescription: currentCategory?.metaDescription || '',
-      file: currentCategory?.cover || '',
       slug: currentCategory?.slug || '',
       status: currentCategory?.status || STATUS_OPTIONS[0],
       parentCategory: currentCategory?.category || (categories && categories[0]?._id) || ''
@@ -181,7 +174,7 @@ export default function SubCategoryForm({
       <FormikProvider value={formik}>
         <Form noValidate autoComplete="off" onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            <Grid item xs={12} md={8}>
+            <Grid item xs={12} md={12}>
               <Card sx={{ p: 3 }}>
                 <Stack spacing={3}>
                   <div>
@@ -206,26 +199,7 @@ export default function SubCategoryForm({
                       />
                     )}
                   </div>
-                  <div>
-                    {categoryLoading ? (
-                      <Skeleton variant="text" width={100} />
-                    ) : (
-                      <LabelStyle component={'label'} htmlFor="meta-title">
-                        {'Meta Title'}
-                      </LabelStyle>
-                    )}
-                    {categoryLoading ? (
-                      <Skeleton variant="rectangular" width="100%" height={56} />
-                    ) : (
-                      <TextField
-                        id="meta-title"
-                        fullWidth
-                        {...getFieldProps('metaTitle')}
-                        error={Boolean(touched.metaTitle && errors.metaTitle)}
-                        helperText={touched.metaTitle && errors.metaTitle}
-                      />
-                    )}
-                  </div>
+
                   <div>
                     <FormControl fullWidth>
                       {isInitialized ? (
@@ -260,27 +234,7 @@ export default function SubCategoryForm({
                       )}
                     </FormControl>
                   </div>
-                  <div>
-                    {categoryLoading ? (
-                      <Skeleton variant="text" width={70} />
-                    ) : (
-                      <LabelStyle component={'label'} htmlFor="slug">
-                        {' '}
-                        {'Slug'}
-                      </LabelStyle>
-                    )}
-                    {categoryLoading ? (
-                      <Skeleton variant="rectangular" width="100%" height={56} />
-                    ) : (
-                      <TextField
-                        fullWidth
-                        id="slug"
-                        {...getFieldProps('slug')}
-                        error={Boolean(touched.slug && errors.slug)}
-                        helperText={touched.slug && errors.slug}
-                      />
-                    )}
-                  </div>
+
                   <div>
                     {categoryLoading ? (
                       <Skeleton variant="text" width={100} />
@@ -304,128 +258,53 @@ export default function SubCategoryForm({
                       />
                     )}
                   </div>
+
+                  <FormControl fullWidth sx={{ select: { textTransform: 'capitalize' } }}>
+                    {categoryLoading ? (
+                      <Skeleton variant="text" width={70} />
+                    ) : (
+                      <LabelStyle component={'label'} htmlFor="status">
+                        {'Status'}
+                      </LabelStyle>
+                    )}
+                    {categoryLoading ? (
+                      <Skeleton variant="rectangular" width="100%" height={56} />
+                    ) : (
+                      <Select
+                        id="status"
+                        native
+                        {...getFieldProps('status')}
+                        error={Boolean(touched.status && errors.status)}
+                      >
+                        <option value="" style={{ display: 'none' }} />
+                        {STATUS_OPTIONS.map((status) => (
+                          <option key={status} value={status}>
+                            {status}
+                          </option>
+                        ))}
+                      </Select>
+                    )}
+                    {touched.status && errors.status && (
+                      <FormHelperText error sx={{ px: 2, mx: 0 }}>
+                        {touched.status && errors.status}
+                      </FormHelperText>
+                    )}
+                  </FormControl>
                 </Stack>
               </Card>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <div
-                style={{
-                  position: '-webkit-sticky',
-                  position: 'sticky',
-                  top: 0
-                }}
-              >
-                <Stack spacing={3}>
-                  <Card sx={{ p: 3 }}>
-                    <Stack spacing={3}>
-                      <div>
-                        {categoryLoading ? (
-                          <Skeleton variant="text" width={150} />
-                        ) : (
-                          <LabelStyle component={'label'} htmlFor="meta-description">
-                            {' '}
-                            {'Meta Description'}{' '}
-                          </LabelStyle>
-                        )}
-                        {categoryLoading ? (
-                          <Skeleton variant="rectangular" width="100%" height={240} />
-                        ) : (
-                          <TextField
-                            id="meta-description"
-                            fullWidth
-                            {...getFieldProps('metaDescription')}
-                            error={Boolean(touched.metaDescription && errors.metaDescription)}
-                            helperText={touched.metaDescription && errors.metaDescription}
-                            rows={9}
-                            multiline
-                          />
-                        )}
-                      </div>
-
-                      <div>
-                        <Stack direction="row" justifyContent="space-between">
-                          {categoryLoading ? (
-                            <Skeleton variant="text" width={150} />
-                          ) : (
-                            <LabelStyle variant="body1" component={'label'} color="text.primary">
-                              Image
-                            </LabelStyle>
-                          )}
-                          {categoryLoading ? (
-                            <Skeleton variant="text" width={150} />
-                          ) : (
-                            <LabelStyle component={'label'} htmlFor="file">
-                              <span>512 * 512</span>
-                            </LabelStyle>
-                          )}
-                        </Stack>
-                        {categoryLoading ? (
-                          <Skeleton variant="rectangular" width="100%" height={225} />
-                        ) : (
-                          <UploadSingleFile
-                            id="file"
-                            file={values.cover}
-                            onDrop={handleDrop}
-                            error={Boolean(touched.cover && errors.cover)}
-                            category
-                            accept="image/*"
-                            loading={state.loading}
-                          />
-                        )}
-                        {touched.cover && errors.cover && (
-                          <FormHelperText error sx={{ px: 2, mx: 0 }}>
-                            {touched.cover && errors.cover}
-                          </FormHelperText>
-                        )}
-                      </div>
-                      <FormControl fullWidth sx={{ select: { textTransform: 'capitalize' } }}>
-                        {categoryLoading ? (
-                          <Skeleton variant="text" width={70} />
-                        ) : (
-                          <LabelStyle component={'label'} htmlFor="status">
-                            {'Status'}
-                          </LabelStyle>
-                        )}
-                        {categoryLoading ? (
-                          <Skeleton variant="rectangular" width="100%" height={56} />
-                        ) : (
-                          <Select
-                            id="status"
-                            native
-                            {...getFieldProps('status')}
-                            error={Boolean(touched.status && errors.status)}
-                          >
-                            <option value="" style={{ display: 'none' }} />
-                            {STATUS_OPTIONS.map((status) => (
-                              <option key={status} value={status}>
-                                {status}
-                              </option>
-                            ))}
-                          </Select>
-                        )}
-                        {touched.status && errors.status && (
-                          <FormHelperText error sx={{ px: 2, mx: 0 }}>
-                            {touched.status && errors.status}
-                          </FormHelperText>
-                        )}
-                      </FormControl>
-                    </Stack>
-                  </Card>
-                  {categoryLoading ? (
-                    <Skeleton variant="rectangular" width="100%" height={56} />
-                  ) : (
-                    <LoadingButton
-                      type="submit"
-                      variant="contained"
-                      size="large"
-                      loading={isLoading}
-                      sx={{ ml: 'auto', mt: 3 }}
-                    >
-                      {currentCategory ? 'Edit Sub Category' : 'Create Sub Category'}
-                    </LoadingButton>
-                  )}
-                </Stack>
-              </div>
+              {categoryLoading ? (
+                <Skeleton variant="rectangular" width="100%" height={56} />
+              ) : (
+                <LoadingButton
+                  type="submit"
+                  variant="contained"
+                  size="large"
+                  loading={isLoading}
+                  sx={{ ml: 'auto', mt: 3 }}
+                >
+                  {currentCategory ? 'Edit Sub Category' : 'Create Sub Category'}
+                </LoadingButton>
+              )}
             </Grid>
           </Grid>
         </Form>
