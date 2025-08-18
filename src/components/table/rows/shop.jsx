@@ -25,7 +25,7 @@ import BlurImageAvatar from 'src/components/avatar';
 import { MdEdit } from 'react-icons/md';
 import { MdDelete } from 'react-icons/md';
 import { IoEye } from 'react-icons/io5';
-export default function ProductRow({ isLoading, row, handleClickOpen }) {
+export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
   const router = useRouter();
   return (
     <TableRow hover key={Math.random()}>
