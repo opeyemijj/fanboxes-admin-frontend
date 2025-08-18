@@ -35,7 +35,7 @@ export default function AdminProducts({ isVendor }) {
     ['admin-products', apicall, pageParam],
     () => api[isVendor ? 'getVendorLowStockProducts' : 'getLowStockProductsByAdmin'](+pageParam || 1),
     {
-      onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
+      onError: (err) => toast.error(err.response?.data?.message || 'Something went wrong!')
     }
   );
 
