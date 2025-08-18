@@ -271,7 +271,7 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                       {shopLoading ? (
                         <Skeleton variant="text" width={140} />
                       ) : (
-                        <LabelStyle component={'label'} htmlFor="name">
+                        <LabelStyle component={'label'} htmlFor="title">
                           Shop Name
                         </LabelStyle>
                       )}
@@ -286,27 +286,6 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                           error={Boolean(touched.title && errors.title)}
                           helperText={touched.title && errors.title}
                           sx={{ mt: 1 }}
-                        />
-                      )}
-                    </div>
-                    <div>
-                      {shopLoading ? (
-                        <Skeleton variant="text" width={70} />
-                      ) : (
-                        <LabelStyle component={'label'} htmlFor="slug">
-                          {' '}
-                          {'Slug'}
-                        </LabelStyle>
-                      )}
-                      {shopLoading ? (
-                        <Skeleton variant="rectangular" width="100%" height={56} />
-                      ) : (
-                        <TextField
-                          fullWidth
-                          id="slug"
-                          {...getFieldProps('slug')}
-                          error={Boolean(touched.slug && errors.slug)}
-                          helperText={touched.slug && errors.slug}
                         />
                       )}
                     </div>
