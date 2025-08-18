@@ -61,7 +61,7 @@ export default function Category({ isLoading, row, handleClickOpen }) {
             <Skeleton variant="rectangular" width={50} height={50} sx={{ borderRadius: 1 }} />
           ) : (
             <ThumbImgStyle>
-              <BlurImage
+              {/* <BlurImage
                 priority
                 fill
                 alt={row?.name}
@@ -69,7 +69,7 @@ export default function Category({ isLoading, row, handleClickOpen }) {
                 placeholder="blur"
                 blurDataURL={row?.cover.blurDataURL}
                 objectFit="cover"
-              />
+              /> */}
             </ThumbImgStyle>
           )}
           <Typography variant="subtitle2" noWrap>
