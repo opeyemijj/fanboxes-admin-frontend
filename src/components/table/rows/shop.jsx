@@ -89,9 +89,9 @@ export default function ProductRow({ isLoading, row, handleClickOpen }) {
               objectFit="cover"
             />
           ) : (
-            <Avatar size="small">{row.vendor.firstName.toUpperCase().slice(0, 1)}</Avatar>
+            <Avatar size="small">{row.vendor?.firstName.toUpperCase().slice(0, 1)}</Avatar>
           )}
-          {isLoading ? <Skeleton variant="text" width={100} /> : `${row.vendor.firstName} ${row.vendor.lastName}`}
+          {isLoading ? <Skeleton variant="text" width={100} /> : `${row.vendor?.firstName} ${row.vendor?.lastName}`}
         </Box>
       </TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row.products.length || 0}</>}</TableCell>

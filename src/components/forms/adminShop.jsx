@@ -82,14 +82,13 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
     }
   });
   const ShopSettingScema = Yup.object().shape({
-    title: Yup.string().required('title is required'),
+    title: Yup.string().required('name is required'),
     cover: Yup.mixed().required('Cover is required'),
     logo: Yup.mixed().required('logo is required'),
     slug: Yup.string().required('Slug is required'),
     description: Yup.string().required('Description is required'),
     phone: Yup.string().required('Phone Number is required'),
     paymentInfo: Yup.object().shape({
-      holderName: Yup.string().required('Holder Name is required'),
       holderEmail: Yup.string().required('Holder email is required'),
       bankName: Yup.string().required('Bank name is required'),
       AccountNo: Yup.number().required('Account No is required')
@@ -121,7 +120,6 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
       slug: currentShop?.slug || '',
       phone: currentShop?.phone || Number,
       paymentInfo: {
-        holderName: currentShop?.paymentInfo?.holderName || '',
         holderEmail: currentShop?.paymentInfo?.holderEmail || '',
         bankName: currentShop?.paymentInfo?.bankName || '',
         AccountNo: currentShop?.paymentInfo?.AccountNo || Number
@@ -231,48 +229,12 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
               <Card sx={{ p: 3 }}>
                 <Stack direction="row" spacing={3} flexGrow="wrap">
                   <Box sx={{ width: '100%' }}>
-                    <Stack direction="row" justifyContent="space-between">
-                      {shopLoading ? (
-                        <Skeleton variant="text" width={150} />
-                      ) : (
-                        <LabelStyle variant="body1" component={'label'} color="text.primary">
-                          Logo
-                        </LabelStyle>
-                      )}
-                      {shopLoading ? (
-                        <Skeleton variant="text" width={150} />
-                      ) : (
-                        <LabelStyle component={'label'} htmlFor="file">
-                          <span>512 * 512</span>
-                        </LabelStyle>
-                      )}
-                    </Stack>
-                    {shopLoading ? (
-                      <Skeleton variant="rectangular" width="100%" height={225} />
-                    ) : (
-                      <UploadSingleFile
-                        id="fileLogo"
-                        file={values.logo}
-                        onDrop={handleDropLogo}
-                        error={Boolean(touched.logo && errors.logo)}
-                        category
-                        accept="image/*"
-                        loading={state.logoLoading}
-                      />
-                    )}
-                    {touched.logo && errors.logo && (
-                      <FormHelperText error sx={{ px: 2, mx: 0 }}>
-                        {touched.logo && errors.logo}
-                      </FormHelperText>
-                    )}
-                  </Box>
-                  <Box sx={{ width: '100%' }}>
                     <div>
                       {shopLoading ? (
                         <Skeleton variant="text" width={140} />
                       ) : (
                         <LabelStyle component={'label'} htmlFor="title">
-                          Shop Name
+                          Name
                         </LabelStyle>
                       )}
                       {shopLoading ? (
@@ -316,6 +278,44 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                     )}
                   </Box>
                 </Stack>
+                <Stack mt={3} direction="row" spacing={3} flexGrow="wrap">
+                  <Box sx={{ width: '100%' }}>
+                    <Stack direction="row" justifyContent="space-between">
+                      {shopLoading ? (
+                        <Skeleton variant="text" width={150} />
+                      ) : (
+                        <LabelStyle variant="body1" component={'label'} color="text.primary">
+                          Logo
+                        </LabelStyle>
+                      )}
+                      {shopLoading ? (
+                        <Skeleton variant="text" width={150} />
+                      ) : (
+                        <LabelStyle component={'label'} htmlFor="file">
+                          {/* <span>512 * 512</span> */}
+                        </LabelStyle>
+                      )}
+                    </Stack>
+                    {shopLoading ? (
+                      <Skeleton variant="rectangular" width="100%" height={225} />
+                    ) : (
+                      <UploadSingleFile
+                        id="fileLogo"
+                        file={values.logo}
+                        onDrop={handleDropLogo}
+                        error={Boolean(touched.logo && errors.logo)}
+                        category
+                        accept="image/*"
+                        loading={state.logoLoading}
+                      />
+                    )}
+                    {touched.logo && errors.logo && (
+                      <FormHelperText error sx={{ px: 2, mx: 0 }}>
+                        {touched.logo && errors.logo}
+                      </FormHelperText>
+                    )}
+                  </Box>
+                </Stack>
                 <Box mt={3}>
                   <Stack direction="row" justifyContent="space-between">
                     {shopLoading ? (
@@ -329,7 +329,7 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                       <Skeleton variant="text" width={150} />
                     ) : (
                       <LabelStyle component={'label'} htmlFor="file">
-                        <span>990 * 300</span>
+                        {/* <span>990 * 300</span> */}
                       </LabelStyle>
                     )}
                   </Stack>
@@ -365,26 +365,6 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                 <Stack spacing={3}>
                   <Card sx={{ p: 3 }}>
                     <Stack spacing={2}>
-                      <div>
-                        {shopLoading ? (
-                          <Skeleton variant="text" width={150} />
-                        ) : (
-                          <LabelStyle component={'label'} htmlFor="holder-name">
-                            Name
-                          </LabelStyle>
-                        )}
-                        {shopLoading ? (
-                          <Skeleton variant="rectangular" width="100%" height={240} />
-                        ) : (
-                          <TextField
-                            id="holder-name"
-                            fullWidth
-                            {...getFieldProps('paymentInfo.holderName')}
-                            error={Boolean(touched.paymentInfo?.holderName && errors.paymentInfo?.holderName)}
-                            helperText={touched.paymentInfo?.holderName && errors.paymentInfo?.holderName}
-                          />
-                        )}
-                      </div>
                       <div>
                         {shopLoading ? (
                           <Skeleton variant="text" width={150} />
