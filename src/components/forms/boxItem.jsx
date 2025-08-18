@@ -324,7 +324,7 @@ export default function AddItemForm({ currentProduct, isInitialized = false, isV
                         <Grid item xs={12} md={12}>
                           <div>
                             <LabelStyle component={'label'} htmlFor="product-image">
-                              {'Box Image'} <span>1080 * 1080</span>
+                              {'Item Image'}
                             </LabelStyle>
                             <UploadMultiFile
                               id="product-image"
