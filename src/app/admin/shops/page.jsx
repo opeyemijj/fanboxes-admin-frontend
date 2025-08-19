@@ -28,7 +28,7 @@ export default async function AdminProducts() {
         ]}
         action={{
           href: `/admin/shops/add`,
-          title: 'Add Shop'
+          title: 'Add Influencer'
         }}
       />
       <ShopList />
