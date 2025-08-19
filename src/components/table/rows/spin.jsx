@@ -71,12 +71,13 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
         </Box>
       </TableCell>
 
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.boxDetails?.name}</>}</TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.winningItem?.name}</>}</TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.winningItem?.value}</>}</TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.winningItem?.odd}</>}</TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.winningItem?.weight}</>}</TableCell>
 
-      <TableCell align="right">
+      <TableCell align="left">
         {isLoading ? (
           <Stack direction="row" justifyContent="flex-end">
             <Skeleton variant="circular" width={34} height={34} sx={{ mr: 1 }} />
@@ -84,22 +85,12 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
             <Skeleton variant="circular" width={34} height={34} />
           </Stack>
         ) : (
-          <Stack direction="row" justifyContent="flex-end">
+          <Stack direction="row" justifyContent="flex-start">
             <Link href={`/admin/shops/${row.slug}`}>
               <IconButton>
                 <IoEye />
               </IconButton>
             </Link>
-            <Tooltip title="Edit">
-              <IconButton onClick={() => router.push(`/admin/shops/edit/${row.slug}`)}>
-                <MdEdit />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Delete">
-              <IconButton onClick={handleClickOpen(row.slug)}>
-                <MdDelete />
-              </IconButton>
-            </Tooltip>
           </Stack>
         )}
       </TableCell>

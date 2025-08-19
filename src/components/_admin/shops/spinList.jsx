@@ -15,11 +15,12 @@ import Spin from 'src/components/table/rows/spin';
 
 const TABLE_HEAD = [
   { id: 'item', label: 'Item', alignRight: false, sort: true },
+  { id: 'box', label: 'Box', alignRight: false, sort: true },
   { id: 'name', label: 'Name', alignRight: false, sort: true },
   { id: 'value', label: 'Value', alignRight: false, sort: true },
   { id: 'odd', label: 'Odd', alignRight: false, sort: true },
   { id: 'weight', label: 'Weight', alignRight: false, sort: true },
-  { id: '', label: 'Actions', alignRight: true }
+  { id: '', label: 'Actions', alignRight: false }
 ];
 
 export default function AdminSpins() {
