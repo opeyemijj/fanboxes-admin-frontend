@@ -340,6 +340,12 @@ export const getProducts = async (query = '', cat, rate) => {
   const { data } = await http.get(`/products${query || '?'}&rate=${rate}`);
   return data;
 };
+
+export const getSpinsByAdmin = async () => {
+  const { data } = await http.get(`admin/spins`);
+  return data;
+};
+
 export const getProductDetails = async (pid) => {
   const { data } = await http.get(`/products/${pid}`);
   return data;

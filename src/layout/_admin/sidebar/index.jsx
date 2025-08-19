@@ -25,7 +25,7 @@ import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { LuLayoutDashboard } from 'react-icons/lu';
 import { FaRegBuilding } from 'react-icons/fa';
 import { TbCategory2 } from 'react-icons/tb';
-import { BsShop } from 'react-icons/bs';
+import { BsPinAngleFill, BsPlayCircleFill, BsShop } from 'react-icons/bs';
 import { BsCart3 } from 'react-icons/bs';
 import { LuUsers } from 'react-icons/lu';
 import { SlEnvolopeLetter } from 'react-icons/sl';
@@ -68,7 +68,7 @@ export const navlinks = [
     icon: <BsShop />,
     isSearch: true
   },
-  
+
   {
     id: 5,
     title: 'Influencers',
@@ -78,6 +78,13 @@ export const navlinks = [
   },
   {
     id: 6,
+    title: 'Spins',
+    slug: 'spins',
+    icon: <BsPlayCircleFill />,
+    isSearch: true
+  },
+  {
+    id: 7,
     title: 'Users',
     slug: 'users',
     icon: <LuUsers />,
@@ -91,37 +98,36 @@ export const navlinks = [
     isSearch: false
   },
   {
-    id: 7,
+    id: 19,
     title: 'Brands',
     slug: 'brands',
     icon: <FaRegBuilding />,
     isSearch: true
   },
-  
 
   {
-    id: 8,
+    id: 10,
     title: 'Orders',
     slug: 'orders',
     icon: <BsCart3 />,
     isSearch: true
   },
   {
-    id: 9,
+    id: 11,
     title: 'Coupon codes',
     slug: 'coupon-codes',
     icon: <RiCoupon5Line />,
     isSearch: true
   },
   {
-    id: 122,
+    id: 12,
     title: 'Compaigns',
     slug: 'compaigns',
     icon: <LuBadgePercent />,
     isSearch: true
   },
   {
-    id: 11,
+    id: 13,
     title: 'Currencies',
     slug: 'currencies',
     icon: <AiOutlineDollarCircle />,
@@ -129,14 +135,14 @@ export const navlinks = [
   },
 
   {
-    id: 12,
+    id: 14,
     title: 'Newsletter',
     slug: 'newsletter',
     icon: <SlEnvolopeLetter />,
     isSearch: false
   },
   {
-    id: 13,
+    id: 15,
     title: 'Settings',
     slug: 'settings',
     icon: <IoSettingsOutline />,
