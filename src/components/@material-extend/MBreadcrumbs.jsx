@@ -53,8 +53,8 @@ LinkItem.propTypes = {
 function MBreadcrumbs({ links, admin, activeLast = false, ...other }) {
   const currentLink = last(links)?.name;
 
-  const listDefault = links.map((link) => <LinkItem key={link.name} link={link} admin={admin} />);
-  const listActiveLast = links.map((link) => (
+  const listDefault = links?.map((link) => <LinkItem key={link.name} link={link} admin={admin} />);
+  const listActiveLast = links?.map((link) => (
     <div key={link.name}>
       {link.name !== currentLink ? (
         <LinkItem link={link} admin={admin} />

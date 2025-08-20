@@ -32,9 +32,9 @@ export default function AdminSpins() {
   const [id, setId] = useState(null);
 
   const { data, isLoading } = useQuery(['admin-spins', apicall, searchParam, pageParam], () => api.getSpinsByAdmin(), {
-    onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
+    onError: (err) => toast.error(err.response?.data?.message || 'Something went wrong!')
   });
-  console.log(data, 'checking the data');
+
   const handleClickOpen = (prop) => () => {
     setId(prop);
     setOpen(true);

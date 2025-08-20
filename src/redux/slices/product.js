@@ -14,7 +14,8 @@ const initialState = {
     shipping: shippingFee,
     billing: null
   },
-  boxAndItemData: {}
+  boxAndItemData: {},
+  spinData: {}
 };
 
 const slice = createSlice({
@@ -63,8 +64,11 @@ const slice = createSlice({
     },
 
     selectBoxAndItem: (state, action) => {
-      console.log(state, 'Check the redux settings');
       state.boxAndItemData = action.payload;
+    },
+
+    selectSpinItem: (state, action) => {
+      state.spinData = action.payload;
     },
 
     clearCart(state, action) {
@@ -146,5 +150,6 @@ export const {
   applyDiscount,
   increaseQuantity,
   decreaseQuantity,
-  selectBoxAndItem
+  selectBoxAndItem,
+  selectSpinItem
 } = slice.actions;

@@ -20,12 +20,15 @@ import Label from 'src/components/label';
 import BlurImage from 'src/components/blurImage';
 
 import BlurImageAvatar from 'src/components/avatar';
+import { selectSpinItem } from 'src/redux/slices/product';
 
 // icons
 import { MdEdit } from 'react-icons/md';
 import { MdDelete } from 'react-icons/md';
 import { IoEye } from 'react-icons/io5';
+import { useDispatch } from 'react-redux';
 export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
+  const dispatch = useDispatch();
   const router = useRouter();
   return (
     <TableRow hover key={Math.random()}>
@@ -86,11 +89,15 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
           </Stack>
         ) : (
           <Stack direction="row" justifyContent="flex-start">
-            <Link href={`/admin/shops/${row.slug}`}>
-              <IconButton>
-                <IoEye />
-              </IconButton>
-            </Link>
+            <IconButton
+              onClick={() => {
+                const tempData = { spinItem: row };
+                dispatch(selectSpinItem(tempData));
+                router.push(`/admin/spins/${row._id}`);
+              }}
+            >
+              <IoEye />
+            </IconButton>
           </Stack>
         )}
       </TableCell>
