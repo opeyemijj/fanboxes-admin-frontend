@@ -117,6 +117,7 @@ export default function CategoryForm({ spinItem, isLoading: categoryLoading }) {
                       <Skeleton variant="rectangular" width="100%" height={56} />
                     ) : (
                       <TextField
+                        disabled
                         id="server-seed"
                         fullWidth
                         {...getFieldProps('serverSeed')}
@@ -139,6 +140,7 @@ export default function CategoryForm({ spinItem, isLoading: categoryLoading }) {
                       <Skeleton variant="rectangular" width="100%" height={56} />
                     ) : (
                       <TextField
+                        disabled
                         id="client-seed"
                         fullWidth
                         {...getFieldProps('clientSeed')}
@@ -161,6 +163,7 @@ export default function CategoryForm({ spinItem, isLoading: categoryLoading }) {
                       <Skeleton variant="rectangular" width="100%" height={56} />
                     ) : (
                       <TextField
+                        disabled
                         id="nonce"
                         fullWidth
                         {...getFieldProps('nonce')}
