@@ -54,13 +54,7 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
   return (
     <TableRow hover key={Math.random()}>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
-      <TableCell>
-        {isLoading ? (
-          <Skeleton variant="text" />
-        ) : (
-          <>{shortenString(row?.userDetails?.firstName + ' ' + row?.userDetails?.lastName, 13, false)}</>
-        )}
-      </TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.boxDetails?.name}</>}</TableCell>
       <TableCell component="th" scope="row" sx={{ maxWidth: 300 }}>
         <Box
           sx={{
@@ -102,7 +96,10 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
         </Box>
       </TableCell>
 
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.boxDetails?.name}</>}</TableCell>
+      <TableCell>
+        {isLoading ? <Skeleton variant="text" /> : <>{`${row?.winningItem?.odd}/${row?.winningItem?.weight}%`}</>}
+      </TableCell>
+
       <TableCell component="th" scope="row" sx={{ maxWidth: 300 }}>
         <Box
           sx={{
@@ -145,13 +142,17 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
         </Box>
       </TableCell>
 
-      <TableCell>
-        {isLoading ? <Skeleton variant="text" /> : <>{`${row?.winningItem?.odd}/${row?.winningItem?.weight}%`}</>}
-      </TableCell>
-
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.clientSeed}</>}</TableCell>
 
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{shortenString(row?.serverSeed, 10, true)}</>}</TableCell>
+
+      <TableCell>
+        {isLoading ? (
+          <Skeleton variant="text" />
+        ) : (
+          <>{shortenString(row?.userDetails?.firstName + ' ' + row?.userDetails?.lastName, 13, false)}</>
+        )}
+      </TableCell>
 
       <TableCell align="left">
         {isLoading ? (
