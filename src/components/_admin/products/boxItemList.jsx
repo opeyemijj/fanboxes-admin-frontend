@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import PropTypes from 'prop-types';
 import toast from 'react-hot-toast';
@@ -15,33 +15,6 @@ import * as api from 'src/services';
 import { useQuery } from 'react-query';
 import { Refresh } from '@mui/icons-material';
 
-const TABLE_HEAD = [
-  { id: 'name', label: 'Name', alignRight: false, sort: true },
-  // { id: 'inventoryType', label: 'Status', alignRight: false, sort: false },
-  { id: 'weight', label: 'Weight', alignRight: false, sort: true },
-  { id: 'value', label: 'Value', alignRight: false, sort: true },
-  {
-    id: 'odd',
-    label: (
-      <Stack direction="row" alignItems="center" spacing={0}>
-        <span>Odd</span>
-        <IconButton
-          style={{ color: 'white' }}
-          size="small"
-          onClick={() => {
-            // 👇 your refresh logic here
-            console.log('Odd column refresh clicked');
-          }}
-        >
-          <Refresh fontSize="small" />
-        </IconButton>
-      </Stack>
-    ),
-    alignRight: false,
-    sort: true
-  },
-  { id: '', label: 'Actions', alignRight: true }
-];
 export default function AdminBoxeItems({ boxDetails, brands, categories, shops, isVendor }) {
   // console.log(boxDetails, 'Check the box details');
   const searchParams = useSearchParams();
@@ -49,17 +22,73 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
   const [open, setOpen] = useState(false);
   const [apicall, setApicall] = useState(false);
   const [id, setId] = useState(null);
-  // const { data, isLoading } = useQuery(
-  //   ['admin-products', apicall, searchParams.toString()],
-  //   () => api[isVendor ? 'getVendorProducts' : 'getProductsByAdmin'](searchParams.toString()),
-  //   {
-  //     onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
-  //   }
-  // );
+
+  const [data, setData] = useState(null);
+
+  // let data = { data: null };
+  // data.data = boxDetails?.items;
+
+  useEffect(() => {
+    console.log(boxDetails, 'How many time it is calling');
+
+    if (boxDetails) {
+      const temdata = { data: boxDetails.items };
+      setData(temdata);
+    }
+  }, [boxDetails]);
+
+  function distributeItems(items) {
+    console.log(items, 'Getting the item?');
+    // Step 1: compute inverses of values
+    const inverses = items.map((item) => (item.value > 0 ? 1 / item.value : 0));
+
+    // Step 2: total of inverses
+    const totalInverse = inverses.reduce((sum, inv) => sum + inv, 0);
+
+    // Step 3: calculate odds and weights
+    return items.map((item, i) => {
+      const odd = totalInverse > 0 ? inverses[i] / totalInverse : 0;
+      const weight = odd * 100;
+      return {
+        ...item,
+        odd: parseFloat(odd.toFixed(6)), // keep precision
+        weight: parseFloat(weight.toFixed(2)) // percentage
+      };
+    });
+  }
+
+  const TABLE_HEAD = [
+    { id: 'name', label: 'Name', alignRight: false, sort: true },
+    // { id: 'inventoryType', label: 'Status', alignRight: false, sort: false },
+    { id: 'weight', label: 'Weight', alignRight: false, sort: true },
+    { id: 'value', label: 'Value', alignRight: false, sort: true },
+    {
+      id: 'odd',
+      label: (
+        <Stack direction="row" alignItems="center" spacing={0}>
+          <span>Odd</span>
+          <IconButton
+            style={{ color: 'white' }}
+            size="small"
+            onClick={() => {
+              // 👇 your refresh logic here
+              console.log('Odd column refresh clicked');
+              const distributedItem = distributeItems(boxDetails?.items);
+              const temdata = { data: distributedItem };
+              setData(temdata);
+            }}
+          >
+            <Refresh fontSize="small" />
+          </IconButton>
+        </Stack>
+      ),
+      alignRight: false,
+      sort: true
+    },
+    { id: '', label: 'Actions', alignRight: true }
+  ];
 
   // console.log(data, 'Check the data');
-  let data = { data: null };
-  data.data = boxDetails?.items;
 
   const handleClickOpen = (prop) => () => {
     setId(prop);
