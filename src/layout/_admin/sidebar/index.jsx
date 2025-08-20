@@ -25,7 +25,7 @@ import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { LuLayoutDashboard } from 'react-icons/lu';
 import { FaRegBuilding } from 'react-icons/fa';
 import { TbCategory2 } from 'react-icons/tb';
-import { BsPinAngleFill, BsPlayCircleFill, BsShop } from 'react-icons/bs';
+import { BsPinAngleFill, BsPlayCircle, BsPlayCircleFill, BsShop } from 'react-icons/bs';
 import { BsCart3 } from 'react-icons/bs';
 import { LuUsers } from 'react-icons/lu';
 import { SlEnvolopeLetter } from 'react-icons/sl';
@@ -80,7 +80,7 @@ export const navlinks = [
     id: 6,
     title: 'Spins',
     slug: 'spins',
-    icon: <BsPlayCircleFill />,
+    icon: <BsPlayCircle />,
     isSearch: true
   },
   {
