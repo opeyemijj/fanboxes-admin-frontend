@@ -12,7 +12,7 @@ import Table from 'src/components/table/table';
 import BoxItem from 'src/components/table/rows/boxItem';
 // api
 import * as api from 'src/services';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { Refresh } from '@mui/icons-material';
 
 export default function AdminBoxeItems({ boxDetails, brands, categories, shops, isVendor }) {
@@ -28,8 +28,33 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
   // let data = { data: null };
   // data.data = boxDetails?.items;
 
+  // prettier-ignore
+  const { mutate: updateItemsOdd, isLoading: loadingUpdateOdd } = useMutation(
+    api.updateBoxItemOddByAdmin, // mutation function here
+    {
+      onSuccess: (data) => {
+        toast.success(data.message);
+      },
+      onError: (error) => {
+        toast.error(error.response?.data?.message || 'Something went wrong!');
+      }
+    }
+  );
+
+  async function UpateItemOdd(passingItems) {
+    console.log(passingItems, 'Come here before call the mutation?');
+    try {
+      updateItemsOdd({
+        boxSlug: boxDetails.slug,
+        items: passingItems.data
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   useEffect(() => {
-    console.log(boxDetails, 'How many time it is calling');
+    // console.log(boxDetails, 'How many time it is calling');
 
     if (boxDetails) {
       const temdata = { data: boxDetails.items };
@@ -38,7 +63,6 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
   }, [boxDetails]);
 
   function distributeItems(items) {
-    console.log(items, 'Getting the item?');
     // Step 1: compute inverses of values
     const inverses = items.map((item) => (item.value > 0 ? 1 / item.value : 0));
 
@@ -68,13 +92,14 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
         <Stack direction="row" alignItems="center" spacing={0}>
           <span>Odd</span>
           <IconButton
+            disabled={loadingUpdateOdd}
             style={{ color: 'white' }}
             size="small"
             onClick={() => {
               // 👇 your refresh logic here
-              console.log('Odd column refresh clicked');
               const distributedItem = distributeItems(boxDetails?.items);
               const temdata = { data: distributedItem };
+              UpateItemOdd(temdata);
               setData(temdata);
             }}
           >

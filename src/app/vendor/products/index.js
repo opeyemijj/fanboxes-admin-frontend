@@ -124,6 +124,11 @@ export const updateProductByAdmin = async ({ currentSlug, ...payload }) => {
   return response;
 };
 
+export const updateBoxItemByAdmin = async ({ currentSlug, ...payload }) => {
+  const { data: response } = await http.put(`/admin/boxItem/${currentSlug}`, payload);
+  return response;
+};
+
 export const updateItemBoxByAdmin = async ({ currentSlug, ...payload }) => {
   console.log(currentSlug, payload, 'Check the backend api is calling for update item');
   const { data: response } = await http.put(`/admin/boxItem/${currentSlug}`, payload);
