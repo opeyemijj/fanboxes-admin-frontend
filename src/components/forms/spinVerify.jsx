@@ -102,7 +102,7 @@ export default function CategoryForm({ spinItem, isLoading: categoryLoading }) {
         <Form noValidate autoComplete="off" onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
-              <Card sx={{ p: 3 }}>
+              <Card sx={{ p: 3.5 }}>
                 <Stack spacing={3}>
                   <div>
                     {categoryLoading ? (
@@ -198,35 +198,57 @@ export default function CategoryForm({ spinItem, isLoading: categoryLoading }) {
                       {' '}
                       {'Items:'}{' '}
                     </LabelStyle>
-                    {spinItem?.boxDetails?.items?.map((boxItems, index) => (
-                      <div key={index} style={{ marginBottom: 10, display: 'flex', alignItems: 'center' }}>
-                        <Box
-                          sx={{
-                            position: 'relative',
-                            overflow: 'hidden',
-                            width: 50,
-                            height: 50,
-                            bgcolor: 'background.default',
-                            mr: 2,
-                            border: (theme) => '1px solid ' + theme.palette.divider,
-                            borderRadius: '6px',
-                            img: {
-                              borderRadius: '2px'
-                            }
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }} className="bg-info">
+                      {spinItem?.boxDetails?.items?.map((boxItems, index) => (
+                        <div
+                          key={index}
+                          style={{
+                            width: 100, // ✅ fixed width for each item
+                            height: 35, // ✅ fixed height for each item
+                            margin: 3,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'flex-start',
+                            gap: 6
                           }}
                         >
-                          <BlurImage
-                            alt={boxItems?.name}
-                            blurDataURL={boxItems?.images[0]?.blurDataURL}
-                            placeholder="blur"
-                            src={boxItems?.images[0]?.url}
-                            layout="fill"
-                            objectFit="cover"
-                          />
-                        </Box>
-                        <small>{boxItems.name}</small>
-                      </div>
-                    ))}
+                          <Box
+                            sx={{
+                              position: 'relative',
+                              overflow: 'hidden',
+                              width: 30,
+                              height: 30,
+                              bgcolor: 'background.default',
+                              border: (theme) => '1px solid ' + theme.palette.divider,
+                              borderRadius: '6px',
+                              flexShrink: 0,
+                              img: {
+                                borderRadius: '2px'
+                              }
+                            }}
+                          >
+                            <BlurImage
+                              alt={boxItems?.name}
+                              blurDataURL={boxItems?.images[0]?.blurDataURL}
+                              placeholder="blur"
+                              src={boxItems?.images[0]?.url}
+                              layout="fill"
+                              objectFit="cover"
+                            />
+                          </Box>
+                          <small
+                            style={{
+                              whiteSpace: 'nowrap',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              flex: 1
+                            }}
+                          >
+                            {boxItems.name}
+                          </small>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </Stack>
               </Card>
@@ -306,7 +328,7 @@ export default function CategoryForm({ spinItem, isLoading: categoryLoading }) {
                       <LabelStyle component={'label'} htmlFor="server-seed">
                         {'Item Value :'}{' '}
                       </LabelStyle>
-                      <small style={{ marginBottom: 5 }}>{verifiedResult?.winningItem?.value}</small>
+                      <small style={{ marginBottom: 5 }}>${verifiedResult?.winningItem?.value}</small>
                     </div>
                   </Stack>
                 </Card>
