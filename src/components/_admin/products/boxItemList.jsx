@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import toast from 'react-hot-toast';
 
 // mui
-import { Dialog, Stack } from '@mui/material';
+import { Dialog, IconButton, Stack } from '@mui/material';
 import DeleteDialog from 'src/components/dialog/delete';
 // components
 import Table from 'src/components/table/table';
@@ -13,13 +13,33 @@ import BoxItem from 'src/components/table/rows/boxItem';
 // api
 import * as api from 'src/services';
 import { useQuery } from 'react-query';
+import { Refresh } from '@mui/icons-material';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false, sort: true },
   // { id: 'inventoryType', label: 'Status', alignRight: false, sort: false },
   { id: 'weight', label: 'Weight', alignRight: false, sort: true },
   { id: 'value', label: 'Value', alignRight: false, sort: true },
-  { id: 'odd', label: 'Odd', alignRight: false, sort: true },
+  {
+    id: 'odd',
+    label: (
+      <Stack direction="row" alignItems="center" spacing={0}>
+        <span>Odd</span>
+        <IconButton
+          style={{ color: 'white' }}
+          size="small"
+          onClick={() => {
+            // 👇 your refresh logic here
+            console.log('Odd column refresh clicked');
+          }}
+        >
+          <Refresh fontSize="small" />
+        </IconButton>
+      </Stack>
+    ),
+    alignRight: false,
+    sort: true
+  },
   { id: '', label: 'Actions', alignRight: true }
 ];
 export default function AdminBoxeItems({ boxDetails, brands, categories, shops, isVendor }) {
