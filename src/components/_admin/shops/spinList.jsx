@@ -14,9 +14,11 @@ import Table from 'src/components/table/table';
 import Spin from 'src/components/table/rows/spin';
 
 const TABLE_HEAD = [
+  { id: 'user', label: 'User', alignRight: false, sort: true },
+  { id: 'influencer', label: 'Influencer', alignRight: false, sort: true },
   { id: 'box', label: 'Box', alignRight: false, sort: true },
   { id: 'item', label: 'Winning Item', alignRight: false, sort: true },
-  { id: 'value', label: 'Value', alignRight: false, sort: true },
+
   { id: 'odd', label: 'Odd/Weight', alignRight: false, sort: true },
   { id: 'clientSeed', label: 'Client Seed', alignRight: false, sort: true },
   { id: 'serverSeed', label: 'Servere Seed', alignRight: false, sort: true },

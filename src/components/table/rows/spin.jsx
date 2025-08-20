@@ -37,18 +37,71 @@ import {
   VerifiedRounded,
   VerifiedSharp
 } from '@mui/icons-material';
+import { BsFillShieldFill, BsShieldCheck, BsPlayCircle, BsSendCheck, BsSignMergeRight } from 'react-icons/bs';
 export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
   const dispatch = useDispatch();
   const router = useRouter();
-  function shortenString(str) {
-    if (str.length <= 10) {
+  function shortenString(str, remainChar, showDots) {
+    if (str.length <= remainChar) {
       return str; // return as is if string is 10 chars or less
     }
-    return str.slice(0, 10) + '...';
+    if (showDots) {
+      return str.slice(0, remainChar) + '...';
+    } else {
+      return str.slice(0, remainChar);
+    }
   }
   return (
     <TableRow hover key={Math.random()}>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
+      <TableCell>
+        {isLoading ? (
+          <Skeleton variant="text" />
+        ) : (
+          <>{shortenString(row?.userDetails?.firstName + ' ' + row?.userDetails?.lastName, 13, false)}</>
+        )}
+      </TableCell>
+      <TableCell component="th" scope="row" sx={{ maxWidth: 300 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center'
+          }}
+        >
+          {isLoading ? (
+            <Skeleton variant="rectangular" width={50} height={50} sx={{ borderRadius: 1 }} />
+          ) : (
+            <Box
+              sx={{
+                position: 'relative',
+                overflow: 'hidden',
+                width: 50,
+                height: 50,
+                bgcolor: 'background.default',
+                mr: 2,
+                border: (theme) => '1px solid ' + theme.palette.divider,
+                borderRadius: '6px',
+                img: {
+                  borderRadius: '2px'
+                }
+              }}
+            >
+              <BlurImage
+                alt={row?.shopDetails?.title}
+                blurDataURL={row?.shopDetails?.logo?.blurDataURL}
+                placeholder="blur"
+                src={row?.shopDetails?.logo?.url}
+                layout="fill"
+                objectFit="cover"
+              />
+            </Box>
+          )}
+          <Typography variant="" noWrap>
+            <div>{row?.shopDetails?.title}</div>
+          </Typography>
+        </Box>
+      </TableCell>
+
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.boxDetails?.name}</>}</TableCell>
       <TableCell component="th" scope="row" sx={{ maxWidth: 300 }}>
         <Box
@@ -85,20 +138,20 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
               />
             </Box>
           )}
-          <Typography variant="subtitle2" noWrap>
-            <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.winningItem?.name}</>}</TableCell>
+          <Typography variant="">
+            <div>{row?.winningItem?.name}</div>
+            <div>${row?.winningItem?.value}</div>
           </Typography>
         </Box>
       </TableCell>
 
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.winningItem?.value}</>}</TableCell>
       <TableCell>
         {isLoading ? <Skeleton variant="text" /> : <>{`${row?.winningItem?.odd}/${row?.winningItem?.weight}%`}</>}
       </TableCell>
 
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.clientSeed}</>}</TableCell>
 
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{shortenString(row?.serverSeed)}</>}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{shortenString(row?.serverSeed, 10, true)}</>}</TableCell>
 
       <TableCell align="left">
         {isLoading ? (
@@ -108,8 +161,9 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
             <Skeleton variant="circular" width={34} height={34} />
           </Stack>
         ) : (
-          <Stack direction="row" justifyContent="flex-start">
-            <CheckBoxTwoTone
+          <Stack direction="row" justifyContent="center">
+            <BsShieldCheck
+              size={17}
               onClick={() => {
                 const tempData = { spinItem: row };
                 dispatch(selectSpinItem(tempData));
@@ -117,7 +171,7 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
               }}
             >
               <IoEye />
-            </CheckBoxTwoTone>
+            </BsShieldCheck>
           </Stack>
         )}
       </TableCell>
