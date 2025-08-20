@@ -27,12 +27,29 @@ import { MdEdit } from 'react-icons/md';
 import { MdDelete } from 'react-icons/md';
 import { IoEye } from 'react-icons/io5';
 import { useDispatch } from 'react-redux';
+import {
+  Check,
+  CheckBoxOutlineBlank,
+  CheckBoxOutlineBlankOutlined,
+  CheckBoxTwoTone,
+  CheckCircle,
+  Verified,
+  VerifiedRounded,
+  VerifiedSharp
+} from '@mui/icons-material';
 export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
   const dispatch = useDispatch();
   const router = useRouter();
+  function shortenString(str) {
+    if (str.length <= 10) {
+      return str; // return as is if string is 10 chars or less
+    }
+    return str.slice(0, 10) + '...';
+  }
   return (
     <TableRow hover key={Math.random()}>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.boxDetails?.name}</>}</TableCell>
       <TableCell component="th" scope="row" sx={{ maxWidth: 300 }}>
         <Box
           sx={{
@@ -69,16 +86,19 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
             </Box>
           )}
           <Typography variant="subtitle2" noWrap>
-            {isLoading ? <Skeleton variant="text" width={120} sx={{ ml: 1 }} /> : row?.title}
+            <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.winningItem?.name}</>}</TableCell>
           </Typography>
         </Box>
       </TableCell>
 
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.boxDetails?.name}</>}</TableCell>
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.winningItem?.name}</>}</TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.winningItem?.value}</>}</TableCell>
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.winningItem?.odd}</>}</TableCell>
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.winningItem?.weight}</>}</TableCell>
+      <TableCell>
+        {isLoading ? <Skeleton variant="text" /> : <>{`${row?.winningItem?.odd}/${row?.winningItem?.weight}%`}</>}
+      </TableCell>
+
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.clientSeed}</>}</TableCell>
+
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{shortenString(row?.serverSeed)}</>}</TableCell>
 
       <TableCell align="left">
         {isLoading ? (
@@ -89,7 +109,7 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
           </Stack>
         ) : (
           <Stack direction="row" justifyContent="flex-start">
-            <IconButton
+            <CheckBoxTwoTone
               onClick={() => {
                 const tempData = { spinItem: row };
                 dispatch(selectSpinItem(tempData));
@@ -97,7 +117,7 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
               }}
             >
               <IoEye />
-            </IconButton>
+            </CheckBoxTwoTone>
           </Stack>
         )}
       </TableCell>
