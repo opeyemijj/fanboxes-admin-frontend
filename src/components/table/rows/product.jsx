@@ -67,6 +67,48 @@ export default function ProductRow({ isLoading, row, handleClickOpen, isVendor, 
           </Typography>
         </Box>
       </TableCell>
+
+      <TableCell component="th" scope="row" sx={{ maxWidth: 300 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center'
+          }}
+        >
+          {isLoading ? (
+            <Skeleton variant="rectangular" width={50} height={50} sx={{ borderRadius: 1 }} />
+          ) : (
+            <Box
+              sx={{
+                position: 'relative',
+                overflow: 'hidden',
+                width: 50,
+                height: 50,
+                bgcolor: 'background.default',
+                mr: 2,
+                border: (theme) => '1px solid ' + theme.palette.divider,
+                borderRadius: '6px',
+                img: {
+                  borderRadius: '2px'
+                }
+              }}
+            >
+              <BlurImage
+                alt={row?.shopDetails?.title}
+                blurDataURL={row?.shopDetails?.logo?.blurDataURL}
+                placeholder="blur"
+                src={row?.shopDetails?.logo?.url}
+                layout="fill"
+                objectFit="cover"
+              />
+            </Box>
+          )}
+          <Typography variant="" noWrap>
+            <div>{row?.shopDetails?.title}</div>
+          </Typography>
+        </Box>
+      </TableCell>
+
       {/* <TableCell>
         <Skeleton variant="text" />
       </TableCell> */}
