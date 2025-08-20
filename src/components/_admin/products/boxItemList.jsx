@@ -97,10 +97,12 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
             size="small"
             onClick={() => {
               // 👇 your refresh logic here
-              const distributedItem = distributeItems(boxDetails?.items);
-              const temdata = { data: distributedItem };
-              UpateItemOdd(temdata);
-              setData(temdata);
+              if (boxDetails) {
+                const distributedItem = distributeItems(boxDetails?.items);
+                const temdata = { data: distributedItem };
+                UpateItemOdd(temdata);
+                setData(temdata);
+              }
             }}
           >
             <Refresh fontSize="small" />
