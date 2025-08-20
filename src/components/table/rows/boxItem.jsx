@@ -89,13 +89,6 @@ export default function BoxItemRow({ isLoading, row, handleClickOpen, isVendor, 
           </Stack>
         ) : (
           <Stack direction="row" justifyContent="flex-end">
-            <Tooltip title="Preview">
-              <Link target="_blank" href={`/product/${row?.slug}`}>
-                <IconButton>
-                  <IoEye />
-                </IconButton>
-              </Link>
-            </Tooltip>
             <Tooltip title="Edit">
               <IconButton
                 onClick={() => {
