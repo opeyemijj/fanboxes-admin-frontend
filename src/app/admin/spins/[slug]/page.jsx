@@ -27,7 +27,7 @@ export default function page() {
             href: '/admin/spins'
           },
           {
-            name: 'Verify Spins'
+            name: 'Verify'
           }
         ]}
       />

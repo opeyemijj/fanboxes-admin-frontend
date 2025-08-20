@@ -19,6 +19,7 @@ import toast from 'react-hot-toast';
 import { Form, FormikProvider, useFormik } from 'formik';
 // api
 import * as api from 'src/services';
+import BlurImage from '../blurImage';
 
 CategoryForm.propTypes = {
   data: PropTypes.object,
@@ -85,6 +86,15 @@ export default function CategoryForm({ spinItem, isLoading: categoryLoading }) {
     }
   });
   const { errors, values, touched, handleSubmit, setFieldValue, getFieldProps } = formik;
+
+  function shortenString(str) {
+    if (str.length <= 20) {
+      return str; // if string is already short, return it as is
+    }
+    const firstPart = str.slice(0, 20); // first 10 chars
+    const lastPart = str.slice(-20); // last 10 chars
+    return `${firstPart}.......${lastPart}`;
+  }
 
   return (
     <Box position="relative">
@@ -165,33 +175,55 @@ export default function CategoryForm({ spinItem, isLoading: categoryLoading }) {
 
             <Grid item xs={12} md={6}>
               <Card sx={{ p: 3 }}>
-                <Stack spacing={3}>
-                  <div>
-                    <LabelStyle component={'label'} htmlFor="server-seed">
-                      {' '}
-                      {'Box Name'}{' '}
+                <Stack spacing={0}>
+                  <Stack alignItems={'center'} flexDirection={'row'}>
+                    <LabelStyle
+                      padding={0}
+                      paddingRight={1}
+                      margin={0}
+                      flexDirection={'row'}
+                      component={'label'}
+                      htmlFor="server-seed"
+                    >
+                      {'Box : '}
                     </LabelStyle>
-                    <TextField value={spinItem?.boxDetails?.name} fullWidth />
-                  </div>
+                    <small style={{ marginBottom: 5 }}> {' ' + spinItem?.boxDetails?.name}</small>
+                  </Stack>
 
                   <div>
                     <LabelStyle component={'label'} htmlFor="server-seed">
                       {' '}
-                      {'Wining Item'}{' '}
+                      {'Items:'}{' '}
                     </LabelStyle>
-                    <TextField value={spinItem?.winningItem?.name} fullWidth />
-                  </div>
-
-                  <div>
-                    <LabelStyle component={'label'} htmlFor="server-seed">
-                      {' '}
-                      {'Odd/Weight'}
-                      {}
-                    </LabelStyle>
-                    <TextField
-                      value={spinItem?.winningItem?.odd + '/' + spinItem?.winningItem?.weight + '%'}
-                      fullWidth
-                    />
+                    {spinItem?.boxDetails?.items?.map((boxItems, index) => (
+                      <div key={index} style={{ marginBottom: 10, display: 'flex', alignItems: 'center' }}>
+                        <Box
+                          sx={{
+                            position: 'relative',
+                            overflow: 'hidden',
+                            width: 50,
+                            height: 50,
+                            bgcolor: 'background.default',
+                            mr: 2,
+                            border: (theme) => '1px solid ' + theme.palette.divider,
+                            borderRadius: '6px',
+                            img: {
+                              borderRadius: '2px'
+                            }
+                          }}
+                        >
+                          <BlurImage
+                            alt={boxItems?.name}
+                            blurDataURL={boxItems?.images[0]?.blurDataURL}
+                            placeholder="blur"
+                            src={boxItems?.images[0]?.url}
+                            layout="fill"
+                            objectFit="cover"
+                          />
+                        </Box>
+                        <small>{boxItems.name}</small>
+                      </div>
+                    ))}
                   </div>
                 </Stack>
               </Card>
@@ -217,49 +249,61 @@ export default function CategoryForm({ spinItem, isLoading: categoryLoading }) {
             <Grid mt={3} container spacing={2}>
               <Grid item xs={12} md={6}>
                 <Card sx={{ p: 3 }}>
-                  <Stack spacing={3}>
-                    <div>
+                  <Stack spacing={0}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
                       <LabelStyle component={'label'} htmlFor="server-seed">
-                        {' '}
-                        {'Hash'}{' '}
+                        {'Hash :'}{' '}
                       </LabelStyle>
-                      <TextField value={verifiedResult?.hash} fullWidth />
+                      <small style={{ marginBottom: 5 }}>{shortenString(verifiedResult?.hash)}</small>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <LabelStyle component={'label'} htmlFor="server-seed">
+                        {'Normalized Value :'}{' '}
+                      </LabelStyle>
+                      <small style={{ marginBottom: 5 }}>{verifiedResult?.normalized}</small>
                     </div>
 
                     <div>
                       <LabelStyle component={'label'} htmlFor="server-seed">
                         {' '}
-                        {'Normalized Value'}{' '}
+                        {'Wining Item: '}{' '}
                       </LabelStyle>
-                      <TextField value={verifiedResult?.normalized} fullWidth />
+
+                      <div style={{ marginBottom: 10, display: 'flex', alignItems: 'center' }}>
+                        <Box
+                          sx={{
+                            position: 'relative',
+                            overflow: 'hidden',
+                            width: 50,
+                            height: 50,
+                            bgcolor: 'background.default',
+                            mr: 2,
+                            border: (theme) => '1px solid ' + theme.palette.divider,
+                            borderRadius: '6px',
+                            img: {
+                              borderRadius: '2px'
+                            }
+                          }}
+                        >
+                          <BlurImage
+                            alt={verifiedResult?.winningItem?.name}
+                            blurDataURL={verifiedResult?.winningItem?.images[0]?.blurDataURL}
+                            placeholder="blur"
+                            src={verifiedResult?.winningItem?.images[0]?.url}
+                            layout="fill"
+                            objectFit="cover"
+                          />
+                        </Box>
+                        <small>{verifiedResult?.winningItem?.name}</small>
+                      </div>
                     </div>
 
-                    <div>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
                       <LabelStyle component={'label'} htmlFor="server-seed">
-                        {' '}
-                        {'Wining Item'}{' '}
+                        {'Item Value :'}{' '}
                       </LabelStyle>
-                      <TextField value={verifiedResult?.winningItem?.name} fullWidth />
-                    </div>
-
-                    <div>
-                      <LabelStyle component={'label'} htmlFor="server-seed">
-                        {' '}
-                        {'Item Value'}{' '}
-                      </LabelStyle>
-                      <TextField value={`$ ${verifiedResult?.winningItem?.value}`} fullWidth />
-                    </div>
-
-                    <div>
-                      <LabelStyle component={'label'} htmlFor="server-seed">
-                        {' '}
-                        {'Odd/Weight'}
-                        {}
-                      </LabelStyle>
-                      <TextField
-                        value={spinItem?.winningItem?.odd + '/' + spinItem?.winningItem?.weight + '%'}
-                        fullWidth
-                      />
+                      <small style={{ marginBottom: 5 }}>{verifiedResult?.winningItem?.value}</small>
                     </div>
                   </Stack>
                 </Card>
@@ -271,20 +315,36 @@ export default function CategoryForm({ spinItem, isLoading: categoryLoading }) {
                     <div>
                       <LabelStyle component={'label'} htmlFor="server-seed">
                         {' '}
-                        Influencer
+                        {'Influencer : '}{' '}
                       </LabelStyle>
-                      <TextField
-                        value={`${verifiedResult?.vendorDetails?.firstName} ${verifiedResult?.vendorDetails?.lastName}`}
-                        fullWidth
-                      />
-                    </div>
 
-                    <div>
-                      <LabelStyle component={'label'} htmlFor="server-seed">
-                        {' '}
-                        {'Box'}{' '}
-                      </LabelStyle>
-                      <TextField value={verifiedResult?.boxDetails?.name} fullWidth />
+                      <div style={{ marginBottom: 10, display: 'flex', alignItems: 'center' }}>
+                        <Box
+                          sx={{
+                            position: 'relative',
+                            overflow: 'hidden',
+                            width: 50,
+                            height: 50,
+                            bgcolor: 'background.default',
+                            mr: 2,
+                            border: (theme) => '1px solid ' + theme.palette.divider,
+                            borderRadius: '6px',
+                            img: {
+                              borderRadius: '2px'
+                            }
+                          }}
+                        >
+                          <BlurImage
+                            alt={verifiedResult?.winningItem?.name}
+                            blurDataURL={verifiedResult?.shopDetails?.logo?.blurDataURL}
+                            placeholder="blur"
+                            src={verifiedResult?.shopDetails?.logo?.url}
+                            layout="fill"
+                            objectFit="cover"
+                          />
+                        </Box>
+                        <small>{verifiedResult?.shopDetails?.title}</small>
+                      </div>
                     </div>
                   </Stack>
                 </Card>
