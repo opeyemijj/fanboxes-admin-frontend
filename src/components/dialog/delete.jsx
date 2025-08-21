@@ -17,15 +17,24 @@ DeleteDialog.propTypes = {
   apicall: PropTypes.func.isRequired,
   endPoint: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
-  deleteMessage: PropTypes.string.isRequired
+  deleteMessage: PropTypes.string.isRequired,
+  willReloadPage: PropTypes.bool
+};
+DeleteDialog.defaultProps = {
+  willReloadPage: false // ✅ default value
 };
 
-export default function DeleteDialog({ onClose, id, apicall, endPoint, type, deleteMessage }) {
+export default function DeleteDialog({ onClose, id, apicall, endPoint, type, deleteMessage, willReloadPage }) {
   const { isLoading, mutate } = useMutation(api[endPoint], {
     onSuccess: () => {
       toast.success(type);
-      apicall((prev) => ({ ...prev, apicall: !prev.apicall }));
-      onClose();
+      if (willReloadPage) {
+        // ✅ reload full page
+        window.location.reload();
+      } else {
+        apicall((prev) => ({ ...prev, apicall: !prev.apicall }));
+        onClose();
+      }
     },
     onError: (err) => {
       toast.error(err.response.data.message);

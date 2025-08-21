@@ -135,6 +135,7 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
           deleteMessage={
             'Are you really sure you want to remove this item? Just making sure before we go ahead with it.'
           }
+          willReloadPage={true}
         />
       </Dialog>
       <Stack spacing={2} direction="row" alignItems="center" justifyContent="space-between" mb={2}>

@@ -86,18 +86,18 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
     cover: Yup.mixed().required('Cover is required'),
     logo: Yup.mixed().required('logo is required'),
     slug: Yup.string().required('Slug is required'),
-    description: Yup.string().required('Description is required'),
+    description: Yup.string().optional('Description is required'),
     phone: Yup.string().required('Phone Number is required'),
     paymentInfo: Yup.object().shape({
       holderEmail: Yup.string().required('Holder email is required'),
-      bankName: Yup.string().required('Bank name is required'),
-      AccountNo: Yup.number().required('Account No is required')
+      bankName: Yup.string().optional('Bank name is optional'),
+      AccountNo: Yup.number().optional('Account No is required')
     }),
     address: Yup.object().shape({
-      country: Yup.string().required('Country is required'),
-      city: Yup.string().required('City is required'),
-      state: Yup.string().required('State is required'),
-      streetAddress: Yup.string().required('Street Address is required')
+      country: Yup.string().optional('Country is required'),
+      city: Yup.string().optional('City is required'),
+      state: Yup.string().optional('State is required'),
+      streetAddress: Yup.string().optional('Street Address is required')
     })
   });
   const formik = useFormik({
@@ -120,16 +120,16 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
       slug: currentShop?.slug || '',
       phone: currentShop?.phone || Number,
       paymentInfo: {
-        holderEmail: currentShop?.paymentInfo?.holderEmail || '',
-        bankName: currentShop?.paymentInfo?.bankName || '',
-        AccountNo: currentShop?.paymentInfo?.AccountNo || Number
-      },
-      address: {
-        country: currentShop?.address?.country || 'Andorra',
-        city: currentShop?.address?.city || '',
-        state: currentShop?.address?.state || '',
-        streetAddress: currentShop?.address?.streetAddress || ''
+        holderEmail: currentShop?.paymentInfo?.holderEmail || ''
+        // bankName: currentShop?.paymentInfo?.bankName || '',
+        // AccountNo: currentShop?.paymentInfo?.AccountNo || Number
       }
+      // address: {
+      //   country: currentShop?.address?.country || 'Andorra',
+      //   city: currentShop?.address?.city || '',
+      //   state: currentShop?.address?.state || '',
+      //   streetAddress: currentShop?.address?.streetAddress || ''
+      // }
     },
     enableReinitialize: true,
     validationSchema: ShopSettingScema,
@@ -405,7 +405,8 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                           />
                         )}
                       </div>
-                      <div>
+
+                      {/* <div>
                         {shopLoading ? (
                           <Skeleton variant="text" width={150} />
                         ) : (
@@ -533,7 +534,7 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                             helperText={touched.address?.streetAddress && errors.address?.streetAddress}
                           />
                         )}
-                      </div>
+                      </div> */}
                       {currentShop && (
                         <Stack spacing={2}>
                           <FormControl fullWidth sx={{ select: { textTransform: 'capitalize' } }}>

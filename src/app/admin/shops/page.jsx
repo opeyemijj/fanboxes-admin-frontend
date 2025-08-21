@@ -23,7 +23,7 @@ export default async function AdminProducts() {
             href: '/admin'
           },
           {
-            name: 'Shops'
+            name: 'Influencers'
           }
         ]}
         action={{
