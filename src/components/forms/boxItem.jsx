@@ -372,19 +372,7 @@ export default function AddItemForm({ currentProduct, isInitialized = false, isV
                       helperText={touched.value && errors.value}
                     />
                   </div>
-                  <div>
-                    <FormGroup>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            onChange={(e) => setFieldValue('isFeatured', e.target.checked)}
-                            checked={values.isFeatured}
-                          />
-                        }
-                        label={'Featured Item'}
-                      />
-                    </FormGroup>
-                  </div>
+
                   <Stack spacing={2}>
                     {isInitialized ? (
                       <Skeleton variant="rectangular" width="100%" height={56} />

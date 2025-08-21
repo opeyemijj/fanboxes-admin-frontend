@@ -14,9 +14,6 @@ export default function Page() {
   const slug = searchParams.get('slug');
 
   const [productDetails, setProductDetails] = useState(null);
-  const [brands, setBrands] = useState([]);
-  const [shops, setShops] = useState([]);
-  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     if (!slug) return; // wait until slug is available

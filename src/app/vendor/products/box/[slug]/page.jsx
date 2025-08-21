@@ -36,7 +36,7 @@ export default function AdminBoxItems() {
         links={[{ name: 'Dashboard', href: '/admin' }, { name: 'Boxes' }]}
         action={{
           href: `/vendor/products/addItem?slug=${productDetails?.slug}`,
-          title: 'Add Box Item'
+          title: 'Add Item'
         }}
       />
 

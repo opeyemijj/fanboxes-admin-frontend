@@ -241,16 +241,17 @@ export default function ProductForm({
                         />
                       )}
                     </div>
+
                     <div>
                       <Grid container spacing={2}>
                         {isVendor ? null : (
-                          <Grid item xs={12} md={6}>
+                          <Grid item xs={12} md={12}>
                             <FormControl fullWidth>
                               {isInitialized ? (
                                 <Skeleton variant="text" width={100} />
                               ) : (
                                 <LabelStyle component={'label'} htmlFor="shop-select">
-                                  {'Shop'}
+                                  {'Influencer'}
                                 </LabelStyle>
                               )}
 
@@ -402,7 +403,7 @@ export default function ProductForm({
                 <Stack spacing={3} pb={1}>
                   <div>
                     <LabelStyle component={'label'} htmlFor="sale-price">
-                      {'Sale Price'}
+                      {'Spin Price'}
                     </LabelStyle>
                     <TextField
                       id="sale-price"

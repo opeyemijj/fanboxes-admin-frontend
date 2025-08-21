@@ -96,10 +96,6 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
         </Box>
       </TableCell>
 
-      <TableCell>
-        {isLoading ? <Skeleton variant="text" /> : <>{`${row?.winningItem?.odd}/${row?.winningItem?.weight}%`}</>}
-      </TableCell>
-
       <TableCell component="th" scope="row" sx={{ maxWidth: 300 }}>
         <Box
           sx={{
@@ -142,9 +138,23 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
         </Box>
       </TableCell>
 
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.clientSeed}</>}</TableCell>
+      <TableCell>
+        {isLoading ? (
+          <Skeleton variant="text" />
+        ) : (
+          <>{`${Number(row?.winningItem?.odd)?.toFixed(4)}/${row?.winningItem?.weight}%`}</>
+        )}
+      </TableCell>
 
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{shortenString(row?.serverSeed, 10, true)}</>}</TableCell>
+      <TableCell
+        title={row?.clientSeed} // full value on hover
+      >
+        {isLoading ? <Skeleton variant="text" /> : <>{row?.clientSeed}</>}
+      </TableCell>
+
+      <TableCell title={row?.serverSeed}>
+        {isLoading ? <Skeleton variant="text" /> : <>{shortenString(row?.serverSeed, 10, true)}</>}
+      </TableCell>
 
       <TableCell>
         {isLoading ? (
