@@ -17,7 +17,8 @@ import { Refresh } from '@mui/icons-material';
 
 export default function AdminBoxeItems({ boxDetails, brands, categories, shops, isVendor }) {
   // console.log(boxDetails, 'Check the box details');
-  const searchParams = useSearchParams();
+  const fullUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const lastSegment = fullUrl.substring(fullUrl.lastIndexOf('/') + 1);
 
   const [open, setOpen] = useState(false);
   const [apicall, setApicall] = useState(false);
@@ -115,7 +116,6 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
   // console.log(data, 'Check the data');
 
   const handleClickOpen = (prop) => () => {
-    const lastSegment = fullUrl.substring(fullUrl.lastIndexOf('/') + 1);
     setId({ itemSlug: prop, boxSlug: lastSegment });
     setOpen(true);
   };
