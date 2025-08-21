@@ -42,7 +42,6 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
   );
 
   async function UpateItemOdd(passingItems) {
-    console.log(passingItems, 'Come here before call the mutation?');
     try {
       updateItemsOdd({
         boxSlug: boxDetails.slug,
@@ -54,8 +53,6 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
   }
 
   useEffect(() => {
-    // console.log(boxDetails, 'How many time it is calling');
-
     if (boxDetails) {
       const temdata = { data: boxDetails.items };
       setData(temdata);
@@ -118,7 +115,8 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
   // console.log(data, 'Check the data');
 
   const handleClickOpen = (prop) => () => {
-    setId(prop);
+    const lastSegment = fullUrl.substring(fullUrl.lastIndexOf('/') + 1);
+    setId({ itemSlug: prop, boxSlug: lastSegment });
     setOpen(true);
   };
   const handleClose = () => {
@@ -132,10 +130,10 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
           onClose={handleClose}
           id={id}
           apicall={setApicall}
-          endPoint={isVendor ? 'deleteVendorProduct' : 'deleteProductByAdmin'}
-          type={'Product deleted'}
+          endPoint={isVendor ? 'deleteVendorProduct' : 'deleteBoxItemByAdmin'}
+          type={'Item deleted'}
           deleteMessage={
-            'Are you really sure you want to remove this product? Just making sure before we go ahead with it.'
+            'Are you really sure you want to remove this item? Just making sure before we go ahead with it.'
           }
         />
       </Dialog>

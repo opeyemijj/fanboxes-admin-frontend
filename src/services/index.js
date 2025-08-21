@@ -147,6 +147,11 @@ export const deleteProductByAdmin = async (slug) => {
   return response;
 };
 
+export const deleteBoxItemByAdmin = async (slug) => {
+  const { data: response } = await http.delete(`/admin/product-item/${slug.boxSlug}/${slug.itemSlug}`);
+  return response;
+};
+
 export const getOrdersByAdmin = async (payload) => {
   const { data } = await http.get(`/admin/orders?${payload}`);
   return data;
