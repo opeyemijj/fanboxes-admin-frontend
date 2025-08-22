@@ -6,7 +6,7 @@ import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
 
 // Meta information
 export const metadata = {
-  title: 'Products - Fanboxes',
+  title: 'Influencers - Fanboxes',
   applicationName: 'Fanboxes',
   authors: 'Fanboxes'
 };
@@ -16,7 +16,7 @@ export default async function AdminProducts() {
     <>
       <HeaderBreadcrumbs
         admin
-        heading="Shops"
+        heading="Influencers"
         links={[
           {
             name: 'Dashboard',

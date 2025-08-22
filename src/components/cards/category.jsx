@@ -52,7 +52,7 @@ export default function CategoriesCard({ ...props }) {
         ) : (
           <CardActionArea className="card-action-area" component={Link} href={`${baseUrl + category?.slug}`}>
             <Box p={0.4} sx={{ bgcolor: (theme) => theme.palette.background.default }}>
-              <Box className="image-wrapper">
+              {/* <Box className="image-wrapper">
                 <Image
                   alt="category"
                   src={category?.cover?.url}
@@ -65,7 +65,7 @@ export default function CategoriesCard({ ...props }) {
                   quality={5}
                   sizes={'50vw'}
                 />
-              </Box>
+              </Box> */}
             </Box>
           </CardActionArea>
         )}

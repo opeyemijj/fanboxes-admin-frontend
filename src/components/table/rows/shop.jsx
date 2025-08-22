@@ -70,6 +70,7 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
           </Typography>
         </Box>
       </TableCell>
+
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row.products?.length || 0}</>}</TableCell>
 
       <TableCell>

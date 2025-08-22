@@ -7,19 +7,26 @@ import PropTypes from 'prop-types';
 // mui
 import { styled } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
-import { Card, Stack, TextField, Typography, Box, Grid, Skeleton } from '@mui/material';
+import {
+  Card,
+  Stack,
+  TextField,
+  Typography,
+  Box,
+  Grid,
+  Skeleton,
+  Divider
+} from '@mui/material';
 // components
-import UploadSingleFile from 'src/components/upload/UploadSingleFile';
+import BlurImage from '../blurImage';
 // yup
 import * as Yup from 'yup';
-// axios
 // toast
 import toast from 'react-hot-toast';
 // formik
 import { Form, FormikProvider, useFormik } from 'formik';
 // api
 import * as api from 'src/services';
-import BlurImage from '../blurImage';
 
 CategoryForm.propTypes = {
   data: PropTypes.object,
@@ -29,27 +36,20 @@ CategoryForm.propTypes = {
 const LabelStyle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
   color: theme.palette.text.secondary,
-  marginBottom: theme.spacing(1),
-  lineHeight: 2.5
+  marginBottom: theme.spacing(0.5),
+  minWidth: 120, // ✅ fixed width for alignment
+  flexShrink: 0
 }));
-
-const STATUS_OPTIONS = ['active', 'deactive'];
 
 export default function CategoryForm({ spinItem, isLoading: categoryLoading }) {
   const router = useRouter();
   const [verifiedResult, setVerifiedResult] = useState();
 
   const { mutate, isLoading } = useMutation(api.verifySpinByAdmin, {
-    ...(spinItem && {
-      enabled: Boolean(spinItem)
-    }),
     retry: false,
     onSuccess: (data) => {
-      console.log(data, 'Check the data');
       setVerifiedResult(data?.data);
       toast.success(data.message);
-
-      // router.push('/admin/categories');
     },
     onError: (error) => {
       setVerifiedResult(null);
@@ -73,171 +73,135 @@ export default function CategoryForm({ spinItem, isLoading: categoryLoading }) {
     validationSchema: VerifySpinSchema,
     onSubmit: async (values) => {
       setVerifiedResult(null);
-      console.log(values, 'check the values');
-      const { ...rest } = values;
       try {
-        mutate({
-          ...spinItem,
-          ...rest
-        });
+        mutate({ ...spinItem, ...values });
       } catch (error) {
         console.error(error);
       }
     }
   });
-  const { errors, values, touched, handleSubmit, setFieldValue, getFieldProps } = formik;
+  const { errors, touched, handleSubmit, getFieldProps } = formik;
 
   function shortenString(str) {
-    if (str.length <= 20) {
-      return str; // if string is already short, return it as is
-    }
-    const firstPart = str.slice(0, 20); // first 10 chars
-    const lastPart = str.slice(-20); // last 10 chars
-    return `${firstPart}.......${lastPart}`;
+    if (!str) return '';
+    if (str.length <= 20) return str;
+    return `${str.slice(0, 20)}...${str.slice(-20)}`;
   }
 
   return (
     <Box position="relative">
       <FormikProvider value={formik}>
         <Form noValidate autoComplete="off" onSubmit={handleSubmit}>
-          <Grid container spacing={2}>
+          <Grid container spacing={3}>
+            {/* Left - Seeds */}
             <Grid item xs={12} md={6}>
-              <Card sx={{ p: 3.5 }}>
+              <Card
+                sx={{
+                  p: 3,
+                  borderRadius: 3,
+                  boxShadow: 2,
+                  height: '100%' // ✅ ensures equal height
+                }}
+              >
                 <Stack spacing={3}>
-                  <div>
-                    {categoryLoading ? (
-                      <Skeleton variant="text" width={140} />
-                    ) : (
-                      <LabelStyle component={'label'} htmlFor="server-seed">
-                        {' '}
-                        {'Server Seed'}{' '}
-                      </LabelStyle>
-                    )}
-                    {categoryLoading ? (
-                      <Skeleton variant="rectangular" width="100%" height={56} />
-                    ) : (
-                      <TextField
-                        disabled
-                        id="server-seed"
-                        fullWidth
-                        {...getFieldProps('serverSeed')}
-                        error={Boolean(touched.serverSeed && errors.serverSeed)}
-                        helperText={touched.serverSeed && errors.serverSeed}
-                      />
-                    )}
-                  </div>
+                  {['serverSeed', 'clientSeed', 'nonce'].map((field, idx) => (
+                    <Stack key={idx}>
+                      {categoryLoading ? (
+                        <Skeleton variant="text" width={140} />
+                      ) : (
+                        <LabelStyle component="label" htmlFor={field}>
+                          {field === 'serverSeed'
+                            ? 'Server Seed'
+                            : field === 'clientSeed'
+                            ? 'Client Seed'
+                            : 'Nonce'}
+                        </LabelStyle>
+                      )}
 
-                  <div>
-                    {categoryLoading ? (
-                      <Skeleton variant="text" width={140} />
-                    ) : (
-                      <LabelStyle component={'label'} htmlFor="client-seed">
-                        {' '}
-                        {'Client Seed'}{' '}
-                      </LabelStyle>
-                    )}
-                    {categoryLoading ? (
-                      <Skeleton variant="rectangular" width="100%" height={56} />
-                    ) : (
-                      <TextField
-                        disabled
-                        id="client-seed"
-                        fullWidth
-                        {...getFieldProps('clientSeed')}
-                        error={Boolean(touched.clientSeed && errors.clientSeed)}
-                        helperText={touched.clientSeed && errors.clientSeed}
-                      />
-                    )}
-                  </div>
-
-                  <div>
-                    {categoryLoading ? (
-                      <Skeleton variant="text" width={140} />
-                    ) : (
-                      <LabelStyle component={'label'} htmlFor="nonce">
-                        {' '}
-                        {'Nonce'}{' '}
-                      </LabelStyle>
-                    )}
-                    {categoryLoading ? (
-                      <Skeleton variant="rectangular" width="100%" height={56} />
-                    ) : (
-                      <TextField
-                        disabled
-                        id="nonce"
-                        fullWidth
-                        {...getFieldProps('nonce')}
-                        error={Boolean(touched.nonce && errors.nonce)}
-                        helperText={touched.nonce && errors.nonce}
-                      />
-                    )}
-                  </div>
+                      {categoryLoading ? (
+                        <Skeleton variant="rectangular" width="100%" height={48} />
+                      ) : (
+                        <TextField
+                          size="medium"
+                          disabled
+                          id={field}
+                          fullWidth
+                          {...getFieldProps(field)}
+                          error={Boolean(touched[field] && errors[field])}
+                          helperText={touched[field] && errors[field]}
+                        />
+                      )}
+                    </Stack>
+                  ))}
                 </Stack>
               </Card>
             </Grid>
 
+            {/* Right - Box Details */}
             <Grid item xs={12} md={6}>
-              <Card sx={{ p: 3 }}>
-                <Stack spacing={0}>
-                  <Stack alignItems={'center'} flexDirection={'row'}>
-                    <LabelStyle
-                      padding={0}
-                      paddingRight={1}
-                      margin={0}
-                      flexDirection={'row'}
-                      component={'label'}
-                      htmlFor="server-seed"
-                    >
-                      {'Box : '}
-                    </LabelStyle>
-                    <small style={{ marginBottom: 5 }}> {' ' + spinItem?.boxDetails?.name}</small>
+              <Card
+                sx={{
+                  p: 3,
+                  borderRadius: 3,
+                  boxShadow: 2,
+                  height: '100%' // ✅ ensures equal height
+                }}
+              >
+                <Stack spacing={2} height="100%">
+                  <Stack direction="row" alignItems="center">
+                    <LabelStyle>Box:</LabelStyle>
+                    <Typography variant="body2" fontWeight={500}>
+                      {spinItem?.boxDetails?.name}
+                    </Typography>
                   </Stack>
 
-                  <div>
-                    <LabelStyle component={'label'} htmlFor="server-seed">
-                      {' '}
-                      {'Items:'}{' '}
-                    </LabelStyle>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }} className="bg-info">
-                      {spinItem?.boxDetails?.items?.map((boxItems, index) => (
-                        <div
-                          key={index}
-                          style={{
-                            width: 100, // ✅ fixed width for each item
-                            height: 35, // ✅ fixed height for each item
-                            margin: 3,
+                  <Divider />
+
+                  <Box>
+                    <LabelStyle>Items:</LabelStyle>
+                    <Box
+                      sx={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
+                        gap: 1.5,
+                        mt: 1
+                      }}
+                    >
+                      {spinItem?.boxDetails?.items?.map((boxItems, idx) => (
+                        <Card
+                          key={idx}
+                          variant="outlined"
+                          sx={{
+                            p: 1,
                             display: 'flex',
                             alignItems: 'center',
-                            justifyContent: 'flex-start',
-                            gap: 6
+                            gap: 1,
+                            borderRadius: 2,
+                            height: 50 // ✅ consistent height
                           }}
                         >
                           <Box
                             sx={{
                               position: 'relative',
+                              width: 32,
+                              height: 32,
+                              borderRadius: 1,
                               overflow: 'hidden',
-                              width: 30,
-                              height: 30,
-                              bgcolor: 'background.default',
-                              border: (theme) => '1px solid ' + theme.palette.divider,
-                              borderRadius: '6px',
-                              flexShrink: 0,
-                              img: {
-                                borderRadius: '2px'
-                              }
+                              flexShrink: 0
                             }}
                           >
                             <BlurImage
                               alt={boxItems?.name}
+                              src={boxItems?.images[0]?.url}
                               blurDataURL={boxItems?.images[0]?.blurDataURL}
                               placeholder="blur"
-                              src={boxItems?.images[0]?.url}
                               layout="fill"
                               objectFit="cover"
                             />
                           </Box>
-                          <small
-                            style={{
+                          <Typography
+                            variant="caption"
+                            sx={{
                               whiteSpace: 'nowrap',
                               overflow: 'hidden',
                               textOverflow: 'ellipsis',
@@ -245,132 +209,113 @@ export default function CategoryForm({ spinItem, isLoading: categoryLoading }) {
                             }}
                           >
                             {boxItems.name}
-                          </small>
-                        </div>
+                          </Typography>
+                        </Card>
                       ))}
-                    </div>
-                  </div>
+                    </Box>
+                  </Box>
                 </Stack>
               </Card>
             </Grid>
           </Grid>
-          <div>
+
+          {/* Submit Button */}
+          <Box mt={3} textAlign="right">
             {categoryLoading ? (
-              <Skeleton variant="rectangular" width="100%" height={56} />
+              <Skeleton variant="rectangular" width={180} height={50} />
             ) : (
               <LoadingButton
                 type="submit"
                 variant="contained"
                 size="large"
                 loading={isLoading}
-                sx={{ ml: 'auto', mt: 3 }}
               >
                 Verify Result
               </LoadingButton>
             )}
-          </div>
+          </Box>
 
+          {/* Verified Result */}
           {verifiedResult && (
-            <Grid mt={3} container spacing={2}>
+            <Grid mt={3} container spacing={3}>
+              {/* Winning Item */}
               <Grid item xs={12} md={6}>
-                <Card sx={{ p: 3 }}>
-                  <Stack spacing={0}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <LabelStyle component={'label'} htmlFor="server-seed">
-                        {'Hash :'}{' '}
-                      </LabelStyle>
-                      <small style={{ marginBottom: 5 }}>{shortenString(verifiedResult?.hash)}</small>
-                    </div>
+                <Card sx={{ p: 3, borderRadius: 3, boxShadow: 2, height: '100%' }}>
+                  <Stack spacing={1.5}>
+                    <Typography variant="body2">
+                      <strong>Hash:</strong> {shortenString(verifiedResult?.hash)}
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong>Normalized Value:</strong> {verifiedResult?.normalized}
+                    </Typography>
 
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <LabelStyle component={'label'} htmlFor="server-seed">
-                        {'Normalized Value :'}{' '}
-                      </LabelStyle>
-                      <small style={{ marginBottom: 5 }}>{verifiedResult?.normalized}</small>
-                    </div>
+                    <Divider />
 
-                    <div>
-                      <LabelStyle component={'label'} htmlFor="server-seed">
-                        {' '}
-                        {'Wining Item: '}{' '}
-                      </LabelStyle>
-
-                      <div style={{ marginBottom: 10, display: 'flex', alignItems: 'center' }}>
-                        <Box
-                          sx={{
-                            position: 'relative',
-                            overflow: 'hidden',
-                            width: 50,
-                            height: 50,
-                            bgcolor: 'background.default',
-                            mr: 2,
-                            border: (theme) => '1px solid ' + theme.palette.divider,
-                            borderRadius: '6px',
-                            img: {
-                              borderRadius: '2px'
-                            }
-                          }}
-                        >
-                          <BlurImage
-                            alt={verifiedResult?.winningItem?.name}
-                            blurDataURL={verifiedResult?.winningItem?.images[0]?.blurDataURL}
-                            placeholder="blur"
-                            src={verifiedResult?.winningItem?.images[0]?.url}
-                            layout="fill"
-                            objectFit="cover"
-                          />
-                        </Box>
-                        <small>{verifiedResult?.winningItem?.name}</small>
-                      </div>
-                    </div>
-
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <LabelStyle component={'label'} htmlFor="server-seed">
-                        {'Item Value :'}{' '}
-                      </LabelStyle>
-                      <small style={{ marginBottom: 5 }}>${verifiedResult?.winningItem?.value}</small>
-                    </div>
+                    <Typography variant="subtitle2" mb={1}>
+                      Winning Item
+                    </Typography>
+                    <Stack direction="row" alignItems="center" spacing={2}>
+                      <Box
+                        sx={{
+                          position: 'relative',
+                          width: 50,
+                          height: 50,
+                          borderRadius: 2,
+                          overflow: 'hidden',
+                          border: (theme) => `1px solid ${theme.palette.divider}`
+                        }}
+                      >
+                        <BlurImage
+                          alt={verifiedResult?.winningItem?.name}
+                          src={verifiedResult?.winningItem?.images[0]?.url}
+                          blurDataURL={verifiedResult?.winningItem?.images[0]?.blurDataURL}
+                          placeholder="blur"
+                          layout="fill"
+                          objectFit="cover"
+                        />
+                      </Box>
+                      <Box>
+                        <Typography variant="body2" fontWeight={500}>
+                          {verifiedResult?.winningItem?.name}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          ${verifiedResult?.winningItem?.value}
+                        </Typography>
+                      </Box>
+                    </Stack>
                   </Stack>
                 </Card>
               </Grid>
 
+              {/* Influencer */}
               <Grid item xs={12} md={6}>
-                <Card sx={{ p: 3 }}>
-                  <Stack spacing={3}>
-                    <div>
-                      <LabelStyle component={'label'} htmlFor="server-seed">
-                        {' '}
-                        {'Influencer : '}{' '}
-                      </LabelStyle>
-
-                      <div style={{ marginBottom: 10, display: 'flex', alignItems: 'center' }}>
-                        <Box
-                          sx={{
-                            position: 'relative',
-                            overflow: 'hidden',
-                            width: 50,
-                            height: 50,
-                            bgcolor: 'background.default',
-                            mr: 2,
-                            border: (theme) => '1px solid ' + theme.palette.divider,
-                            borderRadius: '6px',
-                            img: {
-                              borderRadius: '2px'
-                            }
-                          }}
-                        >
-                          <BlurImage
-                            alt={verifiedResult?.winningItem?.name}
-                            blurDataURL={verifiedResult?.shopDetails?.logo?.blurDataURL}
-                            placeholder="blur"
-                            src={verifiedResult?.shopDetails?.logo?.url}
-                            layout="fill"
-                            objectFit="cover"
-                          />
-                        </Box>
-                        <small>{verifiedResult?.shopDetails?.title}</small>
-                      </div>
-                    </div>
+                <Card sx={{ p: 3, borderRadius: 3, boxShadow: 2, height: '100%' }}>
+                  <Typography variant="subtitle2" mb={1}>
+                    Influencer
+                  </Typography>
+                  <Stack direction="row" alignItems="center" spacing={2}>
+                    <Box
+                      sx={{
+                        position: 'relative',
+                        width: 50,
+                        height: 50,
+                        borderRadius: 2,
+                        overflow: 'hidden',
+                        border: (theme) => `1px solid ${theme.palette.divider}`
+                      }}
+                    >
+                      <BlurImage
+                        alt={verifiedResult?.shopDetails?.title}
+                        src={verifiedResult?.shopDetails?.logo?.url}
+                        blurDataURL={verifiedResult?.shopDetails?.logo?.blurDataURL}
+                        placeholder="blur"
+                        layout="fill"
+                        objectFit="cover"
+                      />
+                    </Box>
+                    <Typography variant="body2" fontWeight={500}>
+                      {verifiedResult?.shopDetails?.title}
+                    </Typography>
                   </Stack>
                 </Card>
               </Grid>

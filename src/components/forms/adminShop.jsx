@@ -90,15 +90,16 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
     phone: Yup.string().required('Phone Number is required'),
     paymentInfo: Yup.object().shape({
       holderEmail: Yup.string().required('Holder email is required'),
-      bankName: Yup.string().optional('Bank name is optional'),
-      AccountNo: Yup.number().optional('Account No is required')
+
+      // bankName: Yup.string().required('Bank name is required'),
+      // AccountNo: Yup.number().required('Account No is required')
     }),
-    address: Yup.object().shape({
-      country: Yup.string().optional('Country is required'),
-      city: Yup.string().optional('City is required'),
-      state: Yup.string().optional('State is required'),
-      streetAddress: Yup.string().optional('Street Address is required')
-    })
+    // address: Yup.object().shape({
+    //   country: Yup.string().required('Country is required'),
+    //   city: Yup.string().required('City is required'),
+    //   state: Yup.string().required('State is required'),
+    //   streetAddress: Yup.string().required('Street Address is required')
+    // })
   });
   const formik = useFormik({
     initialValues: {
@@ -406,6 +407,7 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                         )}
                       </div>
 
+
                       {/* <div>
                         {shopLoading ? (
                           <Skeleton variant="text" width={150} />
@@ -535,6 +537,7 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                           />
                         )}
                       </div> */}
+
                       {currentShop && (
                         <Stack spacing={2}>
                           <FormControl fullWidth sx={{ select: { textTransform: 'capitalize' } }}>
