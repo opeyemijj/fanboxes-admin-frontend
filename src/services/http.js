@@ -2,8 +2,6 @@ import axios from 'axios';
 import { reduxStore } from 'src/redux/store';
 import { setLogout } from 'src/redux/slices/user'; // Import your logout action
 
-
-
 function getToken() {
   const cname = 'token';
   if (typeof window !== 'undefined') {
@@ -31,7 +29,6 @@ const clearAuthCookies = () => {
   }
 };
 
-
 const baseURL = process.env.BASE_URL;
 const http = axios.create({
   baseURL: baseURL + `/api`,
@@ -50,7 +47,6 @@ http.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-
 
 // Response interceptor
 http.interceptors.response.use(
@@ -71,18 +67,16 @@ http.interceptors.response.use(
       // alert(status)
       // Clear auth cookies
       clearAuthCookies();
-      
+
       // Dispatch Redux logout action
       reduxStore.dispatch(setLogout());
-      
+
       // Redirect to login (handles both CSR and SSR)
       if (typeof window !== 'undefined') {
-        const redirectUrl = status === 403 
-          ? '/auth/login?error=forbidden' 
-          : '/auth/login?session_expired=true';
+        const redirectUrl = status === 403 ? '/auth/login?error=forbidden' : '/auth/login?session_expired=true';
         window.location.href = redirectUrl;
       }
-      
+
       return Promise.reject({
         message: status === 403 ? 'Access denied' : 'Session expired',
         isAuthError: true,
@@ -91,11 +85,8 @@ http.interceptors.response.use(
     }
 
     // Enhanced error handling
-    const errorMessage = data?.message || 
-                        data?.error?.message || 
-                        error.message || 
-                        'Request failed';
-    
+    const errorMessage = data?.message || data?.error?.message || error.message || 'Request failed';
+
     return Promise.reject({
       message: errorMessage,
       status,

@@ -16,7 +16,7 @@ export default function SessionPage() {
     deleteCookies('token');
     dispatch(setLogout());
     dispatch(resetWishlist());
-    
+
     // Redirect after state updates are complete
     router.push('/auth/login');
   }, [dispatch, router]);

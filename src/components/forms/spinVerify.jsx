@@ -7,16 +7,7 @@ import PropTypes from 'prop-types';
 // mui
 import { styled } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
-import {
-  Card,
-  Stack,
-  TextField,
-  Typography,
-  Box,
-  Grid,
-  Skeleton,
-  Divider
-} from '@mui/material';
+import { Card, Stack, TextField, Typography, Box, Grid, Skeleton, Divider } from '@mui/material';
 // components
 import BlurImage from '../blurImage';
 // yup
@@ -110,11 +101,7 @@ export default function CategoryForm({ spinItem, isLoading: categoryLoading }) {
                         <Skeleton variant="text" width={140} />
                       ) : (
                         <LabelStyle component="label" htmlFor={field}>
-                          {field === 'serverSeed'
-                            ? 'Server Seed'
-                            : field === 'clientSeed'
-                            ? 'Client Seed'
-                            : 'Nonce'}
+                          {field === 'serverSeed' ? 'Server Seed' : field === 'clientSeed' ? 'Client Seed' : 'Nonce'}
                         </LabelStyle>
                       )}
 
@@ -224,12 +211,7 @@ export default function CategoryForm({ spinItem, isLoading: categoryLoading }) {
             {categoryLoading ? (
               <Skeleton variant="rectangular" width={180} height={50} />
             ) : (
-              <LoadingButton
-                type="submit"
-                variant="contained"
-                size="large"
-                loading={isLoading}
-              >
+              <LoadingButton type="submit" variant="contained" size="large" loading={isLoading}>
                 Verify Result
               </LoadingButton>
             )}

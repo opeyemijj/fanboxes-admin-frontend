@@ -89,11 +89,11 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
     description: Yup.string().optional('Description is required'),
     phone: Yup.string().required('Phone Number is required'),
     paymentInfo: Yup.object().shape({
-      holderEmail: Yup.string().required('Holder email is required'),
+      holderEmail: Yup.string().required('Holder email is required')
 
       // bankName: Yup.string().required('Bank name is required'),
       // AccountNo: Yup.number().required('Account No is required')
-    }),
+    })
     // address: Yup.object().shape({
     //   country: Yup.string().required('Country is required'),
     //   city: Yup.string().required('City is required'),
@@ -406,7 +406,6 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                           />
                         )}
                       </div>
-
 
                       {/* <div>
                         {shopLoading ? (

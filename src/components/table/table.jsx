@@ -56,10 +56,7 @@ export default function CustomTable({ filters = [], ...props }) {
     push(`${pathname}?` + createQueryString(param, val));
   };
 
-  const updatedHeadData = [
-    { id: 'sn', label: 'S/N', alignRight: false },
-    ...headData
-  ];
+  const updatedHeadData = [{ id: 'sn', label: 'S/N', alignRight: false }, ...headData];
 
   const createQueryString = useCallback(
     (name, value) => {
@@ -129,8 +126,10 @@ export default function CustomTable({ filters = [], ...props }) {
                 <TableHead headData={updatedHeadData} />
                 <TableBody>
                   {(isLoading ? Array.from(new Array(6)) : data?.data)?.map((item, index) => {
-                    const serialNumber = (data?.currentPage ? data?.currentPage - 1 : 0) * 10 + index + 1; 
-                    return <Component key={Math.random()} sn={serialNumber} row={item} isLoading={isLoading} {...rest} />;
+                    const serialNumber = (data?.currentPage ? data?.currentPage - 1 : 0) * 10 + index + 1;
+                    return (
+                      <Component key={Math.random()} sn={serialNumber} row={item} isLoading={isLoading} {...rest} />
+                    );
                   })}
                 </TableBody>
               </Table>

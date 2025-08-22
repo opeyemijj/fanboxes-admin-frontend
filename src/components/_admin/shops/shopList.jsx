@@ -14,7 +14,6 @@ import Table from 'src/components/table/table';
 import Shop from 'src/components/table/rows/shop';
 
 const TABLE_HEAD = [
-
   { id: 'name', label: 'Influencers', alignRight: false, sort: true },
   { id: 'products', label: 'Boxes', alignRight: false, sort: true },
   { id: 'status', label: 'Status', alignRight: false, sort: false },
