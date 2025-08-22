@@ -5,6 +5,7 @@ import GuestGuard from 'src/guards/guest';
 import { Card, Stack, Container, Typography } from '@mui/material';
 // components
 import LoginMain from 'src/components/_main/auth/login';
+import Logo from 'src/components/logo';
 
 // Meta information
 export const metadata = {
@@ -32,12 +33,7 @@ export default async function Login() {
             }}
           >
             <Stack mb={5}>
-              <Typography textAlign="center" variant="h4" component="h1" gutterBottom>
-                Login
-              </Typography>
-              <Typography textAlign="center" color="text.secondary">
-                Login to your account to continue
-              </Typography>
+              <Logo />
             </Stack>
 
             <LoginMain />

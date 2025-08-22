@@ -28,12 +28,8 @@ export const metadata = {
 export default async function RootLayout({ children }) {
   return (
     <>
-      <Topbar />
-      <Navbar />
-      <ActionBar />
       {children}
       <Toolbar sx={{ display: { xs: 'block', md: 'none' } }} />
-      <Footer />
     </>
   );
 }

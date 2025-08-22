@@ -1,52 +1,49 @@
-'use client';
-import dynamic from 'next/dynamic';
-
+import React from 'react';
+// guard
+import GuestGuard from 'src/guards/guest';
 // mui
-import { Container } from '@mui/material'; // Importing Container component from MUI (Material-UI) library.
-
+import { Card, Stack, Container, Typography } from '@mui/material';
 // components
-import Hero from 'src/components/_main/home/hero'; // Importing the Hero component.
-import WhyUs from 'src/components/_main/home/whyUs'; // Importing the WhyUs component.
-import TopBanners from 'src/components/_main/home/topBanners'; // Importing the TopBanners component.
+import LoginMain from 'src/components/_main/auth/login';
 
-// Dynamic imports
-const Categories = dynamic(() => import('src/components/_main/home/categories'));
-const BestSellingProducs = dynamic(() => import('src/components/_main/home/bestSelling'));
-const Banner = dynamic(() => import('src/components/_main/home/banner'));
-const Brands = dynamic(() => import('src/components/_main/home/brands'));
-const TopCollection = dynamic(() => import('src/components/_main/home/top'));
-const Shops = dynamic(() => import('src/components/_main/home/shop'));
-const Compaigns = dynamic(() => import('src/components/_main/home/compaign'));
-const Testimonials = dynamic(() => import('src/components/_main/home/testimonials'));
-const FeaturedProducts = dynamic(() => import('src/components/_main/home/featured'));
-const SubscriptionModal = dynamic(() => import('src/components/_main/home/subscription'), {
-  ssr: false
-});
+// Meta information
+export const metadata = {
+  title: 'Login to Fanboxes | Your Gateway to Seamless Shopping and Secure Transactions',
+  description:
+    'Log in to Fanboxes for secure access to your account. Enjoy seamless shopping, personalized experiences, and hassle-free transactions. Your trusted portal to a world of convenience awaits. Login now!',
+  applicationName: 'Fanboxes',
+  authors: 'Fanboxes',
+  keywords: 'ecommerce, Fanboxes, Commerce, Login Fanboxes, LoginFrom Fanboxes'
+};
 
-export default function IndexPage() {
+export default async function Login() {
   return (
     <>
-      <Container maxWidth="xl">
-        <Hero />
-      </Container>
-      <TopBanners />
-      <Container maxWidth="xl">
-        <WhyUs />
-        <Categories />
-        <BestSellingProducs />
-        <Compaigns />
-      </Container>
-      <Banner />
-      <Container maxWidth="xl">
-        <TopCollection />
-        <Shops />
-        <FeaturedProducts />
-      </Container>
-      <Testimonials />
-      <Container maxWidth="xl">
-        <Brands />
-      </Container>
-      <SubscriptionModal />
+      <GuestGuard>
+        <Container maxWidth="sm">
+          <Card
+            sx={{
+              maxWidth: 560,
+              m: 'auto',
+              my: '80px',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              p: 3
+            }}
+          >
+            <Stack mb={5}>
+              <Typography textAlign="center" variant="h4" component="h1" gutterBottom>
+                Login
+              </Typography>
+              <Typography textAlign="center" color="text.secondary">
+                Login to your account to continue
+              </Typography>
+            </Stack>
+
+            <LoginMain />
+          </Card>
+        </Container>
+      </GuestGuard>
     </>
   );
 }
