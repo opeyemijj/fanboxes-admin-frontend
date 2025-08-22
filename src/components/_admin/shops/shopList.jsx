@@ -14,9 +14,8 @@ import Table from 'src/components/table/table';
 import Shop from 'src/components/table/rows/shop';
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Shop', alignRight: false, sort: true },
-  { id: 'owner', label: 'Owner', alignRight: false, sort: true },
-  { id: 'products', label: 'products', alignRight: false, sort: true },
+  { id: 'name', label: 'Influencers', alignRight: false, sort: true },
+  { id: 'products', label: 'Boxes', alignRight: false, sort: true },
   { id: 'status', label: 'Status', alignRight: false, sort: false },
   { id: '', label: 'Actions', alignRight: true }
 ];
@@ -55,7 +54,7 @@ export default function AdminProducts() {
           endPoint={'deleteShop'}
           type={'Shop deleted'}
           deleteMessage={
-            'Are you really sure you want to remove this Shop? Just making sure before we go ahead with it.'
+            'Are you really sure you want to remove this Influencer? Just making sure before we go ahead with it.'
           }
         />
       </Dialog>

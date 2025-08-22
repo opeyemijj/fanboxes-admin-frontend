@@ -9,7 +9,7 @@ import * as api from 'src/services';
 
 // Meta information
 export const metadata = {
-  title: 'Products - Fanboxes',
+  title: 'Boxes - Fanboxes',
   applicationName: 'Fanboxes',
   authors: 'Fanboxes'
 };

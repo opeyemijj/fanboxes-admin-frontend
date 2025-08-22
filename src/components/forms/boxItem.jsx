@@ -372,7 +372,7 @@ export default function AddItemForm({ currentProduct, isInitialized = false, isV
                       helperText={touched.value && errors.value}
                     />
                   </div>
-                  <div>
+                  {/* <div>
                     <FormGroup>
                       <FormControlLabel
                         control={
@@ -384,7 +384,7 @@ export default function AddItemForm({ currentProduct, isInitialized = false, isV
                         label={'Featured Item'}
                       />
                     </FormGroup>
-                  </div>
+                  </div> */}
                   <Stack spacing={2}>
                     {isInitialized ? (
                       <Skeleton variant="rectangular" width="100%" height={56} />

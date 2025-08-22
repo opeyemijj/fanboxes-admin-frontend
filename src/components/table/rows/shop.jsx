@@ -70,31 +70,7 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
           </Typography>
         </Box>
       </TableCell>
-      <TableCell align="left">
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1
-          }}
-        >
-          {isLoading ? (
-            <Skeleton variant="rectangular" width={50} height={50} sx={{ borderRadius: 1 }} />
-          ) : row.vendor?.cover ? (
-            <BlurImageAvatar
-              priority
-              alt={row.vendor.firstName}
-              src={row?.vendor.cover?.url}
-              blurDaraURL={row?.vendor.cover?.blurDaraURL}
-              layout="fill"
-              objectFit="cover"
-            />
-          ) : (
-            <Avatar size="small">{row.vendor?.firstName.toUpperCase().slice(0, 1)}</Avatar>
-          )}
-          {isLoading ? <Skeleton variant="text" width={100} /> : `${row.vendor?.firstName} ${row.vendor?.lastName}`}
-        </Box>
-      </TableCell>
+      
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row.products?.length || 0}</>}</TableCell>
 
       <TableCell>

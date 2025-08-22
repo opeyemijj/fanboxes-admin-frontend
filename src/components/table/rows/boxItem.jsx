@@ -70,12 +70,14 @@ export default function BoxItemRow({ isLoading, row, handleClickOpen, isVendor, 
         </Box>
       </TableCell>
 
-      <TableCell align="left">
-        {isLoading ? <Skeleton variant="text" /> : <Typography>{row?.weight} </Typography>}
-      </TableCell>
       <TableCell>
         <Typography>{row?.value} </Typography>
       </TableCell>
+      
+      <TableCell align="left">
+        {isLoading ? <Skeleton variant="text" /> : <Typography>{row?.weight} </Typography>}
+      </TableCell>
+
       <TableCell>
         <Typography>{row?.odd} </Typography>
       </TableCell>

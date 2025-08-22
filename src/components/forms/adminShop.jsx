@@ -90,15 +90,15 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
     phone: Yup.string().required('Phone Number is required'),
     paymentInfo: Yup.object().shape({
       holderEmail: Yup.string().required('Holder email is required'),
-      bankName: Yup.string().required('Bank name is required'),
-      AccountNo: Yup.number().required('Account No is required')
+      // bankName: Yup.string().required('Bank name is required'),
+      // AccountNo: Yup.number().required('Account No is required')
     }),
-    address: Yup.object().shape({
-      country: Yup.string().required('Country is required'),
-      city: Yup.string().required('City is required'),
-      state: Yup.string().required('State is required'),
-      streetAddress: Yup.string().required('Street Address is required')
-    })
+    // address: Yup.object().shape({
+    //   country: Yup.string().required('Country is required'),
+    //   city: Yup.string().required('City is required'),
+    //   state: Yup.string().required('State is required'),
+    //   streetAddress: Yup.string().required('Street Address is required')
+    // })
   });
   const formik = useFormik({
     initialValues: {
@@ -405,135 +405,8 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                           />
                         )}
                       </div>
-                      <div>
-                        {shopLoading ? (
-                          <Skeleton variant="text" width={150} />
-                        ) : (
-                          <LabelStyle component={'label'} htmlFor="bank-name">
-                            Bank Name
-                          </LabelStyle>
-                        )}
-                        {shopLoading ? (
-                          <Skeleton variant="rectangular" width="100%" height={240} />
-                        ) : (
-                          <TextField
-                            id="bank-name"
-                            fullWidth
-                            {...getFieldProps('paymentInfo.bankName')}
-                            error={Boolean(touched.paymentInfo?.bankName && errors.paymentInfo?.bankName)}
-                            helperText={touched.paymentInfo?.bankName && errors.paymentInfo?.bankName}
-                          />
-                        )}
-                      </div>
-                      <div>
-                        {shopLoading ? (
-                          <Skeleton variant="text" width={150} />
-                        ) : (
-                          <LabelStyle component={'label'} htmlFor="account-number">
-                            Account Number
-                          </LabelStyle>
-                        )}
-                        {shopLoading ? (
-                          <Skeleton variant="rectangular" width="100%" height={240} />
-                        ) : (
-                          <TextField
-                            id="account-number"
-                            fullWidth
-                            {...getFieldProps('paymentInfo.AccountNo')}
-                            error={Boolean(touched.paymentInfo?.AccountNo && errors.paymentInfo?.AccountNo)}
-                            helperText={touched.paymentInfo?.AccountNo && errors.paymentInfo?.AccountNo}
-                          />
-                        )}
-                      </div>
-
-                      <div>
-                        {shopLoading ? (
-                          <Skeleton variant="text" width={150} />
-                        ) : (
-                          <LabelStyle component={'label'} htmlFor="country">
-                            Country
-                          </LabelStyle>
-                        )}
-                        {shopLoading ? (
-                          <Skeleton variant="rectangular" width="100%" height={240} />
-                        ) : (
-                          <TextField
-                            select
-                            fullWidth
-                            placeholder="Country"
-                            {...getFieldProps('address.country')}
-                            SelectProps={{ native: true }}
-                            error={Boolean(touched?.address?.country && errors?.address?.country)}
-                            helperText={touched?.address?.country && errors?.address?.country}
-                          >
-                            {countries.map((option) => (
-                              <option key={option.code} value={option.label}>
-                                {option.label}
-                              </option>
-                            ))}
-                          </TextField>
-                        )}
-                      </div>
-                      <div>
-                        {shopLoading ? (
-                          <Skeleton variant="text" width={150} />
-                        ) : (
-                          <LabelStyle component={'label'} htmlFor="city">
-                            City
-                          </LabelStyle>
-                        )}
-                        {shopLoading ? (
-                          <Skeleton variant="rectangular" width="100%" height={240} />
-                        ) : (
-                          <TextField
-                            id="city"
-                            fullWidth
-                            {...getFieldProps('address.city')}
-                            error={Boolean(touched.address?.city && errors.address?.city)}
-                            helperText={touched.address?.city && errors.address?.city}
-                          />
-                        )}
-                      </div>
-                      <div>
-                        {shopLoading ? (
-                          <Skeleton variant="text" width={150} />
-                        ) : (
-                          <LabelStyle component={'label'} htmlFor="state">
-                            State
-                          </LabelStyle>
-                        )}
-                        {shopLoading ? (
-                          <Skeleton variant="rectangular" width="100%" height={240} />
-                        ) : (
-                          <TextField
-                            id="state"
-                            fullWidth
-                            {...getFieldProps('address.state')}
-                            error={Boolean(touched.address?.state && errors.address?.state)}
-                            helperText={touched.address?.state && errors.address?.state}
-                          />
-                        )}
-                      </div>
-                      <div>
-                        {shopLoading ? (
-                          <Skeleton variant="text" width={150} />
-                        ) : (
-                          <LabelStyle component={'label'} htmlFor="streetAddress">
-                            Street Address
-                          </LabelStyle>
-                        )}
-                        {shopLoading ? (
-                          <Skeleton variant="rectangular" width="100%" height={240} />
-                        ) : (
-                          <TextField
-                            id="streetAddress"
-                            fullWidth
-                            {...getFieldProps('address.streetAddress')}
-                            error={Boolean(touched.address?.streetAddress && errors.address?.streetAddress)}
-                            helperText={touched.address?.streetAddress && errors.address?.streetAddress}
-                          />
-                        )}
-                      </div>
+                      
+                        
                       {currentShop && (
                         <Stack spacing={2}>
                           <FormControl fullWidth sx={{ select: { textTransform: 'capitalize' } }}>

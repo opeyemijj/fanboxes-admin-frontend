@@ -16,7 +16,7 @@ export default function Page() {
             href: '/admin'
           },
           {
-            name: 'Shops',
+            name: 'Influencers',
             href: '/admin/shops'
           },
           {
