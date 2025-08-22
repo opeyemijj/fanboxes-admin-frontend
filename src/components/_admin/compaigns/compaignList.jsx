@@ -15,7 +15,7 @@ import Compaign from 'src/components/table/rows/compaign';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false, sort: true },
-  { id: 'total', label: 'Total Products', alignRight: false },
+  { id: 'total', label: 'Total Boxes', alignRight: false },
   { id: 'discount', label: 'Discount', alignRight: false },
   { id: 'startDate', label: 'Start Date', alignRight: false },
   { id: 'endDate', label: 'End Date', alignRight: false },

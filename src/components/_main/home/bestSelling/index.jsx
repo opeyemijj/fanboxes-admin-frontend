@@ -29,10 +29,10 @@ export default function Featured() {
           }}
         >
           <Typography variant="h2" color="text.primary" mt={{ xs: 4, md: 8 }}>
-            Best Selling Products
+            Best Selling Boxes
           </Typography>
           <Typography variant="body1" color="text.secondary" mb={{ xs: 3, md: 5 }}>
-            Special products in this month
+            Special Boxes in this month
           </Typography>
         </Box>
         <Button
@@ -55,7 +55,7 @@ export default function Featured() {
 
       {!isLoading && !Boolean(data?.data.length) ? (
         <Typography variant="h3" color="error.main" textAlign="center">
-          Products not found
+          Boxes not found
         </Typography>
       ) : (
         <ProductsCarousel data={data?.data} isLoading={isLoading} />

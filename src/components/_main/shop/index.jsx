@@ -55,9 +55,9 @@ export default function ShopSettingMain() {
         {isLoading ? (
           <Skeleton variant="text" width={280} sx={{ mx: 'auto' }} />
         ) : data?.data ? (
-          'Update shop'
+          'Update Influencer'
         ) : (
-          'Create Shop'
+          'Create Influencer'
         )}
       </Typography>
       <ShopForm data={data?.data} isLoading={isLoading} />

@@ -223,7 +223,7 @@ export default function CreateShopSettingFrom() {
   return (
     <Box position="relative">
       <Typography variant="h2" color="text-primary" textAlign="center" py={6}>
-        Create Shop
+        Create Influencer
       </Typography>
       <FormikProvider value={formik}>
         <Form noValidate autoComplete="off" onSubmit={handleSubmit}>

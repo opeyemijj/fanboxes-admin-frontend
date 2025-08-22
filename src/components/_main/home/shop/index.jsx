@@ -25,7 +25,7 @@ export default function ShopComponent() {
       >
         <Box width="100%">
           <Typography variant="h2" color="text.primary" mt={{ xs: 4, md: 8 }}>
-            Best Shops
+            Best Influencers
           </Typography>
           <Typography variant="body1" color="text.secondary" mb={{ xs: 3, md: 5 }}>
             Our Highest Rated Shops Where You Can Find What You Are Looking For
@@ -60,7 +60,7 @@ export default function ShopComponent() {
           ))}
           {!isLoading && !Boolean(shops?.length) && (
             <Typography variant="h3" color="error.main" textAlign="center">
-              Shop not found
+              Influencers not found
             </Typography>
           )}
         </Grid>

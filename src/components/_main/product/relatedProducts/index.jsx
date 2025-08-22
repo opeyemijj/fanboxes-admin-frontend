@@ -25,7 +25,7 @@ export default function RelatedProducts({ ...props }) {
   return (
     <RootStyled>
       <Typography variant="h2" color="text.primary" className="heading">
-        Related Products
+        Related Boxes
       </Typography>
       <Typography variant="body1" color="text.secondary" className="description">
         Lorem Ipsum Is Simply Dummy Text Of The Printing And Typesetting Industry.

@@ -53,9 +53,9 @@ const MAIN_LINKS = [
     heading: 'Resources',
     listText1: 'Contact us',
     listLink1: '/contact',
-    listText2: 'Products',
+    listText2: 'Boxes',
     listLink2: '/products',
-    listText3: 'Shops',
+    listText3: 'Influencers',
     listLink3: '/shops',
     listText4: 'Compaigns',
     listLink4: '/compaigns'
