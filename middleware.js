@@ -22,7 +22,8 @@ export async function middleware(request) {
 
   // 4. Vendor route protection
   if (pathname.startsWith('/vendor')) {
-    if (!isAuthenticated || userRole !== 'vendor') {
+    // if (!isAuthenticated || userRole !== 'vendor') {
+    if (!isAuthenticated || !['vendor', 'admin', 'super admin'].includes(userRole)) {
       const loginUrl = new URL('/auth/session', request.url);
       loginUrl.searchParams.set('redirect', pathname);
       return NextResponse.redirect(loginUrl);
