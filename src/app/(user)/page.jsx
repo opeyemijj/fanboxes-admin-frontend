@@ -8,12 +8,11 @@ import LoginMain from 'src/components/_main/auth/login';
 
 // Meta information
 export const metadata = {
-  title: 'Login to Fanboxes | Your Gateway to Seamless Shopping and Secure Transactions',
-  description:
-    'Log in to Fanboxes for secure access to your account. Enjoy seamless shopping, personalized experiences, and hassle-free transactions. Your trusted portal to a world of convenience awaits. Login now!',
+  title: 'Login to Fanboxes ',
+  description: 'Log in to Fanboxes for secure access to your account.',
   applicationName: 'Fanboxes',
   authors: 'Fanboxes',
-  keywords: 'ecommerce, Fanboxes, Commerce, Login Fanboxes, LoginFrom Fanboxes'
+  keywords: 'Login Fanboxes, LoginFrom Fanboxes'
 };
 
 export default async function Login() {

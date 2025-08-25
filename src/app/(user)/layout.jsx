@@ -11,17 +11,16 @@ import ActionBar from 'src/layout/_main/actionbar';
 
 // Meta information
 export const metadata = {
-  title: 'Fanboxes E-commerce Script | Your Gateway to Seamless Shopping and Secure Transactions',
-  description:
-    'Log in to Fanboxes for secure access to your account. Enjoy seamless shopping, personalized experiences, and hassle-free transactions. Your trusted portal to a world of convenience awaits. Login now!',
+  title: 'Fanboxes',
+  description: 'Every box is a new adventure',
   applicationName: 'Fanboxes',
   authors: 'Fanboxes',
-  keywords: 'ecommerce, Fanboxes, Commerce, Login Fanboxes, LoginFrom Fanboxes',
+  keywords: 'ecommerce, Fanboxes, Login Fanboxes, LoginFrom Fanboxes',
   icons: {
     icon: '/favicon.png'
   },
   openGraph: {
-    images: 'https://nextall.vercel.app/opengraph-image.png?1c6a1fa20db2840f'
+    images: 'https://fanboxes-user-frontend.vercel.app/favicon.png'
   }
 };
 
