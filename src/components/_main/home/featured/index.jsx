@@ -25,7 +25,7 @@ export default function Index() {
       >
         <Box>
           <Typography variant="h2" color="text.primary" mt={{ xs: 4, md: 8 }}>
-            Featured Products
+            Featured Boxes
           </Typography>
           <Typography variant="body1" color="text.secondary" mb={{ xs: 3, md: 5 }}>
             Lorem Ipsum Is Simply Dummy Text Of The Printing And Typesetting Industry.

@@ -4,7 +4,7 @@ import slide2 from '../../../../../public//images/hero-banner-2.png';
 export const data = [
   {
     cover: slide1,
-    heading: 'Top Products Of The Year!',
+    heading: 'Top Boxes Of The Year!',
     description: 'It is a long established fact that a reader will be distracted by the readable.',
     color: '#FBCA66',
     btnPrimary: {
@@ -18,7 +18,7 @@ export const data = [
   },
   {
     cover: slide2,
-    heading: 'Top Products Of The Year!',
+    heading: 'Top Boxes Of The Year!',
     description: 'It is a long established fact that a reader will be distracted by the readable.',
     color: '#FBCA66',
     btnPrimary: {

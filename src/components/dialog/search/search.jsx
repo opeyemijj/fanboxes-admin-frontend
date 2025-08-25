@@ -146,7 +146,7 @@ export default function Search({ ...props }) {
       <Stack gap={1} direction="row" p={1}>
         <FormControl fullWidth>
           <LabelStyle component={'label'} htmlFor="shops">
-            Shop
+            Influencer
           </LabelStyle>
           {filtersLoading ? (
             <Skeleton variant="rounded" height={40} width="100%" />

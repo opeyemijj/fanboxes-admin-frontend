@@ -1,6 +1,3 @@
-// const withBundleAnalyzer = require('@next/bundle-analyzer')({
-//   enabled: process.env.ANALYZE === 'true'
-// });
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   webpack: (config) => {
@@ -21,23 +18,16 @@ const nextConfig = {
     DO_SPACES_SECRET: process.env.DO_SPACES_SECRET
   },
   images: {
-    domains: ['nextall.vercel.app"', 'res.cloudinary.com', 'shouttymedia.nyc3.digitaloceanspaces.com','example.com']
+    domains: ['nextall.vercel.app', 'res.cloudinary.com', 'shouttymedia.nyc3.digitaloceanspaces.com', 'example.com'],
+    // 👇 optional but better for Next.js 13/14
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'shouttymedia.nyc3.digitaloceanspaces.com',
+        pathname: '/**'
+      }
+    ]
   }
 };
 
 module.exports = nextConfig;
-
-// remotePatterns: [
-//   {
-//     protocol: 'https',
-//     hostname: 'res.cloudinary.com',
-//     port: '',
-//     pathname: ''
-//   },
-//   {
-//     protocol: 'https',
-//     hostname: 'nextall.vercel.app',
-//     port: '',
-//     pathname: ''
-//   }
-// ]

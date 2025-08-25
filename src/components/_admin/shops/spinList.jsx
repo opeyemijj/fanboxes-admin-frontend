@@ -23,6 +23,7 @@ const TABLE_HEAD = [
   { id: 'clientSeed', label: 'Client Seed', alignRight: false, sort: true },
   { id: 'serverSeed', label: 'Server Seed', alignRight: false, sort: true },
   { id: 'user', label: 'User', alignRight: false, sort: true },
+  { id: 'date', label: 'Date', alignRight: false, sort: true },
   { id: '', label: 'Actions', alignRight: false }
 ];
 

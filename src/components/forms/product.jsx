@@ -36,6 +36,8 @@ import axios from 'axios';
 import UploadMultiFile from 'src/components/upload/UploadMultiFile';
 import { fCurrency } from 'src/utils/formatNumber';
 import uploadToSpaces from 'src/utils/upload';
+import parseMongooseError from 'src/utils/errorHandler';
+
 // ----------------------------------------------------------------------
 
 const GENDER_OPTION = ['men', 'women', 'kids', 'others'];
@@ -76,9 +78,13 @@ export default function ProductForm({
         router.push((isVendor ? '/vendor' : '/admin') + '/products');
       },
       onError: (error) => {
-        toast.error(error.response.data.message);
-      }
-    }
+        alert(error?.message || error?.response?.data?.message)
+        let errorMessage = parseMongooseError(error?.message)
+                toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+                      autoClose: false,        // Prevents auto-dismissal
+                      closeOnClick: true,      // Allows clicking on the close icon
+                    });      }
+            }
   );
   const NewProductSchema = Yup.object().shape({
     name: Yup.string().required('Box title is required'),
@@ -111,8 +117,13 @@ export default function ProductForm({
           ...rest,
           ...(currentProduct && { currentSlug: currentProduct.slug })
         });
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        setloading(false)
+        let errorMessage = parseMongooseError(err?.message)
+        toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+              autoClose: false,        // Prevents auto-dismissal
+              closeOnClick: true,      // Allows clicking on the close icon
+            });
       }
     }
   });
@@ -122,27 +133,6 @@ export default function ProductForm({
       toast.error(error.response.data.message);
     }
   });
-  // handle drop
-  // const handleDrop = (acceptedFiles) => {
-  //   setloading(true);
-  //   const uploaders = acceptedFiles.map((file) => {
-  //     const formData = new FormData();
-  //     formData.append('file', file);
-  //     formData.append('upload_preset', 'my-uploads');
-  //     setFieldValue('blob', values.blob.concat(acceptedFiles));
-  //     return axios.post(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`, formData);
-  //   });
-
-  //   axios.all(uploaders).then((data) => {
-  //     const newImages = data.map(({ data }) => ({
-  //       url: data.secure_url,
-  //       _id: data.public_id
-  //       // blob: blobs[i],
-  //     }));
-  //     setloading(false);
-  //     setFieldValue('images', values.images.concat(newImages));
-  //   });
-  // };
 
   const handleDrop = async (acceptedFiles) => {
     setloading(true);
@@ -162,7 +152,6 @@ export default function ProductForm({
         filesWithPreview.map((file) =>
           uploadToSpaces(file, (progress) => {
             // Optional: You can show total progress if needed
-            console.log(`Uploading ${file.name}: ${progress}%`);
           })
         )
       );
@@ -176,7 +165,6 @@ export default function ProductForm({
       // Merge with existing images
       setFieldValue('images', values.images.concat(newImages));
     } catch (err) {
-      console.error('Upload failed:', err);
     } finally {
       setloading(false);
     }

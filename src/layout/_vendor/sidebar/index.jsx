@@ -43,7 +43,7 @@ export const navlinks = [
 
   {
     id: 2,
-    title: 'Products',
+    title: 'Boxes',
     slug: 'products',
     icon: <BsShop />,
     isSearch: true
@@ -58,7 +58,7 @@ export const navlinks = [
   },
   {
     id: 4,
-    title: 'Shop',
+    title: 'Influencers',
     slug: 'shop',
     icon: <HiOutlineShoppingBag />,
     isSearch: false

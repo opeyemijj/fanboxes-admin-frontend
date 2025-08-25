@@ -27,7 +27,7 @@ const Data = [
     description: 'Contrary to popular belief, Lorem is not simply random text.'
   },
   {
-    name: 'Products',
+    name: 'Boxes',
     range: '70k+',
     description: 'Contrary to popular belief, Lorem is not simply random text.'
   }

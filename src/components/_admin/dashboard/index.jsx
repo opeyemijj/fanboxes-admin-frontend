@@ -87,7 +87,7 @@ export default function Dashboard({ isVendor }) {
         <Grid item xs={12} sm={isVendor ? 12 : 6} md={3}>
           <DashboardCard
             color="error"
-            title="Total Products"
+            title="Total Boxes"
             value={totalProducts}
             icon={<BiSolidShoppingBags size={24} />}
             isLoading={isLoading}
@@ -108,7 +108,7 @@ export default function Dashboard({ isVendor }) {
           <Grid item xs={12} sm={isVendor ? 12 : 6} md={3}>
             <DashboardCard
               color="info"
-              title="Total Shop"
+              title="Total Influencers"
               value={totalShops}
               icon={<BsShop size={24} />}
               isLoading={isLoading}

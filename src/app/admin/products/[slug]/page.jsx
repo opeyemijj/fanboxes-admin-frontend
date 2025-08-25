@@ -23,7 +23,7 @@ export default async function page({ params }) {
             href: '/admin'
           },
           {
-            name: 'Products',
+            name: 'Boxes',
             href: '/admin/products'
           },
           {

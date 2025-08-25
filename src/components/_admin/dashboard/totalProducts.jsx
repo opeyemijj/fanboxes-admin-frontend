@@ -25,7 +25,7 @@ export default function DailyVisters({ data, isLoading }) {
       <>
         <Box sx={{ flexGrow: 1 }}>
           <Typography variant="subtitle1">
-            {isLoading ? <Skeleton variant="text" width="100px" /> : 'Total Products'}
+            {isLoading ? <Skeleton variant="text" width="100px" /> : 'Total Boxes'}
           </Typography>
           <Typography variant="h3">{isLoading ? <Skeleton variant="text" width="100px" /> : data}</Typography>
         </Box>

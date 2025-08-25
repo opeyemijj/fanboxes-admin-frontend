@@ -6,7 +6,7 @@ import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
 
 // Meta information
 export const metadata = {
-  title: 'Products - Fanboxes',
+  title: 'Boxes - Fanboxes',
   applicationName: 'Fanboxes',
   authors: 'Fanboxes'
 };

@@ -24,7 +24,7 @@ export default function Page({ params }) {
             href: '/admin'
           },
           {
-            name: 'Products',
+            name: 'Boxes',
             href: '/admin/products'
           },
           {
