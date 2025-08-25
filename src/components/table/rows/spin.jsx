@@ -51,6 +51,17 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
       return str.slice(0, remainChar);
     }
   }
+
+  function formatDateToDDYYYYMM(dateString) {
+    const date = new Date(dateString);
+
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const day = String(date.getDate()).padStart(2, '0');
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  }
+
   return (
     <TableRow hover key={Math.random()}>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
@@ -163,6 +174,8 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
           <>{shortenString(row?.userDetails?.firstName + ' ' + row?.userDetails?.lastName, 13, false)}</>
         )}
       </TableCell>
+
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{formatDateToDDYYYYMM(row?.createdAt)}</>}</TableCell>
 
       <TableCell align="left">
         {isLoading ? (
