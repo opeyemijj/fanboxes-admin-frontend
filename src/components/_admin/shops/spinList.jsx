@@ -35,9 +35,13 @@ export default function AdminSpins() {
   const [apicall, setApicall] = useState(false);
   const [id, setId] = useState(null);
 
-  const { data, isLoading } = useQuery(['admin-spins', apicall, searchParam, pageParam], () => api.getSpinsByAdmin(), {
-    onError: (err) => toast.error(err.response?.data?.message || 'Something went wrong!')
-  });
+  const { data, isLoading } = useQuery(
+    ['admin-spins', apicall, searchParam, pageParam],
+    () => api.getSpinsByAdmin(+pageParam || 1, searchParam || ''),
+    {
+      onError: (err) => toast.error(err.response?.data?.message || 'Something went wrong!')
+    }
+  );
 
   const handleClickOpen = (prop) => () => {
     setId(prop);
