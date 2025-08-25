@@ -19,7 +19,7 @@ export default function page() {
         links={[
           {
             name: 'Dashboard',
-            href: '/admin'
+            href: '/admin/dashboard'
           },
           {
             name: 'Settings'

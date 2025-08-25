@@ -24,7 +24,7 @@ export default async function Categories() {
         links={[
           {
             name: 'Dashboard',
-            href: '/admin'
+            href: '/admin/dashboard'
           },
           {
             name: 'Sub Categories'

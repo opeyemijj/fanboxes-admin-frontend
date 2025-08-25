@@ -71,7 +71,7 @@ export default function Catgeories() {
         links={[
           {
             name: 'Dashboard',
-            href: '/admin'
+            href: '/admin/dashboard'
           },
           {
             name: 'Coupon codes'

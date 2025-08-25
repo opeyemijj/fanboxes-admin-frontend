@@ -186,16 +186,19 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
           </Stack>
         ) : (
           <Stack direction="row" justifyContent="center">
-            <BsShieldCheck
-              size={17}
-              onClick={() => {
-                const tempData = { spinItem: row };
-                dispatch(selectSpinItem(tempData));
-                router.push(`/admin/spins/${row._id}`);
-              }}
-            >
-              <IoEye />
-            </BsShieldCheck>
+            <Tooltip title="Verify Spin">
+              <BsShieldCheck
+                size={17}
+                onClick={() => {
+                  const tempData = { spinItem: row };
+                  dispatch(selectSpinItem(tempData));
+                  router.push(`/admin/spins/${row._id}`);
+                }}
+                style={{ cursor: 'pointer' }}
+              >
+                <IoEye />
+              </BsShieldCheck>
+            </Tooltip>
           </Stack>
         )}
       </TableCell>

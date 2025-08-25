@@ -13,7 +13,7 @@ export default function page({ params }) {
         links={[
           {
             name: 'Dashboard',
-            href: '/admin'
+            href: '/admin/dashboard'
           },
           {
             name: 'Users',

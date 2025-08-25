@@ -20,7 +20,7 @@ export default async function page({ params }) {
         links={[
           {
             name: 'Dashboard',
-            href: '/admin'
+            href: '/admin/dashboard'
           },
           {
             name: 'Boxes',

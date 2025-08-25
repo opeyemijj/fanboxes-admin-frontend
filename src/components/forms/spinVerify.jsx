@@ -260,8 +260,11 @@ export default function CategoryForm({ spinItem, isLoading: categoryLoading }) {
                         <Typography variant="body2" fontWeight={500}>
                           {verifiedResult?.winningItem?.name}
                         </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          ${verifiedResult?.winningItem?.value}
+                        <Typography variant="body2" color="text.secondary">
+                          Odds: {verifiedResult?.winningItem?.odd}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Value: ${verifiedResult?.winningItem?.value}
                         </Typography>
                       </Box>
                     </Stack>

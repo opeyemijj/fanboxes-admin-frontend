@@ -27,7 +27,7 @@ export default function Page({ params }) {
         links={[
           {
             name: 'Dashboard',
-            href: '/admin'
+            href: '/admin/dashboard'
           },
           {
             name: 'Brands',

@@ -35,7 +35,7 @@ export default function OrderDetail({ params }) {
         links={[
           {
             name: 'Dashboard',
-            href: '/admin'
+            href: '/admin/dashboard'
           },
           {
             name: 'Orders',
