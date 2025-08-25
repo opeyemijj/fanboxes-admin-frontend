@@ -43,10 +43,14 @@ export default function AdminBoxItems() {
           { name: 'Boxes', href: '/admin/products' },
           { name: 'Items' }
         ]}
-        action={{
-          href: `/admin/products/addItem?slug=${productDetails?.slug}`,
-          title: 'Add Item To Box'
-        }}
+        action={
+          productDetails?.slug
+            ? {
+                href: `/admin/products/addItem?slug=${productDetails?.slug}`,
+                title: 'Add Item To Box'
+              }
+            : null
+        }
       />
 
       <BoxItemList boxDetails={productDetails} categories={null} shops={shops} brands={brands} />
