@@ -183,7 +183,7 @@ export default function SubCategoryForm({
                     ) : (
                       <LabelStyle component={'label'} htmlFor="category-name">
                         {' '}
-                        {'Category Name'}{' '}
+                        {'Sub Category Name'}{' '}
                       </LabelStyle>
                     )}
                     {categoryLoading ? (
