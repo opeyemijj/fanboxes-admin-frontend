@@ -18,6 +18,8 @@ import toast from 'react-hot-toast';
 import { Form, FormikProvider, useFormik } from 'formik';
 // api
 import * as api from 'src/services';
+import OddsMapping from '../table/rows/oddsMapping';
+import Table from 'src/components/table/table';
 
 CategoryForm.propTypes = {
   data: PropTypes.object,
@@ -36,10 +38,17 @@ export default function CategoryForm({ spinItem, isLoading: categoryLoading }) {
   const router = useRouter();
   const [verifiedResult, setVerifiedResult] = useState();
 
+  const TABLE_HEAD = [
+    { id: 'name', label: 'Name', alignRight: false, sort: true },
+    { id: 'start', label: 'Start', alignRight: false, sort: false },
+    { id: 'end', label: 'End', alignRight: false, sort: false }
+  ];
+
   const { mutate, isLoading } = useMutation(api.verifySpinByAdmin, {
     retry: false,
     onSuccess: (data) => {
       setVerifiedResult(data?.data);
+      console.log(data, 'Check the data');
       toast.success(data.message);
     },
     onError: (error) => {
@@ -276,32 +285,15 @@ export default function CategoryForm({ spinItem, isLoading: categoryLoading }) {
               <Grid item xs={12} md={6}>
                 <Card sx={{ p: 3, borderRadius: 3, boxShadow: 2, height: '100%' }}>
                   <Typography variant="subtitle2" mb={1}>
-                    Influencer
+                    Odds Map
                   </Typography>
-                  <Stack direction="row" alignItems="center" spacing={2}>
-                    <Box
-                      sx={{
-                        position: 'relative',
-                        width: 50,
-                        height: 50,
-                        borderRadius: 2,
-                        overflow: 'hidden',
-                        border: (theme) => `1px solid ${theme.palette.divider}`
-                      }}
-                    >
-                      <BlurImage
-                        alt={verifiedResult?.shopDetails?.title}
-                        src={verifiedResult?.shopDetails?.logo?.url}
-                        blurDataURL={verifiedResult?.shopDetails?.logo?.blurDataURL}
-                        placeholder="blur"
-                        layout="fill"
-                        objectFit="cover"
-                      />
-                    </Box>
-                    <Typography variant="body2" fontWeight={500}>
-                      {verifiedResult?.shopDetails?.title}
-                    </Typography>
-                  </Stack>
+                  <Table
+                    headData={TABLE_HEAD}
+                    data={{ data: verifiedResult?.oddsMap }}
+                    isLoading={isLoading}
+                    row={OddsMapping}
+                    handleClickOpen={() => console.log('Nothing')}
+                  />
                 </Card>
               </Grid>
             </Grid>
