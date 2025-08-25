@@ -18,15 +18,7 @@ const nextConfig = {
     DO_SPACES_SECRET: process.env.DO_SPACES_SECRET
   },
   images: {
-    domains: ['nextall.vercel.app', 'res.cloudinary.com', 'shouttymedia.nyc3.digitaloceanspaces.com', 'example.com'],
-    // 👇 optional but better for Next.js 13/14
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'shouttymedia.nyc3.digitaloceanspaces.com',
-        pathname: '/**'
-      }
-    ]
+    unoptimized: true
   }
 };
 
