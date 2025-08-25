@@ -11,5 +11,5 @@ export default function BlurImage({ ...props }) {
 BlurImage.propTypes = {
   src: PropTypes.string.isRequired,
   alt: PropTypes.string.isRequired,
-  static: PropTypes.boolean
+  static: PropTypes.bool
 };
