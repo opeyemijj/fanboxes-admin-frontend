@@ -61,13 +61,6 @@ export const navlinks = [
     icon: <TbCategory2 />,
     isSearch: true
   },
-  {
-    id: 4,
-    title: 'Boxes',
-    slug: 'products',
-    icon: <BsShop />,
-    isSearch: true
-  },
 
   {
     id: 5,
@@ -76,6 +69,14 @@ export const navlinks = [
     icon: <BsBuildings />,
     isSearch: true
   },
+  {
+    id: 4,
+    title: 'Boxes',
+    slug: 'products',
+    icon: <BsShop />,
+    isSearch: true
+  },
+
   {
     id: 6,
     title: 'Spins',
