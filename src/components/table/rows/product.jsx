@@ -112,7 +112,6 @@ export default function ProductRow({ isLoading, row, handleClickOpen, isVendor, 
       {/* <TableCell>
         <Skeleton variant="text" />
       </TableCell> */}
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{fDateShort(row?.createdAt, enUS)}</>}</TableCell>
       {/* <TableCell>
         {isLoading ? (
           <Skeleton variant="text" />
@@ -160,6 +159,8 @@ export default function ProductRow({ isLoading, row, handleClickOpen, isVendor, 
           />
         )}
       </TableCell> */}
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{fDateShort(row?.createdAt, enUS)}</>}</TableCell>
+
       <TableCell align="right">
         {isLoading ? (
           <Stack direction="row" justifyContent="flex-end">
