@@ -358,8 +358,8 @@ export const getProducts = async (query = '', cat, rate) => {
   return data;
 };
 
-export const getSpinsByAdmin = async () => {
-  const { data } = await http.get(`admin/spins`);
+export const getSpinsByAdmin = async (page, search) => {
+  const { data } = await http.get(`admin/spins?search=${search}&page=${page}`);
   return data;
 };
 

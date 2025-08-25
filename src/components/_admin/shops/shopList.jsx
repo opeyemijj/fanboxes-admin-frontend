@@ -35,7 +35,6 @@ export default function AdminProducts() {
       onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
     }
   );
-  console.log(data, 'data123');
   const handleClickOpen = (prop) => () => {
     setId(prop);
     setOpen(true);
