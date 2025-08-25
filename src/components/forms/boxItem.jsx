@@ -73,11 +73,11 @@ export default function AddItemForm({ currentProduct, isInitialized = false, isV
     }
   );
   const NewProductSchema = Yup.object().shape({
-    name: Yup.string().required('Item name is required'),
+    name: Yup.string().max(100, 'Name max limit 100 char').required('Item name is required'),
     value: Yup.string().required('Item value is required'),
     weight: Yup.number().max(100, 'Max Limit 100').required('Item weight is required'),
     odd: Yup.number().max(1, 'Max Limit 1').required('Item odd is required'),
-    description: Yup.string().required('Description is required'),
+    description: Yup.string().optional('Description is required'),
     slug: Yup.string().required('Slug is required'),
     images: Yup.array().min(1, 'Image is required')
   });
