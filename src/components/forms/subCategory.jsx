@@ -29,6 +29,7 @@ import axios from 'axios';
 import { Form, FormikProvider, useFormik } from 'formik';
 // api
 import * as api from 'src/services';
+import parseMongooseError from 'src/utils/errorHandler';
 
 SubCategoryForm.propTypes = {
   categories: PropTypes.arrayOf(
@@ -81,7 +82,12 @@ export default function SubCategoryForm({
         router.push('/admin/sub-categories');
       },
       onError: (error) => {
-        toast.error(error.response.data.message);
+        console.log(error, 'check the error');
+        let errorMessage = parseMongooseError(error?.message);
+        toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+          autoClose: false, // Prevents auto-dismissal
+          closeOnClick: true // Allows clicking on the close icon
+        });
       }
     }
   );
@@ -118,6 +124,11 @@ export default function SubCategoryForm({
         });
       } catch (error) {
         console.error(error);
+        let errorMessage = parseMongooseError(err?.message);
+        toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+          autoClose: false, // Prevents auto-dismissal
+          closeOnClick: true // Allows clicking on the close icon
+        });
       }
     }
   });

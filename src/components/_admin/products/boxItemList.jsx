@@ -55,7 +55,6 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
       console.error(error);
     }
   }
-  console.log('When It is calling');
 
   function DataSetupAccordingToPagination(page) {
     if (!boxDetails) return;

@@ -78,13 +78,14 @@ export default function ProductForm({
         router.push((isVendor ? '/vendor' : '/admin') + '/products');
       },
       onError: (error) => {
-        alert(error?.message || error?.response?.data?.message)
-        let errorMessage = parseMongooseError(error?.message)
-                toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
-                      autoClose: false,        // Prevents auto-dismissal
-                      closeOnClick: true,      // Allows clicking on the close icon
-                    });      }
-            }
+        console.log(error, 'check the error');
+        let errorMessage = parseMongooseError(error?.message);
+        toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+          autoClose: false, // Prevents auto-dismissal
+          closeOnClick: true // Allows clicking on the close icon
+        });
+      }
+    }
   );
   const NewProductSchema = Yup.object().shape({
     name: Yup.string().required('Box title is required'),
@@ -118,12 +119,12 @@ export default function ProductForm({
           ...(currentProduct && { currentSlug: currentProduct.slug })
         });
       } catch (err) {
-        setloading(false)
-        let errorMessage = parseMongooseError(err?.message)
+        setloading(false);
+        let errorMessage = parseMongooseError(err?.message);
         toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
-              autoClose: false,        // Prevents auto-dismissal
-              closeOnClick: true,      // Allows clicking on the close icon
-            });
+          autoClose: false, // Prevents auto-dismissal
+          closeOnClick: true // Allows clicking on the close icon
+        });
       }
     }
   });

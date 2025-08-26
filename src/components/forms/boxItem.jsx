@@ -36,6 +36,7 @@ import axios from 'axios';
 import UploadMultiFile from 'src/components/upload/UploadMultiFile';
 import { fCurrency } from 'src/utils/formatNumber';
 import uploadToSpaces from 'src/utils/upload';
+import parseMongooseError from 'src/utils/errorHandler';
 // ----------------------------------------------------------------------
 
 const GENDER_OPTION = ['men', 'women', 'kids', 'others'];
@@ -68,7 +69,11 @@ export default function AddItemForm({ currentProduct, isInitialized = false, isV
       },
       onError: (error) => {
         console.log(error, 'Check the error');
-        toast.error(error.response.data.message);
+        let errorMessage = parseMongooseError(error?.message);
+        toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+          autoClose: false, // Prevents auto-dismissal
+          closeOnClick: true // Allows clicking on the close icon
+        });
       }
     }
   );
@@ -106,6 +111,11 @@ export default function AddItemForm({ currentProduct, isInitialized = false, isV
         });
       } catch (error) {
         console.error(error);
+        let errorMessage = parseMongooseError(error?.message);
+        toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+          autoClose: false, // Prevents auto-dismissal
+          closeOnClick: true // Allows clicking on the close icon
+        });
       }
     }
   });

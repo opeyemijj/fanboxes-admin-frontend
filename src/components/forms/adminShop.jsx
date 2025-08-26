@@ -33,6 +33,7 @@ import * as api from 'src/services';
 // countries
 import countries from 'src/components/_main/checkout/countries.json';
 import uploadToSpaces from 'src/utils/upload';
+import parseMongooseError from 'src/utils/errorHandler';
 
 AdminShopForm.propTypes = {
   data: PropTypes.object,
@@ -72,7 +73,11 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
         router.push('/admin/shops');
       },
       onError: (error) => {
-        toast.error(error.response.data.message);
+        let errorMessage = parseMongooseError(error?.message);
+        toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+          autoClose: false, // Prevents auto-dismissal
+          closeOnClick: true // Allows clicking on the close icon
+        });
       }
     }
   );
@@ -145,6 +150,11 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
         });
       } catch (error) {
         console.error(error);
+        let errorMessage = parseMongooseError(error?.message);
+        toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+          autoClose: false, // Prevents auto-dismissal
+          closeOnClick: true // Allows clicking on the close icon
+        });
       }
     }
   });

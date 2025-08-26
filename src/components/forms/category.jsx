@@ -31,6 +31,7 @@ import toast from 'react-hot-toast';
 import { Form, FormikProvider, useFormik } from 'formik';
 // api
 import * as api from 'src/services';
+import parseMongooseError from 'src/utils/errorHandler';
 
 CategoryForm.propTypes = {
   data: PropTypes.object,
@@ -70,7 +71,12 @@ export default function CategoryForm({ data: currentCategory, isLoading: categor
         router.push('/admin/categories');
       },
       onError: (error) => {
-        toast.error(error.response.data.message);
+        console.log(error, 'check the error');
+        let errorMessage = parseMongooseError(error?.message);
+        toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+          autoClose: false, // Prevents auto-dismissal
+          closeOnClick: true // Allows clicking on the close icon
+        });
       }
     }
   );
@@ -105,6 +111,11 @@ export default function CategoryForm({ data: currentCategory, isLoading: categor
         });
       } catch (error) {
         console.error(error);
+        let errorMessage = parseMongooseError(error?.message);
+        toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+          autoClose: false, // Prevents auto-dismissal
+          closeOnClick: true // Allows clicking on the close icon
+        });
       }
     }
   });
