@@ -145,8 +145,8 @@ export default function CategoryForm({ spinItem, isLoading: categoryLoading }) {
               >
                 <Stack spacing={2} height="100%">
                   <Stack gap={0} direction="row" alignItems="center">
-                    <LabelStyle>Box:</LabelStyle>
-                    <Typography>{spinItem?.boxDetails?.name}</Typography>
+                    {/* <LabelStyle>Box:</LabelStyle> */}
+                    <Typography>Box : {spinItem?.boxDetails?.name}</Typography>
                   </Stack>
 
                   <Divider />
