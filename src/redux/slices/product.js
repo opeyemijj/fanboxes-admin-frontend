@@ -14,8 +14,7 @@ const initialState = {
     shipping: shippingFee,
     billing: null
   },
-  boxAndItemData: {},
-  spinData: {}
+  boxAndItemData: {}
 };
 
 const slice = createSlice({
@@ -65,10 +64,6 @@ const slice = createSlice({
 
     selectBoxAndItem: (state, action) => {
       state.boxAndItemData = action.payload;
-    },
-
-    selectSpinItem: (state, action) => {
-      state.spinData = action.payload;
     },
 
     clearCart(state, action) {
@@ -150,6 +145,5 @@ export const {
   applyDiscount,
   increaseQuantity,
   decreaseQuantity,
-  selectBoxAndItem,
-  selectSpinItem
+  selectBoxAndItem
 } = slice.actions;

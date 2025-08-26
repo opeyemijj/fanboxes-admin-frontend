@@ -5,8 +5,7 @@ import { useSelector } from 'react-redux';
 import SpinVerifyForm from 'src/components/forms/spinVerify';
 
 export default function VerifySpin() {
-  const spinItem = useSelector(({ product }) => product?.spinData);
-  console.log(spinItem, 'Okk SEE this state');
+  const spinItem = useSelector(({ spin }) => spin?.spinData);
   return (
     <div>
       <SpinVerifyForm spinItem={spinItem?.spinItem} />

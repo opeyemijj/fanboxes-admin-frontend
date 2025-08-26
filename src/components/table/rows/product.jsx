@@ -143,22 +143,7 @@ export default function ProductRow({ isLoading, row, handleClickOpen, isVendor, 
         )}
       </TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : fCurrency(row?.priceSale || row?.price)}</TableCell>
-      {/* <TableCell>
-        {isLoading ? (
-          <Skeleton variant="text" />
-        ) : (
-          <Switch
-            {...label}
-            defaultChecked={row.isFeatured}
-            onChange={() => {
-              mutate({
-                isFeatured: !row.isFeatured,
-                id: row._id,
-              });
-            }}
-          />
-        )}
-      </TableCell> */}
+
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{fDateShort(row?.createdAt, enUS)}</>}</TableCell>
 
       <TableCell align="right">
@@ -171,7 +156,7 @@ export default function ProductRow({ isLoading, row, handleClickOpen, isVendor, 
         ) : (
           <Stack direction="row" justifyContent="flex-end">
             <Tooltip title="Preview">
-              <Link target="_blank" href={`/product/${row.slug}`}>
+              <Link target="_blank" href={`${process.env.USER_FRONTEND_URL}/boxes/${row.slug}`}>
                 <IconButton>
                   <IoEye />
                 </IconButton>

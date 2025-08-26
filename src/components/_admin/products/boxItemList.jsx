@@ -1,6 +1,5 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 import PropTypes from 'prop-types';
 import toast from 'react-hot-toast';
 
@@ -14,20 +13,24 @@ import BoxItem from 'src/components/table/rows/boxItem';
 import * as api from 'src/services';
 import { useMutation, useQuery } from 'react-query';
 import { Refresh } from '@mui/icons-material';
+import { useRouter } from 'next/router';
+import { useSearchParams } from 'next/navigation';
 
 export default function AdminBoxeItems({ boxDetails, brands, categories, shops, isVendor }) {
   // console.log(boxDetails, 'Check the box details');
   const fullUrl = typeof window !== 'undefined' ? window.location.href : '';
-  const lastSegment = fullUrl.substring(fullUrl.lastIndexOf('/') + 1);
+  const lastSegmentForSlug = fullUrl.substring(fullUrl.lastIndexOf('/') + 1);
+
+  // ✅ Get current page from URL
+  const itemLimit = 10;
+  const searchParams = useSearchParams();
+  const pageParam = parseInt(searchParams.get('page')) || 1;
 
   const [open, setOpen] = useState(false);
   const [apicall, setApicall] = useState(false);
   const [id, setId] = useState(null);
 
   const [data, setData] = useState(null);
-
-  // let data = { data: null };
-  // data.data = boxDetails?.items;
 
   // prettier-ignore
   const { mutate: updateItemsOdd, isLoading: loadingUpdateOdd } = useMutation(
@@ -53,12 +56,27 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
     }
   }
 
+  function DataSetupAccordingToPagination(page) {
+    if (!boxDetails) return;
+
+    const startingRange = itemLimit * (page - 1);
+    const endingRange = startingRange + itemLimit;
+    const paginateData = boxDetails.items.slice(startingRange, endingRange);
+
+    const temdata = {
+      data: paginateData,
+      count: Math.ceil(boxDetails?.items.length / itemLimit)
+    };
+
+    setData(temdata);
+  }
+
+  // ✅ Sync page from URL whenever it changes
   useEffect(() => {
     if (boxDetails) {
-      const temdata = { data: boxDetails.items };
-      setData(temdata);
+      DataSetupAccordingToPagination(pageParam);
     }
-  }, [boxDetails]);
+  }, [boxDetails, pageParam]);
 
   function distributeItems(items) {
     // Step 1: compute inverses of values
@@ -116,7 +134,7 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
   // console.log(data, 'Check the data');
 
   const handleClickOpen = (prop) => () => {
-    setId({ itemSlug: prop, boxSlug: lastSegment });
+    setId({ itemSlug: prop, boxSlug: lastSegmentForSlug });
     setOpen(true);
   };
   const handleClose = () => {
@@ -150,27 +168,6 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
         brands={[]}
         categories={[]}
         isVendor={isVendor}
-        filters={
-          isVendor
-            ? []
-            : [
-                {
-                  name: 'Shop',
-                  param: 'shop',
-                  data: shops
-                },
-                {
-                  name: 'Category',
-                  param: 'category',
-                  data: categories
-                },
-                {
-                  name: 'Brand',
-                  param: 'brand',
-                  data: brands
-                }
-              ]
-        }
         boxDetails={boxDetails}
       />
     </>
