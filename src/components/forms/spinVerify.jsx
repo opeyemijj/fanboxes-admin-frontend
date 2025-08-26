@@ -285,7 +285,7 @@ export default function CategoryForm({ spinItem, isLoading: categoryLoading }) {
               <Grid item xs={12} md={6}>
                 <Card sx={{ p: 3, borderRadius: 3, boxShadow: 2, height: '100%' }}>
                   <Typography variant="subtitle2" mb={1}>
-                    Odds Map
+                    Odds Mapping
                   </Typography>
                   <Table
                     headData={TABLE_HEAD}
