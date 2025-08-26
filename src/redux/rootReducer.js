@@ -12,6 +12,7 @@ import SettingsReducer from './slices/settings';
 import CategoriesReducer from './slices/categories';
 import BrandsReducer from './slices/brands';
 import ShopsReducer from './slices/shops';
+import SpinsReducer from './slices/spin';
 
 const rootPersistConfig = {
   key: 'root',
@@ -51,6 +52,12 @@ const userPersistConfig = {
   keyPrefix: 'redux-',
   whitelist: ['user', 'isAuthenticated']
 };
+const spinPersistConfig = {
+  key: 'spin',
+  storage,
+  keyPrefix: 'redux-',
+  whitelist: ['spin', 'spinData']
+};
 
 const reducer = combineReducers({
   product: persistReducer(productPersistConfig, productReducer),
@@ -60,6 +67,7 @@ const reducer = combineReducers({
   compare: persistReducer(comparePersistConfig, CompareReducer),
   categories: CategoriesReducer,
   brands: BrandsReducer,
-  shops: ShopsReducer
+  shops: ShopsReducer,
+  spin: persistReducer(spinPersistConfig, SpinsReducer)
 });
 export { rootPersistConfig, reducer };

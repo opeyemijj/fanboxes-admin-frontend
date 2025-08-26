@@ -20,7 +20,6 @@ import Label from 'src/components/label';
 import BlurImage from 'src/components/blurImage';
 
 import BlurImageAvatar from 'src/components/avatar';
-import { selectSpinItem } from 'src/redux/slices/product';
 
 // icons
 import { MdEdit } from 'react-icons/md';
