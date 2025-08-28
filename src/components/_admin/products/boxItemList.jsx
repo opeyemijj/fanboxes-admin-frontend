@@ -148,7 +148,7 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
           onClose={handleClose}
           id={id}
           apicall={setApicall}
-          endPoint={isVendor ? 'deleteVendorProduct' : 'deleteBoxItemByAdmin'}
+          endPoint={isVendor ? 'deleteBoxItemByVendor' : 'deleteBoxItemByAdmin'}
           type={'Item deleted'}
           deleteMessage={
             'Are you really sure you want to remove this item? Just making sure before we go ahead with it.'

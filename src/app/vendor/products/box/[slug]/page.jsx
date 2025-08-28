@@ -40,7 +40,7 @@ export default function AdminBoxItems() {
         }}
       />
 
-      <BoxItemList boxDetails={productDetails} categories={null} />
+      <BoxItemList boxDetails={productDetails} categories={null} isVendor />
     </>
   );
 }
