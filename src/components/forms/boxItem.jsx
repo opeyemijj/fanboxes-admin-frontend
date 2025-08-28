@@ -61,7 +61,7 @@ export default function AddItemForm({ currentProduct, isInitialized = false, isV
         : api.updateItemBoxByAdmin
       : isVendor
         ? api.createVendorBoxItem
-        : api.createVendorBoxItem,
+        : api.createAdminBoxItem,
     {
       onSuccess: (data) => {
         toast.success(data.message);

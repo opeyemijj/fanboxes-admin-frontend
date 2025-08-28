@@ -324,10 +324,15 @@ export const createVendorProduct = async (payload) => {
   return response;
 };
 export const createVendorBoxItem = async (payload) => {
-  console.log(payload, 'OKK SEE');
   const { data: response } = await http.post(`/vendor/boxItem`, payload);
   return response;
 };
+
+export const createAdminBoxItem = async (payload) => {
+  const { data: response } = await http.post(`/admin/boxItem`, payload);
+  return response;
+};
+
 export const updateVendorProduct = async ({ currentSlug, ...payload }) => {
   const { data: response } = await http.put(`/vendor/products/${currentSlug}`, payload);
   return response;
