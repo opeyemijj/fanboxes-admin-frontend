@@ -50,11 +50,13 @@ IncomeList.propTypes = {
   isVendor: PropTypes.bool
 };
 
-export default function IncomeList({ isLoading, row, handleClickOpen, isPayout, isVendor }) {
+export default function IncomeList({ isLoading, row, handleClickOpen, isPayout, isVendor, sn }) {
   const theme = useTheme();
   const router = useRouter();
   return (
     <TableRow hover key={Math.random()}>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
+
       {isPayout ? (
         <TableCell component="th" scope="row" sx={{ maxWidth: 300 }}>
           <Box
