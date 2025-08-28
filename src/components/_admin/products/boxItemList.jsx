@@ -15,6 +15,7 @@ import { useMutation, useQuery } from 'react-query';
 import { Refresh } from '@mui/icons-material';
 import { useRouter } from 'next/router';
 import { useSearchParams } from 'next/navigation';
+import parseMongooseError from 'src/utils/errorHandler';
 
 export default function AdminBoxeItems({ boxDetails, brands, categories, shops, isVendor }) {
   // console.log(boxDetails, 'Check the box details');
@@ -34,13 +35,18 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
 
   // prettier-ignore
   const { mutate: updateItemsOdd, isLoading: loadingUpdateOdd } = useMutation(
-    api.updateBoxItemOddByAdmin, // mutation function here
+    isVendor ? api.updateBoxItemOddByVendor : api.updateBoxItemOddByAdmin, // mutation function here
     {
       onSuccess: (data) => {
         toast.success(data.message);
       },
       onError: (error) => {
-        toast.error(error.response?.data?.message || 'Something went wrong!');
+        console.log(error);
+         let errorMessage = parseMongooseError(error?.message);
+         toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+           autoClose: false, // Prevents auto-dismissal
+           closeOnClick: true // Allows clicking on the close icon
+         });
       }
     }
   );

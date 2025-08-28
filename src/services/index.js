@@ -142,8 +142,12 @@ export const updateItemBoxByVendor = async ({ ...payload }) => {
 };
 
 export const updateBoxItemOddByAdmin = async ({ ...payload }) => {
-  // console.log(currentSlug, payload, 'Check the backend api is calling for update item odd');
   const { data: response } = await http.put(`/admin/boxItemOdd/${payload?.boxSlug}`, payload);
+  return response;
+};
+
+export const updateBoxItemOddByVendor = async ({ ...payload }) => {
+  const { data: response } = await http.put(`/vendor/boxItemOdd/${payload?.boxSlug}`, payload);
   return response;
 };
 
