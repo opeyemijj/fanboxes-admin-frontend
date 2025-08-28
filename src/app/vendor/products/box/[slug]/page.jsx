@@ -33,7 +33,7 @@ export default function AdminBoxItems() {
       <HeaderBreadcrumbs
         admin
         heading={productDetails?.name || 'Loading...'}
-        links={[{ name: 'Dashboard', href: '/admin' }, { name: 'Boxes' }]}
+        links={[{ name: 'Dashboard', href: '/admin' }, { name: 'Boxes', href: '/vendor/products' }, { name: 'Items' }]}
         action={{
           href: `/vendor/products/addItem?slug=${productDetails?.slug}`,
           title: 'Add Item'
