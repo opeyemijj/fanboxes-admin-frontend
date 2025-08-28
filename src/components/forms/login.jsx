@@ -56,7 +56,7 @@ export default function LoginForm() {
     },
     onError: (err) => {
       setloading(false);
-      toast.error(err.response.data.message);
+      toast.error(err?.message);
     }
   });
   const LoginSchema = Yup.object().shape({
