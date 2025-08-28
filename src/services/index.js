@@ -131,8 +131,13 @@ export const updateProductByAdmin = async ({ currentSlug, ...payload }) => {
   return response;
 };
 
-export const updateItemBoxByAdmin = async ({ currentSlug, ...payload }) => {
-  const { data: response } = await http.put(`/admin/boxItem/${currentSlug}`, payload);
+export const updateItemBoxByAdmin = async ({ ...payload }) => {
+  const { data: response } = await http.put(`/admin/boxItem/${payload.boxSlug}`, payload);
+  return response;
+};
+
+export const updateItemBoxByVendor = async ({ ...payload }) => {
+  const { data: response } = await http.put(`/vendor/boxItem/${payload.boxSlug}`, payload);
   return response;
 };
 

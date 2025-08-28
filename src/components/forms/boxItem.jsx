@@ -57,7 +57,7 @@ export default function AddItemForm({ currentProduct, isInitialized = false, isV
     currentProduct ? 'update' : 'new',
     currentProduct
       ? isVendor
-        ? api.updateItemBoxByAdmin
+        ? api.updateItemBoxByVendor
         : api.updateItemBoxByAdmin
       : isVendor
         ? api.createVendorBoxItem
