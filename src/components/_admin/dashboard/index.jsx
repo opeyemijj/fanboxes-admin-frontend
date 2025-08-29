@@ -14,7 +14,7 @@ import BestSelling from './bestSelling';
 // icon
 import { AiOutlineDollarCircle } from 'react-icons/ai';
 import { PiUsersThree } from 'react-icons/pi';
-import { BsShop } from 'react-icons/bs';
+import { BsPlayCircle, BsShop } from 'react-icons/bs';
 import { BiSolidShoppingBags } from 'react-icons/bi';
 import { GrWorkshop } from 'react-icons/gr';
 import { LuFileClock } from 'react-icons/lu';
@@ -47,6 +47,7 @@ export default function Dashboard({ isVendor }) {
   const bestSellingProducts = data?.bestSellingProducts;
   const totalVendors = data?.totalVendors;
   const totalShops = data?.totalShops;
+  const totalSpins = data?.totalSpins;
   const totalPendingOrders = data?.totalPendingOrders;
   const totalReturnOrders = data?.totalReturnOrders;
 
@@ -108,9 +109,9 @@ export default function Dashboard({ isVendor }) {
           <Grid item xs={12} sm={isVendor ? 12 : 6} md={3}>
             <DashboardCard
               color="info"
-              title="Total Influencers"
-              value={totalShops}
-              icon={<BsShop size={24} />}
+              title="Total Spins"
+              value={totalSpins}
+              icon={<BsPlayCircle size={24} />}
               isLoading={isLoading}
             />
           </Grid>
