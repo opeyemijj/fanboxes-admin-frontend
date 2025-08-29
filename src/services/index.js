@@ -131,14 +131,23 @@ export const updateProductByAdmin = async ({ currentSlug, ...payload }) => {
   return response;
 };
 
-export const updateItemBoxByAdmin = async ({ currentSlug, ...payload }) => {
-  const { data: response } = await http.put(`/admin/boxItem/${currentSlug}`, payload);
+export const updateItemBoxByAdmin = async ({ ...payload }) => {
+  const { data: response } = await http.put(`/admin/boxItem/${payload.boxSlug}`, payload);
+  return response;
+};
+
+export const updateItemBoxByVendor = async ({ ...payload }) => {
+  const { data: response } = await http.put(`/vendor/boxItem/${payload.boxSlug}`, payload);
   return response;
 };
 
 export const updateBoxItemOddByAdmin = async ({ ...payload }) => {
-  // console.log(currentSlug, payload, 'Check the backend api is calling for update item odd');
   const { data: response } = await http.put(`/admin/boxItemOdd/${payload?.boxSlug}`, payload);
+  return response;
+};
+
+export const updateBoxItemOddByVendor = async ({ ...payload }) => {
+  const { data: response } = await http.put(`/vendor/boxItemOdd/${payload?.boxSlug}`, payload);
   return response;
 };
 
@@ -149,6 +158,11 @@ export const deleteProductByAdmin = async (slug) => {
 
 export const deleteBoxItemByAdmin = async (slug) => {
   const { data: response } = await http.delete(`/admin/product-item/${slug.boxSlug}/${slug.itemSlug}`);
+  return response;
+};
+
+export const deleteBoxItemByVendor = async (slug) => {
+  const { data: response } = await http.delete(`/vendor/product-item/${slug.boxSlug}/${slug.itemSlug}`);
   return response;
 };
 
@@ -324,10 +338,15 @@ export const createVendorProduct = async (payload) => {
   return response;
 };
 export const createVendorBoxItem = async (payload) => {
-  console.log(payload, 'OKK SEE');
   const { data: response } = await http.post(`/vendor/boxItem`, payload);
   return response;
 };
+
+export const createAdminBoxItem = async (payload) => {
+  const { data: response } = await http.post(`/admin/boxItem`, payload);
+  return response;
+};
+
 export const updateVendorProduct = async ({ currentSlug, ...payload }) => {
   const { data: response } = await http.put(`/vendor/products/${currentSlug}`, payload);
   return response;

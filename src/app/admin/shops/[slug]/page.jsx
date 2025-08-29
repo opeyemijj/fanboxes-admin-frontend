@@ -28,6 +28,7 @@ export default function Page({ params: { slug } }) {
   const theme = useTheme();
   const [count, setCount] = React.useState(0);
   const { data, isLoading } = useQuery(['shop-by-admin', count], () => api.getShopDetailsByAdmin(slug));
+  console.log(data, 'Get the data');
 
   const dataMain = [
     {
