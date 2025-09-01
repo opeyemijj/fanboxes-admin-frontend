@@ -37,6 +37,7 @@ import UploadMultiFile from 'src/components/upload/UploadMultiFile';
 import { fCurrency } from 'src/utils/formatNumber';
 import uploadToSpaces from 'src/utils/upload';
 import parseMongooseError from 'src/utils/errorHandler';
+import { fanboxesAdminInfluencer } from 'src/utils/const';
 
 // ----------------------------------------------------------------------
 
@@ -104,7 +105,12 @@ export default function ProductForm({
       subCategory: currentProduct?.subCategory || (categories.length && categories[0].subCategories[0]?._id) || '',
       description: currentProduct?.description || '',
       slug: currentProduct?.slug || '',
-      shop: isVendor ? null : currentProduct?.shop || (shops?.length && shops[0]?._id) || '',
+      shop: isVendor
+        ? null
+        : currentProduct?.shop ||
+          (shops?.length &&
+            shops.find((item) => item.title?.toLowerCase() === fanboxesAdminInfluencer.toLowerCase())?._id) ||
+          '',
       priceSale: currentProduct?.priceSale || '',
       images: currentProduct?.images || [],
       blob: currentProduct?.blob || [],
@@ -241,7 +247,7 @@ export default function ProductForm({
                                 <Skeleton variant="text" width={100} />
                               ) : (
                                 <LabelStyle component={'label'} htmlFor="shop-select">
-                                  {'Influencer'}
+                                  {'Influencer/Fanboxes Admin'}
                                 </LabelStyle>
                               )}
 

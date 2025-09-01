@@ -109,28 +109,8 @@ export default function ProductRow({ isLoading, row, handleClickOpen, isVendor, 
         </Box>
       </TableCell>
 
-      {/* <TableCell>
-        <Skeleton variant="text" />
-      </TableCell> */}
-      {/* <TableCell>
-        {isLoading ? (
-          <Skeleton variant="text" />
-        ) : (
-          <Label
-            variant={'filled'}
-            color={
-              (row?.available < 1 && 'error') ||
-              (row?.available < 20 && 'warning') ||
-              (row?.available >= 20 && 'success') ||
-              'primary'
-            }
-          >
-            {(row?.available < 1 && 'Out of stock') ||
-              (row?.available < 20 && 'Low stock') ||
-              (row?.available >= 20 && 'In stock')}
-          </Label>
-        )}
-      </TableCell> */}
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.ownerType}</TableCell>
+
       <TableCell align="left">
         {isLoading ? (
           <Skeleton variant="text" />
