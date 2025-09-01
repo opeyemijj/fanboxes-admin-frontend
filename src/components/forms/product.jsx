@@ -107,7 +107,8 @@ export default function ProductForm({
       shop: isVendor ? null : currentProduct?.shop || (shops?.length && shops[0]?._id) || '',
       priceSale: currentProduct?.priceSale || '',
       images: currentProduct?.images || [],
-      blob: currentProduct?.blob || []
+      blob: currentProduct?.blob || [],
+      isFeatured: currentProduct?.isFeatured || false
     },
 
     validationSchema: NewProductSchema,
