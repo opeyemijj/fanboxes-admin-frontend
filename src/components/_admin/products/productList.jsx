@@ -18,6 +18,7 @@ const TABLE_HEAD = [
   { id: 'name', label: 'Box', alignRight: false, sort: true },
   { id: 'influencer', label: 'Influencer', alignRight: false, sort: true },
   { id: 'owner', label: 'Owner', alignRight: false, sort: true },
+  { id: 'visitedCount', label: 'Total Visit', alignRight: false, sort: true },
   { id: 'items', label: 'Items', alignRight: false, sort: true },
   { id: 'price', label: 'Price', alignRight: false, sort: true },
   { id: 'createdAt', label: 'Date Created', alignRight: false, sort: true },

@@ -110,6 +110,9 @@ export default function ProductRow({ isLoading, row, handleClickOpen, isVendor, 
       </TableCell>
 
       <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.ownerType}</TableCell>
+      <TableCell align="center">
+        {isLoading ? <Skeleton variant="text" /> : row?.visitedCount ? row?.visitedCount : 0}
+      </TableCell>
 
       <TableCell align="left">
         {isLoading ? (
