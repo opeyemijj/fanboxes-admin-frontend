@@ -94,7 +94,8 @@ export default function ProductForm({
     shop: isVendor ? Yup.string().nullable().notRequired() : Yup.string().required('Shop is required'),
     slug: Yup.string().required('Slug is required'),
     priceSale: Yup.number().required('Sale price is required'),
-    images: Yup.array().min(1, 'Images is required')
+    images: Yup.array().min(1, 'Images is required'),
+    ownerType: Yup.string().required('Owner is required')
   });
 
   const formik = useFormik({
@@ -105,16 +106,12 @@ export default function ProductForm({
       subCategory: currentProduct?.subCategory || (categories.length && categories[0].subCategories[0]?._id) || '',
       description: currentProduct?.description || '',
       slug: currentProduct?.slug || '',
-      shop: isVendor
-        ? null
-        : currentProduct?.shop ||
-          (shops?.length &&
-            shops.find((item) => item.title?.toLowerCase() === fanboxesAdminInfluencer.toLowerCase())?._id) ||
-          '',
+      shop: isVendor ? null : currentProduct?.shop || (shops?.length && shops[0]?._id) || '',
       priceSale: currentProduct?.priceSale || '',
       images: currentProduct?.images || [],
       blob: currentProduct?.blob || [],
-      isFeatured: currentProduct?.isFeatured || false
+      isFeatured: currentProduct?.isFeatured || false,
+      ownerType: currentProduct?.ownerType || ''
     },
 
     validationSchema: NewProductSchema,
@@ -241,31 +238,64 @@ export default function ProductForm({
                     <div>
                       <Grid container spacing={2}>
                         {isVendor ? null : (
-                          <Grid item xs={12} md={12}>
-                            <FormControl fullWidth>
-                              {isInitialized ? (
-                                <Skeleton variant="text" width={100} />
-                              ) : (
-                                <LabelStyle component={'label'} htmlFor="shop-select">
-                                  {'Influencer/Fanboxes Admin'}
-                                </LabelStyle>
-                              )}
+                          <>
+                            <Grid item xs={12} md={6}>
+                              <FormControl fullWidth>
+                                {isInitialized ? (
+                                  <Skeleton variant="text" width={100} />
+                                ) : (
+                                  <LabelStyle component={'label'} htmlFor="shop-select">
+                                    {'Influencer'}
+                                  </LabelStyle>
+                                )}
 
-                              <Select native {...getFieldProps('shop')} value={values.shop} id="shop-select">
-                                {shops?.map((shop) => (
-                                  <option key={shop._id} value={shop._id}>
-                                    {shop.title}
-                                  </option>
-                                ))}
-                              </Select>
+                                <Select native {...getFieldProps('shop')} value={values.shop} id="shop-select">
+                                  {shops?.map((shop) => (
+                                    <option key={shop._id} value={shop._id}>
+                                      {shop.title}
+                                    </option>
+                                  ))}
+                                </Select>
 
-                              {touched.shop && errors.shop && (
-                                <FormHelperText error sx={{ px: 2, mx: 0 }}>
-                                  {touched.shop && errors.shop}
-                                </FormHelperText>
-                              )}
-                            </FormControl>
-                          </Grid>
+                                {touched.shop && errors.shop && (
+                                  <FormHelperText error sx={{ px: 2, mx: 0 }}>
+                                    {touched.shop && errors.shop}
+                                  </FormHelperText>
+                                )}
+                              </FormControl>
+                            </Grid>
+
+                            <Grid item xs={12} md={6}>
+                              <FormControl fullWidth>
+                                {isInitialized ? (
+                                  <Skeleton variant="text" width={100} />
+                                ) : (
+                                  <LabelStyle component={'label'} htmlFor="shop-select">
+                                    {'Owner'}
+                                  </LabelStyle>
+                                )}
+
+                                <Select
+                                  native
+                                  {...getFieldProps('ownerType')}
+                                  value={values.ownerType}
+                                  id="shop-select"
+                                >
+                                  {['Influencer', 'Admin']?.map((item) => (
+                                    <option key={item} value={item}>
+                                      {item}
+                                    </option>
+                                  ))}
+                                </Select>
+
+                                {touched.ownerType && errors.ownerType && (
+                                  <FormHelperText error sx={{ px: 2, mx: 0 }}>
+                                    {touched.ownerType && errors.ownerType}
+                                  </FormHelperText>
+                                )}
+                              </FormControl>
+                            </Grid>
+                          </>
                         )}
 
                         <Grid item xs={12} md={6}>
@@ -471,6 +501,7 @@ ProductForm.propTypes = {
     status: PropTypes.string,
     blob: PropTypes.array,
     isFeatured: PropTypes.bool,
+    ownerType: PropTypes.string,
     sku: PropTypes.string,
     price: PropTypes.number,
     priceSale: PropTypes.number,
