@@ -18,7 +18,10 @@ import {
   FormControl,
   FormHelperText,
   Grid,
-  Skeleton
+  Skeleton,
+  FormControlLabel,
+  FormGroup,
+  Switch
 } from '@mui/material';
 // components
 import UploadSingleFile from 'src/components/upload/UploadSingleFile';
@@ -129,13 +132,14 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
         holderEmail: currentShop?.paymentInfo?.holderEmail || ''
         // bankName: currentShop?.paymentInfo?.bankName || '',
         // AccountNo: currentShop?.paymentInfo?.AccountNo || Number
-      }
+      },
+      isFeatured: currentShop?.isFeatured || false
       // address: {
       //   country: currentShop?.address?.country || 'Andorra',
       //   city: currentShop?.address?.city || '',
       //   state: currentShop?.address?.state || '',
       //   streetAddress: currentShop?.address?.streetAddress || ''
-      // }
+      // },
     },
     enableReinitialize: true,
     validationSchema: ShopSettingScema,
@@ -546,6 +550,20 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                           />
                         )}
                       </div> */}
+
+                      <div>
+                        <FormGroup>
+                          <FormControlLabel
+                            control={
+                              <Switch
+                                onChange={(e) => setFieldValue('isFeatured', e.target.checked)}
+                                checked={values.isFeatured}
+                              />
+                            }
+                            label={'Featured Box'}
+                          />
+                        </FormGroup>
+                      </div>
 
                       {currentShop && (
                         <Stack spacing={2}>

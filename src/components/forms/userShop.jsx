@@ -119,42 +119,6 @@ export default function CreateShopSettingFrom() {
     }
   });
   const { errors, values, touched, handleSubmit, setFieldValue, getFieldProps } = formik;
-  // handle drop logo
-  // const handleDropLogo = async (acceptedFiles) => {
-  //   setstate({ ...state, loading: 2 });
-  //   const file = acceptedFiles[0];
-  //   if (file) {
-  //     Object.assign(file, {
-  //       preview: URL.createObjectURL(file)
-  //     });
-  //   }
-  //   setFieldValue('file', file);
-  //   const formData = new FormData();
-  //   formData.append('file', file);
-  //   formData.append('upload_preset', 'my-uploads');
-  //   const config = {
-  //     onUploadProgress: (progressEvent) => {
-  //       const { loaded, total } = progressEvent;
-  //       const percentage = Math.floor((loaded * 100) / total);
-  //       setstate({ ...state, logoLoading: percentage });
-  //     }
-  //   };
-  //   await axios
-  //     .post(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`, formData, config)
-  //     .then(({ data }) => {
-  //       setFieldValue('logo', {
-  //         _id: data.public_id,
-  //         url: data.secure_url
-  //       });
-  //       setstate({ ...state, loading: false });
-  //     })
-  //     .then(() => {
-  //       // if (values.file) {
-  //       //   deleteMutate(values.logo._id);
-  //       // }
-  //       setstate({ ...state, loading: false });
-  //     });
-  // };
 
   const handleDropLogo = async (acceptedFiles) => {
     setstate({ ...state, logoLoading: 2 });
