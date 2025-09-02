@@ -68,9 +68,31 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
       }
     }
   );
+
   // prettier-ignore
   const { mutate: bannedProductMutation, isLoading: bannedLoading } = useMutation(
     isVendor ? null : api.productBannedByAdmin, // mutation function here
+    {
+      onSuccess: (data) => {
+        toast.success(data.message);
+        handleClose();
+        // ✅ Refetch products list
+        queryClient.invalidateQueries(['admin-products']);
+      },
+      onError: (error) => {
+        console.log(error);
+        let errorMessage = parseMongooseError(error?.message);
+        toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+          autoClose: false, // Prevents auto-dismissal
+          closeOnClick: true // Allows clicking on the close icon
+        });
+      }
+    }
+  );
+
+  // prettier-ignore
+  const { mutate: oddsVisibileMutaion, isLoading: oddsVisibileLoading } = useMutation(
+    isVendor ? null : api.updateItemOddHideShowByAdmin, // mutation function here
     {
       onSuccess: (data) => {
         toast.success(data.message);
@@ -97,6 +119,17 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
   const handleClickOpenStatus = (prop) => () => {
     setMarkBox(prop);
     setOpenStatus(true);
+  };
+
+  const handleClickOddsVisibility = (prop) => () => {
+    try {
+      oddsVisibileMutaion({
+        slug: prop.slug,
+        isItemOddsHidden: prop.isItemOddsHidden ? false : true
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleClickOpenBanned = (prop) => () => {
@@ -187,7 +220,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
           <Button onClick={handleClose} color="inherit">
             No, keep it
           </Button>
-          <LoadingButton variant="contained" color="error" loading={activationLoading} onClick={() => bannedProduct()}>
+          <LoadingButton variant="contained" color="error" loading={bannedLoading} onClick={() => bannedProduct()}>
             Yes, Ban It
           </LoadingButton>
         </DialogActions>
@@ -204,6 +237,8 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
         handleClickOpen={handleClickOpen}
         handleClickOpenStatus={handleClickOpenStatus}
         handleClickOpenBanned={handleClickOpenBanned}
+        handleClickOddsVisibility={handleClickOddsVisibility}
+        oddsVisibileLoading={oddsVisibileLoading}
         brands={isVendor ? [] : brands}
         categories={isVendor ? [] : categories}
         isVendor={isVendor}

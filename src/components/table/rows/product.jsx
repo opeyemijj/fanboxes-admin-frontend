@@ -3,7 +3,18 @@ import { useRouter } from 'next-nprogress-bar';
 import { enUS } from 'date-fns/locale';
 
 // mui
-import { Box, TableRow, Skeleton, TableCell, Typography, Stack, IconButton, Rating, Tooltip } from '@mui/material';
+import {
+  Box,
+  TableRow,
+  Skeleton,
+  TableCell,
+  Typography,
+  Stack,
+  IconButton,
+  Rating,
+  Tooltip,
+  Switch
+} from '@mui/material';
 
 // redux
 import { fCurrency } from 'src/utils/formatNumber';
@@ -27,6 +38,8 @@ export default function ProductRow({
   handleClickOpen,
   handleClickOpenStatus,
   handleClickOpenBanned,
+  handleClickOddsVisibility,
+  oddsVisibileLoading,
   isVendor,
   sn
 }) {
@@ -201,6 +214,14 @@ export default function ProductRow({
                 </IconButton>
               </Tooltip>
             )}
+
+            <Tooltip title={row?.isItemOddsHidden ? 'Show Odds' : 'Hide Odds'}>
+              <Switch
+                disabled={oddsVisibileLoading}
+                onChange={handleClickOddsVisibility(row)}
+                checked={row?.isItemOddsHidden}
+              />
+            </Tooltip>
 
             <Tooltip title="Edit">
               <IconButton onClick={() => router.push(`/${isVendor ? 'vendor' : 'admin'}/products/${row.slug}`)}>
