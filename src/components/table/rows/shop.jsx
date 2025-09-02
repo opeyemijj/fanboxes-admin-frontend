@@ -25,7 +25,15 @@ import BlurImageAvatar from 'src/components/avatar';
 import { MdEdit } from 'react-icons/md';
 import { MdDelete } from 'react-icons/md';
 import { IoEye } from 'react-icons/io5';
-export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
+import { CheckBox, CheckBoxOutlineBlank, Dangerous } from '@mui/icons-material';
+export default function ProductRow({
+  isLoading,
+  row,
+  handleClickOpen,
+  handleClickOpenStatus,
+  handleClickOpenBanned,
+  sn
+}) {
   const router = useRouter();
   return (
     <TableRow hover key={Math.random()}>
@@ -77,30 +85,42 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
         {isLoading ? (
           <Skeleton variant="text" />
         ) : (
-          <Label
-            variant="filled"
-            sx={{
-              bgcolor:
-                row?.status === 'approved'
-                  ? 'success.light'
-                  : row?.status === 'pending'
-                    ? 'info.light'
-                    : row?.status === 'rejected' || row?.status === 'blocked'
-                      ? 'error.light'
-                      : 'warning.light',
-              color:
-                row?.status === 'approved'
-                  ? 'success.dark'
-                  : row?.status === 'pending'
-                    ? 'info.dark'
-                    : row?.status === 'rejected' || row?.status === 'blocked'
-                      ? 'error.dark'
-                      : 'warning.dark',
-              textTransform: 'capitalize'
-            }}
-          >
-            {row?.status}
-          </Label>
+          <div className="col">
+            <Label
+              sx={{
+                width: '70px',
+                fontSize: '0.60rem',
+                margin: 0.2,
+                bgcolor:
+                  row?.status === 'approved'
+                    ? 'success.light'
+                    : row?.status === 'pending'
+                      ? 'info.light'
+                      : row?.status === 'rejected' || row?.status === 'blocked'
+                        ? 'error.light'
+                        : 'warning.light',
+                color:
+                  row?.status === 'approved'
+                    ? 'success.dark'
+                    : row?.status === 'pending'
+                      ? 'info.dark'
+                      : row?.status === 'rejected' || row?.status === 'blocked'
+                        ? 'error.dark'
+                        : 'warning.dark',
+                textTransform: 'capitalize'
+              }}
+            >
+              {row?.status}
+            </Label>
+            {row?.isBanned && (
+              <Label
+                sx={{ bgcolor: 'error.light', color: 'white', width: '70px', fontSize: '0.60rem', margin: 0.2 }}
+                variant="filled"
+              >
+                {row?.isBanned ? 'Banned' : ''}
+              </Label>
+            )}
+          </div>
         )}
       </TableCell>
       <TableCell align="right">
@@ -112,6 +132,14 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
           </Stack>
         ) : (
           <Stack direction="row" justifyContent="flex-end">
+            {!row?.isBanned && (
+              <Tooltip title={row?.isActive ? 'Aactive' : 'Inactive'}>
+                <IconButton onClick={handleClickOpenStatus(row)}>
+                  {row.isActive ? <CheckBox /> : <CheckBoxOutlineBlank />}
+                </IconButton>
+              </Tooltip>
+            )}
+
             <Link href={`/admin/shops/${row.slug}`}>
               <IconButton>
                 <IoEye />
@@ -122,6 +150,13 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
                 <MdEdit />
               </IconButton>
             </Tooltip>
+
+            <Tooltip title="Banned">
+              <IconButton onClick={handleClickOpenBanned(row)}>
+                <Dangerous color="error" />
+              </IconButton>
+            </Tooltip>
+
             <Tooltip title="Delete">
               <IconButton onClick={handleClickOpen(row.slug)}>
                 <MdDelete />

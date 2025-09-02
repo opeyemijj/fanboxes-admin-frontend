@@ -136,6 +136,11 @@ export const updateProductActiveInactiveByAdmin = async ({ slug, ...payload }) =
   return response;
 };
 
+export const updateShopActiveInactiveByAdmin = async ({ slug, ...payload }) => {
+  const { data: response } = await http.put(`/admin/shop-active/${slug}`, payload);
+  return response;
+};
+
 export const updateItemOddHideShowByAdmin = async ({ slug, ...payload }) => {
   const { data: response } = await http.put(`/admin/item-odds-visibility/${slug}`, payload);
   return response;
@@ -143,6 +148,11 @@ export const updateItemOddHideShowByAdmin = async ({ slug, ...payload }) => {
 
 export const productBannedByAdmin = async ({ slug }) => {
   const { data: response } = await http.put(`/admin/product-banned/${slug}`);
+  return response;
+};
+
+export const shopBannedByAdmin = async ({ slug }) => {
+  const { data: response } = await http.put(`/admin/shop-banned/${slug}`);
   return response;
 };
 
