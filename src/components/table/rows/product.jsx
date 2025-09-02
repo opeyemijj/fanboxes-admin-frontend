@@ -133,12 +133,12 @@ export default function ProductRow({
             </Box>
           )}
           <Typography variant="" noWrap>
-            <div>{row?.shopDetails ? row?.shopDetails?.title : 'Admin'}</div>
+            {isLoading ? <Skeleton variant="text" /> : row?.shopDetails ? row?.shopDetails?.title : 'Admin'}
           </Typography>
         </Box>
       </TableCell>
 
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.ownerType}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.ownerType ? row?.ownerType : 'Influencer'}</TableCell>
       <TableCell align="center">
         {isLoading ? <Skeleton variant="text" /> : row?.visitedCount ? row?.visitedCount : 0}
       </TableCell>

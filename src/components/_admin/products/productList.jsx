@@ -36,6 +36,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
 
   const [open, setOpen] = useState(false);
   const [openStatus, setOpenStatus] = useState(false);
+  const [openOddsVisible, setOpenOddsVisible] = useState(false);
   const [openBanned, setOpenBanned] = useState(false);
   const [apicall, setApicall] = useState(false);
   const [id, setId] = useState(null);
@@ -122,15 +123,20 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
   };
 
   const handleClickOddsVisibility = (prop) => () => {
+    setMarkBox(prop);
+    setOpenOddsVisible(true);
+  };
+
+  function OddMutaion() {
     try {
       oddsVisibileMutaion({
-        slug: prop.slug,
-        isItemOddsHidden: prop.isItemOddsHidden ? false : true
+        slug: markBox.slug,
+        isItemOddsHidden: markBox.isItemOddsHidden ? false : true
       });
     } catch (error) {
       console.error(error);
     }
-  };
+  }
 
   const handleClickOpenBanned = (prop) => () => {
     setMarkBox(prop);
@@ -141,6 +147,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
     setOpen(false);
     setOpenStatus(false);
     setOpenBanned(false);
+    setOpenOddsVisible(false);
     setMarkBox(null);
   };
 
@@ -222,6 +229,30 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
           </Button>
           <LoadingButton variant="contained" color="error" loading={bannedLoading} onClick={() => bannedProduct()}>
             Yes, Ban It
+          </LoadingButton>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog onClose={handleClose} open={openOddsVisible} maxWidth="xs">
+        <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+          <WarningRoundedIcon sx={{ mr: 1 }} color="warning" />
+          {markBox?.isItemOddsHidden ? 'Show Item Odds' : 'Hide Item Odds'}
+        </DialogTitle>
+
+        <DialogContent>
+          <DialogContentText>
+            {markBox?.isItemOddsHidden
+              ? 'Would you like to make the item odds visible to your customers?'
+              : 'Would you like to keep the item odds private from customers?'}
+          </DialogContentText>
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleClose} color="inherit">
+            No, leave it as is
+          </Button>
+          <LoadingButton variant="contained" loading={oddsVisibileLoading} onClick={() => OddMutaion()}>
+            Yes, {markBox?.isItemOddsHidden ? 'Show Odds' : 'Hide Odds'}
           </LoadingButton>
         </DialogActions>
       </Dialog>
