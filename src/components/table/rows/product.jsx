@@ -3,7 +3,18 @@ import { useRouter } from 'next-nprogress-bar';
 import { enUS } from 'date-fns/locale';
 
 // mui
-import { Box, TableRow, Skeleton, TableCell, Typography, Stack, IconButton, Rating, Tooltip } from '@mui/material';
+import {
+  Box,
+  TableRow,
+  Skeleton,
+  TableCell,
+  Typography,
+  Stack,
+  IconButton,
+  Rating,
+  Tooltip,
+  Switch
+} from '@mui/material';
 
 // redux
 import { fCurrency } from 'src/utils/formatNumber';
@@ -18,8 +29,20 @@ import { MdEdit } from 'react-icons/md';
 import { MdDelete } from 'react-icons/md';
 import { IoEye } from 'react-icons/io5';
 import Link from 'next/link';
+import { Check, CheckBox, CheckBoxOutlineBlank, Dangerous } from '@mui/icons-material';
+import { size } from 'lodash';
 
-export default function ProductRow({ isLoading, row, handleClickOpen, isVendor, sn }) {
+export default function ProductRow({
+  isLoading,
+  row,
+  handleClickOpen,
+  handleClickOpenStatus,
+  handleClickOpenBanned,
+  handleClickOddsVisibility,
+  oddsVisibileLoading,
+  isVendor,
+  sn
+}) {
   // console.log(row, 'Check the row?');
   const router = useRouter();
 
@@ -28,44 +51,50 @@ export default function ProductRow({ isLoading, row, handleClickOpen, isVendor, 
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
 
       <TableCell component="th" scope="row" sx={{ maxWidth: 300 }}>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center'
-          }}
+        <Link
+          style={{ textDecoration: 'none', color: 'inherit' }}
+          target="_blank"
+          href={`${process.env.USER_FRONTEND_URL}/boxes/${row?.slug}`}
         >
-          {isLoading ? (
-            <Skeleton variant="rectangular" width={50} height={50} sx={{ borderRadius: 1 }} />
-          ) : (
-            <Box
-              sx={{
-                position: 'relative',
-                overflow: 'hidden',
-                width: 50,
-                height: 50,
-                bgcolor: 'background.default',
-                mr: 2,
-                border: (theme) => '1px solid ' + theme.palette.divider,
-                borderRadius: '6px',
-                img: {
-                  borderRadius: '2px'
-                }
-              }}
-            >
-              <BlurImage
-                alt={row?.name}
-                placeholder="blur"
-                blurDataURL={row?.image.blurDataURL}
-                src={row?.image.url}
-                layout="fill"
-                objectFit="cover"
-              />
-            </Box>
-          )}
-          <Typography variant="subtitle2" noWrap>
-            {isLoading ? <Skeleton variant="text" width={120} sx={{ ml: 1 }} /> : row?.name}
-          </Typography>
-        </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            {isLoading ? (
+              <Skeleton variant="rectangular" width={50} height={50} sx={{ borderRadius: 1 }} />
+            ) : (
+              <Box
+                sx={{
+                  position: 'relative',
+                  overflow: 'hidden',
+                  width: 50,
+                  height: 50,
+                  bgcolor: 'background.default',
+                  mr: 2,
+                  border: (theme) => '1px solid ' + theme.palette.divider,
+                  borderRadius: '6px',
+                  img: {
+                    borderRadius: '2px'
+                  }
+                }}
+              >
+                <BlurImage
+                  alt={row?.name}
+                  placeholder="blur"
+                  blurDataURL={row?.image.blurDataURL}
+                  src={row?.image.url}
+                  layout="fill"
+                  objectFit="cover"
+                />
+              </Box>
+            )}
+            <Typography variant="subtitle2" noWrap>
+              {isLoading ? <Skeleton variant="text" width={120} sx={{ ml: 1 }} /> : row?.name}
+            </Typography>
+          </Box>
+        </Link>
       </TableCell>
 
       <TableCell component="th" scope="row" sx={{ maxWidth: 300 }}>
@@ -94,55 +123,78 @@ export default function ProductRow({ isLoading, row, handleClickOpen, isVendor, 
               }}
             >
               <BlurImage
-                alt={row?.shopDetails?.title}
-                blurDataURL={row?.shopDetails?.logo?.blurDataURL}
-                placeholder="blur"
-                src={row?.shopDetails?.logo?.url}
+                alt={row?.shopDetails ? row?.shopDetails?.title : ''}
+                blurDataURL={row?.shopDetails ? row?.shopDetails?.logo?.blurDataURL : ''}
+                // placeholder={row?.shopDetails ? 'blur' : ''}
+                src={row?.shopDetails ? row?.shopDetails?.logo?.url : '/images/FanboxesLogo.png'}
                 layout="fill"
                 objectFit="cover"
               />
             </Box>
           )}
           <Typography variant="" noWrap>
-            <div>{row?.shopDetails?.title}</div>
+            {isLoading ? <Skeleton variant="text" /> : row?.shopDetails ? row?.shopDetails?.title : 'Admin'}
           </Typography>
         </Box>
       </TableCell>
 
-      {/* <TableCell>
-        <Skeleton variant="text" />
-      </TableCell> */}
-      {/* <TableCell>
-        {isLoading ? (
-          <Skeleton variant="text" />
-        ) : (
-          <Label
-            variant={'filled'}
-            color={
-              (row?.available < 1 && 'error') ||
-              (row?.available < 20 && 'warning') ||
-              (row?.available >= 20 && 'success') ||
-              'primary'
-            }
-          >
-            {(row?.available < 1 && 'Out of stock') ||
-              (row?.available < 20 && 'Low stock') ||
-              (row?.available >= 20 && 'In stock')}
-          </Label>
-        )}
-      </TableCell> */}
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.ownerType ? row?.ownerType : 'Influencer'}</TableCell>
+      <TableCell align="center">
+        {isLoading ? <Skeleton variant="text" /> : row?.visitedCount ? row?.visitedCount : 0}
+      </TableCell>
+
       <TableCell align="left">
         {isLoading ? (
           <Skeleton variant="text" />
         ) : (
-          // <Rating name="text-feedback" size="small" value={row?.averageRating || 0} readOnly precision={0.5} />
-          // vendor/product/slug (slug of box) from api
-          <Link href={`products/box/${row?.slug}`} passHref>
+          <Link style={{ textDecoration: 'none', color: 'inherit' }} href={`products/box/${row?.slug}`} passHref>
             <Typography>{row?.items?.length || 0} Item(s)</Typography>
           </Link>
         )}
       </TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : fCurrency(row?.priceSale || row?.price)}</TableCell>
+      <TableCell>
+        {isLoading ? (
+          <Skeleton variant="text" />
+        ) : (
+          <div className="col">
+            <Label
+              sx={{
+                width: '70px',
+                fontSize: '0.60rem',
+                margin: 0.2,
+                bgcolor:
+                  row?.status === 'approved'
+                    ? 'success.light'
+                    : row?.status === 'pending'
+                      ? 'info.light'
+                      : row?.status === 'rejected' || row?.status === 'blocked'
+                        ? 'error.light'
+                        : 'warning.light',
+                color:
+                  row?.status === 'approved'
+                    ? 'success.dark'
+                    : row?.status === 'pending'
+                      ? 'info.dark'
+                      : row?.status === 'rejected' || row?.status === 'blocked'
+                        ? 'error.dark'
+                        : 'warning.dark',
+                textTransform: 'capitalize'
+              }}
+            >
+              {row?.status}
+            </Label>
+            {row?.isBanned && (
+              <Label
+                sx={{ bgcolor: 'error.light', color: 'white', width: '70px', fontSize: '0.60rem', margin: 0.2 }}
+                variant="filled"
+              >
+                {row?.isBanned ? 'Banned' : ''}
+              </Label>
+            )}
+          </div>
+        )}
+      </TableCell>
 
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{fDateShort(row?.createdAt, enUS)}</>}</TableCell>
 
@@ -155,18 +207,34 @@ export default function ProductRow({ isLoading, row, handleClickOpen, isVendor, 
           </Stack>
         ) : (
           <Stack direction="row" justifyContent="flex-end">
-            <Tooltip title="Preview">
-              <Link target="_blank" href={`${process.env.USER_FRONTEND_URL}/boxes/${row.slug}`}>
-                <IconButton>
-                  <IoEye />
+            {!row?.isBanned && (
+              <Tooltip title={row?.isActive ? 'Aactive' : 'Inactive'}>
+                <IconButton onClick={handleClickOpenStatus(row)}>
+                  {row.isActive ? <CheckBox /> : <CheckBoxOutlineBlank />}
                 </IconButton>
-              </Link>
+              </Tooltip>
+            )}
+
+            <Tooltip title={row?.isItemOddsHidden ? 'Show Odds' : 'Hide Odds'}>
+              <Switch
+                disabled={oddsVisibileLoading}
+                onChange={handleClickOddsVisibility(row)}
+                checked={row?.isItemOddsHidden}
+              />
             </Tooltip>
+
             <Tooltip title="Edit">
               <IconButton onClick={() => router.push(`/${isVendor ? 'vendor' : 'admin'}/products/${row.slug}`)}>
                 <MdEdit />
               </IconButton>
             </Tooltip>
+
+            <Tooltip title="Banned">
+              <IconButton onClick={handleClickOpenBanned(row)}>
+                <Dangerous color="error" />
+              </IconButton>
+            </Tooltip>
+
             <Tooltip title="Delete">
               <IconButton onClick={handleClickOpen(row.slug)}>
                 <MdDelete />
