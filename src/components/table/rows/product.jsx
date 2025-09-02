@@ -123,17 +123,17 @@ export default function ProductRow({
               }}
             >
               <BlurImage
-                alt={row?.shopDetails?.title}
-                blurDataURL={row?.shopDetails?.logo?.blurDataURL}
-                placeholder="blur"
-                src={row?.shopDetails?.logo?.url}
+                alt={row?.shopDetails ? row?.shopDetails?.title : ''}
+                blurDataURL={row?.shopDetails ? row?.shopDetails?.logo?.blurDataURL : ''}
+                // placeholder={row?.shopDetails ? 'blur' : ''}
+                src={row?.shopDetails ? row?.shopDetails?.logo?.url : '/images/FanboxesLogo.png'}
                 layout="fill"
                 objectFit="cover"
               />
             </Box>
           )}
           <Typography variant="" noWrap>
-            <div>{row?.shopDetails?.title}</div>
+            <div>{row?.shopDetails ? row?.shopDetails?.title : 'Admin'}</div>
           </Typography>
         </Box>
       </TableCell>

@@ -91,7 +91,7 @@ export default function ProductForm({
   const NewProductSchema = Yup.object().shape({
     name: Yup.string().required('Box title is required'),
     description: Yup.string().required('Description is required'),
-    shop: isVendor ? Yup.string().nullable().notRequired() : Yup.string().required('Shop is required'),
+    shop: isVendor ? Yup.string().nullable().notRequired() : Yup.string().optional(),
     slug: Yup.string().required('Slug is required'),
     priceSale: Yup.number().required('Sale price is required'),
     images: Yup.array().min(1, 'Images is required'),
@@ -111,7 +111,7 @@ export default function ProductForm({
       images: currentProduct?.images || [],
       blob: currentProduct?.blob || [],
       isFeatured: currentProduct?.isFeatured || false,
-      ownerType: currentProduct?.ownerType || ''
+      ownerType: currentProduct?.ownerType || 'Admin'
     },
 
     validationSchema: NewProductSchema,
@@ -120,6 +120,7 @@ export default function ProductForm({
       try {
         mutate({
           ...rest,
+          shop: values.ownerType === 'Admin' ? '' : values.shop,
           ...(currentProduct && { currentSlug: currentProduct.slug })
         });
       } catch (err) {
@@ -239,33 +240,7 @@ export default function ProductForm({
                       <Grid container spacing={2}>
                         {isVendor ? null : (
                           <>
-                            <Grid item xs={12} md={6}>
-                              <FormControl fullWidth>
-                                {isInitialized ? (
-                                  <Skeleton variant="text" width={100} />
-                                ) : (
-                                  <LabelStyle component={'label'} htmlFor="shop-select">
-                                    {'Influencer'}
-                                  </LabelStyle>
-                                )}
-
-                                <Select native {...getFieldProps('shop')} value={values.shop} id="shop-select">
-                                  {shops?.map((shop) => (
-                                    <option key={shop._id} value={shop._id}>
-                                      {shop.title}
-                                    </option>
-                                  ))}
-                                </Select>
-
-                                {touched.shop && errors.shop && (
-                                  <FormHelperText error sx={{ px: 2, mx: 0 }}>
-                                    {touched.shop && errors.shop}
-                                  </FormHelperText>
-                                )}
-                              </FormControl>
-                            </Grid>
-
-                            <Grid item xs={12} md={6}>
+                            <Grid item xs={12} md={values.ownerType != 'Admin' ? 6 : 12}>
                               <FormControl fullWidth>
                                 {isInitialized ? (
                                   <Skeleton variant="text" width={100} />
@@ -281,7 +256,7 @@ export default function ProductForm({
                                   value={values.ownerType}
                                   id="shop-select"
                                 >
-                                  {['Influencer', 'Admin']?.map((item) => (
+                                  {['Admin', 'Influencer']?.map((item) => (
                                     <option key={item} value={item}>
                                       {item}
                                     </option>
@@ -295,6 +270,34 @@ export default function ProductForm({
                                 )}
                               </FormControl>
                             </Grid>
+                            {values.ownerType != 'Admin' && (
+                              <Grid item xs={12} md={6}>
+                                <FormControl disabled={values.ownerType === 'Admin' ? true : false} fullWidth>
+                                  {isInitialized ? (
+                                    <Skeleton variant="text" width={100} />
+                                  ) : (
+                                    <LabelStyle component={'label'} htmlFor="shop-select">
+                                      {'Influencer'}
+                                    </LabelStyle>
+                                  )}
+
+                                  <Select native {...getFieldProps('shop')} value={values.shop} id="shop-select">
+                                    {values.ownerType != 'Admin' &&
+                                      shops?.map((shop) => (
+                                        <option key={shop._id} value={shop._id}>
+                                          {shop.title}
+                                        </option>
+                                      ))}
+                                  </Select>
+
+                                  {touched.shop && errors.shop && (
+                                    <FormHelperText error sx={{ px: 2, mx: 0 }}>
+                                      {touched.shop && errors.shop}
+                                    </FormHelperText>
+                                  )}
+                                </FormControl>
+                              </Grid>
+                            )}
                           </>
                         )}
 
