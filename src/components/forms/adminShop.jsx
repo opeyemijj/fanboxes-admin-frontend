@@ -96,6 +96,13 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
     slug: Yup.string().required('Slug is required'),
     description: Yup.string().optional('Description is required'),
     phone: Yup.string().required('Phone Number is required'),
+    instagramLink: Yup.string()
+      .optional()
+      .test('is-instagram', 'Must be a valid Instagram link', (value) => {
+        if (!value) return true; // allow empty
+        const regex = /^https?:\/\/(www\.)?instagram\.com\/[A-Za-z0-9._%-]+(\/.*)?$/;
+        return regex.test(value);
+      }),
     paymentInfo: Yup.object().shape({
       holderEmail: Yup.string().required('Holder email is required')
 
@@ -128,6 +135,7 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
       fileCover: currentShop?.cover || '',
       slug: currentShop?.slug || '',
       phone: currentShop?.phone || Number,
+      instagramLink: currentShop?.instagramLink || '',
       paymentInfo: {
         holderEmail: currentShop?.paymentInfo?.holderEmail || ''
         // bankName: currentShop?.paymentInfo?.bankName || '',
@@ -417,6 +425,27 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                             {...getFieldProps('phone')}
                             error={Boolean(touched.phone && errors.phone)}
                             helperText={touched.phone && errors.phone}
+                          />
+                        )}
+                      </div>
+
+                      <div>
+                        {shopLoading ? (
+                          <Skeleton variant="text" width={150} />
+                        ) : (
+                          <LabelStyle component={'label'} htmlFor="phone">
+                            Instagram link
+                          </LabelStyle>
+                        )}
+                        {shopLoading ? (
+                          <Skeleton variant="rectangular" width="100%" height={240} />
+                        ) : (
+                          <TextField
+                            id="instagramLink"
+                            fullWidth
+                            {...getFieldProps('instagramLink')}
+                            error={Boolean(touched.instagramLink && errors.instagramLink)}
+                            helperText={touched.instagramLink && errors.instagramLink}
                           />
                         )}
                       </div>
