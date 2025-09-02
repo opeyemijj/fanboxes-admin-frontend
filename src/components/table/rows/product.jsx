@@ -14,12 +14,22 @@ import Label from 'src/components/label';
 import BlurImage from 'src/components/blurImage';
 
 // icons
-import { MdEdit } from 'react-icons/md';
+import {
+  MdCheck,
+  MdCheckBox,
+  MdCheckBoxOutlineBlank,
+  MdChecklist,
+  MdCheckroom,
+  MdEdit,
+  MdIndeterminateCheckBox,
+  MdOutlineCheckBoxOutlineBlank
+} from 'react-icons/md';
 import { MdDelete } from 'react-icons/md';
 import { IoEye } from 'react-icons/io5';
 import Link from 'next/link';
+import { Check, CheckBox, CheckBoxOutlineBlank } from '@mui/icons-material';
 
-export default function ProductRow({ isLoading, row, handleClickOpen, isVendor, sn }) {
+export default function ProductRow({ isLoading, row, handleClickOpen, handleClickOpenStatus, isVendor, sn }) {
   // console.log(row, 'Check the row?');
   const router = useRouter();
 
@@ -138,6 +148,12 @@ export default function ProductRow({ isLoading, row, handleClickOpen, isVendor, 
           </Stack>
         ) : (
           <Stack direction="row" justifyContent="flex-end">
+            <Tooltip title={row?.isActive ? 'Aactive' : 'Inactive'}>
+              <IconButton onClick={handleClickOpenStatus(row)}>
+                {row.isActive ? <CheckBox /> : <CheckBoxOutlineBlank />}
+              </IconButton>
+            </Tooltip>
+
             <Tooltip title="Preview">
               <Link target="_blank" href={`${process.env.USER_FRONTEND_URL}/boxes/${row.slug}`}>
                 <IconButton>

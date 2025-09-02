@@ -5,14 +5,17 @@ import PropTypes from 'prop-types';
 import toast from 'react-hot-toast';
 
 // mui
-import { Dialog, Stack } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack } from '@mui/material';
+import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
 import DeleteDialog from 'src/components/dialog/delete';
 // components
 import Table from 'src/components/table/table';
 import Product from 'src/components/table/rows/product';
 // api
 import * as api from 'src/services';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { LoadingButton } from '@mui/lab';
+import parseMongooseError from 'src/utils/errorHandler';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Box', alignRight: false, sort: true },
@@ -28,9 +31,13 @@ const TABLE_HEAD = [
 export default function AdminProducts({ brands, categories, shops, isVendor }) {
   const searchParams = useSearchParams();
 
+  const queryClient = useQueryClient(); // ✅ get queryClient
+
   const [open, setOpen] = useState(false);
+  const [openStatus, setOpenStatus] = useState(false);
   const [apicall, setApicall] = useState(false);
   const [id, setId] = useState(null);
+  const [markBox, setMarkBox] = useState(null);
   const { data, isLoading } = useQuery(
     ['admin-products', apicall, searchParams.toString()],
     () => api[isVendor ? 'getVendorProducts' : 'getProductsByAdmin'](searchParams.toString()),
@@ -39,13 +46,54 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
     }
   );
 
+  // prettier-ignore
+  const { mutate: changeActivation, isLoading: activationLoading } = useMutation(
+    isVendor ? null : api.updateProductActiveInactiveByAdmin, // mutation function here
+    {
+      onSuccess: (data) => {
+        toast.success(data.message);
+        handleClose();
+        // ✅ Refetch products list
+        queryClient.invalidateQueries(['admin-products']);
+      },
+      onError: (error) => {
+        console.log(error);
+        let errorMessage = parseMongooseError(error?.message);
+        toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+          autoClose: false, // Prevents auto-dismissal
+          closeOnClick: true // Allows clicking on the close icon
+        });
+      }
+    }
+  );
+
   const handleClickOpen = (prop) => () => {
     setId(prop);
     setOpen(true);
   };
+
+  const handleClickOpenStatus = (prop) => () => {
+    console.log('Come here after clicking handleClickOpenStatus');
+    setMarkBox(prop);
+    setOpenStatus(true);
+  };
+
   const handleClose = () => {
     setOpen(false);
+    setOpenStatus(false);
   };
+
+  async function changeActiveInactive() {
+    try {
+      changeActivation({
+        slug: markBox.slug,
+        isActive: markBox.isActive ? false : true
+      });
+    } catch (error) {
+      console.error(error);
+    }
+    console.log('Check the id', id);
+  }
 
   return (
     <>
@@ -61,6 +109,31 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
           }
         />
       </Dialog>
+
+      <Dialog onClose={handleClose} open={openStatus} maxWidth="xs">
+        <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+          <WarningRoundedIcon sx={{ mr: 1 }} />
+          {markBox?.isActive ? 'Deactivate Box' : 'Activate Box'}
+        </DialogTitle>
+
+        <DialogContent>
+          <DialogContentText>
+            {markBox?.isActive
+              ? 'Are you sure you want to deactivate this box? Don’t worry, you can always activate it again later.'
+              : 'Would you like to activate this box? Once activated, it will be available right away.'}
+          </DialogContentText>
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleClose} color="inherit">
+            No, keep it
+          </Button>
+          <LoadingButton variant="contained" loading={activationLoading} onClick={() => changeActiveInactive()}>
+            Yes, {markBox?.isActive ? 'Deactivate' : 'Activate'}
+          </LoadingButton>
+        </DialogActions>
+      </Dialog>
+
       <Stack spacing={2} direction="row" alignItems="center" justifyContent="space-between" mb={2}>
         {}
       </Stack>
@@ -70,6 +143,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
         isLoading={isLoading}
         row={Product}
         handleClickOpen={handleClickOpen}
+        handleClickOpenStatus={handleClickOpenStatus}
         brands={isVendor ? [] : brands}
         categories={isVendor ? [] : categories}
         isVendor={isVendor}
