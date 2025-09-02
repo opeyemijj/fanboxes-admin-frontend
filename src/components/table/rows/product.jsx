@@ -136,6 +136,38 @@ export default function ProductRow({ isLoading, row, handleClickOpen, handleClic
         )}
       </TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : fCurrency(row?.priceSale || row?.price)}</TableCell>
+      {/* <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.status}</TableCell> */}
+      <TableCell>
+        {isLoading ? (
+          <Skeleton variant="text" />
+        ) : (
+          <Label
+            variant="filled"
+            sx={{
+              width: '80px',
+              bgcolor:
+                row?.status === 'approved'
+                  ? 'success.light'
+                  : row?.status === 'pending'
+                    ? 'info.light'
+                    : row?.status === 'rejected' || row?.status === 'blocked'
+                      ? 'error.light'
+                      : 'warning.light',
+              color:
+                row?.status === 'approved'
+                  ? 'success.dark'
+                  : row?.status === 'pending'
+                    ? 'info.dark'
+                    : row?.status === 'rejected' || row?.status === 'blocked'
+                      ? 'error.dark'
+                      : 'warning.dark',
+              textTransform: 'capitalize'
+            }}
+          >
+            {row?.status}
+          </Label>
+        )}
+      </TableCell>
 
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{fDateShort(row?.createdAt, enUS)}</>}</TableCell>
 
