@@ -36,6 +36,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
 
   const [open, setOpen] = useState(false);
   const [openStatus, setOpenStatus] = useState(false);
+  const [openBanned, setOpenBanned] = useState(false);
   const [apicall, setApicall] = useState(false);
   const [id, setId] = useState(null);
   const [markBox, setMarkBox] = useState(null);
@@ -67,6 +68,26 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
       }
     }
   );
+  // prettier-ignore
+  const { mutate: bannedProductMutation, isLoading: bannedLoading } = useMutation(
+    isVendor ? null : api.productBannedByAdmin, // mutation function here
+    {
+      onSuccess: (data) => {
+        toast.success(data.message);
+        handleClose();
+        // ✅ Refetch products list
+        queryClient.invalidateQueries(['admin-products']);
+      },
+      onError: (error) => {
+        console.log(error);
+        let errorMessage = parseMongooseError(error?.message);
+        toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+          autoClose: false, // Prevents auto-dismissal
+          closeOnClick: true // Allows clicking on the close icon
+        });
+      }
+    }
+  );
 
   const handleClickOpen = (prop) => () => {
     setId(prop);
@@ -74,14 +95,20 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
   };
 
   const handleClickOpenStatus = (prop) => () => {
-    console.log('Come here after clicking handleClickOpenStatus');
     setMarkBox(prop);
     setOpenStatus(true);
+  };
+
+  const handleClickOpenBanned = (prop) => () => {
+    setMarkBox(prop);
+    setOpenBanned(true);
   };
 
   const handleClose = () => {
     setOpen(false);
     setOpenStatus(false);
+    setOpenBanned(false);
+    setMarkBox(null);
   };
 
   async function changeActiveInactive() {
@@ -93,7 +120,16 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
     } catch (error) {
       console.error(error);
     }
-    console.log('Check the id', id);
+  }
+
+  async function bannedProduct() {
+    try {
+      bannedProductMutation({
+        slug: markBox.slug
+      });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
@@ -135,6 +171,28 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
         </DialogActions>
       </Dialog>
 
+      <Dialog onClose={handleClose} open={openBanned} maxWidth="xs">
+        <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+          <WarningRoundedIcon sx={{ mr: 1 }} />
+          Ban This Box
+        </DialogTitle>
+
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to ban this box? Once banned, it won’t be available for others to see.
+          </DialogContentText>
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleClose} color="inherit">
+            No, keep it
+          </Button>
+          <LoadingButton variant="contained" color="error" loading={activationLoading} onClick={() => bannedProduct()}>
+            Yes, Ban It
+          </LoadingButton>
+        </DialogActions>
+      </Dialog>
+
       <Stack spacing={2} direction="row" alignItems="center" justifyContent="space-between" mb={2}>
         {}
       </Stack>
@@ -145,6 +203,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
         row={Product}
         handleClickOpen={handleClickOpen}
         handleClickOpenStatus={handleClickOpenStatus}
+        handleClickOpenBanned={handleClickOpenBanned}
         brands={isVendor ? [] : brands}
         categories={isVendor ? [] : categories}
         isVendor={isVendor}

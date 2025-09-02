@@ -136,6 +136,11 @@ export const updateProductActiveInactiveByAdmin = async ({ slug, ...payload }) =
   return response;
 };
 
+export const productBannedByAdmin = async ({ slug }) => {
+  const { data: response } = await http.put(`/admin/product-banned/${slug}`);
+  return response;
+};
+
 export const updateItemBoxByAdmin = async ({ ...payload }) => {
   const { data: response } = await http.put(`/admin/boxItem/${payload.boxSlug}`, payload);
   return response;
