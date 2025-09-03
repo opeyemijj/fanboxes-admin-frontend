@@ -3,18 +3,7 @@ import { useRouter } from 'next-nprogress-bar';
 import { enUS } from 'date-fns/locale';
 
 // mui
-import {
-  Box,
-  TableRow,
-  Skeleton,
-  TableCell,
-  Typography,
-  Stack,
-  IconButton,
-  Rating,
-  Tooltip,
-  Switch
-} from '@mui/material';
+import { Box, TableRow, Skeleton, TableCell, Typography, Stack, IconButton, Rating, Tooltip } from '@mui/material';
 
 // redux
 import { fCurrency } from 'src/utils/formatNumber';
@@ -25,12 +14,17 @@ import Label from 'src/components/label';
 import BlurImage from 'src/components/blurImage';
 
 // icons
-import { MdEdit } from 'react-icons/md';
+import { MdEdit, MdBlock, MdCheckCircle, MdCancel } from 'react-icons/md';
 import { MdDelete } from 'react-icons/md';
-import { IoEye } from 'react-icons/io5';
+
+import { MoreVert } from '@mui/icons-material';
+
 import Link from 'next/link';
-import { Check, CheckBox, CheckBoxOutlineBlank, Dangerous } from '@mui/icons-material';
+import { Check } from '@mui/icons-material';
+import { CheckBox, CheckBoxOutlineBlank, Visibility, VisibilityOff, Dangerous } from '@mui/icons-material';
+import { Menu, MenuItem, ListItemIcon, ListItemText, Switch } from '@mui/material';
 import { size } from 'lodash';
+import { useState } from 'react';
 
 export default function ProductRow({
   isLoading,
@@ -45,6 +39,56 @@ export default function ProductRow({
 }) {
   // console.log(row, 'Check the row?');
   const router = useRouter();
+
+  function MoreActionsMenu({
+    row,
+    handleClickOpenStatus,
+    handleClickOddsVisibility,
+    oddsVisibileLoading,
+    handleClickOpenBanned
+  }) {
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+
+    const handleClick = (event) => setAnchorEl(event.currentTarget);
+    const handleClose = () => setAnchorEl(null);
+
+    return (
+      <>
+        <IconButton onClick={handleClick}>
+          <MoreVert />
+        </IconButton>
+        <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+          {!row?.isBanned && (
+            <MenuItem onClick={handleClickOpenStatus(row)}>
+              {row.isActive ? (
+                <MdCheckCircle style={{ width: 30 }} color="green" size={23} />
+              ) : (
+                <MdCancel style={{ width: 30 }} width={50} color="orange" size={23} />
+              )}
+              <ListItemText style={{ marginLeft: 12 }}>{row.isActive ? 'Mark Inactive' : 'Mark Active'}</ListItemText>
+            </MenuItem>
+          )}
+
+          <MenuItem>
+            <Switch
+              style={{ marginRight: 10, width: 30 }}
+              size="small"
+              disabled={oddsVisibileLoading}
+              onChange={handleClickOddsVisibility(row)}
+              checked={!row?.isItemOddsHidden}
+            />
+            <ListItemText style={{ marginLeft: 10 }}>{row?.isItemOddsHidden ? 'Show Odds' : 'Hide Odds'}</ListItemText>
+          </MenuItem>
+
+          <MenuItem style={{ marginLeft: 3 }} onClick={handleClickOpenBanned(row)}>
+            <MdBlock style={{ marginRight: 10, width: 30 }} size={25} color={row.isBanned ? 'red' : ''} />{' '}
+            <ListItemText style={{ marginLeft: 12 }}>{!row.isBanned ? 'Ban' : 'Unban'}</ListItemText>
+          </MenuItem>
+        </Menu>
+      </>
+    );
+  }
 
   return (
     <TableRow hover key={Math.random()}>
@@ -193,40 +237,29 @@ export default function ProductRow({
             <Skeleton variant="circular" width={34} height={34} />
           </Stack>
         ) : (
-          <Stack direction="row" justifyContent="flex-end">
-            {!row?.isBanned && (
-              <Tooltip title={row?.isActive ? 'Aactive' : 'Inactive'}>
-                <IconButton onClick={handleClickOpenStatus(row)}>
-                  {row.isActive ? <CheckBox /> : <CheckBoxOutlineBlank />}
-                </IconButton>
-              </Tooltip>
-            )}
-
-            <Tooltip title={row?.isItemOddsHidden ? 'Show Odds' : 'Hide Odds'}>
-              <Switch
-                disabled={oddsVisibileLoading}
-                onChange={handleClickOddsVisibility(row)}
-                checked={!row?.isItemOddsHidden}
-              />
-            </Tooltip>
-
+          <Stack direction="row" justifyContent="flex-end" spacing={1}>
+            {/* Edit */}
             <Tooltip title="Edit">
               <IconButton onClick={() => router.push(`/${isVendor ? 'vendor' : 'admin'}/products/${row.slug}`)}>
                 <MdEdit />
               </IconButton>
             </Tooltip>
 
-            <Tooltip title={!row.isBanned ? 'Ban' : 'Unban'}>
-              <IconButton onClick={handleClickOpenBanned(row)}>
-                <Dangerous color={row.isBanned ? 'error' : ''} />
-              </IconButton>
-            </Tooltip>
-
+            {/* Delete */}
             <Tooltip title="Delete">
               <IconButton onClick={handleClickOpen(row.slug)}>
                 <MdDelete />
               </IconButton>
             </Tooltip>
+
+            {/* More actions */}
+            <MoreActionsMenu
+              row={row}
+              handleClickOpenStatus={handleClickOpenStatus}
+              handleClickOddsVisibility={handleClickOddsVisibility}
+              oddsVisibileLoading={oddsVisibileLoading}
+              handleClickOpenBanned={handleClickOpenBanned}
+            />
           </Stack>
         )}
       </TableCell>

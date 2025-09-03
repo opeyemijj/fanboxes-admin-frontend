@@ -193,14 +193,14 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
       <Dialog onClose={handleClose} open={openStatus} maxWidth="xs">
         <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
           <WarningRoundedIcon sx={{ mr: 1 }} />
-          {markBox?.isActive ? 'Deactivate Box' : 'Activate Box'}
+          {markBox?.isActive ? 'Draft Box' : 'Approve Box'}
         </DialogTitle>
 
         <DialogContent>
           <DialogContentText>
             {markBox?.isActive
-              ? 'Are you sure you want to deactivate this box? Don’t worry, you can always activate it again later.'
-              : 'Would you like to activate this box? Once activated, it will be available right away.'}
+              ? 'Are you sure you want to draft this box? Don’t worry, you can always approve it again later.'
+              : 'Would you like to approve this box? Once approved, it will be available right away.'}
           </DialogContentText>
         </DialogContent>
 
@@ -209,7 +209,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
             No, keep it
           </Button>
           <LoadingButton variant="contained" loading={activationLoading} onClick={() => changeActiveInactive()}>
-            Yes, {markBox?.isActive ? 'Deactivate' : 'Activate'}
+            Yes, {markBox?.isActive ? 'Draft' : 'Approved'}
           </LoadingButton>
         </DialogActions>
       </Dialog>
