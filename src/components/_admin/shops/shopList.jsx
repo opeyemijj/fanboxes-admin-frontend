@@ -149,14 +149,14 @@ export default function AdminProducts() {
       <Dialog onClose={handleClose} open={openStatus} maxWidth="xs">
         <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
           <WarningRoundedIcon sx={{ mr: 1 }} />
-          {markShop?.isActive ? 'Deactivate Influencer' : 'Activate Influencer'}
+          {markShop?.isActive ? 'Draft Influencer' : 'Approve Influencer'}
         </DialogTitle>
 
         <DialogContent>
           <DialogContentText>
             {markShop?.isActive
-              ? 'Are you sure you want to deactivate this influencer? Don’t worry, you can always activate it again later.'
-              : 'Would you like to activate this influencer? Once activated, it will be available right away.'}
+              ? 'Are you sure you want to draft this influencer? Don’t worry, you can always approve it again later.'
+              : 'Would you like to approve this influencer? Once approved, it will be available right away.'}
           </DialogContentText>
         </DialogContent>
 
@@ -165,7 +165,7 @@ export default function AdminProducts() {
             No, keep it
           </Button>
           <LoadingButton variant="contained" loading={activationLoading} onClick={() => changeActiveInactive()}>
-            Yes, {markShop?.isActive ? 'Deactivate' : 'Activate'}
+            Yes, {markShop?.isActive ? 'Draft' : 'Approved'}
           </LoadingButton>
         </DialogActions>
       </Dialog>

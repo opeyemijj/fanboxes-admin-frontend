@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
 import { useRouter } from 'next-nprogress-bar';
-
-// mui
 import {
   Box,
   TableRow,
@@ -10,22 +8,21 @@ import {
   Typography,
   Stack,
   IconButton,
-  Avatar,
   Tooltip,
-  Link
+  Link,
+  Menu,
+  MenuItem,
+  ListItemText
 } from '@mui/material';
-
-// components
 import Label from 'src/components/label';
 import BlurImage from 'src/components/blurImage';
 
-import BlurImageAvatar from 'src/components/avatar';
-
 // icons
-import { MdEdit } from 'react-icons/md';
-import { MdDelete } from 'react-icons/md';
+import { MdEdit, MdDelete, MdBlock, MdCheckCircle, MdCancel } from 'react-icons/md';
 import { IoEye } from 'react-icons/io5';
-import { CheckBox, CheckBoxOutlineBlank, Dangerous } from '@mui/icons-material';
+import { MoreVert } from '@mui/icons-material';
+import { useState } from 'react';
+
 export default function ProductRow({
   isLoading,
   row,
@@ -35,16 +32,41 @@ export default function ProductRow({
   sn
 }) {
   const router = useRouter();
+
+  function MoreActionsMenu({ row, handleClickOpenStatus, handleClickOpenBanned }) {
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+
+    const handleClick = (event) => setAnchorEl(event.currentTarget);
+    const handleClose = () => setAnchorEl(null);
+
+    return (
+      <>
+        <IconButton onClick={handleClick}>
+          <MoreVert />
+        </IconButton>
+        <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+          {!row?.isBanned && (
+            <MenuItem onClick={handleClickOpenStatus(row)}>
+              {row.isActive ? <MdCheckCircle color="green" size={20} /> : <MdCancel color="orange" size={20} />}
+              <ListItemText sx={{ ml: 1 }}>{row.isActive ? 'Mark Inactive' : 'Mark Active'}</ListItemText>
+            </MenuItem>
+          )}
+
+          <MenuItem onClick={handleClickOpenBanned(row)}>
+            <MdBlock size={20} color={row.isBanned ? 'red' : 'orange'} />
+            <ListItemText sx={{ ml: 1 }}>{!row.isBanned ? 'Ban' : 'Unban'}</ListItemText>
+          </MenuItem>
+        </Menu>
+      </>
+    );
+  }
+
   return (
     <TableRow hover key={Math.random()}>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
       <TableCell component="th" scope="row" sx={{ maxWidth: 300 }}>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center'
-          }}
-        >
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
           {isLoading ? (
             <Skeleton variant="rectangular" width={50} height={50} sx={{ borderRadius: 1 }} />
           ) : (
@@ -58,9 +80,7 @@ export default function ProductRow({
                 mr: 2,
                 border: (theme) => '1px solid ' + theme.palette.divider,
                 borderRadius: '6px',
-                img: {
-                  borderRadius: '2px'
-                }
+                img: { borderRadius: '2px' }
               }}
             >
               <BlurImage
@@ -88,17 +108,17 @@ export default function ProductRow({
           <div className="col">
             {row?.isBanned ? (
               <Label
-                sx={{ bgcolor: 'error.light', color: 'white', width: '70px', fontSize: '0.60rem', margin: 0.2 }}
+                sx={{ bgcolor: 'error.light', color: 'white', width: '70px', fontSize: '0.60rem', m: 0.2 }}
                 variant="filled"
               >
-                {row?.isBanned ? 'Banned' : ''}
+                Banned
               </Label>
             ) : (
               <Label
                 sx={{
                   width: '70px',
                   fontSize: '0.60rem',
-                  margin: 0.2,
+                  m: 0.2,
                   bgcolor: row?.isActive ? 'success.light' : 'warning.light',
                   color: row?.isActive ? 'success.dark' : 'white',
                   textTransform: 'capitalize'
@@ -110,6 +130,7 @@ export default function ProductRow({
           </div>
         )}
       </TableCell>
+
       <TableCell align="right">
         {isLoading ? (
           <Stack direction="row" justifyContent="flex-end">
@@ -118,57 +139,48 @@ export default function ProductRow({
             <Skeleton variant="circular" width={34} height={34} />
           </Stack>
         ) : (
-          <Stack direction="row" justifyContent="flex-end">
-            {!row?.isBanned && (
-              <Tooltip title={row?.isActive ? 'Aactive' : 'Inactive'}>
-                <IconButton onClick={handleClickOpenStatus(row)}>
-                  {row.isActive ? <CheckBox /> : <CheckBoxOutlineBlank />}
-                </IconButton>
-              </Tooltip>
-            )}
-
+          <Stack direction="row" justifyContent="flex-end" spacing={1}>
+            {/* View */}
             <Link href={`/admin/shops/${row.slug}`}>
               <IconButton>
                 <IoEye />
               </IconButton>
             </Link>
+
+            {/* Edit */}
             <Tooltip title="Edit">
               <IconButton onClick={() => router.push(`/admin/shops/edit/${row.slug}`)}>
                 <MdEdit />
               </IconButton>
             </Tooltip>
 
-            <Tooltip title={!row.isBanned ? 'Ban' : 'Unban'}>
-              <IconButton onClick={handleClickOpenBanned(row)}>
-                <Dangerous color={row.isBanned ? 'error' : ''} />
-              </IconButton>
-            </Tooltip>
-
+            {/* Delete */}
             <Tooltip title="Delete">
               <IconButton onClick={handleClickOpen(row.slug)}>
                 <MdDelete />
               </IconButton>
             </Tooltip>
+
+            {/* More actions */}
+            <MoreActionsMenu
+              row={row}
+              handleClickOpenStatus={handleClickOpenStatus}
+              handleClickOpenBanned={handleClickOpenBanned}
+            />
           </Stack>
         )}
       </TableCell>
     </TableRow>
   );
 }
+
 ProductRow.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   row: PropTypes.shape({
     name: PropTypes.string.isRequired,
-    logo: PropTypes.arrayOf(
-      PropTypes.shape({
-        url: PropTypes.string.isRequired
-      })
-    ).isRequired,
+    logo: PropTypes.object.isRequired,
     createdAt: PropTypes.instanceOf(Date).isRequired,
     products: PropTypes.number,
-    averageRating: PropTypes.number.isRequired,
-    priceSale: PropTypes.number,
-    price: PropTypes.number.isRequired,
     slug: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     vendor: PropTypes.object.isRequired,
@@ -176,5 +188,7 @@ ProductRow.propTypes = {
     approved: PropTypes.bool.isRequired,
     approvedAt: PropTypes.string.isRequired
   }).isRequired,
-  handleClickOpen: PropTypes.func.isRequired
+  handleClickOpen: PropTypes.func.isRequired,
+  handleClickOpenStatus: PropTypes.func.isRequired,
+  handleClickOpenBanned: PropTypes.func.isRequired
 };
