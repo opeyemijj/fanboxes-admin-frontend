@@ -146,8 +146,8 @@ export const updateItemOddHideShowByAdmin = async ({ slug, ...payload }) => {
   return response;
 };
 
-export const productBannedByAdmin = async ({ slug }) => {
-  const { data: response } = await http.put(`/admin/product-banned/${slug}`);
+export const productBannedByAdmin = async ({ slug, ...payload }) => {
+  const { data: response } = await http.put(`/admin/product-banned/${slug}`, payload);
   return response;
 };
 
