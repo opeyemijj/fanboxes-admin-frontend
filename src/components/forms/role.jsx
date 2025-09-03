@@ -48,18 +48,24 @@ export default function RoleAddForm({ routesGropuData, onSubmit }) {
       // Convert permissions object into MongoDB format
       const permittedItems = {};
       Object.keys(values.permissions).forEach((group) => {
-        permittedItems[group] = values.permissions[group]
-          .filter((item) => item.checked) // only selected
+        const selected = values.permissions[group]
+          .filter((item) => item.checked)
           .map((item) => ({
             slug: item.slug,
             path: item.path,
             name: item.name
           }));
+
+        if (selected.length > 0) {
+          permittedItems[group] = selected; // only include non-empty groups
+        }
       });
+
+      console.log(permittedItems, 'Check the permitted items');
 
       onSubmit({
         role: values.name, // role name
-        permittedItems // formatted permissions
+        permittedItems // only groups with selected items
       });
 
       toast.success('Role created successfully!');
@@ -108,9 +114,9 @@ export default function RoleAddForm({ routesGropuData, onSubmit }) {
             </Grid>
 
             {/* Permissions */}
-            {Object.keys(routesGropuData).map((group) => (
-              <Grid item xs={12} md={6} key={group}>
-                <Card sx={{ p: 3, minHeight: 320, display: 'flex', flexDirection: 'column' }}>
+            {Object.keys(routesGropuData).map((group, index) => (
+              <Grid item xs={12} md={6} key={index}>
+                <Card sx={{ p: 3, minHeight: 420, display: 'flex', flexDirection: 'column' }}>
                   <Stack spacing={1} flexGrow={1}>
                     <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
                       <LabelStyle style={{ fontSize: 20 }}>{group.charAt(0).toUpperCase() + group.slice(1)}</LabelStyle>
@@ -122,7 +128,7 @@ export default function RoleAddForm({ routesGropuData, onSubmit }) {
                     {/* Permissions Grid - 2 per row */}
                     <Grid container spacing={1}>
                       {values.permissions[group].map((perm, idx) => (
-                        <Grid item xs={12} sm={6} key={perm.slug}>
+                        <Grid item xs={12} sm={6} key={idx}>
                           <FormControlLabel
                             control={
                               <Checkbox checked={perm.checked} onChange={() => handlePermissionChange(group, idx)} />
