@@ -216,7 +216,7 @@ export default function ProductRow({
               </IconButton>
             </Tooltip>
 
-            <Tooltip title={!row.isBanned ? 'Bann' : 'Unbann'}>
+            <Tooltip title={!row.isBanned ? 'Ban' : 'Unban'}>
               <IconButton onClick={handleClickOpenBanned(row)}>
                 <Dangerous color={row.isBanned ? 'error' : ''} />
               </IconButton>

@@ -131,6 +131,7 @@ export default function AdminProducts() {
 
   return (
     <>
+      {/* Delete Modal */}
       <Dialog onClose={handleClose} open={open} maxWidth={'xs'}>
         <DeleteDialog
           onClose={handleClose}
@@ -144,6 +145,7 @@ export default function AdminProducts() {
         />
       </Dialog>
 
+      {/* Acive In active Modal */}
       <Dialog onClose={handleClose} open={openStatus} maxWidth="xs">
         <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
           <WarningRoundedIcon sx={{ mr: 1 }} />
@@ -168,24 +170,32 @@ export default function AdminProducts() {
         </DialogActions>
       </Dialog>
 
+      {/* Banned Modal */}
       <Dialog onClose={handleClose} open={openBanned} maxWidth="xs">
         <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
           <WarningRoundedIcon sx={{ mr: 1 }} />
-          Ban This Influencer
+          {markShop?.isBanned ? 'Unban This Influencer' : 'Ban This Influencer'}
         </DialogTitle>
 
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to ban this influencer? Once banned, it won’t be available for others to see.
+            {markShop?.isBanned
+              ? 'Would you like to unban this influencer? Once unbanned, it will be visible and available to others again.'
+              : 'Are you sure you want to ban this influencer? Once banned, it will be hidden and won’t be available for others to see.'}
           </DialogContentText>
         </DialogContent>
 
         <DialogActions>
           <Button onClick={handleClose} color="inherit">
-            No, keep it
+            No, keep it as is
           </Button>
-          <LoadingButton variant="contained" color="error" loading={bannedLoading} onClick={() => bannedShop()}>
-            Yes, Ban It
+          <LoadingButton
+            variant="contained"
+            color={markShop?.isBanned ? 'primary' : 'error'}
+            loading={bannedLoading}
+            onClick={() => bannedShop()}
+          >
+            {markShop?.isBanned ? 'Yes, Unban It' : 'Yes, Ban It'}
           </LoadingButton>
         </DialogActions>
       </Dialog>
