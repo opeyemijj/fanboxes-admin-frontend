@@ -206,7 +206,7 @@ export default function ProductRow({
               <Switch
                 disabled={oddsVisibileLoading}
                 onChange={handleClickOddsVisibility(row)}
-                checked={row?.isItemOddsHidden}
+                checked={!row?.isItemOddsHidden}
               />
             </Tooltip>
 
