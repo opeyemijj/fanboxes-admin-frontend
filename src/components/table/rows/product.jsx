@@ -158,38 +158,25 @@ export default function ProductRow({
           <Skeleton variant="text" />
         ) : (
           <div className="col">
-            <Label
-              sx={{
-                width: '70px',
-                fontSize: '0.60rem',
-                margin: 0.2,
-                bgcolor:
-                  row?.status === 'approved'
-                    ? 'success.light'
-                    : row?.status === 'pending'
-                      ? 'info.light'
-                      : row?.status === 'rejected' || row?.status === 'blocked'
-                        ? 'error.light'
-                        : 'warning.light',
-                color:
-                  row?.status === 'approved'
-                    ? 'success.dark'
-                    : row?.status === 'pending'
-                      ? 'info.dark'
-                      : row?.status === 'rejected' || row?.status === 'blocked'
-                        ? 'error.dark'
-                        : 'warning.dark',
-                textTransform: 'capitalize'
-              }}
-            >
-              {row?.status}
-            </Label>
-            {row?.isBanned && (
+            {row?.isBanned ? (
               <Label
                 sx={{ bgcolor: 'error.light', color: 'white', width: '70px', fontSize: '0.60rem', margin: 0.2 }}
                 variant="filled"
               >
                 {row?.isBanned ? 'Banned' : ''}
+              </Label>
+            ) : (
+              <Label
+                sx={{
+                  width: '70px',
+                  fontSize: '0.60rem',
+                  margin: 0.2,
+                  bgcolor: row?.isActive ? 'success.light' : 'warning.light',
+                  color: row?.isActive ? 'success.dark' : 'white',
+                  textTransform: 'capitalize'
+                }}
+              >
+                {row?.isActive ? 'Approved' : 'Draft'}
               </Label>
             )}
           </div>
