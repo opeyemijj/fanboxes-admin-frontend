@@ -175,6 +175,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
 
   return (
     <>
+      {/* Delete Modal */}
       <Dialog onClose={handleClose} open={open} maxWidth={'xs'}>
         <DeleteDialog
           onClose={handleClose}
@@ -188,6 +189,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
         />
       </Dialog>
 
+      {/* Active Inacive modal */}
       <Dialog onClose={handleClose} open={openStatus} maxWidth="xs">
         <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
           <WarningRoundedIcon sx={{ mr: 1 }} />
@@ -212,44 +214,24 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
         </DialogActions>
       </Dialog>
 
+      {/* Banned Modal */}
       <Dialog onClose={handleClose} open={openBanned} maxWidth="xs">
         <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
           <WarningRoundedIcon sx={{ mr: 1 }} />
-          {markBox?.isBanned ? 'Restore This Box' : 'Hide This Box'}
+          {markBox?.isBanned ? 'Unban This Box' : 'Ban This Box'}
         </DialogTitle>
 
-        <Dialog onClose={handleClose} open={openBanned} maxWidth="xs">
-          <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
-            <WarningRoundedIcon sx={{ mr: 1 }} />
-            {markBox?.isBanned ? 'Unban This Box' : 'Ban This Box'}
-          </DialogTitle>
-
-          <DialogContent>
-            <DialogContentText>
-              {markBox?.isBanned
-                ? 'Would you like to unban this box? Once unbanned, it will be visible and available to others again.'
-                : 'Are you sure you want to ban this box? Once banned, it will be hidden and won’t be available for others to see.'}
-            </DialogContentText>
-          </DialogContent>
-
-          <DialogActions>
-            <Button onClick={handleClose} color="inherit">
-              No, keep it as is
-            </Button>
-            <LoadingButton
-              variant="contained"
-              color={markBox?.isBanned ? 'primary' : 'error'}
-              loading={bannedLoading}
-              onClick={() => bannedProduct()}
-            >
-              {markBox?.isBanned ? 'Yes, Unban It' : 'Yes, Ban It'}
-            </LoadingButton>
-          </DialogActions>
-        </Dialog>
+        <DialogContent>
+          <DialogContentText>
+            {markBox?.isBanned
+              ? 'Would you like to unban this box? Once unbanned, it will be visible and available to others again.'
+              : 'Are you sure you want to ban this box? Once banned, it will be hidden and won’t be available for others to see.'}
+          </DialogContentText>
+        </DialogContent>
 
         <DialogActions>
           <Button onClick={handleClose} color="inherit">
-            No, leave it as is
+            No, keep it as is
           </Button>
           <LoadingButton
             variant="contained"
@@ -257,11 +239,12 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
             loading={bannedLoading}
             onClick={() => bannedProduct()}
           >
-            {markBox?.isBanned ? 'Yes, Restore It' : 'Yes, Hide It'}
+            {markBox?.isBanned ? 'Yes, Unban It' : 'Yes, Ban It'}
           </LoadingButton>
         </DialogActions>
       </Dialog>
 
+      {/* How hide odds modal */}
       <Dialog onClose={handleClose} open={openOddsVisible} maxWidth="xs">
         <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
           <WarningRoundedIcon sx={{ mr: 1 }} color="warning" />

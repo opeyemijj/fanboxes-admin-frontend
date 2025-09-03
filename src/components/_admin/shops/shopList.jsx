@@ -114,7 +114,8 @@ export default function AdminProducts() {
   async function bannedShop() {
     try {
       bannedShopMutation({
-        slug: markShop.slug
+        slug: markShop.slug,
+        isBanned: markShop.isBanned ? false : true
       });
     } catch (error) {
       console.error(error);
