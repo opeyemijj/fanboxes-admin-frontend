@@ -6,8 +6,14 @@ import * as Yup from 'yup';
 import { Box, Card, Stack, TextField, Typography, Grid, FormControlLabel, Checkbox, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import toast from 'react-hot-toast';
+import { useMutation } from 'react-query';
+import { LoadingButton } from '@mui/lab';
+import { useRouter } from 'next-nprogress-bar';
 
-// Styles
+// api
+import * as api from 'src/services';
+import parseMongooseError from 'src/utils/errorHandler';
+
 const LabelStyle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
   color: theme.palette.text.secondary,
@@ -16,12 +22,26 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 }));
 
 RoleAddForm.propTypes = {
-  routesGropuData: PropTypes.object.isRequired,
-  onSubmit: PropTypes.func.isRequired
+  routesGropuData: PropTypes.object.isRequired
 };
 
-export default function RoleAddForm({ routesGropuData, onSubmit }) {
-  // Formik validation
+export default function RoleAddForm({ routesGropuData }) {
+  const router = useRouter();
+
+  // ✅ Mutation hook (like CategoryForm)
+  const { mutate, isLoading } = useMutation(api.addRoleByAdmin, {
+    retry: false,
+    onSuccess: (data) => {
+      toast.success(data.message || 'Role created successfully!');
+      router.push('/admin/roles');
+    },
+    onError: (error) => {
+      let errorMessage = parseMongooseError(error?.message);
+      toast.error(errorMessage || 'Something went wrong. Please try again.');
+    }
+  });
+
+  // ✅ Validation Schema
   const RoleSchema = Yup.object().shape({
     name: Yup.string().required('Role name is required'),
     permissions: Yup.object().test('at-least-one', 'Select at least one permission', (value) =>
@@ -29,7 +49,7 @@ export default function RoleAddForm({ routesGropuData, onSubmit }) {
     )
   });
 
-  // Initialize permissions state from routesGropuData
+  // ✅ Initialize permissions state
   const initialPermissions = {};
   Object.keys(routesGropuData).forEach((group) => {
     initialPermissions[group] = routesGropuData[group].map((item) => ({
@@ -55,20 +75,17 @@ export default function RoleAddForm({ routesGropuData, onSubmit }) {
             path: item.path,
             name: item.name
           }));
-
         if (selected.length > 0) {
-          permittedItems[group] = selected; // only include non-empty groups
+          permittedItems[group] = selected;
         }
       });
 
-      console.log(permittedItems, 'Check the permitted items');
-
-      onSubmit({
-        role: values.name, // role name
-        permittedItems // only groups with selected items
+      mutate({
+        payload: {
+          role: values.name,
+          permittedItems
+        }
       });
-
-      toast.success('Role created successfully!');
     }
   });
 
@@ -81,7 +98,7 @@ export default function RoleAddForm({ routesGropuData, onSubmit }) {
     setFieldValue(`permissions.${group}`, updatedGroup);
   };
 
-  // Toggle all permissions in a group
+  // Toggle all in group
   const handleSelectAllGroup = (group) => {
     const allChecked = values.permissions[group].every((perm) => perm.checked);
     const updatedGroup = values.permissions[group].map((perm) => ({
@@ -125,7 +142,7 @@ export default function RoleAddForm({ routesGropuData, onSubmit }) {
                       </Button>
                     </Box>
 
-                    {/* Permissions Grid - 2 per row */}
+                    {/* Permissions Grid */}
                     <Grid container spacing={1}>
                       {values.permissions[group].map((perm, idx) => (
                         <Grid item xs={12} sm={6} key={idx}>
@@ -145,9 +162,9 @@ export default function RoleAddForm({ routesGropuData, onSubmit }) {
 
             {/* Submit */}
             <Grid item xs={12}>
-              <Button type="submit" variant="contained" size="large">
+              <LoadingButton type="submit" variant="contained" size="large" loading={isLoading}>
                 Create Role
-              </Button>
+              </LoadingButton>
             </Grid>
           </Grid>
         </Form>

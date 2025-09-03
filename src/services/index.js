@@ -81,6 +81,13 @@ export const addCategoryByAdmin = async (payload) => {
   const { data } = await http.post(`/admin/categories`, payload);
   return data;
 };
+
+export const addRoleByAdmin = async ({ payload }) => {
+  console.log(payload, 'come here to call the api');
+  const { data } = await http.post(`/admin/roles`, payload);
+  return data;
+};
+
 export const updateCategoryByAdmin = async ({ currentSlug, ...payload }) => {
   const { data } = await http.put(`/admin/categories/${currentSlug}`, payload);
   return data;
