@@ -22,7 +22,7 @@ import MuiDrawer from '@mui/material/Drawer';
 
 // icons
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
-import { LuLayoutDashboard } from 'react-icons/lu';
+import { LuLayoutDashboard, LuShield, LuShieldOff } from 'react-icons/lu';
 import { FaRegBuilding } from 'react-icons/fa';
 import { TbCategory2 } from 'react-icons/tb';
 import { BsPinAngleFill, BsPlayCircle, BsPlayCircleFill, BsShop } from 'react-icons/bs';
@@ -89,6 +89,13 @@ export const navlinks = [
     title: 'Users',
     slug: 'users',
     icon: <LuUsers />,
+    isSearch: true
+  },
+  {
+    id: 16,
+    title: 'Roles',
+    slug: 'roles',
+    icon: <LuShield />,
     isSearch: true
   },
   {

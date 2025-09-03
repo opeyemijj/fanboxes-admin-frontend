@@ -412,6 +412,11 @@ export const getProductDetails = async (pid) => {
   return data;
 };
 
+export const getAllPermissionRouteGroup = async () => {
+  const { data } = await http.get(`/admin/available-routes`);
+  return data;
+};
+
 export const getProductsByCategory = async (query = '', category, rate) => {
   const { data } = await http.get(`/category/products/${category}${query || '?'}&rate=${rate}`);
   return data;
