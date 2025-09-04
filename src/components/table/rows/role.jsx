@@ -110,7 +110,7 @@ export default function Role({ isLoading, row, handleClickOpen, sn }) {
           ) : (
             <>
               <Tooltip title="Edit">
-                <IconButton onClick={() => router.push(`/admin/categories/${row?.slug}`)}>
+                <IconButton onClick={() => router.push(`/admin/roles/${row?.slug}`)}>
                   <MdEdit />
                 </IconButton>
               </Tooltip>

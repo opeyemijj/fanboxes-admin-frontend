@@ -73,6 +73,12 @@ export const getCategoryByAdmin = async (slug) => {
   const { data } = await http.get(`/admin/categories/${slug}`);
   return data;
 };
+
+export const getRoleByAdmin = async (slug) => {
+  const { data } = await http.get(`/admin/roles/${slug}`);
+  return data;
+};
+
 export const deleteCategoryByAdmin = async (slug) => {
   const { data } = await http.delete(`/admin/categories/${slug}`);
   return data;
@@ -83,8 +89,12 @@ export const addCategoryByAdmin = async (payload) => {
 };
 
 export const addRoleByAdmin = async ({ payload }) => {
-  console.log(payload, 'come here to call the api');
   const { data } = await http.post(`/admin/roles`, payload);
+  return data;
+};
+
+export const updateRoleByAdmin = async ({ slug, payload }) => {
+  const { data } = await http.put(`/admin/roles/${slug}`, payload);
   return data;
 };
 

@@ -25,11 +25,11 @@ RoleAddForm.propTypes = {
   routesGropuData: PropTypes.object.isRequired
 };
 
-export default function RoleAddForm({ routesGropuData }) {
+export default function RoleAddForm({ routesGropuData, currentRole, isLoading }) {
   const router = useRouter();
 
   // ✅ Mutation hook (like CategoryForm)
-  const { mutate, isLoading } = useMutation(api.addRoleByAdmin, {
+  const { mutate, isLoading: mutaionLoading } = useMutation(currentRole ? api.addRoleByAdmin : api.addRoleByAdmin, {
     retry: false,
     onSuccess: (data) => {
       toast.success(data.message || 'Role created successfully!');
@@ -50,22 +50,23 @@ export default function RoleAddForm({ routesGropuData }) {
   });
 
   // ✅ Initialize permissions state
+  // ✅ Initialize permissions state
   const initialPermissions = {};
-  Object.keys(routesGropuData).forEach((group) => {
-    initialPermissions[group] = routesGropuData[group].map((item) => ({
+  Object.keys(routesGropuData || {}).forEach((group) => {
+    initialPermissions[group] = (routesGropuData[group] || []).map((item) => ({
       ...item,
-      checked: false
+      checked: currentRole?.permissions?.includes(item.slug) || false // ✅ pre-check if role already has permission
     }));
   });
 
   const formik = useFormik({
     initialValues: {
-      name: '',
+      name: currentRole?.role || '', // ✅ use role name if editing
       permissions: initialPermissions
     },
     validationSchema: RoleSchema,
+    enableReinitialize: true, // ✅ important when editing (reinitialize when currentRole changes)
     onSubmit: (values) => {
-      // Collect all checked slugs into a single array
       const permittedItems = [];
 
       Object.keys(values.permissions).forEach((group) => {
@@ -76,14 +77,14 @@ export default function RoleAddForm({ routesGropuData }) {
         });
       });
 
-      // console.log(permittedItems, 'Check the permitted item');
+      console.log(permittedItems, 'Permitted Item');
 
-      mutate({
-        payload: {
-          role: values.name,
-          permissions: permittedItems
-        }
-      });
+      // mutate({
+      //   payload: {
+      //     role: values.name,
+      //     permissions: permittedItems
+      //   }
+      // });
     }
   });
 
@@ -91,8 +92,9 @@ export default function RoleAddForm({ routesGropuData }) {
 
   // Toggle individual permission
   const handlePermissionChange = (group, index) => {
-    const updatedGroup = [...values.permissions[group]];
-    updatedGroup[index].checked = !updatedGroup[index].checked;
+    const updatedGroup = values.permissions[group].map((perm, idx) =>
+      idx === index ? { ...perm, checked: !perm.checked } : perm
+    );
     setFieldValue(`permissions.${group}`, updatedGroup);
   };
 
@@ -129,45 +131,46 @@ export default function RoleAddForm({ routesGropuData }) {
             </Grid>
 
             {/* Permissions */}
-            {Object.keys(routesGropuData).map((group, index) => (
-              <Grid item xs={12} md={6} key={index}>
-                <Card sx={{ p: 3, minHeight: 420, display: 'flex', flexDirection: 'column' }}>
-                  <Stack spacing={1} flexGrow={1}>
-                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
-                      <LabelStyle style={{ fontSize: 20 }}>
-                        {group === 'products'
-                          ? 'Box'
-                          : group === 'shops'
-                            ? 'Influencers'
-                            : group.charAt(0).toUpperCase() + group.slice(1)}
-                      </LabelStyle>
-                      <Button size="small" onClick={() => handleSelectAllGroup(group)}>
-                        {values.permissions[group].every((p) => p.checked) ? 'Unselect All' : 'Select All'}
-                      </Button>
-                    </Box>
+            {routesGropuData &&
+              Object.keys(routesGropuData).map((group, index) => (
+                <Grid item xs={12} md={6} key={index}>
+                  <Card sx={{ p: 3, minHeight: 420, display: 'flex', flexDirection: 'column' }}>
+                    <Stack spacing={1} flexGrow={1}>
+                      <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+                        <LabelStyle style={{ fontSize: 20 }}>
+                          {group === 'products'
+                            ? 'Box'
+                            : group === 'shops'
+                              ? 'Influencers'
+                              : group.charAt(0).toUpperCase() + group.slice(1)}
+                        </LabelStyle>
+                        <Button size="small" onClick={() => handleSelectAllGroup(group)}>
+                          {values.permissions[group]?.every((p) => p.checked) ? 'Unselect All' : 'Select All'}
+                        </Button>
+                      </Box>
 
-                    {/* Permissions Grid */}
-                    <Grid container spacing={1}>
-                      {values.permissions[group].map((perm, idx) => (
-                        <Grid item xs={12} sm={6} key={idx}>
-                          <FormControlLabel
-                            control={
-                              <Checkbox checked={perm.checked} onChange={() => handlePermissionChange(group, idx)} />
-                            }
-                            label={perm.name}
-                          />
-                        </Grid>
-                      ))}
-                    </Grid>
-                  </Stack>
-                </Card>
-              </Grid>
-            ))}
+                      {/* Permissions Grid */}
+                      <Grid container spacing={1}>
+                        {values.permissions[group]?.map((perm, idx) => (
+                          <Grid item xs={12} sm={6} key={idx}>
+                            <FormControlLabel
+                              control={
+                                <Checkbox checked={perm.checked} onChange={() => handlePermissionChange(group, idx)} />
+                              }
+                              label={perm.name}
+                            />
+                          </Grid>
+                        ))}
+                      </Grid>
+                    </Stack>
+                  </Card>
+                </Grid>
+              ))}
 
             {/* Submit */}
             <Grid item xs={12}>
-              <LoadingButton type="submit" variant="contained" size="large" loading={isLoading}>
-                Create Role
+              <LoadingButton type="submit" variant="contained" size="large" loading={mutaionLoading}>
+                {!currentRole ? 'Create Role' : 'Update Role'}
               </LoadingButton>
             </Grid>
           </Grid>

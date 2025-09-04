@@ -13,9 +13,7 @@ export const metadata = {
   authors: 'Fanboxes'
 };
 export default async function page() {
-  // const { data: categories } = await api.getAllCategories();
   const { data: routesGropuData } = await api.getAllPermissionRouteGroup();
-  // console.log(routesGropuData, 'Check the categories');
   return (
     <div>
       <HeaderBreadcrumbs
