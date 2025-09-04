@@ -36,8 +36,6 @@ export default function RoleList() {
     }
   );
 
-  console.log(data, 'Check the data');
-
   const handleClickOpen = (prop) => () => {
     setId(prop);
     setOpen(true);
@@ -53,9 +51,9 @@ export default function RoleList() {
           onClose={handleClose}
           id={id}
           apicall={setApicall}
-          endPoint="deleteCategoryByAdmin"
+          endPoint="deleteRoleByAdmin"
           type={'Role deleted'}
-          deleteMessage={'Deleting this category will permanently remove it. Are you sure you want to proceed?'}
+          deleteMessage={'Deleting this role will permanently remove it. Are you sure you want to proceed?'}
         />
       </Dialog>
       <Table
@@ -64,7 +62,7 @@ export default function RoleList() {
         isLoading={isLoading}
         row={Role}
         handleClickOpen={handleClickOpen}
-        isSearch
+        // isSearch
       />
     </>
   );

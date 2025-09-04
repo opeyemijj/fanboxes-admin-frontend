@@ -83,6 +83,12 @@ export const deleteCategoryByAdmin = async (slug) => {
   const { data } = await http.delete(`/admin/categories/${slug}`);
   return data;
 };
+
+export const deleteRoleByAdmin = async (slug) => {
+  const { data } = await http.delete(`/admin/roles/${slug}`);
+  return data;
+};
+
 export const addCategoryByAdmin = async (payload) => {
   const { data } = await http.post(`/admin/categories`, payload);
   return data;

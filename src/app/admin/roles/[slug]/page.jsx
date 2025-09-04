@@ -44,7 +44,7 @@ export default function Page({ params }) {
             href: '/admin/dashboard'
           },
           {
-            name: 'Role',
+            name: 'Roles',
             href: '/admin/roles'
           },
           {
