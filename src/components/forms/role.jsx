@@ -43,7 +43,7 @@ export default function RoleAddForm({ routesGropuData, currentRole, isLoading })
 
   // ✅ Validation Schema
   const RoleSchema = Yup.object().shape({
-    name: Yup.string().required('Role name is required'),
+    name: Yup.string().required('Role name is required').max(50, 'Role name character limit is 50'),
     permissions: Yup.object().test('at-least-one', 'Select at least one permission', (value) =>
       Object.values(value).some((group) => group.some((perm) => perm.checked))
     )
@@ -77,7 +77,7 @@ export default function RoleAddForm({ routesGropuData, currentRole, isLoading })
         });
       });
 
-      console.log(permittedItems, 'Permitted Item');
+      // console.log(permittedItems, 'Permitted Item');
 
       mutate({
         slug: currentRole ? currentRole.slug : null,

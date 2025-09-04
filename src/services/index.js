@@ -104,8 +104,9 @@ export const updateRoleByAdmin = async ({ slug, payload }) => {
   return data;
 };
 
-export const getRolesByAdmin = async ({ payload }) => {
-  const { data } = await http.get(`/admin/roles`);
+export const getRolesByAdmin = async (params) => {
+  console.log(params, 'Check the params');
+  const { data } = await http.get(`/admin/roles?${params}`);
   return data;
 };
 

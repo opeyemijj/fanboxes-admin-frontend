@@ -48,6 +48,16 @@ const ThumbImgStyle = styled(Box)(({ theme }) => ({
 export default function Role({ isLoading, row, handleClickOpen, sn }) {
   const router = useRouter();
   const theme = useTheme();
+
+  function formatRoleName(str) {
+    if (!str) {
+      return '';
+    }
+    return str
+      .split('_') // split by underscore
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // capitalize each word
+      .join(' '); // join with space
+  }
   return (
     <TableRow hover key={Math.random()}>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
@@ -66,7 +76,7 @@ export default function Role({ isLoading, row, handleClickOpen, sn }) {
                 </Typography>
                 {row?.permissions?.map((perm, index) => (
                   <Typography key={index} variant="body2">
-                    {capitalize(perm)}
+                    {formatRoleName(perm)}
                   </Typography>
                 ))}
               </Box>

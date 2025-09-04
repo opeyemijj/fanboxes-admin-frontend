@@ -29,10 +29,10 @@ export default function RoleList() {
   const [id, setId] = useState(null);
 
   const { data, isLoading } = useQuery(
-    ['roles', apicall, searchParam, pageParam],
-    () => api.getRolesByAdmin(+pageParam || 1, searchParam || ''),
+    ['roles', apicall, searchParams.toString()],
+    () => api['getRolesByAdmin'](searchParams.toString()),
     {
-      onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
+      onError: (err) => toast.error(err.message || 'Something went wrong!')
     }
   );
 
