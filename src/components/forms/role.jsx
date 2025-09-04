@@ -65,20 +65,18 @@ export default function RoleAddForm({ routesGropuData }) {
     },
     validationSchema: RoleSchema,
     onSubmit: (values) => {
-      // Convert permissions object into MongoDB format
-      const permittedItems = {};
+      // Collect all checked slugs into a single array
+      const permittedItems = [];
+
       Object.keys(values.permissions).forEach((group) => {
-        const selected = values.permissions[group]
-          .filter((item) => item.checked)
-          .map((item) => ({
-            slug: item.slug,
-            path: item.path,
-            name: item.name
-          }));
-        if (selected.length > 0) {
-          permittedItems[group] = selected;
-        }
+        values.permissions[group].forEach((item) => {
+          if (item.checked) {
+            permittedItems.push(item.slug);
+          }
+        });
       });
+
+      console.log(permittedItems, 'Check the permitted item');
 
       mutate({
         payload: {
