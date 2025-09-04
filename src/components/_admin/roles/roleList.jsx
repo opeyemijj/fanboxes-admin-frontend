@@ -21,7 +21,7 @@ const TABLE_HEAD = [
   { id: '', label: 'Actions', alignRight: true }
 ];
 // ----------------------------------------------------------------------
-export default function CategoryList() {
+export default function RoleList() {
   const searchParams = useSearchParams();
   const pageParam = searchParams.get('page');
   const searchParam = searchParams.get('search');
@@ -29,14 +29,15 @@ export default function CategoryList() {
   const [apicall, setApicall] = useState(false);
   const [id, setId] = useState(null);
 
-  // const { data, isLoading } = useQuery(
-  //   ['categories', apicall, searchParam, pageParam],
-  //   () => api.getCategoriesByAdmin(+pageParam || 1, searchParam || ''),
-  //   {
-  //     onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
-  //   }
-  // );
-  const data = { data: [] };
+  const { data, isLoading } = useQuery(
+    ['roles', apicall, searchParam, pageParam],
+    () => api.getRolesByAdmin(+pageParam || 1, searchParam || ''),
+    {
+      onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
+    }
+  );
+
+  console.log(data, 'Checking the permissin data');
 
   const handleClickOpen = (prop) => () => {
     setId(prop);
@@ -58,14 +59,14 @@ export default function CategoryList() {
           deleteMessage={'Deleting this category will permanently remove it. Are you sure you want to proceed?'}
         />
       </Dialog>
-      <Table
+      {/* <Table
         headData={TABLE_HEAD}
         data={data}
         isLoading={false}
         row={Category}
         handleClickOpen={handleClickOpen}
         isSearch
-      />
+      /> */}
     </>
   );
 }

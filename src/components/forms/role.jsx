@@ -76,12 +76,12 @@ export default function RoleAddForm({ routesGropuData }) {
         });
       });
 
-      console.log(permittedItems, 'Check the permitted item');
+      // console.log(permittedItems, 'Check the permitted item');
 
       mutate({
         payload: {
           role: values.name,
-          permittedItems
+          permissions: permittedItems
         }
       });
     }
@@ -134,7 +134,13 @@ export default function RoleAddForm({ routesGropuData }) {
                 <Card sx={{ p: 3, minHeight: 420, display: 'flex', flexDirection: 'column' }}>
                   <Stack spacing={1} flexGrow={1}>
                     <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
-                      <LabelStyle style={{ fontSize: 20 }}>{group.charAt(0).toUpperCase() + group.slice(1)}</LabelStyle>
+                      <LabelStyle style={{ fontSize: 20 }}>
+                        {group === 'products'
+                          ? 'Box'
+                          : group === 'shops'
+                            ? 'Influencers'
+                            : group.charAt(0).toUpperCase() + group.slice(1)}
+                      </LabelStyle>
                       <Button size="small" onClick={() => handleSelectAllGroup(group)}>
                         {values.permissions[group].every((p) => p.checked) ? 'Unselect All' : 'Select All'}
                       </Button>

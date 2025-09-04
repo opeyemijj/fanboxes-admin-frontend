@@ -88,6 +88,11 @@ export const addRoleByAdmin = async ({ payload }) => {
   return data;
 };
 
+export const getRolesByAdmin = async ({ payload }) => {
+  const { data } = await http.get(`/admin/roles`);
+  return data;
+};
+
 export const updateCategoryByAdmin = async ({ currentSlug, ...payload }) => {
   const { data } = await http.put(`/admin/categories/${currentSlug}`, payload);
   return data;
@@ -139,47 +144,47 @@ export const updateProductByAdmin = async ({ currentSlug, ...payload }) => {
 };
 
 export const updateProductActiveInactiveByAdmin = async ({ slug, ...payload }) => {
-  const { data: response } = await http.put(`/admin/product-active/${slug}`, payload);
+  const { data: response } = await http.put(`/admin/products/active/${slug}`, payload);
   return response;
 };
 
 export const updateShopActiveInactiveByAdmin = async ({ slug, ...payload }) => {
-  const { data: response } = await http.put(`/admin/shop-active/${slug}`, payload);
+  const { data: response } = await http.put(`/admin/shops/active/${slug}`, payload);
   return response;
 };
 
 export const updateItemOddHideShowByAdmin = async ({ slug, ...payload }) => {
-  const { data: response } = await http.put(`/admin/item-odds-visibility/${slug}`, payload);
+  const { data: response } = await http.put(`/admin/products/item-odds-visibility/${slug}`, payload);
   return response;
 };
 
 export const productBannedByAdmin = async ({ slug, ...payload }) => {
-  const { data: response } = await http.put(`/admin/product-banned/${slug}`, payload);
+  const { data: response } = await http.put(`/admin/products/banned/${slug}`, payload);
   return response;
 };
 
 export const shopBannedByAdmin = async ({ slug, ...payload }) => {
-  const { data: response } = await http.put(`/admin/shop-banned/${slug}`, payload);
+  const { data: response } = await http.put(`/admin/shops/banned/${slug}`, payload);
   return response;
 };
 
 export const updateItemBoxByAdmin = async ({ ...payload }) => {
-  const { data: response } = await http.put(`/admin/boxItem/${payload.boxSlug}`, payload);
+  const { data: response } = await http.put(`/admin/products/boxItem/${payload.boxSlug}`, payload);
   return response;
 };
 
 export const updateItemBoxByVendor = async ({ ...payload }) => {
-  const { data: response } = await http.put(`/vendor/boxItem/${payload.boxSlug}`, payload);
+  const { data: response } = await http.put(`/vendor/products/boxItem/${payload.boxSlug}`, payload);
   return response;
 };
 
 export const updateBoxItemOddByAdmin = async ({ ...payload }) => {
-  const { data: response } = await http.put(`/admin/boxItemOdd/${payload?.boxSlug}`, payload);
+  const { data: response } = await http.put(`/admin/products/boxItemOdd/${payload?.boxSlug}`, payload);
   return response;
 };
 
 export const updateBoxItemOddByVendor = async ({ ...payload }) => {
-  const { data: response } = await http.put(`/vendor/boxItemOdd/${payload?.boxSlug}`, payload);
+  const { data: response } = await http.put(`/vendor/products/boxItemOdd/${payload?.boxSlug}`, payload);
   return response;
 };
 
@@ -189,12 +194,12 @@ export const deleteProductByAdmin = async (slug) => {
 };
 
 export const deleteBoxItemByAdmin = async (slug) => {
-  const { data: response } = await http.delete(`/admin/product-item/${slug.boxSlug}/${slug.itemSlug}`);
+  const { data: response } = await http.delete(`/admin/products/item/${slug.boxSlug}/${slug.itemSlug}`);
   return response;
 };
 
 export const deleteBoxItemByVendor = async (slug) => {
-  const { data: response } = await http.delete(`/vendor/product-item/${slug.boxSlug}/${slug.itemSlug}`);
+  const { data: response } = await http.delete(`/vendor/products/item/${slug.boxSlug}/${slug.itemSlug}`);
   return response;
 };
 
@@ -375,7 +380,7 @@ export const createVendorBoxItem = async (payload) => {
 };
 
 export const createAdminBoxItem = async (payload) => {
-  const { data: response } = await http.post(`/admin/boxItem`, payload);
+  const { data: response } = await http.post(`/admin/products/boxItem`, payload);
   return response;
 };
 
