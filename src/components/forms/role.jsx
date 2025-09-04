@@ -29,7 +29,7 @@ export default function RoleAddForm({ routesGropuData, currentRole, isLoading })
   const router = useRouter();
 
   // ✅ Mutation hook (like CategoryForm)
-  const { mutate, isLoading: mutaionLoading } = useMutation(currentRole ? api.addRoleByAdmin : api.addRoleByAdmin, {
+  const { mutate, isLoading: mutaionLoading } = useMutation(currentRole ? api.updateRoleByAdmin : api.addRoleByAdmin, {
     retry: false,
     onSuccess: (data) => {
       toast.success(data.message || 'Role created successfully!');
@@ -79,12 +79,13 @@ export default function RoleAddForm({ routesGropuData, currentRole, isLoading })
 
       console.log(permittedItems, 'Permitted Item');
 
-      // mutate({
-      //   payload: {
-      //     role: values.name,
-      //     permissions: permittedItems
-      //   }
-      // });
+      mutate({
+        slug: currentRole ? currentRole.slug : null,
+        payload: {
+          role: values.name,
+          permissions: permittedItems
+        }
+      });
     }
   });
 
