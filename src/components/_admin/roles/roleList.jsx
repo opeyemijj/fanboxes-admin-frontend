@@ -11,14 +11,13 @@ import { Dialog } from '@mui/material';
 // components
 import DeleteDialog from 'src/components/dialog/delete';
 import Table from 'src/components/table/table';
-import Category from 'src/components/table/rows/category';
+import Role from 'src/components/table/rows/role';
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Category', alignRight: false, sort: true },
-  { id: 'description', label: 'Description', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
-  { id: 'createdAt', label: 'Date', alignRight: false, sort: true },
-  { id: '', label: 'Actions', alignRight: true }
+  { id: 'role', label: 'Role', alignRight: false, sort: true },
+  { id: 'permissions', label: 'Permissions', alignRight: false },
+  { id: 'date', label: 'Date', alignRight: false },
+  { id: 'action', label: 'Action', alignRight: true }
 ];
 // ----------------------------------------------------------------------
 export default function RoleList() {
@@ -37,7 +36,7 @@ export default function RoleList() {
     }
   );
 
-  console.log(data, 'Checking the permissin data');
+  console.log(data, 'Check the data');
 
   const handleClickOpen = (prop) => () => {
     setId(prop);
@@ -55,18 +54,18 @@ export default function RoleList() {
           id={id}
           apicall={setApicall}
           endPoint="deleteCategoryByAdmin"
-          type={'Category deleted'}
+          type={'Role deleted'}
           deleteMessage={'Deleting this category will permanently remove it. Are you sure you want to proceed?'}
         />
       </Dialog>
-      {/* <Table
+      <Table
         headData={TABLE_HEAD}
         data={data}
-        isLoading={false}
-        row={Category}
+        isLoading={isLoading}
+        row={Role}
         handleClickOpen={handleClickOpen}
         isSearch
-      /> */}
+      />
     </>
   );
 }

@@ -18,7 +18,7 @@ import BlurImage from 'src/components/blurImage';
 // utils
 import { fDateShort } from 'src/utils/formatTime';
 
-Category.propTypes = {
+Role.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   row: PropTypes.shape({
     name: PropTypes.string.isRequired,
@@ -45,37 +45,61 @@ const ThumbImgStyle = styled(Box)(({ theme }) => ({
   position: 'relative',
   overflow: 'hidden'
 }));
-export default function Category({ isLoading, row, handleClickOpen, sn }) {
+export default function Role({ isLoading, row, handleClickOpen, sn }) {
   const router = useRouter();
   const theme = useTheme();
   return (
     <TableRow hover key={Math.random()}>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
-      <TableCell component="th" scope="row">
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center'
-          }}
-        >
-          <Typography variant="subtitle2" noWrap>
-            {isLoading ? <Skeleton variant="text" width={120} sx={{ ml: 1 }} /> : row?.name}
-          </Typography>
-        </Box>
-      </TableCell>
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : row.description?.slice(0, 50)}</TableCell>
-      <TableCell>
+
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.role}</TableCell>
+
+      <TableCell align="left">
         {isLoading ? (
           <Skeleton variant="text" />
         ) : (
-          <Label
-            variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-            color={row?.status?.toLowerCase() === 'active' ? 'success' : 'error'}
+          <Tooltip
+            title={
+              <Box sx={{ p: 1 }}>
+                <Typography variant="subtitle2" sx={{ mb: 0.5, fontWeight: 500 }}>
+                  Permissions:
+                </Typography>
+                {row?.permissions?.map((perm, index) => (
+                  <Typography key={index} variant="body2">
+                    {capitalize(perm)}
+                  </Typography>
+                ))}
+              </Box>
+            }
+            arrow
+            placement="top"
+            componentsProps={{
+              tooltip: {
+                sx: {
+                  bgcolor: 'background.paper',
+                  color: 'text.primary',
+                  boxShadow: 3,
+                  borderRadius: 2
+                }
+              }
+            }}
           >
-            {capitalize(row?.status)}
-          </Label>
+            <Box
+              sx={{
+                cursor: 'pointer',
+                // display: 'inline-block',
+                // textDecoration: 'underline',
+                fontSize: 12
+                // fontWeight: 500
+                // color: 'primary.main'
+              }}
+            >
+              {row?.permissions?.length}
+            </Box>
+          </Tooltip>
         )}
       </TableCell>
+
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <> {fDateShort(row.createdAt)} </>}</TableCell>
       <TableCell align="right">
         <Stack direction="row" justifyContent="flex-end">
