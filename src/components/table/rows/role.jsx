@@ -87,8 +87,7 @@ export default function Role({ isLoading, row, handleClickOpen, sn }) {
             <Box
               sx={{
                 cursor: 'pointer',
-                // display: 'inline-block',
-                // textDecoration: 'underline',
+                marginLeft: 3,
                 fontSize: 12
                 // fontWeight: 500
                 // color: 'primary.main'
