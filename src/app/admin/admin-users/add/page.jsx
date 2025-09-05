@@ -2,35 +2,36 @@ import React from 'react';
 
 // components
 import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
-import UsersList from 'src/components/_admin/users/userList';
+import AddAdmin from 'src/components/_admin/admin-users/addAdmin';
 
 // Meta information
 export const metadata = {
-  title: 'User - Fanboxes',
+  title: 'Add Categories - Fanboxes',
   applicationName: 'Fanboxes',
   authors: 'Fanboxes'
 };
+
 export default function page() {
   return (
-    <>
+    <div>
       <HeaderBreadcrumbs
         admin
-        heading="Users List"
+        heading="Add Admin"
         links={[
           {
             name: 'Dashboard',
             href: '/admin/dashboard'
           },
           {
-            name: 'Admin Users'
+            name: 'Admin Users',
+            href: '/admin/admin-users'
+          },
+          {
+            name: 'Add Admin'
           }
         ]}
-        action={{
-          href: `/admin/admin-users/add`,
-          title: 'Add Admin'
-        }}
       />
-      <UsersList userType="admin" />
-    </>
+      <AddAdmin />
+    </div>
   );
 }

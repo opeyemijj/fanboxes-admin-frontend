@@ -87,6 +87,14 @@ export const navlinks = [
     isSearch: true
   },
   {
+    id: 20,
+    title: 'Users',
+    slug: 'users',
+    icon: <User />,
+    isSearch: true
+  },
+
+  {
     id: 7,
     title: 'User Management',
     slug: 'user-management',
