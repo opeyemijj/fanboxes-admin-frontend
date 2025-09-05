@@ -38,6 +38,8 @@ import { LuBadgePercent } from 'react-icons/lu';
 
 // components
 import Scrollbar from 'src/components/Scrollbar';
+import { User, User2Icon, UserCheck, UserRound } from 'lucide-react';
+import { Person, Security } from '@mui/icons-material';
 
 // Dashboard Side NevLinks
 export const navlinks = [
@@ -86,10 +88,30 @@ export const navlinks = [
   },
   {
     id: 7,
-    title: 'Users',
-    slug: 'users',
+    title: 'User Management',
+    slug: 'user-management',
     icon: <LuUsers />,
-    isSearch: true
+    isSearch: true,
+    children: [
+      {
+        id: '7-1',
+        title: 'User',
+        slug: 'users',
+        icon: <User />
+      },
+      {
+        id: '7-2',
+        title: 'Admin',
+        slug: 'admins',
+        icon: <Security />
+      },
+      {
+        id: '7-3',
+        title: 'Influencer',
+        slug: 'influencers',
+        icon: <BsBuildings />
+      }
+    ]
   },
   {
     id: 16,
@@ -127,13 +149,7 @@ export const navlinks = [
     icon: <RiCoupon5Line />,
     isSearch: true
   },
-  // {
-  //   id: 12,
-  //   title: 'Compaigns',
-  //   slug: 'compaigns',
-  //   icon: <LuBadgePercent />,
-  //   isSearch: true
-  // },
+
   {
     id: 13,
     title: 'Currencies',
@@ -142,13 +158,6 @@ export const navlinks = [
     isSearch: true
   },
 
-  // {
-  //   id: 14,
-  //   title: 'Newsletter',
-  //   slug: 'newsletter',
-  //   icon: <SlEnvolopeLetter />,
-  //   isSearch: false
-  // },
   {
     id: 15,
     title: 'Settings',
@@ -220,6 +229,9 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
   const [active, setActive] = React.useState('');
   const [initial, setInitial] = React.useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  const [expandedParent, setExpandedParent] = React.useState('');
+
   React.useEffect(() => {
     setActive(pathname);
     setInitial(true);
@@ -291,59 +303,113 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
             }}
           >
             {navlinks.map((item) => (
-              <ListItem
-                key={item.id}
-                disablePadding
-                sx={{
-                  display: 'block',
-                  borderRadius: '8px',
-                  border: `1px solid transparent`,
-                  ...(active === '/admin/' + item.slug &&
-                    initial && {
-                      bgcolor: (theme) => alpha(theme.palette.primary.main, 0.2),
-                      border: (theme) => `1px solid ${theme.palette.primary.main}`,
-                      color: theme.palette.primary.main,
-                      '& .MuiTypography-root': {
-                        fontWeight: 600
-                      }
-                    })
-                }}
-              >
-                <Tooltip title={open ? '' : item.title} placement="left" arrow leaveDelay={200}>
-                  <ListItemButton
-                    onClick={() => {
-                      setActive(item.slug);
-                      router.push('/admin/' + item.slug);
-                      isMobile && handleDrawerClose();
-                    }}
-                    sx={{
-                      minHeight: 48,
-                      justifyContent: open ? 'initial' : 'center',
-                      px: 2.5,
-                      borderRadius: '8px'
-                    }}
-                  >
-                    <ListItemIcon
+              <React.Fragment key={item.id}>
+                <ListItem
+                  disablePadding
+                  sx={{
+                    display: 'block',
+                    borderRadius: '8px',
+                    border: `1px solid transparent`,
+                    ...(active === '/admin/' + item.slug &&
+                      initial && {
+                        bgcolor: (theme) => alpha(theme.palette.primary.main, 0.2),
+                        border: (theme) => `1px solid ${theme.palette.primary.main}`,
+                        color: theme.palette.primary.main,
+                        '& .MuiTypography-root': {
+                          fontWeight: 600
+                        }
+                      })
+                  }}
+                >
+                  <Tooltip title={open ? '' : item.title} placement="left" arrow leaveDelay={200}>
+                    <ListItemButton
+                      onClick={() => {
+                        if (item.children) {
+                          setExpandedParent(expandedParent === item.slug ? '' : item.slug);
+                        } else {
+                          setExpandedParent(''); // collapse User Management if another parent is clicked
+                          setActive('/admin/' + item.slug);
+                          router.push('/admin/' + item.slug);
+                          isMobile && handleDrawerClose();
+                        }
+                      }}
                       sx={{
-                        minWidth: 0,
-                        mr: open ? 2 : 'auto',
-                        justifyContent: 'center'
+                        minHeight: 48,
+                        justifyContent: open ? 'initial' : 'center',
+                        px: 2.5,
+                        borderRadius: '8px'
                       }}
                     >
-                      {item.icon}
-                    </ListItemIcon>
+                      <ListItemIcon
+                        sx={{
+                          minWidth: 0,
+                          mr: open ? 2 : 'auto',
+                          justifyContent: 'center'
+                        }}
+                      >
+                        {item.icon}
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={item.title}
+                        sx={{
+                          overflow: 'hidden',
+                          height: open ? 'auto' : 0,
+                          textTransform: 'capitalize'
+                        }}
+                      />
+                    </ListItemButton>
+                  </Tooltip>
+                </ListItem>
 
-                    <ListItemText
-                      primary={item.title}
-                      sx={{
-                        overflow: 'hidden',
-                        height: open ? 'auto' : 0,
-                        textTransform: 'capitalize'
-                      }}
-                    />
-                  </ListItemButton>
-                </Tooltip>
-              </ListItem>
+                {/* Render children if User Management is active */}
+                {item.children && expandedParent === item.slug && open && (
+                  <List sx={{ pl: 4 }}>
+                    {item.children.map((child) => (
+                      <ListItem key={child.id} disablePadding>
+                        <ListItemButton
+                          onClick={() => {
+                            setActive('/admin/' + child.slug);
+                            router.push('/admin/' + child.slug);
+                            isMobile && handleDrawerClose();
+                          }}
+                          sx={{
+                            minHeight: 40,
+                            justifyContent: open ? 'initial' : 'center',
+                            px: 2.5,
+                            borderRadius: '8px',
+                            ...(active === '/admin/' + child.slug && {
+                              bgcolor: (theme) => alpha(theme.palette.primary.main, 0.2),
+                              border: (theme) => `1px solid ${theme.palette.primary.main}`,
+                              color: (theme) => theme.palette.primary.main,
+                              '& .MuiTypography-root': {
+                                fontWeight: 600
+                              }
+                            })
+                          }}
+                        >
+                          <ListItemIcon
+                            sx={{
+                              minWidth: 0,
+                              mr: open ? 2 : 'auto',
+                              justifyContent: 'center'
+                            }}
+                          >
+                            {child.icon}
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={child.title}
+                            sx={{
+                              overflow: 'hidden',
+                              height: open ? 'auto' : 0,
+                              textTransform: 'capitalize'
+                            }}
+                          />
+                        </ListItemButton>
+                      </ListItem>
+                    ))}
+                  </List>
+                )}
+              </React.Fragment>
             ))}
           </List>
         </Scrollbar>

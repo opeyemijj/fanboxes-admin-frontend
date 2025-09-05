@@ -27,11 +27,12 @@ export default function AdminProducts() {
   const searchParams = useSearchParams();
   const pageParam = searchParams.get('page');
   const searchParam = searchParams.get('search');
+  const userType = 'user';
   const [count, setCount] = useState(0);
 
   const { data, isLoading } = useQuery(
     ['user', pageParam, searchParam, count],
-    () => api.getUserByAdminsByAdmin(+pageParam || 1, searchParam || ''),
+    () => api.getUserByAdminsByAdmin(+pageParam || 1, searchParam || '', userType),
     {
       onError: (err) => {
         toast.error(err.response.data.message || 'Something went wrong!');
