@@ -76,7 +76,7 @@ export default function UserRow({ isLoading, row, setId, sn }) {
       <TableCell style={{ minWidth: 80 }}>{isLoading ? <Skeleton variant="text" /> : row?.phone}</TableCell>
       <TableCell style={{ minWidth: 40 }}>{isLoading ? <Skeleton variant="text" /> : row?.totalOrders || 0}</TableCell>
       <TableCell style={{ minWidth: 40, textTransform: 'capitalize' }}>
-        {isLoading ? <Skeleton variant="text" /> : row.role}
+        {isLoading ? <Skeleton variant="text" /> : row.role?.toLowerCase() === 'vendor' ? 'Influencer' : row.role}
       </TableCell>
       <TableCell style={{ minWidth: 40 }}>
         {isLoading ? <Skeleton variant="text" /> : fDateShort(row.createdAt, enUS)}
