@@ -23,11 +23,10 @@ const TABLE_HEAD = [
   { id: '', label: 'Actions', alignRight: true }
 ];
 
-export default function AdminProducts() {
+export default function AdminProducts({ userType }) {
   const searchParams = useSearchParams();
   const pageParam = searchParams.get('page');
   const searchParam = searchParams.get('search');
-  const userType = 'user';
   const [count, setCount] = useState(0);
 
   const { data, isLoading } = useQuery(

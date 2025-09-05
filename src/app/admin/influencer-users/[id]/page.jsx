@@ -2,31 +2,29 @@ import React from 'react';
 
 // components
 import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
-import UsersList from 'src/components/_admin/users/userList';
+import UsersDetails from 'src/components/_admin/users/userDetails';
 
-// Meta information
-export const metadata = {
-  title: 'User - Fanboxes',
-  applicationName: 'Fanboxes',
-  authors: 'Fanboxes'
-};
-export default function page() {
+export default function page({ params }) {
   return (
     <>
       <HeaderBreadcrumbs
         admin
-        heading="Users List"
+        heading="User Details"
         links={[
           {
             name: 'Dashboard',
             href: '/admin/dashboard'
           },
           {
-            name: 'Users'
+            name: 'Users',
+            href: '/admin/users'
+          },
+          {
+            name: 'Users details'
           }
         ]}
       />
-      <UsersList userType="user" />
+      <UsersDetails id={params.id} />
     </>
   );
 }

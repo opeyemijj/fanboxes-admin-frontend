@@ -108,7 +108,7 @@ export const navlinks = [
       {
         id: '7-3',
         title: 'Influencer',
-        slug: 'influencers',
+        slug: 'influencer-users',
         icon: <BsBuildings />
       }
     ]

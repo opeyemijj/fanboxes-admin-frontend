@@ -22,11 +22,11 @@ export default function page() {
             href: '/admin/dashboard'
           },
           {
-            name: 'Users'
+            name: 'Influencers'
           }
         ]}
       />
-      <UsersList userType="user" />
+      <UsersList userType="vendor" />
     </>
   );
 }
