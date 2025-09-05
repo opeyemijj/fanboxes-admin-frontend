@@ -66,7 +66,7 @@ export default function ProductRow({
               ) : (
                 <MdCancel style={{ width: 30 }} width={50} color="orange" size={23} />
               )}
-              <ListItemText style={{ marginLeft: 12 }}>{row.isActive ? 'Mark Inactive' : 'Mark Active'}</ListItemText>
+              <ListItemText style={{ marginLeft: 12 }}>{row.isActive ? 'Draft' : 'Approve'}</ListItemText>
             </MenuItem>
           )}
 
@@ -76,7 +76,7 @@ export default function ProductRow({
               size="small"
               disabled={oddsVisibileLoading}
               onChange={handleClickOddsVisibility(row)}
-              checked={!row?.isItemOddsHidden}
+              checked={row?.isItemOddsHidden}
             />
             <ListItemText style={{ marginLeft: 10 }}>{row?.isItemOddsHidden ? 'Show Odds' : 'Hide Odds'}</ListItemText>
           </MenuItem>
@@ -192,7 +192,7 @@ export default function ProductRow({
           <Skeleton variant="text" />
         ) : (
           <Link style={{ textDecoration: 'none', color: 'inherit' }} href={`products/box/${row?.slug}`} passHref>
-            <Typography>{row?.items?.length || 0} Item(s)</Typography>
+            {row?.items?.length || 0} Item(s)
           </Link>
         )}
       </TableCell>

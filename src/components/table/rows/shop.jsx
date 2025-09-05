@@ -49,7 +49,7 @@ export default function ProductRow({
           {!row?.isBanned && (
             <MenuItem onClick={handleClickOpenStatus(row)}>
               {row.isActive ? <MdCheckCircle color="green" size={20} /> : <MdCancel color="orange" size={20} />}
-              <ListItemText sx={{ ml: 1 }}>{row.isActive ? 'Mark Inactive' : 'Mark Active'}</ListItemText>
+              <ListItemText sx={{ ml: 1 }}>{row.isActive ? 'Draft' : 'Approve'}</ListItemText>
             </MenuItem>
           )}
 
