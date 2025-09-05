@@ -2,7 +2,7 @@ import React from 'react';
 // components
 import AdminUserForm from 'src/components/forms/admin-user';
 
-export default function AddCategory() {
+export default async function AddAdmin() {
   return (
     <div>
       <AdminUserForm />

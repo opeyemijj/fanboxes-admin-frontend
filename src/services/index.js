@@ -598,6 +598,12 @@ export const getAllCategories = async () => {
   const { data } = await http.get(`/all-categories`);
   return data;
 };
+
+export const getAllRoles = async () => {
+  const { data } = await http.get(`/all-roles`);
+  return data;
+};
+
 export const getHomeCategories = async () => {
   const { data } = await http.get(`/home/categories`);
   return data;

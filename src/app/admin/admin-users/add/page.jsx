@@ -4,14 +4,16 @@ import React from 'react';
 import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
 import AddAdmin from 'src/components/_admin/admin-users/addAdmin';
 
+import * as api from 'src/services';
+
 // Meta information
 export const metadata = {
-  title: 'Add Categories - Fanboxes',
+  title: 'Add Admin - Fanboxes',
   applicationName: 'Fanboxes',
   authors: 'Fanboxes'
 };
 
-export default function page() {
+export default async function page() {
   return (
     <div>
       <HeaderBreadcrumbs

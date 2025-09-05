@@ -1,6 +1,6 @@
 'use client';
-import React, { useState } from 'react';
-import { useMutation } from 'react-query';
+import React, { useEffect, useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
 import { useRouter } from 'next-nprogress-bar';
 import PropTypes from 'prop-types';
 
@@ -45,30 +45,34 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
   lineHeight: 2.5
 }));
 
-const STATUS_OPTIONS = ['active', 'deactive'];
+const GENDER_OPTIONS = ['male', 'female'];
 
-export default function AdminUser({ data: currentCategory, isLoading: categoryLoading }) {
+export default function AdminUser({ data: currentUser, isLoading: userLoading }) {
   const router = useRouter();
 
-  const [state, setstate] = useState({
-    loading: false,
-    name: '',
-    search: '',
-    open: false
-  });
+  const [allRoleList, setAllRoleList] = useState([]);
+
+  useEffect(() => {
+    async function callRolesApi(params) {
+      const gettingAllRoles = await api.getAllRoles();
+      console.log(gettingAllRoles, 'Getting all role listing');
+      setAllRoleList(gettingAllRoles?.data);
+    }
+    callRolesApi();
+  }, []);
 
   const { mutate, isLoading } = useMutation(
-    currentCategory ? 'update' : 'new',
-    currentCategory ? api.updateCategoryByAdmin : api.addCategoryByAdmin,
+    currentUser ? 'update' : 'new',
+    currentUser ? api.updateCategoryByAdmin : api.addCategoryByAdmin,
     {
-      ...(currentCategory && {
-        enabled: Boolean(currentCategory)
+      ...(currentUser && {
+        enabled: Boolean(currentUser)
       }),
       retry: false,
       onSuccess: (data) => {
         toast.success(data.message);
 
-        router.push('/admin/categories');
+        router.push('/admin//admin-users');
       },
       onError: (error) => {
         console.log(error, 'check the error');
@@ -86,17 +90,26 @@ export default function AdminUser({ data: currentCategory, isLoading: categoryLo
     }
   });
   const NewCategorySchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    slug: Yup.string().required('Slug is required'),
-    description: Yup.string().optional('Description is required')
+    firstName: Yup.string().required('First Name is required').max(30, 'First name max char is 30'),
+
+    lastName: Yup.string().required('Last Name is required').max(30, 'Last name max char is 30'),
+
+    email: Yup.string().required('Email is required').email('Enter a valid email address'),
+    roleId: Yup.string().required('Role is required'),
+
+    phone: Yup.string()
+      .required('Phone is required')
+      .matches(/^(\+?[0-9]{1,4}[\s-]?)?(\(?\d{3}\)?[\s-]?)?\d{3}[\s-]?\d{4}$/, 'Enter a valid phone number')
   });
 
   const formik = useFormik({
     initialValues: {
-      name: currentCategory?.name || '',
-      description: currentCategory?.description || '',
-      slug: currentCategory?.slug || '',
-      status: currentCategory?.status || STATUS_OPTIONS[0]
+      firstName: currentUser?.firstName || '',
+      lastName: currentUser?.lastName || '',
+      email: currentUser?.email || '',
+      phone: currentUser?.phone || '',
+      gender: currentUser?.gender || GENDER_OPTIONS[0],
+      roleId: currentUser?.roleId || allRoleList[0]?._id
     },
     enableReinitialize: true,
     validationSchema: NewCategorySchema,
@@ -105,8 +118,8 @@ export default function AdminUser({ data: currentCategory, isLoading: categoryLo
       try {
         mutate({
           ...rest,
-          ...(currentCategory && {
-            currentSlug: currentCategory.slug
+          ...(currentUser && {
+            currentSlug: currentUser.slug
           })
         });
       } catch (error) {
@@ -121,51 +134,6 @@ export default function AdminUser({ data: currentCategory, isLoading: categoryLo
   });
   const { errors, values, touched, handleSubmit, setFieldValue, getFieldProps } = formik;
 
-  const handleDrop = async (acceptedFiles) => {
-    setstate({ ...state, loading: 2 });
-    const file = acceptedFiles[0];
-    if (file) {
-      Object.assign(file, {
-        preview: URL.createObjectURL(file)
-      });
-    }
-    setFieldValue('file', file);
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', 'my-uploads');
-    const config = {
-      onUploadProgress: (progressEvent) => {
-        const { loaded, total } = progressEvent;
-        const percentage = Math.floor((loaded * 100) / total);
-        setstate({ ...state, loading: percentage });
-      }
-    };
-    await axios
-      .post(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`, formData, config)
-      .then(({ data }) => {
-        setFieldValue('cover', {
-          _id: data.public_id,
-          url: data.secure_url
-        });
-        setstate({ ...state, loading: false });
-      })
-      .then(() => {
-        if (values.file) {
-          deleteMutate(values.cover._id);
-        }
-        setstate({ ...state, loading: false });
-      });
-  };
-
-  const handleTitleChange = (event) => {
-    const title = event.target.value;
-    const slug = title
-      .toLowerCase()
-      .replace(/[^a-zA-Z0-9\s]+/g, '')
-      .replace(/\s+/g, '-'); // convert to lowercase, remove special characters, and replace spaces with hyphens
-    formik.setFieldValue('slug', slug); // set the value of slug in the formik state
-    formik.handleChange(event); // handle the change in formik
-  };
   return (
     <Box position="relative">
       <FormikProvider value={formik}>
@@ -173,89 +141,170 @@ export default function AdminUser({ data: currentCategory, isLoading: categoryLo
           <Grid container spacing={2}>
             <Grid item xs={12} md={12}>
               <Card sx={{ p: 3 }}>
-                <Stack spacing={3}>
-                  <div>
-                    {categoryLoading ? (
-                      <Skeleton variant="text" width={140} />
-                    ) : (
-                      <LabelStyle component={'label'} htmlFor="category-name">
-                        {' '}
-                        {'Category Name'}{' '}
-                      </LabelStyle>
-                    )}
-                    {categoryLoading ? (
-                      <Skeleton variant="rectangular" width="100%" height={56} />
-                    ) : (
-                      <TextField
-                        id="category-name"
-                        fullWidth
-                        {...getFieldProps('name')}
-                        onChange={handleTitleChange} // add onChange handler for title
-                        error={Boolean(touched.name && errors.name)}
-                        helperText={touched.name && errors.name}
-                      />
-                    )}
-                  </div>
+                <Stack>
+                  <Grid container spacing={2}>
+                    {/* First Name */}
+                    <Grid item xs={12} md={6}>
+                      {isLoading ? (
+                        <Skeleton variant="text" width={120} />
+                      ) : (
+                        <LabelStyle component={'label'} htmlFor="gender">
+                          First Name
+                        </LabelStyle>
+                      )}
+                      {isLoading ? (
+                        <Skeleton variant="rectangular" width="100%" height={56} />
+                      ) : (
+                        <TextField
+                          id="firstName"
+                          fullWidth
+                          // placeholder="Enter first name"
+                          {...getFieldProps('firstName')}
+                          error={Boolean(touched.firstName && errors.firstName)}
+                          helperText={touched.firstName && errors.firstName}
+                        />
+                      )}
+                    </Grid>
 
-                  <div>
-                    {categoryLoading ? (
-                      <Skeleton variant="text" width={100} />
-                    ) : (
-                      <LabelStyle component={'label'} htmlFor="description">
-                        {' '}
-                        {'Description'}{' '}
-                      </LabelStyle>
-                    )}
-                    {categoryLoading ? (
-                      <Skeleton variant="rectangular" width="100%" height={240} />
-                    ) : (
-                      <TextField
-                        fullWidth
-                        id="description"
-                        {...getFieldProps('description')}
-                        error={Boolean(touched.description && errors.description)}
-                        helperText={touched.description && errors.description}
-                        rows={9}
-                        multiline
-                      />
-                    )}
-                  </div>
+                    {/* Last Name */}
+                    <Grid item xs={12} md={6}>
+                      {isLoading ? (
+                        <Skeleton variant="text" width={120} />
+                      ) : (
+                        <LabelStyle component={'label'} htmlFor="gender">
+                          Last Name{' '}
+                        </LabelStyle>
+                      )}
+                      {isLoading ? (
+                        <Skeleton variant="rectangular" width="100%" height={56} />
+                      ) : (
+                        <TextField
+                          id="lastName"
+                          fullWidth
+                          // placeholder="Enter last name"
+                          {...getFieldProps('lastName')}
+                          error={Boolean(touched.lastName && errors.lastName)}
+                          helperText={touched.lastName && errors.lastName}
+                        />
+                      )}
+                    </Grid>
 
-                  <FormControl fullWidth sx={{ select: { textTransform: 'capitalize' } }}>
-                    {categoryLoading ? (
-                      <Skeleton variant="text" width={70} />
-                    ) : (
-                      <LabelStyle component={'label'} htmlFor="status">
-                        {'Status'}
-                      </LabelStyle>
-                    )}
-                    {categoryLoading ? (
-                      <Skeleton variant="rectangular" width="100%" height={56} />
-                    ) : (
-                      <Select
-                        id="status"
-                        native
-                        {...getFieldProps('status')}
-                        error={Boolean(touched.status && errors.status)}
-                      >
-                        <option value="" style={{ display: 'none' }} />
-                        {STATUS_OPTIONS.map((status) => (
-                          <option key={status} value={status}>
-                            {status}
-                          </option>
-                        ))}
-                      </Select>
-                    )}
-                    {touched.status && errors.status && (
-                      <FormHelperText error sx={{ px: 2, mx: 0 }}>
-                        {touched.status && errors.status}
-                      </FormHelperText>
-                    )}
-                  </FormControl>
+                    <Grid item xs={12} md={6}>
+                      {isLoading ? (
+                        <Skeleton variant="text" width={120} />
+                      ) : (
+                        <LabelStyle component={'label'} htmlFor="gender">
+                          Email{' '}
+                        </LabelStyle>
+                      )}
+                      {isLoading ? (
+                        <Skeleton variant="rectangular" width="100%" height={56} />
+                      ) : (
+                        <TextField
+                          id="email"
+                          fullWidth
+                          // placeholder="Enter last name"
+                          {...getFieldProps('email')}
+                          error={Boolean(touched.email && errors.email)}
+                          helperText={touched.email && errors.email}
+                        />
+                      )}
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                      {isLoading ? (
+                        <Skeleton variant="text" width={120} />
+                      ) : (
+                        <LabelStyle component={'label'} htmlFor="gender">
+                          Phone{' '}
+                        </LabelStyle>
+                      )}
+                      {isLoading ? (
+                        <Skeleton variant="rectangular" width="100%" height={56} />
+                      ) : (
+                        <TextField
+                          id="phone"
+                          fullWidth
+                          // placeholder="Enter last name"
+                          {...getFieldProps('phone')}
+                          error={Boolean(touched.phone && errors.phone)}
+                          helperText={touched.phone && errors.phone}
+                        />
+                      )}
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                      <FormControl fullWidth sx={{ select: { textTransform: 'capitalize' } }}>
+                        {userLoading ? (
+                          <Skeleton variant="text" width={70} />
+                        ) : (
+                          <LabelStyle component={'label'} htmlFor="gender">
+                            {'Gender'}
+                          </LabelStyle>
+                        )}
+                        {userLoading ? (
+                          <Skeleton variant="rectangular" width="100%" height={56} />
+                        ) : (
+                          <Select
+                            id="gender"
+                            native
+                            {...getFieldProps('gender')}
+                            error={Boolean(touched.gender && errors.gender)}
+                          >
+                            <option value="" style={{ display: 'none' }} />
+                            {GENDER_OPTIONS.map((gender) => (
+                              <option key={gender} value={gender}>
+                                {gender}
+                              </option>
+                            ))}
+                          </Select>
+                        )}
+                        {touched.gender && errors.gender && (
+                          <FormHelperText error sx={{ px: 2, mx: 0 }}>
+                            {touched.gender && errors.gender}
+                          </FormHelperText>
+                        )}
+                      </FormControl>
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                      <FormControl fullWidth sx={{ select: { textTransform: 'capitalize' } }}>
+                        {userLoading ? (
+                          <Skeleton variant="text" width={70} />
+                        ) : (
+                          <LabelStyle component={'label'} htmlFor="roleId">
+                            {'Role'}
+                          </LabelStyle>
+                        )}
+                        {userLoading ? (
+                          <Skeleton variant="rectangular" width="100%" height={56} />
+                        ) : (
+                          <Select
+                            id="roleId"
+                            native
+                            {...getFieldProps('roleId')}
+                            error={Boolean(touched.roleId && errors.roleId)}
+                          >
+                            <option value="" style={{ display: 'none' }} />
+                            {allRoleList?.map((item, idx) => (
+                              <option key={idx} value={item?._id}>
+                                {item?.role}
+                              </option>
+                            ))}
+                          </Select>
+                        )}
+                        {touched.role && errors.role && (
+                          <FormHelperText error sx={{ px: 2, mx: 0 }}>
+                            {touched.role && errors.role}
+                          </FormHelperText>
+                        )}
+                      </FormControl>
+                    </Grid>
+                  </Grid>
                 </Stack>
               </Card>
 
-              {categoryLoading ? (
+              {userLoading ? (
                 <Skeleton variant="rectangular" width="100%" height={56} />
               ) : (
                 <LoadingButton
@@ -265,7 +314,7 @@ export default function AdminUser({ data: currentCategory, isLoading: categoryLo
                   loading={isLoading}
                   sx={{ ml: 'auto', mt: 3 }}
                 >
-                  {currentCategory ? 'Edit Category' : 'Create Category'}
+                  {currentUser ? 'Edit User' : 'Create User'}
                 </LoadingButton>
               )}
             </Grid>
