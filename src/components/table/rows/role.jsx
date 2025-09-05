@@ -62,7 +62,13 @@ export default function Role({ isLoading, row, handleClickOpen, sn }) {
     <TableRow hover key={Math.random()}>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
 
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.role}</TableCell>
+      <TableCell
+        sx={{
+          textTransform: 'capitalize'
+        }}
+      >
+        {isLoading ? <Skeleton variant="text" /> : row?.role}
+      </TableCell>
 
       <TableCell align="left">
         {isLoading ? (

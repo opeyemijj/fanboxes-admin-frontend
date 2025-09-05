@@ -63,7 +63,7 @@ export default function AdminUser({ data: currentUser, isLoading: userLoading })
 
   const { mutate, isLoading } = useMutation(
     currentUser ? 'update' : 'new',
-    currentUser ? api.updateCategoryByAdmin : api.addCategoryByAdmin,
+    currentUser ? api.updateCategoryByAdmin : api.addAdminUserByAdmin,
     {
       ...(currentUser && {
         enabled: Boolean(currentUser)
@@ -72,7 +72,7 @@ export default function AdminUser({ data: currentUser, isLoading: userLoading })
       onSuccess: (data) => {
         toast.success(data.message);
 
-        router.push('/admin//admin-users');
+        router.push('/admin/admin-users');
       },
       onError: (error) => {
         console.log(error, 'check the error');
