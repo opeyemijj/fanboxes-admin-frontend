@@ -102,7 +102,7 @@ export const navlinks = [
       {
         id: '7-2',
         title: 'Admin',
-        slug: 'admins',
+        slug: 'admin-users',
         icon: <Security />
       },
       {
