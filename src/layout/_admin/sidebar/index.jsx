@@ -146,6 +146,8 @@ export const navlinks = [
     id: 8,
     title: 'Payouts',
     slug: 'payouts',
+    need_permission: true,
+    permission_slug: 'view_payout_listing',
     icon: <BsCashCoin />,
     isSearch: false
   },
@@ -153,6 +155,8 @@ export const navlinks = [
     id: 19,
     title: 'Brands',
     slug: 'brands',
+    need_permission: true,
+    permission_slug: 'view_brand_listing',
     icon: <FaRegBuilding />,
     isSearch: true
   },
@@ -161,6 +165,8 @@ export const navlinks = [
     id: 10,
     title: 'Orders',
     slug: 'orders',
+    need_permission: true,
+    permission_slug: 'view_order_listing',
     icon: <BsCart3 />,
     isSearch: true
   },
@@ -168,6 +174,8 @@ export const navlinks = [
     id: 11,
     title: 'Coupon codes',
     slug: 'coupon-codes',
+    need_permission: true,
+    permission_slug: 'view_copon_code_listing',
     icon: <RiCoupon5Line />,
     isSearch: true
   },
@@ -176,6 +184,8 @@ export const navlinks = [
     id: 13,
     title: 'Currencies',
     slug: 'currencies',
+    need_permission: true,
+    permission_slug: 'view_currency_listing',
     icon: <AiOutlineDollarCircle />,
     isSearch: true
   },
