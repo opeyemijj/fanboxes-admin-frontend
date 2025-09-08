@@ -110,6 +110,8 @@ export const navlinks = [
     title: 'User Management',
     slug: 'user-management',
     icon: <LuUsers />,
+    need_permission: true,
+    permission_slug: 'view_user_listing',
     isSearch: true,
     children: [
       {
