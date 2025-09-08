@@ -61,7 +61,6 @@ export default function AccountGeneral() {
     },
     [setLoading]
   );
-  console.log(user, 'user data');
 
   const UpdateUserSchema = Yup.object().shape({
     firstName: Yup.string().required('First name required'),

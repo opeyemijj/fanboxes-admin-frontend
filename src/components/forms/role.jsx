@@ -79,6 +79,7 @@ export default function RoleAddForm({ routesGropuData, currentRole, isLoading })
 
       // console.log(permittedItems, 'Permitted Item');
 
+      console.log(permittedItems, 'OKK What');
       mutate({
         slug: currentRole ? currentRole.slug : null,
         payload: {

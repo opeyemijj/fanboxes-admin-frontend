@@ -65,6 +65,7 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
   return (
     <TableRow hover key={Math.random()}>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
+
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.boxDetails?.name}</>}</TableCell>
       <TableCell component="th" scope="row" sx={{ maxWidth: 300 }}>
         <Box
@@ -92,21 +93,30 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
               }}
             >
               <BlurImage
+                alt={row?.vendorDetails?.firstName ? row?.shopDetails?.title : ''}
+                blurDataURL={row?.vendorDetails ? row?.shopDetails?.logo?.blurDataURL : ''}
+                // placeholder={row?.shopDetails ? 'blur' : ''}
+                src={row?.vendorDetails ? row?.shopDetails?.logo?.url : '/images/FanboxesLogo.png'}
+                layout="fill"
+                objectFit="cover"
+              />
+
+              {/* <BlurImage
                 alt={row?.shopDetails?.title}
                 blurDataURL={row?.shopDetails?.logo?.blurDataURL}
                 placeholder="blur"
                 src={row?.shopDetails?.logo?.url}
                 layout="fill"
                 objectFit="cover"
-              />
+              /> */}
             </Box>
           )}
           <Typography variant="" noWrap>
-            <div>{row?.shopDetails?.title}</div>
+            {/* <div>{row?.shopDetails?.title}</div> */}
+            <div>{row?.vendorDetails ? row?.shopDetails?.title : 'Admin'}</div>
           </Typography>
         </Box>
       </TableCell>
-
       <TableCell component="th" scope="row" sx={{ maxWidth: 300 }}>
         <Box
           sx={{
@@ -148,7 +158,6 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
           </Typography>
         </Box>
       </TableCell>
-
       <TableCell>
         {isLoading ? (
           <Skeleton variant="text" />
@@ -156,17 +165,14 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
           <>{`${Number(row?.winningItem?.odd)?.toFixed(4)}/${row?.winningItem?.weight}%`}</>
         )}
       </TableCell>
-
       <TableCell
         title={row?.clientSeed} // full value on hover
       >
         {isLoading ? <Skeleton variant="text" /> : <>{row?.clientSeed}</>}
       </TableCell>
-
       <TableCell title={row?.serverSeed}>
         {isLoading ? <Skeleton variant="text" /> : <>{shortenString(row?.serverSeed, 10, true)}</>}
       </TableCell>
-
       <TableCell>
         {isLoading ? (
           <Skeleton variant="text" />
@@ -174,9 +180,7 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
           <>{shortenString(row?.userDetails?.firstName + ' ' + row?.userDetails?.lastName, 13, false)}</>
         )}
       </TableCell>
-
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{formatDateToDDYYYYMM(row?.createdAt)}</>}</TableCell>
-
       <TableCell align="left">
         {isLoading ? (
           <Stack direction="row" justifyContent="flex-end">

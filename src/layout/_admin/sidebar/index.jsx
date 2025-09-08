@@ -194,6 +194,8 @@ export const navlinks = [
     id: 15,
     title: 'Settings',
     slug: 'settings',
+    need_permission: true,
+    permission_slug: 'settings',
     icon: <IoSettingsOutline />,
     isSearch: false
   }
