@@ -19,8 +19,6 @@ export default function Guest({ children }) {
     if (isAuthenticated) {
       setAuth(false);
 
-      console.log(user, 'Checking the user');
-
       const isAdmin = checkIsAdmin(user.role); // user.role.includes('admin');
       const isVendor = checkIsAdmin(user.role); // user.role.includes('vendor');
       router.push(isAdmin ? '/admin/dashboard' : isVendor ? '/vendor/dashboard' : '/');
