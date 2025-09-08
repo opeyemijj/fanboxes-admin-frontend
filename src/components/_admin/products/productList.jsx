@@ -16,7 +16,7 @@ import * as api from 'src/services';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { LoadingButton } from '@mui/lab';
 import parseMongooseError from 'src/utils/errorHandler';
-import { UsePermission } from 'src/hooks/usePermission';
+// import { UsePermission } from 'src/hooks/usePermission';
 import AccessDenied from 'src/components/cards/AccessDenied';
 
 const TABLE_HEAD = [
@@ -32,11 +32,11 @@ const TABLE_HEAD = [
   { id: '', label: 'Actions', alignRight: true }
 ];
 export default function AdminProducts({ brands, categories, shops, isVendor }) {
-  const canView = UsePermission('view_box_listing'); // check required permission
+  // const canView = UsePermission('view_box_listing'); // check required permission
 
-  if (!canView) {
-    return <AccessDenied message="You are not allowed to manage Boxes." redirect="/admin/dashboard" />;
-  }
+  // if (!canView) {
+  //   return <AccessDenied message="You are not allowed to manage Boxes." redirect="/admin/dashboard" />;
+  // }
 
   const searchParams = useSearchParams();
 
@@ -179,10 +179,6 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
     } catch (error) {
       console.error(error);
     }
-  }
-
-  if (UsePermission('add_new_category')) {
-    console.log('Fine');
   }
 
   return (
