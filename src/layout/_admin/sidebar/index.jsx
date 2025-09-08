@@ -40,6 +40,7 @@ import { LuBadgePercent } from 'react-icons/lu';
 import Scrollbar from 'src/components/Scrollbar';
 import { User, User2Icon, UserCheck, UserRound } from 'lucide-react';
 import { Person, Security } from '@mui/icons-material';
+import { usePermission } from 'src/hooks/usePermission';
 
 // Dashboard Side NevLinks
 export const navlinks = [
@@ -53,6 +54,8 @@ export const navlinks = [
     id: 2,
     title: 'Categories',
     slug: 'categories',
+    need_permission: true,
+    permission_slug: 'view_category_listing',
     icon: <TbCategory2 />,
     isSearch: true
   },
@@ -60,6 +63,8 @@ export const navlinks = [
     id: 3,
     title: 'Sub Categories',
     slug: 'sub-categories',
+    need_permission: true,
+    permission_slug: 'view_subcategory_listing',
     icon: <TbCategory2 />,
     isSearch: true
   },
@@ -68,6 +73,8 @@ export const navlinks = [
     id: 5,
     title: 'Influencers',
     slug: 'shops',
+    need_permission: true,
+    permission_slug: 'view_influencer_listing',
     icon: <BsBuildings />,
     isSearch: true
   },
@@ -75,6 +82,8 @@ export const navlinks = [
     id: 4,
     title: 'Boxes',
     slug: 'products',
+    need_permission: true,
+    permission_slug: 'view_box_listing',
     icon: <BsShop />,
     isSearch: true
   },
@@ -83,6 +92,8 @@ export const navlinks = [
     id: 6,
     title: 'Spins',
     slug: 'spins',
+    need_permission: true,
+    permission_slug: 'view_spin_listing',
     icon: <BsPlayCircle />,
     isSearch: true
   },
@@ -312,113 +323,115 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
             }}
           >
             {navlinks.map((item) => (
-              <React.Fragment key={item.id}>
-                <ListItem
-                  disablePadding
-                  sx={{
-                    display: 'block',
-                    borderRadius: '8px',
-                    border: `1px solid transparent`,
-                    ...(active === '/admin/' + item.slug &&
-                      initial && {
-                        bgcolor: (theme) => alpha(theme.palette.primary.main, 0.2),
-                        border: (theme) => `1px solid ${theme.palette.primary.main}`,
-                        color: theme.palette.primary.main,
-                        '& .MuiTypography-root': {
-                          fontWeight: 600
-                        }
-                      })
-                  }}
-                >
-                  <Tooltip title={open ? '' : item.title} placement="left" arrow leaveDelay={200}>
-                    <ListItemButton
-                      onClick={() => {
-                        if (item.children) {
-                          setExpandedParent(expandedParent === item.slug ? '' : item.slug);
-                        } else {
-                          setExpandedParent(''); // collapse User Management if another parent is clicked
-                          setActive('/admin/' + item.slug);
-                          router.push('/admin/' + item.slug);
-                          isMobile && handleDrawerClose();
-                        }
-                      }}
-                      sx={{
-                        minHeight: 48,
-                        justifyContent: open ? 'initial' : 'center',
-                        px: 2.5,
-                        borderRadius: '8px'
-                      }}
-                    >
-                      <ListItemIcon
+              <>
+                <React.Fragment key={item.id}>
+                  <ListItem
+                    disablePadding
+                    sx={{
+                      display: `${!item?.need_permission ? 'block' : usePermission(item?.permission_slug) ? 'block' : 'none'}`,
+                      borderRadius: '8px',
+                      border: `1px solid transparent`,
+                      ...(active === '/admin/' + item.slug &&
+                        initial && {
+                          bgcolor: (theme) => alpha(theme.palette.primary.main, 0.2),
+                          border: (theme) => `1px solid ${theme.palette.primary.main}`,
+                          color: theme.palette.primary.main,
+                          '& .MuiTypography-root': {
+                            fontWeight: 600
+                          }
+                        })
+                    }}
+                  >
+                    <Tooltip title={open ? '' : item.title} placement="left" arrow leaveDelay={200}>
+                      <ListItemButton
+                        onClick={() => {
+                          if (item.children) {
+                            setExpandedParent(expandedParent === item.slug ? '' : item.slug);
+                          } else {
+                            setExpandedParent(''); // collapse User Management if another parent is clicked
+                            setActive('/admin/' + item.slug);
+                            router.push('/admin/' + item.slug);
+                            isMobile && handleDrawerClose();
+                          }
+                        }}
                         sx={{
-                          minWidth: 0,
-                          mr: open ? 2 : 'auto',
-                          justifyContent: 'center'
+                          minHeight: 48,
+                          justifyContent: open ? 'initial' : 'center',
+                          px: 2.5,
+                          borderRadius: '8px'
                         }}
                       >
-                        {item.icon}
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={item.title}
-                        sx={{
-                          overflow: 'hidden',
-                          height: open ? 'auto' : 0,
-                          textTransform: 'capitalize'
-                        }}
-                      />
-                    </ListItemButton>
-                  </Tooltip>
-                </ListItem>
-
-                {/* Render children if User Management is active */}
-                {item.children && expandedParent === item.slug && open && (
-                  <List sx={{ pl: 4 }}>
-                    {item.children.map((child) => (
-                      <ListItem key={child.id} disablePadding>
-                        <ListItemButton
-                          onClick={() => {
-                            setActive('/admin/' + child.slug);
-                            router.push('/admin/' + child.slug);
-                            isMobile && handleDrawerClose();
-                          }}
+                        <ListItemIcon
                           sx={{
-                            minHeight: 40,
-                            justifyContent: open ? 'initial' : 'center',
-                            px: 2.5,
-                            borderRadius: '8px',
-                            ...(active === '/admin/' + child.slug && {
-                              bgcolor: (theme) => alpha(theme.palette.primary.main, 0.2),
-                              border: (theme) => `1px solid ${theme.palette.primary.main}`,
-                              color: (theme) => theme.palette.primary.main,
-                              '& .MuiTypography-root': {
-                                fontWeight: 600
-                              }
-                            })
+                            minWidth: 0,
+                            mr: open ? 2 : 'auto',
+                            justifyContent: 'center'
                           }}
                         >
-                          <ListItemIcon
+                          {item.icon}
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={item.title}
+                          sx={{
+                            overflow: 'hidden',
+                            height: open ? 'auto' : 0,
+                            textTransform: 'capitalize'
+                          }}
+                        />
+                      </ListItemButton>
+                    </Tooltip>
+                  </ListItem>
+
+                  {/* Render children if User Management is active */}
+                  {item.children && expandedParent === item.slug && open && (
+                    <List sx={{ pl: 4 }}>
+                      {item.children.map((child) => (
+                        <ListItem key={child.id} disablePadding>
+                          <ListItemButton
+                            onClick={() => {
+                              setActive('/admin/' + child.slug);
+                              router.push('/admin/' + child.slug);
+                              isMobile && handleDrawerClose();
+                            }}
                             sx={{
-                              minWidth: 0,
-                              mr: open ? 2 : 'auto',
-                              justifyContent: 'center'
+                              minHeight: 40,
+                              justifyContent: open ? 'initial' : 'center',
+                              px: 2.5,
+                              borderRadius: '8px',
+                              ...(active === '/admin/' + child.slug && {
+                                bgcolor: (theme) => alpha(theme.palette.primary.main, 0.2),
+                                border: (theme) => `1px solid ${theme.palette.primary.main}`,
+                                color: (theme) => theme.palette.primary.main,
+                                '& .MuiTypography-root': {
+                                  fontWeight: 600
+                                }
+                              })
                             }}
                           >
-                            {child.icon}
-                          </ListItemIcon>
-                          <ListItemText
-                            primary={child.title}
-                            sx={{
-                              overflow: 'hidden',
-                              height: open ? 'auto' : 0,
-                              textTransform: 'capitalize'
-                            }}
-                          />
-                        </ListItemButton>
-                      </ListItem>
-                    ))}
-                  </List>
-                )}
-              </React.Fragment>
+                            <ListItemIcon
+                              sx={{
+                                minWidth: 0,
+                                mr: open ? 2 : 'auto',
+                                justifyContent: 'center'
+                              }}
+                            >
+                              {child.icon}
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={child.title}
+                              sx={{
+                                overflow: 'hidden',
+                                height: open ? 'auto' : 0,
+                                textTransform: 'capitalize'
+                              }}
+                            />
+                          </ListItemButton>
+                        </ListItem>
+                      ))}
+                    </List>
+                  )}
+                </React.Fragment>
+              </>
             ))}
           </List>
         </Scrollbar>

@@ -7,7 +7,7 @@ export function usePermission(permission) {
 
   const permissions = user?.permissions || [];
 
-  console.log(permissions.includes(permission), 'what is this', user);
+  // console.log(permissions.includes(permission), 'what is this', user);
 
   return permissions.includes(permission);
 }
