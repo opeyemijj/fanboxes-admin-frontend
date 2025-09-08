@@ -40,7 +40,7 @@ import { LuBadgePercent } from 'react-icons/lu';
 import Scrollbar from 'src/components/Scrollbar';
 import { User, User2Icon, UserCheck, UserRound } from 'lucide-react';
 import { Person, Security } from '@mui/icons-material';
-import { usePermission } from 'src/hooks/usePermission';
+import { UsePermission } from 'src/hooks/usePermission';
 
 // Dashboard Side NevLinks
 export const navlinks = [
@@ -342,7 +342,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
                   <ListItem
                     disablePadding
                     sx={{
-                      display: `${!item?.need_permission ? 'block' : usePermission(item?.permission_slug) ? 'block' : 'none'}`,
+                      display: `${!item?.need_permission ? 'block' : UsePermission(item?.permission_slug) ? 'block' : 'none'}`,
                       borderRadius: '8px',
                       border: `1px solid transparent`,
                       ...(active === '/admin/' + item.slug &&

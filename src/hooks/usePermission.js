@@ -2,7 +2,7 @@
 
 import { useSelector } from 'react-redux';
 
-export function usePermission(permission) {
+export function UsePermission(permission) {
   const { user } = useSelector((state) => state.user);
 
   const permissions = user?.permissions || [];
