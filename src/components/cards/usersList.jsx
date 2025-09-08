@@ -14,6 +14,7 @@ import { capitalize } from 'lodash';
 import { FiEye } from 'react-icons/fi';
 import { LuUser2 } from 'react-icons/lu';
 import { FaUserCheck } from 'react-icons/fa6';
+import { checkIsAdmin } from 'src/utils/checkAdmin';
 
 const RootStyle = styled(Paper)(({ theme }) => ({
   padding: '10px 10px 10px 16px',
@@ -136,7 +137,7 @@ export default function UserListCard({ item, isLoading }) {
                   </>
                 ) : (
                   <>
-                    {item.role === 'super admin' ? (
+                    {checkIsAdmin(item.role) ? (
                       <IconButton size="small" disabled onClick={() => router.push(`/admin/users/${item?._id}`)}>
                         <FaUserCheck />
                       </IconButton>

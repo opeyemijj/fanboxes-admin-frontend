@@ -21,6 +21,7 @@ import { CiShop } from 'react-icons/ci';
 import RootStyled from './styled';
 // hooks
 import { deleteCookies } from 'src/hooks/cookies';
+import { checkIsAdmin } from 'src/utils/checkAdmin';
 
 UserList.propTypes = {
   openUser: PropTypes.bool.isRequired,
@@ -66,7 +67,7 @@ export default function UserList({ ...props }) {
         </ListItemIcon>
         Home
       </MenuItem>
-      {user?.role === 'admin' || user?.role === 'super admin' ? (
+      {checkIsAdmin(user?.role) ? (
         <MenuItem
           onClick={() => {
             router.push('/admin/dashboard');
@@ -129,7 +130,7 @@ export default function UserList({ ...props }) {
         onClick={() => {
           setOpen(false);
           router.push(
-            user.role === 'admin' || user.role === 'super admin'
+            checkIsAdmin(user.role)
               ? '/admin/settings'
               : user.role === 'vendor'
                 ? '/vendor/settings'
@@ -146,7 +147,7 @@ export default function UserList({ ...props }) {
         onClick={() => {
           setOpen(false);
           router.push(
-            user.role === 'admin' || user.role === 'super admin'
+            checkIsAdmin(user.role)
               ? '/admin/settings/change-password'
               : user.role === 'vendor'
                 ? '/vendor/settings/change-password'

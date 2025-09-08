@@ -45,7 +45,7 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const { mutate } = useMutation(api.login, {
     onSuccess: async (data) => {
-      console.log(data, 'Checking the login data');
+      // console.log(data, 'Checking the login data');
       dispatch(setLogin(data.user));
       // dispatch(setWishlist(data.user.wishlist));
 
@@ -73,7 +73,6 @@ export default function LoginForm() {
       const isAdmin = data.user.role.includes('admin');
       const isVendor = data.user.role.includes('vendor');
       toast.success('Logged in successfully! ');
-      console.log(redirect, 'check the redirect', isAdmin, isVendor);
       push(redirect ? redirect : isAdmin ? '/admin/dashboard' : isVendor ? '/vendor/dashboard' : '/');
     },
     onError: (err) => {

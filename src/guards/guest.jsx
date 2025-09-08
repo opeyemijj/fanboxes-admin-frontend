@@ -6,6 +6,7 @@ import { useSelector } from 'src/redux';
 
 // components
 import Loading from 'src/components/loading';
+import { checkIsAdmin } from 'src/utils/checkAdmin';
 
 Guest.propTypes = {
   children: PropTypes.node.isRequired
@@ -18,8 +19,10 @@ export default function Guest({ children }) {
     if (isAuthenticated) {
       setAuth(false);
 
-      const isAdmin = user.role.includes('admin');
-      const isVendor = user.role.includes('vendor');
+      console.log(user, 'Checking the user');
+
+      const isAdmin = checkIsAdmin(user.role); // user.role.includes('admin');
+      const isVendor = checkIsAdmin(user.role); // user.role.includes('vendor');
       router.push(isAdmin ? '/admin/dashboard' : isVendor ? '/vendor/dashboard' : '/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

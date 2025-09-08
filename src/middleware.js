@@ -2,6 +2,7 @@
 
 import { NextResponse } from 'next/server';
 import { useEffect } from 'react';
+import { checkIsAdmin } from './utils/checkAdmin';
 
 export async function middleware(request) {
   const { pathname } = request.nextUrl;
@@ -16,9 +17,9 @@ export async function middleware(request) {
   console.log(isAuthenticated, userRole, 'check middleware');
 
   // 3. Admin route protection
+  // ['admin', 'super admin'].includes(userRole);
   if (pathname.startsWith('/admin')) {
-    if (!isAuthenticated || !['admin', 'super admin'].includes(userRole)) {
-      console.log('Is it calling inside admin');
+    if (!isAuthenticated || !checkIsAdmin(userRole)) {
       const loginUrl = new URL('/auth/session', request.url);
       loginUrl.searchParams.set('redirect', pathname);
       return NextResponse.redirect(loginUrl);
@@ -30,8 +31,8 @@ export async function middleware(request) {
     // if (!isAuthenticated || userRole !== 'vendor') {
     if (!isAuthenticated || !['vendor', 'admin', 'super admin'].includes(userRole)) {
       const loginUrl = new URL('/auth/session', request.url);
-      // loginUrl.searchParams.set('redirect', pathname);
-      // return NextResponse.redirect(loginUrl);
+      loginUrl.searchParams.set('redirect', pathname);
+      return NextResponse.redirect(loginUrl);
     }
   }
 

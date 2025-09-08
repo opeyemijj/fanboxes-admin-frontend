@@ -86,13 +86,13 @@ export const navlinks = [
     icon: <BsPlayCircle />,
     isSearch: true
   },
-  {
-    id: 20,
-    title: 'Users',
-    slug: 'users',
-    icon: <User />,
-    isSearch: true
-  },
+  // {
+  //   id: 20,
+  //   title: 'Users',
+  //   slug: 'users',
+  //   icon: <User />,
+  //   isSearch: true
+  // },
 
   {
     id: 7,
@@ -103,31 +103,32 @@ export const navlinks = [
     children: [
       {
         id: '7-1',
+        title: 'Roles',
+        slug: 'roles',
+        icon: <LuShield />,
+        isSearch: true
+      },
+      {
+        id: '7-2',
         title: 'User',
         slug: 'users',
         icon: <User />
       },
       {
-        id: '7-2',
+        id: '7-3',
         title: 'Admin',
         slug: 'admin-users',
         icon: <Security />
       },
       {
-        id: '7-3',
+        id: '7-4',
         title: 'Influencer',
         slug: 'influencer-users',
         icon: <BsBuildings />
       }
     ]
   },
-  {
-    id: 16,
-    title: 'Roles',
-    slug: 'roles',
-    icon: <LuShield />,
-    isSearch: true
-  },
+
   {
     id: 8,
     title: 'Payouts',

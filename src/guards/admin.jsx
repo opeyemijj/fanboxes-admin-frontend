@@ -9,6 +9,7 @@ import { useSelector } from 'src/redux';
 
 // components
 import Loading from 'src/components/loading';
+import { checkIsAdmin } from 'src/utils/checkAdmin';
 
 export default function Guest({ children }) {
   const router = useRouter();
@@ -16,7 +17,7 @@ export default function Guest({ children }) {
   const { isAuthenticated, user } = useSelector(({ user }) => user);
 
   useEffect(() => {
-    if (!isAuthenticated || !user.role === 'super admin' || !user.role === 'admin') {
+    if (!isAuthenticated || !checkIsAdmin(user?.role)) {
       setAdmin(false);
       toast.error("You're not allowed to access dashboard");
       router.push('/auth/login');

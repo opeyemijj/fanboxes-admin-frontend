@@ -34,6 +34,7 @@ import { useDispatch } from 'react-redux';
 import { setLogout } from 'src/redux/slices/user';
 import { resetWishlist } from 'src/redux/slices/wishlist';
 import { deleteCookies } from 'src/hooks/cookies';
+import { checkIsAdmin } from 'src/utils/checkAdmin';
 
 export default function MobileSetting() {
   const { user, isAuthenticated } = useSelector(({ user }) => user);
@@ -82,7 +83,7 @@ export default function MobileSetting() {
         {isAuthenticated && (
           <>
             <Divider />
-            {user?.role === 'admin' || user?.role === 'super admin' ? (
+            {checkIsAdmin(user?.role) ? (
               <>
                 <ListItem disablePadding>
                   <ListItemButton
@@ -131,9 +132,7 @@ export default function MobileSetting() {
             <ListItem disablePadding>
               <ListItemButton
                 onClick={() => {
-                  router.push(
-                    user.role === 'admin' || user.role === 'super admin' ? '/admin/settings' : '/profile/general'
-                  );
+                  router.push(checkIsAdmin(user.role) ? '/admin/settings' : '/profile/general');
                 }}
                 sx={{ py: 2 }}
               >
@@ -147,11 +146,7 @@ export default function MobileSetting() {
             <ListItem disablePadding>
               <ListItemButton
                 onClick={() => {
-                  router.push(
-                    user.role === 'admin' || user.role === 'super admin'
-                      ? '/admin/settings/change-password'
-                      : '/profile/change-password'
-                  );
+                  router.push(checkIsAdmin(user.role) ? '/admin/settings/change-password' : '/profile/change-password');
                 }}
                 sx={{ py: 2 }}
               >
