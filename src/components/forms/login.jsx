@@ -45,14 +45,36 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const { mutate } = useMutation(api.login, {
     onSuccess: async (data) => {
+      console.log(data, 'Checking the login data');
       dispatch(setLogin(data.user));
-      dispatch(setWishlist(data.user.wishlist));
-      await createCookies('token', data.token);
+      // dispatch(setWishlist(data.user.wishlist));
+
+      //await createCookies('token', data.token);
+
+      // Set both token and role cookies
+      const cookieOptions = {
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 86400 // 1 day in seconds
+      };
+
+      // Set token cookie
+      document.cookie = `token=${data.token}; ${Object.entries(cookieOptions)
+        .map(([key, value]) => `${key}=${value}`)
+        .join('; ')}`;
+
+      // Set role cookie (for middleware access)
+      document.cookie = `userRole=${data.user.role}; ${Object.entries(cookieOptions)
+        .map(([key, value]) => `${key}=${value}`)
+        .join('; ')}`;
+
       setloading(false);
-      toast.success('Logged in successfully!');
       const isAdmin = data.user.role.includes('admin');
       const isVendor = data.user.role.includes('vendor');
-      push(redirect || isAdmin ? '/admin/dashboard' : isVendor ? '/vendor/dashboard' : '/');
+      toast.success('Logged in successfully! ');
+      console.log(redirect, 'check the redirect', isAdmin, isVendor);
+      push(redirect ? redirect : isAdmin ? '/admin/dashboard' : isVendor ? '/vendor/dashboard' : '/');
     },
     onError: (err) => {
       setloading(false);

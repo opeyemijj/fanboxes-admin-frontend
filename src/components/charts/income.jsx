@@ -106,22 +106,10 @@ export default function IncomeChart({ income, commission, isVendor, isLoading })
               stack
               series={
                 isVendor
-                  ? [
-                      {
-                        name: 'Income',
-                        data: income[seriesData]
-                      }
-                    ]
+                  ? [{ name: 'Income', data: income?.[seriesData] || [] }]
                   : [
-                      {
-                        name: 'Income',
-                        data: income[seriesData]
-                      },
-
-                      {
-                        name: 'Commission',
-                        data: commission[seriesData]
-                      }
+                      { name: 'Income', data: income?.[seriesData] || [] },
+                      { name: 'Commission', data: commission?.[seriesData] || [] }
                     ].slice(0, !isVendor ? 2 : 1)
               }
               options={chartOptions}

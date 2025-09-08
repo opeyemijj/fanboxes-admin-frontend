@@ -1,5 +1,7 @@
 // middleware.js
+
 import { NextResponse } from 'next/server';
+import { useEffect } from 'react';
 
 export async function middleware(request) {
   const { pathname } = request.nextUrl;
@@ -11,9 +13,12 @@ export async function middleware(request) {
   // 2. Get user role from cookie (alternative to JWT decode)
   const userRole = request.cookies.get('userRole')?.value;
 
+  console.log(isAuthenticated, userRole, 'check middleware');
+
   // 3. Admin route protection
   if (pathname.startsWith('/admin')) {
     if (!isAuthenticated || !['admin', 'super admin'].includes(userRole)) {
+      console.log('Is it calling inside admin');
       const loginUrl = new URL('/auth/session', request.url);
       loginUrl.searchParams.set('redirect', pathname);
       return NextResponse.redirect(loginUrl);
@@ -25,8 +30,8 @@ export async function middleware(request) {
     // if (!isAuthenticated || userRole !== 'vendor') {
     if (!isAuthenticated || !['vendor', 'admin', 'super admin'].includes(userRole)) {
       const loginUrl = new URL('/auth/session', request.url);
-      loginUrl.searchParams.set('redirect', pathname);
-      return NextResponse.redirect(loginUrl);
+      // loginUrl.searchParams.set('redirect', pathname);
+      // return NextResponse.redirect(loginUrl);
     }
   }
 
@@ -34,8 +39,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: [
-    '/admin/:path*',
-    '/vendor/:path*'
-  ]
+  matcher: ['/admin/:path*', '/vendor/:path*']
 };

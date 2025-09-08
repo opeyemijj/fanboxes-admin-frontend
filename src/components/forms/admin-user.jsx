@@ -20,11 +20,9 @@ import {
   Skeleton
 } from '@mui/material';
 // components
-import UploadSingleFile from 'src/components/upload/UploadSingleFile';
 // yup
 import * as Yup from 'yup';
 // axios
-import axios from 'axios';
 // toast
 import toast from 'react-hot-toast';
 // formik
@@ -32,6 +30,9 @@ import { Form, FormikProvider, useFormik } from 'formik';
 // api
 import * as api from 'src/services';
 import parseMongooseError from 'src/utils/errorHandler';
+
+import { IconButton, InputAdornment } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 AdminUser.propTypes = {
   data: PropTypes.object,
@@ -51,6 +52,12 @@ export default function AdminUser({ data: currentUser, isLoading: userLoading })
   const router = useRouter();
 
   const [allRoleList, setAllRoleList] = useState([]);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((prev) => !prev);
+  const handleClickShowConfirmPassword = () => setShowConfirmPassword((prev) => !prev);
 
   useEffect(() => {
     async function callRolesApi(params) {
@@ -99,7 +106,19 @@ export default function AdminUser({ data: currentUser, isLoading: userLoading })
 
     phone: Yup.string()
       .required('Phone is required')
-      .matches(/^(\+?[0-9]{1,4}[\s-]?)?(\(?\d{3}\)?[\s-]?)?\d{3}[\s-]?\d{4}$/, 'Enter a valid phone number')
+      .matches(/^(\+?[0-9]{1,4}[\s-]?)?(\(?\d{3}\)?[\s-]?)?\d{3}[\s-]?\d{4}$/, 'Enter a valid phone number'),
+
+    password: Yup.string()
+      .required('Password is required')
+      .min(8, 'Password must be at least 8 characters')
+      .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+      .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
+      .matches(/[0-9]/, 'Password must contain at least one number')
+      .matches(/[@$!%*?&]/, 'Password must contain at least one special character'),
+
+    confirmPassword: Yup.string()
+      .required('Confirm Password is required')
+      .oneOf([Yup.ref('password'), null], 'Passwords must match')
   });
 
   const formik = useFormik({
@@ -109,7 +128,9 @@ export default function AdminUser({ data: currentUser, isLoading: userLoading })
       email: currentUser?.email || '',
       phone: currentUser?.phone || '',
       gender: currentUser?.gender || GENDER_OPTIONS[0],
-      roleId: currentUser?.roleId || allRoleList[0]?._id
+      roleId: currentUser?.roleId || allRoleList[0]?._id,
+      password: '',
+      confirmPassword: ''
     },
     enableReinitialize: true,
     validationSchema: NewCategorySchema,
@@ -300,6 +321,54 @@ export default function AdminUser({ data: currentUser, isLoading: userLoading })
                         )}
                       </FormControl>
                     </Grid>
+
+                    {/* Password */}
+                    <Grid item xs={12} md={6}>
+                      <LabelStyle component={'label'} htmlFor="password">
+                        Password
+                      </LabelStyle>
+                      <TextField
+                        id="password"
+                        type={showPassword ? 'text' : 'password'}
+                        fullWidth
+                        {...getFieldProps('password')}
+                        error={Boolean(touched.password && errors.password)}
+                        helperText={touched.password && errors.password}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton onClick={handleClickShowPassword} edge="end">
+                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                              </IconButton>
+                            </InputAdornment>
+                          )
+                        }}
+                      />
+                    </Grid>
+
+                    {/* Confirm Password */}
+                    <Grid item xs={12} md={6}>
+                      <LabelStyle component={'label'} htmlFor="confirmPassword">
+                        Confirm Password
+                      </LabelStyle>
+                      <TextField
+                        id="confirmPassword"
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        fullWidth
+                        {...getFieldProps('confirmPassword')}
+                        error={Boolean(touched.confirmPassword && errors.confirmPassword)}
+                        helperText={touched.confirmPassword && errors.confirmPassword}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton onClick={handleClickShowConfirmPassword} edge="end">
+                                {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                              </IconButton>
+                            </InputAdornment>
+                          )
+                        }}
+                      />
+                    </Grid>
                   </Grid>
                 </Stack>
               </Card>
@@ -314,7 +383,7 @@ export default function AdminUser({ data: currentUser, isLoading: userLoading })
                   loading={isLoading}
                   sx={{ ml: 'auto', mt: 3 }}
                 >
-                  {currentUser ? 'Edit User' : 'Create User'}
+                  {currentUser ? 'Edit Admin' : 'Create Admin'}
                 </LoadingButton>
               )}
             </Grid>
