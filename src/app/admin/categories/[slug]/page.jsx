@@ -11,6 +11,9 @@ import EditCategory from 'src/components/_admin/categories/editCategory';
 import * as api from 'src/services';
 import { useQuery } from 'react-query';
 
+import AccessDenied from 'src/components/cards/AccessDenied';
+import { UsePermission } from 'src/hooks/usePermission';
+
 Page.propTypes = {
   params: PropTypes.shape({
     slug: PropTypes.string.isRequired
@@ -22,11 +25,17 @@ export default function Page({ params }) {
       toast.error(err.response.data.message || 'Something went wrong!');
     }
   });
+
+  const canAdd = UsePermission('edit_category');
+  if (!canAdd) {
+    return <AccessDenied message="You are not allowed to edit Category." redirect="/admin/dashboard" />;
+  }
+
   return (
     <div>
       <HeaderBreadcrumbs
         admin
-        heading="Categories List"
+        heading="Edit Category"
         links={[
           {
             name: 'Dashboard',
