@@ -69,6 +69,10 @@ export default function LoginForm() {
         .map(([key, value]) => `${key}=${value}`)
         .join('; ')}`;
 
+      document.cookie = `permissions=${encodeURIComponent(
+        JSON.stringify(data?.user?.permissions)
+      )}; path=/; max-age=86400; SameSite=Strict`;
+
       setloading(false);
       const isAdmin = data.user.role.includes('admin');
       const isVendor = data.user.role.includes('vendor');

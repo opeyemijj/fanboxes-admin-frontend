@@ -1,13 +1,20 @@
 'use client';
-
-import { useSelector } from 'react-redux';
+import { useState, useEffect } from 'react';
 
 export function UsePermission(permission) {
-  const { user } = useSelector((state) => state.user);
+  const [permissions, setPermissions] = useState([]);
 
-  const permissions = user?.permissions || [];
-
-  // console.log(permissions.includes(permission), 'what is this', user);
+  useEffect(() => {
+    const cookieStr = document.cookie.split('; ').find((row) => row.startsWith('permissions='));
+    if (cookieStr) {
+      try {
+        const decoded = decodeURIComponent(cookieStr.split('=')[1]);
+        setPermissions(JSON.parse(decoded));
+      } catch (err) {
+        console.error('Failed to parse permissions cookie:', err);
+      }
+    }
+  }, []);
 
   return permissions.includes(permission);
 }

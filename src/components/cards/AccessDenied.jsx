@@ -13,7 +13,7 @@ export default function AccessDenied({ message, redirect }) {
   return (
     <Box
       sx={{
-        minHeight: '80vh',
+        minHeight: '60vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -28,10 +28,9 @@ export default function AccessDenied({ message, redirect }) {
         elevation={4}
         sx={{
           p: 5,
-          maxWidth: 500,
           width: '100%',
           textAlign: 'center',
-          borderRadius: 3,
+          borderRadius: 1,
           backgroundColor: (theme) => (theme.palette.mode === 'light' ? '#fff' : theme.palette.background.paper)
         }}
       >
