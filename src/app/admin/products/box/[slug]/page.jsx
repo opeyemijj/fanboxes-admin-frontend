@@ -8,6 +8,8 @@ import { useParams } from 'next/navigation';
 
 // api
 import * as api from 'src/services';
+import { UsePermission } from 'src/hooks/usePermission';
+import AccessDenied from 'src/components/cards/AccessDenied';
 
 export default function AdminBoxItems() {
   const { slug } = useParams();
@@ -33,6 +35,13 @@ export default function AdminBoxItems() {
     fetchData();
   }, []);
 
+  const canView = UsePermission('view_box_details'); // check required permission
+  const canAddBoxItem = UsePermission('add_box_item');
+
+  if (!canView) {
+    return <AccessDenied message="You are not allowed to manage Boxes Items." redirect="/admin/dashboard" />;
+  }
+
   return (
     <>
       <HeaderBreadcrumbs
@@ -44,7 +53,7 @@ export default function AdminBoxItems() {
           { name: 'Items' }
         ]}
         action={
-          productDetails?.slug
+          productDetails?.slug && canAddBoxItem
             ? {
                 href: `/admin/products/addItem?slug=${productDetails?.slug}`,
                 title: 'Add Item To Box'

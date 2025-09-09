@@ -13,9 +13,9 @@ import BoxItem from 'src/components/table/rows/boxItem';
 import * as api from 'src/services';
 import { useMutation, useQuery } from 'react-query';
 import { Refresh } from '@mui/icons-material';
-import { useRouter } from 'next/router';
 import { useSearchParams } from 'next/navigation';
 import parseMongooseError from 'src/utils/errorHandler';
+import { UsePermission } from 'src/hooks/usePermission';
 
 export default function AdminBoxeItems({ boxDetails, brands, categories, shops, isVendor }) {
   // console.log(boxDetails, 'Check the box details');
@@ -32,6 +32,8 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
   const [id, setId] = useState(null);
 
   const [data, setData] = useState(null);
+
+  const canCalculateItemOdds = UsePermission('auto_calculate_item_odds');
 
   // prettier-ignore
   const { mutate: updateItemsOdd, isLoading: loadingUpdateOdd } = useMutation(
@@ -113,22 +115,24 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
       label: (
         <Stack direction="row" alignItems="center" spacing={0}>
           <span>Odd</span>
-          <IconButton
-            disabled={loadingUpdateOdd}
-            style={{ color: 'white' }}
-            size="small"
-            onClick={() => {
-              // 👇 your refresh logic here
-              if (boxDetails) {
-                const distributedItem = distributeItems(boxDetails?.items);
-                const temdata = { data: distributedItem };
-                UpateItemOdd(temdata);
-                setData(temdata);
-              }
-            }}
-          >
-            <Refresh fontSize="small" />
-          </IconButton>
+          {canCalculateItemOdds && (
+            <IconButton
+              disabled={loadingUpdateOdd}
+              style={{ color: 'white' }}
+              size="small"
+              onClick={() => {
+                // 👇 your refresh logic here
+                if (boxDetails) {
+                  const distributedItem = distributeItems(boxDetails?.items);
+                  const temdata = { data: distributedItem };
+                  UpateItemOdd(temdata);
+                  setData(temdata);
+                }
+              }}
+            >
+              <Refresh fontSize="small" />
+            </IconButton>
+          )}
         </Stack>
       ),
       alignRight: false,

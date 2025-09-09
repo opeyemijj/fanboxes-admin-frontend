@@ -1,29 +1,27 @@
 import PropTypes from 'prop-types';
 import { useRouter } from 'next-nprogress-bar';
-import { enUS } from 'date-fns/locale';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 // mui
 import { Box, TableRow, Skeleton, TableCell, Typography, Stack, IconButton, Rating, Tooltip } from '@mui/material';
 
 // redux
-import { fCurrency } from 'src/utils/formatNumber';
-import { fDateShort } from 'src/utils/formatTime';
 
 // components
-import Label from 'src/components/label';
 import BlurImage from 'src/components/blurImage';
 
 // icons
 import { MdEdit } from 'react-icons/md';
 import { MdDelete } from 'react-icons/md';
-import { IoEye } from 'react-icons/io5';
-import Link from 'next/link';
 import { selectBoxAndItem } from 'src/redux/slices/product';
+import { UsePermission } from 'src/hooks/usePermission';
 
 export default function BoxItemRow({ isLoading, row, handleClickOpen, isVendor, sn, boxDetails }) {
   const dispatch = useDispatch();
   const router = useRouter();
+
+  const canEdit = UsePermission('edit_box_item');
+  const canDelete = UsePermission('delete_box_item');
 
   return (
     <TableRow hover key={Math.random()}>
@@ -91,22 +89,27 @@ export default function BoxItemRow({ isLoading, row, handleClickOpen, isVendor, 
           </Stack>
         ) : (
           <Stack direction="row" justifyContent="flex-end">
-            <Tooltip title="Edit">
-              <IconButton
-                onClick={() => {
-                  const tempData = { item: row, slug: boxDetails.slug };
-                  dispatch(selectBoxAndItem(tempData));
-                  router.push(`/${isVendor ? 'vendor' : 'admin'}/products/editItem/${row.slug}`);
-                }}
-              >
-                <MdEdit />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Delete">
-              <IconButton onClick={handleClickOpen(row?.slug)}>
-                <MdDelete />
-              </IconButton>
-            </Tooltip>
+            {canEdit && (
+              <Tooltip title="Edit">
+                <IconButton
+                  onClick={() => {
+                    const tempData = { item: row, slug: boxDetails.slug };
+                    dispatch(selectBoxAndItem(tempData));
+                    router.push(`/${isVendor ? 'vendor' : 'admin'}/products/editItem/${row.slug}`);
+                  }}
+                >
+                  <MdEdit />
+                </IconButton>
+              </Tooltip>
+            )}
+
+            {canDelete && (
+              <Tooltip title="Delete">
+                <IconButton onClick={handleClickOpen(row?.slug)}>
+                  <MdDelete />
+                </IconButton>
+              </Tooltip>
+            )}
           </Stack>
         )}
       </TableCell>
