@@ -1,16 +1,18 @@
 import React from 'react';
 import AccessDenied from 'src/components/cards/AccessDenied';
-
+import * as api from 'src/services';
 // components
 import AdminShopForm from 'src/components/forms/adminShop';
 import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
 import { UsePermissionServer } from 'src/hooks/usePermissionServer';
 
-export default function Page() {
+export default async function Page() {
   const canAdd = UsePermissionServer('add_new_influencer');
   if (!canAdd) {
     return <AccessDenied message="You are not allowed to add Influencer." redirect="/admin/dashboard" />;
   }
+
+  const { data: categories } = await api.getAllCategories();
 
   return (
     <>
@@ -31,7 +33,7 @@ export default function Page() {
           }
         ]}
       />
-      <AdminShopForm />
+      <AdminShopForm categories={categories} />
     </>
   );
 }

@@ -26,6 +26,16 @@ export default function Page({ params }) {
     }
   });
 
+  const { data: categories, isLoading: categoriesLoading } = useQuery(['categories'], () => api.getAllCategories(), {
+    onError: (err) => {
+      toast.error(err.response.data.message || 'Something went wrong!');
+    }
+  });
+
+  // const { data: categories } = await api.getAllCategories();
+
+  console.log(categories, 'Checking the categoris');
+
   const canEdit = UsePermission('edit_influencer');
   if (!canEdit) {
     return <AccessDenied message="You are not allowed to edit Influencer." redirect="/admin/dashboard" />;
@@ -49,7 +59,7 @@ export default function Page({ params }) {
           }
         ]}
       />
-      <EditAdminShopForm data={data?.data} isLoading={isLoading} />
+      <EditAdminShopForm data={data?.data} isLoading={isLoading || categoriesLoading} categories={categories?.data} />
     </>
   );
 }

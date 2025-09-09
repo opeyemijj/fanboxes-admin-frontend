@@ -40,7 +40,9 @@ import parseMongooseError from 'src/utils/errorHandler';
 
 AdminShopForm.propTypes = {
   data: PropTypes.object,
-  isLoading: PropTypes.bool
+  isLoading: PropTypes.bool,
+  isInitialized: PropTypes.bool,
+  categoryLoading: PropTypes.bool
 };
 
 const LabelStyle = styled(Typography)(({ theme }) => ({
@@ -52,7 +54,13 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 
 const STATUS_OPTIONS = ['pending', 'approved', 'in review', 'action required', 'cancel', 'closed'];
 
-export default function AdminShopForm({ data: currentShop, isLoading: shopLoading }) {
+export default function AdminShopForm({
+  data: currentShop,
+  isLoading: shopLoading,
+  categories,
+  isInitialized = false,
+  categoryLoading = false
+}) {
   const router = useRouter();
 
   const [state, setstate] = useState({
@@ -119,6 +127,8 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
   const formik = useFormik({
     initialValues: {
       title: currentShop?.title || '',
+      category: currentShop?.category || (categories?.length && categories[0]?._id) || '',
+      subCategory: currentShop?.subCategory || (categories?.length && categories[0].subCategories[0]?._id) || '',
       cover: currentShop?.cover || null,
       logo: currentShop?.logo || null,
       description: currentShop?.description || '',
@@ -276,6 +286,78 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                     </div>
                   </Box>
                 </Stack>
+                <Stack mt={3} direction="row" spacing={3} flexGrow="wrap">
+                  <Grid item xs={12} md={6}>
+                    <FormControl fullWidth>
+                      {isInitialized ? (
+                        <Skeleton variant="text" width={100} />
+                      ) : (
+                        <LabelStyle component={'label'} htmlFor="grouped-native-select">
+                          {'Category'}
+                        </LabelStyle>
+                      )}
+                      {!categoryLoading ? (
+                        <Select
+                          native
+                          {...getFieldProps('category')}
+                          value={values.category}
+                          id="grouped-native-select"
+                        >
+                          {categories?.map((category) => (
+                            <option key={category._id} value={category._id}>
+                              {category.name}
+                            </option>
+
+                            // </optgroup>
+                          ))}
+                        </Select>
+                      ) : (
+                        <Skeleton variant="rectangular" width={'100%'} height={56} />
+                      )}
+                      {touched.category && errors.category && (
+                        <FormHelperText error sx={{ px: 2, mx: 0 }}>
+                          {touched.category && errors.category}
+                        </FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <FormControl fullWidth>
+                      {isInitialized ? (
+                        <Skeleton variant="text" width={100} />
+                      ) : (
+                        <LabelStyle component={'label'} htmlFor="grouped-native-select-subCategory">
+                          {'Sub Category'}
+                        </LabelStyle>
+                      )}
+                      {!categoryLoading ? (
+                        <Select
+                          native
+                          {...getFieldProps('subCategory')}
+                          value={values.subCategory}
+                          id="grouped-native-select-subCategory"
+                        >
+                          {categories
+                            ?.find((v) => v._id.toString() === values.category)
+                            ?.subCategories?.map((subCategory) => (
+                              <option key={subCategory._id} value={subCategory._id}>
+                                {subCategory.name}
+                              </option>
+
+                              // </optgroup>
+                            ))}
+                        </Select>
+                      ) : (
+                        <Skeleton variant="rectangular" width={'100%'} height={56} />
+                      )}
+                      {touched.subCategory && errors.subCategory && (
+                        <FormHelperText error sx={{ px: 2, mx: 0 }}>
+                          {touched.subCategory && errors.subCategory}
+                        </FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
+                </Stack>
                 <Stack mt={3} spacing={3} direction="row" flexGrow="wrap">
                   <Box sx={{ width: '100%' }}>
                     {shopLoading ? (
@@ -377,6 +459,7 @@ export default function AdminShopForm({ data: currentShop, isLoading: shopLoadin
                 </Box>{' '}
               </Card>
             </Grid>
+
             <Grid item xs={12} md={4}>
               <div
                 style={{
