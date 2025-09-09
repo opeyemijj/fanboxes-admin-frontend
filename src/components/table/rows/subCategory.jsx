@@ -15,6 +15,7 @@ import { MdDelete } from 'react-icons/md';
 // components
 import Label from 'src/components/label';
 import BlurImage from 'src/components/blurImage';
+import { UsePermission } from 'src/hooks/usePermission';
 
 Category.propTypes = {
   isLoading: PropTypes.bool.isRequired,
@@ -44,6 +45,8 @@ const ThumbImgStyle = styled(Box)(({ theme }) => ({
   overflow: 'hidden'
 }));
 export default function Category({ isLoading, row, handleClickOpen, sn }) {
+  const canEdit = UsePermission('edit_subcategory');
+  const canDelete = UsePermission('delete_subcategory');
   const router = useRouter();
   const theme = useTheme();
   return (
@@ -56,13 +59,6 @@ export default function Category({ isLoading, row, handleClickOpen, sn }) {
             alignItems: 'center'
           }}
         >
-          {/* {isLoading ? (
-            <Skeleton variant="rectangular" width={50} height={50} sx={{ borderRadius: 1 }} />
-          ) : (
-            <ThumbImgStyle>
-             
-            </ThumbImgStyle>
-          )} */}
           <Typography variant="subtitle2" noWrap>
             {isLoading ? <Skeleton variant="text" width={120} sx={{ ml: 1 }} /> : row?.name}
           </Typography>
@@ -91,16 +87,21 @@ export default function Category({ isLoading, row, handleClickOpen, sn }) {
             </>
           ) : (
             <>
-              <Tooltip title="Edit">
-                <IconButton onClick={() => router.push(`/admin/sub-categories/${row?.slug}`)}>
-                  <MdEdit />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Delete">
-                <IconButton onClick={handleClickOpen(row.slug)}>
-                  <MdDelete />
-                </IconButton>
-              </Tooltip>
+              {canEdit && (
+                <Tooltip title="Edit">
+                  <IconButton onClick={() => router.push(`/admin/sub-categories/${row?.slug}`)}>
+                    <MdEdit />
+                  </IconButton>
+                </Tooltip>
+              )}
+
+              {canDelete && (
+                <Tooltip title="Delete">
+                  <IconButton onClick={handleClickOpen(row.slug)}>
+                    <MdDelete />
+                  </IconButton>
+                </Tooltip>
+              )}
             </>
           )}
         </Stack>
