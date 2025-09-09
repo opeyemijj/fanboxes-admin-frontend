@@ -38,7 +38,9 @@ import {
   VerifiedSharp
 } from '@mui/icons-material';
 import { BsFillShieldFill, BsShieldCheck, BsPlayCircle, BsSendCheck, BsSignMergeRight } from 'react-icons/bs';
+import { UsePermission } from 'src/hooks/usePermission';
 export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
+  const canVerify = UsePermission('verify_spin');
   const dispatch = useDispatch();
   const router = useRouter();
   function shortenString(str, remainChar, showDots) {
@@ -100,15 +102,6 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
                 layout="fill"
                 objectFit="cover"
               />
-
-              {/* <BlurImage
-                alt={row?.shopDetails?.title}
-                blurDataURL={row?.shopDetails?.logo?.blurDataURL}
-                placeholder="blur"
-                src={row?.shopDetails?.logo?.url}
-                layout="fill"
-                objectFit="cover"
-              /> */}
             </Box>
           )}
           <Typography variant="" noWrap>
@@ -191,17 +184,19 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
         ) : (
           <Stack direction="row" justifyContent="center">
             <Tooltip title="Verify Spin">
-              <BsShieldCheck
-                size={17}
-                onClick={() => {
-                  const tempData = { spinItem: row };
-                  dispatch(selectSpinItem(tempData));
-                  router.push(`/admin/spins/${row._id}`);
-                }}
-                style={{ cursor: 'pointer' }}
-              >
-                <IoEye />
-              </BsShieldCheck>
+              {canVerify && (
+                <BsShieldCheck
+                  size={17}
+                  onClick={() => {
+                    const tempData = { spinItem: row };
+                    dispatch(selectSpinItem(tempData));
+                    router.push(`/admin/spins/${row._id}`);
+                  }}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <IoEye />
+                </BsShieldCheck>
+              )}
             </Tooltip>
           </Stack>
         )}
