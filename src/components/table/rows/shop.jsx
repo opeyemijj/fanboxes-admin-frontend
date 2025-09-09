@@ -22,6 +22,7 @@ import { MdEdit, MdDelete, MdBlock, MdCheckCircle, MdCancel } from 'react-icons/
 import { IoEye } from 'react-icons/io5';
 import { MoreVert } from '@mui/icons-material';
 import { useState } from 'react';
+import { UsePermission } from 'src/hooks/usePermission';
 
 export default function ProductRow({
   isLoading,
@@ -32,6 +33,12 @@ export default function ProductRow({
   sn
 }) {
   const router = useRouter();
+
+  const canEdit = UsePermission('edit_influencer');
+  const canDelete = UsePermission('delete_influencer');
+  const canViewDetails = UsePermission('view_influencer_details');
+  const canApprove = UsePermission('approve_influencer');
+  const canBan = UsePermission('ban_unban_influencer');
 
   function MoreActionsMenu({ row, handleClickOpenStatus, handleClickOpenBanned }) {
     const [anchorEl, setAnchorEl] = useState(null);
@@ -46,17 +53,19 @@ export default function ProductRow({
           <MoreVert />
         </IconButton>
         <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-          {!row?.isBanned && (
+          {!row?.isBanned && canApprove && (
             <MenuItem onClick={handleClickOpenStatus(row)}>
               {row.isActive ? <MdCheckCircle color="green" size={20} /> : <MdCancel color="orange" size={20} />}
               <ListItemText sx={{ ml: 1 }}>{row.isActive ? 'Draft' : 'Approve'}</ListItemText>
             </MenuItem>
           )}
 
-          <MenuItem onClick={handleClickOpenBanned(row)}>
-            <MdBlock size={20} color={row.isBanned ? 'red' : 'orange'} />
-            <ListItemText sx={{ ml: 1 }}>{!row.isBanned ? 'Ban' : 'Unban'}</ListItemText>
-          </MenuItem>
+          {canBan && (
+            <MenuItem onClick={handleClickOpenBanned(row)}>
+              <MdBlock size={20} color={row.isBanned ? 'red' : 'orange'} />
+              <ListItemText sx={{ ml: 1 }}>{!row.isBanned ? 'Ban' : 'Unban'}</ListItemText>
+            </MenuItem>
+          )}
         </Menu>
       </>
     );
@@ -141,25 +150,31 @@ export default function ProductRow({
         ) : (
           <Stack direction="row" justifyContent="flex-end" spacing={1}>
             {/* View */}
-            <Link href={`/admin/shops/${row.slug}`}>
-              <IconButton>
-                <IoEye />
-              </IconButton>
-            </Link>
+            {canViewDetails && (
+              <Link href={`/admin/shops/${row.slug}`}>
+                <IconButton>
+                  <IoEye />
+                </IconButton>
+              </Link>
+            )}
 
             {/* Edit */}
-            <Tooltip title="Edit">
-              <IconButton onClick={() => router.push(`/admin/shops/edit/${row.slug}`)}>
-                <MdEdit />
-              </IconButton>
-            </Tooltip>
+            {canEdit && (
+              <Tooltip title="Edit">
+                <IconButton onClick={() => router.push(`/admin/shops/edit/${row.slug}`)}>
+                  <MdEdit />
+                </IconButton>
+              </Tooltip>
+            )}
 
             {/* Delete */}
-            <Tooltip title="Delete">
-              <IconButton onClick={handleClickOpen(row.slug)}>
-                <MdDelete />
-              </IconButton>
-            </Tooltip>
+            {canDelete && (
+              <Tooltip title="Delete">
+                <IconButton onClick={handleClickOpen(row.slug)}>
+                  <MdDelete />
+                </IconButton>
+              </Tooltip>
+            )}
 
             {/* More actions */}
             <MoreActionsMenu
