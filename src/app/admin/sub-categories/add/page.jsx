@@ -6,8 +6,15 @@ import AddSubCategory from 'src/components/_admin/subCategories/addCategory';
 
 // api
 import * as api from 'src/services';
+import { UsePermissionServer } from 'src/hooks/usePermissionServer';
+import AccessDenied from 'src/components/cards/AccessDenied';
 
 export default async function page() {
+  const canAdd = UsePermissionServer('add_new_subcategory');
+  if (!canAdd) {
+    return <AccessDenied message="You are not allowed to add SubCategory." redirect="/admin/dashboard" />;
+  }
+
   const data = await api.getAllCategories();
   if (!data) {
     notFound();
@@ -17,7 +24,7 @@ export default async function page() {
     <div>
       <HeaderBreadcrumbs
         admin
-        heading="Sub Categories List"
+        heading="Add Sub Categories"
         links={[
           {
             name: 'Dashboard',

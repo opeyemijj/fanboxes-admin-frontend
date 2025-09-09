@@ -10,6 +10,8 @@ import EditSubCategory from 'src/components/_admin/subCategories/editCategory';
 // api
 import * as api from 'src/services';
 import { useQuery } from 'react-query';
+import { UsePermission } from 'src/hooks/usePermission';
+import AccessDenied from 'src/components/cards/AccessDenied';
 
 Page.propTypes = {
   params: PropTypes.shape({
@@ -22,11 +24,17 @@ export default function Page({ params }) {
       toast.error(err.response.data.message || 'Something went wrong!');
     }
   });
+
+  const canEdit = UsePermission('edit_subcategory');
+  if (!canEdit) {
+    return <AccessDenied message="You are not allowed to edit SubCategory." redirect="/admin/dashboard" />;
+  }
+
   return (
     <div>
       <HeaderBreadcrumbs
         admin
-        heading="Sub Categories List"
+        heading="Edit Sub Categories"
         links={[
           {
             name: 'Dashboard',
