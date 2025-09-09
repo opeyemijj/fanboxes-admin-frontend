@@ -16,6 +16,7 @@ import { FaUserCheck } from 'react-icons/fa6';
 
 // component
 import BlurImage from 'src/components/blurImage';
+import { UsePermission } from 'src/hooks/usePermission';
 
 UserRow.propTypes = {
   isLoading: PropTypes.bool.isRequired,
@@ -44,6 +45,7 @@ const ThumbImgStyle = styled(Box)(({ theme }) => ({
   overflow: 'hidden'
 }));
 export default function UserRow({ isLoading, row, setId, sn }) {
+  const canViewDetails = UsePermission('view_user_details');
   const router = useRouter();
   console.log(row, 'row data');
   return (
@@ -90,11 +92,13 @@ export default function UserRow({ isLoading, row, setId, sn }) {
             </>
           ) : (
             <>
-              <Tooltip title="Preview">
-                <IconButton onClick={() => router.push(`/admin/users/${row?._id}`)}>
-                  <FiEye />
-                </IconButton>
-              </Tooltip>
+              {canViewDetails && (
+                <Tooltip title="Preview">
+                  <IconButton onClick={() => router.push(`/admin/users/${row?._id}`)}>
+                    <FiEye />
+                  </IconButton>
+                </Tooltip>
+              )}
             </>
           )}
         </Stack>

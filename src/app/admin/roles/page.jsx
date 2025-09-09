@@ -17,7 +17,7 @@ export default function Roles() {
   const canView = UsePermissionServer('view_role_listing'); // check required permission
 
   if (!canView) {
-    return <AccessDenied message="You are not allowed to manage Boxes." redirect="/admin/dashboard" />;
+    return <AccessDenied message="You are not allowed to manage Roles." redirect="/admin/dashboard" />;
   }
 
   const canAddRole = UsePermissionServer('add_new_role');
