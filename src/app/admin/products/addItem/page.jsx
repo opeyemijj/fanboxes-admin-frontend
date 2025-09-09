@@ -8,6 +8,8 @@ import AddBoxItem from 'src/components/_admin/products/addBoxItem';
 
 // api
 import * as api from 'src/services';
+import { UsePermission } from 'src/hooks/usePermission';
+import AccessDenied from 'src/components/cards/AccessDenied';
 
 export default function Page() {
   const searchParams = useSearchParams();
@@ -30,6 +32,11 @@ export default function Page() {
 
     fetchData();
   }, [slug]); // re-run if slug changes
+
+  const canAdd = UsePermission('add_box_item');
+  if (!canAdd) {
+    return <AccessDenied message="You are not allowed to add Item." redirect="/admin/dashboard" />;
+  }
 
   return (
     <div>
