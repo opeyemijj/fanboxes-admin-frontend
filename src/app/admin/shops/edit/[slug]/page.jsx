@@ -10,6 +10,8 @@ import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
 // api
 import * as api from 'src/services';
 import { useQuery } from 'react-query';
+import { UsePermission } from 'src/hooks/usePermission';
+import AccessDenied from 'src/components/cards/AccessDenied';
 
 Page.propTypes = {
   params: PropTypes.shape({
@@ -23,6 +25,11 @@ export default function Page({ params }) {
       toast.error(err.response.data.message || 'Something went wrong!');
     }
   });
+
+  const canEdit = UsePermission('edit_influencer');
+  if (!canEdit) {
+    return <AccessDenied message="You are not allowed to edit Influencer." redirect="/admin/dashboard" />;
+  }
   return (
     <>
       <HeaderBreadcrumbs
