@@ -6,11 +6,18 @@ import EditProduct from 'src/components/_admin/products/editProduct';
 
 // api
 import * as api from 'src/services';
+import { UsePermissionServer } from 'src/hooks/usePermissionServer';
+import AccessDenied from 'src/components/cards/AccessDenied';
 
 export default async function page({ params }) {
   const { data: categories } = await api.getAllCategories();
   const { data: brands } = await api.getAllBrandsByAdmin();
   const { data: shops } = await api.getAllShopsByAdmin();
+
+  const canEdit = UsePermissionServer('edit_box');
+  if (!canEdit) {
+    return <AccessDenied message="You are not allowed to edit Box." redirect="/admin/dashboard" />;
+  }
 
   return (
     <div>

@@ -6,8 +6,15 @@ import AddProduct from 'src/components/_admin/products/addProduct';
 
 // api
 import * as api from 'src/services';
+import { UsePermissionServer } from 'src/hooks/usePermissionServer';
+import AccessDenied from 'src/components/cards/AccessDenied';
 
 export default async function page() {
+  const canAdd = UsePermissionServer('add_new_box');
+  if (!canAdd) {
+    return <AccessDenied message="You are not allowed to add Box." redirect="/admin/dashboard" />;
+  }
+
   const { data: categories } = await api.getAllCategories();
   const { data: brands } = await api.getAllBrandsByAdmin();
   const { data: shops } = await api.getAllShopsByAdmin();
