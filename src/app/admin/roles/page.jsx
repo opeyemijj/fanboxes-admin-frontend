@@ -2,7 +2,9 @@ import React from 'react';
 
 // Components
 import RoleList from 'src/components/_admin/roles/roleList';
+import AccessDenied from 'src/components/cards/AccessDenied';
 import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
+import { UsePermissionServer } from 'src/hooks/usePermissionServer';
 
 // Meta information
 export const metadata = {
@@ -12,6 +14,13 @@ export const metadata = {
 };
 
 export default function Roles() {
+  const canView = UsePermissionServer('view_role_listing'); // check required permission
+
+  if (!canView) {
+    return <AccessDenied message="You are not allowed to manage Boxes." redirect="/admin/dashboard" />;
+  }
+
+  const canAddRole = UsePermissionServer('add_new_role');
   return (
     <>
       <HeaderBreadcrumbs
@@ -26,10 +35,14 @@ export default function Roles() {
             name: 'Roles'
           }
         ]}
-        action={{
-          href: `/admin/roles/add`,
-          title: 'Add Role'
-        }}
+        action={
+          canAddRole
+            ? {
+                href: `/admin/roles/add`,
+                title: 'Add Role'
+              }
+            : null
+        }
       />
 
       <RoleList />

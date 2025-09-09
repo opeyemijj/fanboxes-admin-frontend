@@ -17,6 +17,7 @@ import BlurImage from 'src/components/blurImage';
 
 // utils
 import { fDateShort } from 'src/utils/formatTime';
+import { UsePermission } from 'src/hooks/usePermission';
 
 Role.propTypes = {
   isLoading: PropTypes.bool.isRequired,
@@ -46,6 +47,9 @@ const ThumbImgStyle = styled(Box)(({ theme }) => ({
   overflow: 'hidden'
 }));
 export default function Role({ isLoading, row, handleClickOpen, sn }) {
+  const canEdit = UsePermission('edit_role');
+  const canDelete = UsePermission('delete_role');
+
   const router = useRouter();
   const theme = useTheme();
 
@@ -125,16 +129,21 @@ export default function Role({ isLoading, row, handleClickOpen, sn }) {
             </>
           ) : (
             <>
-              <Tooltip title="Edit">
-                <IconButton onClick={() => router.push(`/admin/roles/${row?.slug}`)}>
-                  <MdEdit />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Delete">
-                <IconButton onClick={handleClickOpen(row.slug)}>
-                  <MdDelete />
-                </IconButton>
-              </Tooltip>
+              {canEdit && (
+                <Tooltip title="Edit">
+                  <IconButton onClick={() => router.push(`/admin/roles/${row?.slug}`)}>
+                    <MdEdit />
+                  </IconButton>
+                </Tooltip>
+              )}
+
+              {canDelete && (
+                <Tooltip title="Delete">
+                  <IconButton onClick={handleClickOpen(row.slug)}>
+                    <MdDelete />
+                  </IconButton>
+                </Tooltip>
+              )}
             </>
           )}
         </Stack>
