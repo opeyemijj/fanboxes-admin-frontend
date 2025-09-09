@@ -25,6 +25,7 @@ import { CheckBox, CheckBoxOutlineBlank, Visibility, VisibilityOff, Dangerous } 
 import { Menu, MenuItem, ListItemIcon, ListItemText, Switch } from '@mui/material';
 import { size } from 'lodash';
 import { useState } from 'react';
+import { UsePermission } from 'src/hooks/usePermission';
 
 export default function ProductRow({
   isLoading,
@@ -39,6 +40,12 @@ export default function ProductRow({
 }) {
   // console.log(row, 'Check the row?');
   const router = useRouter();
+
+  const canEdit = UsePermission('edit_box');
+  const canDelete = UsePermission('delete_box');
+  const canBan = UsePermission('ban_unban_box');
+  const canHidItemOdd = UsePermission('hide_unhide_item_odd');
+  const canApprove = UsePermission('approve_box');
 
   function MoreActionsMenu({
     row,
@@ -58,8 +65,9 @@ export default function ProductRow({
         <IconButton onClick={handleClick}>
           <MoreVert />
         </IconButton>
+
         <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-          {!row?.isBanned && (
+          {!row?.isBanned && canApprove && (
             <MenuItem onClick={handleClickOpenStatus(row)}>
               {row.isActive ? (
                 <MdCheckCircle style={{ width: 30 }} color="green" size={23} />
@@ -70,21 +78,27 @@ export default function ProductRow({
             </MenuItem>
           )}
 
-          <MenuItem>
-            <Switch
-              style={{ marginRight: 10, width: 30 }}
-              size="small"
-              disabled={oddsVisibileLoading}
-              onChange={handleClickOddsVisibility(row)}
-              checked={row?.isItemOddsHidden}
-            />
-            <ListItemText style={{ marginLeft: 10 }}>{row?.isItemOddsHidden ? 'Show Odds' : 'Hide Odds'}</ListItemText>
-          </MenuItem>
+          {canHidItemOdd && (
+            <MenuItem>
+              <Switch
+                style={{ marginRight: 10, width: 30 }}
+                size="small"
+                disabled={oddsVisibileLoading}
+                onChange={handleClickOddsVisibility(row)}
+                checked={row?.isItemOddsHidden}
+              />
+              <ListItemText style={{ marginLeft: 10 }}>
+                {row?.isItemOddsHidden ? 'Show Odds' : 'Hide Odds'}
+              </ListItemText>
+            </MenuItem>
+          )}
 
-          <MenuItem style={{ marginLeft: 3 }} onClick={handleClickOpenBanned(row)}>
-            <MdBlock style={{ marginRight: 10, width: 30 }} size={25} color={row.isBanned ? 'red' : ''} />{' '}
-            <ListItemText style={{ marginLeft: 12 }}>{!row.isBanned ? 'Ban' : 'Unban'}</ListItemText>
-          </MenuItem>
+          {canBan && (
+            <MenuItem style={{ marginLeft: 3 }} onClick={handleClickOpenBanned(row)}>
+              <MdBlock style={{ marginRight: 10, width: 30 }} size={25} color={row.isBanned ? 'red' : ''} />{' '}
+              <ListItemText style={{ marginLeft: 12 }}>{!row.isBanned ? 'Ban' : 'Unban'}</ListItemText>
+            </MenuItem>
+          )}
         </Menu>
       </>
     );
@@ -239,18 +253,22 @@ export default function ProductRow({
         ) : (
           <Stack direction="row" justifyContent="flex-end" spacing={1}>
             {/* Edit */}
-            <Tooltip title="Edit">
-              <IconButton onClick={() => router.push(`/${isVendor ? 'vendor' : 'admin'}/products/${row.slug}`)}>
-                <MdEdit />
-              </IconButton>
-            </Tooltip>
+            {canEdit && (
+              <Tooltip title="Edit">
+                <IconButton onClick={() => router.push(`/${isVendor ? 'vendor' : 'admin'}/products/${row.slug}`)}>
+                  <MdEdit />
+                </IconButton>
+              </Tooltip>
+            )}
 
             {/* Delete */}
-            <Tooltip title="Delete">
-              <IconButton onClick={handleClickOpen(row.slug)}>
-                <MdDelete />
-              </IconButton>
-            </Tooltip>
+            {canDelete && (
+              <Tooltip title="Delete">
+                <IconButton onClick={handleClickOpen(row.slug)}>
+                  <MdDelete />
+                </IconButton>
+              </Tooltip>
+            )}
 
             {/* More actions */}
             <MoreActionsMenu

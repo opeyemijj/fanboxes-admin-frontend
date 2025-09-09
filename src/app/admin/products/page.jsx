@@ -23,6 +23,8 @@ export default async function AdminProducts() {
     return <AccessDenied message="You are not allowed to manage Boxes." redirect="/admin/dashboard" />;
   }
 
+  const canAddBox = UsePermissionServer('add_new_box');
+
   const { data: categories } = await api.getAllCategoriesByAdmin();
   const { data: brands } = await api.getAllBrandsByAdmin();
   const { data: shops } = await api.getAllShopsByAdmin();
@@ -41,10 +43,14 @@ export default async function AdminProducts() {
             name: 'Boxes'
           }
         ]}
-        action={{
-          href: `/admin/products/add`,
-          title: 'Add Box'
-        }}
+        action={
+          canAddBox
+            ? {
+                href: `/admin/products/add`,
+                title: 'Add Box'
+              }
+            : null
+        }
       />
       <ProductList categories={categories} shops={shops} brands={brands} />
     </>
