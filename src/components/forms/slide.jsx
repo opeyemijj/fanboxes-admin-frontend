@@ -86,7 +86,7 @@ export default function SlideForm({ data: currentSlide, isLoading: slideLoading 
     highlight: Yup.string().required('Highlight is required'),
     buttonText: Yup.string().optional().max(50, 'Max button text caracter 50'),
     buttonLink: Yup.string().optional().url('Please enter a valid URL (e.g., https://example.com)'),
-    description: Yup.string().required('Description is required').max(200, 'Title max character limit 200'),
+    description: Yup.string().optional().max(200, 'Title max character limit 200'),
     status: Yup.string().required('Status is required'),
     images: Yup.array().min(1, 'Image is required')
   });
