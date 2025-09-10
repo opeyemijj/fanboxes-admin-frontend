@@ -14,13 +14,13 @@ export const metadata = {
 };
 
 export default function CustomSlide() {
-  // const canView = UsePermissionServer('view_category_listing'); // check required permission
+  const canView = UsePermissionServer('view_slide_listing'); // check required permission
 
-  // if (!canView) {
-  //   return <AccessDenied message="You are not allowed to manage Category." redirect="/admin/dashboard" />;
-  // }
+  if (!canView) {
+    return <AccessDenied message="You are not allowed to manage Slide." redirect="/admin/dashboard" />;
+  }
 
-  // const canAddCategory = UsePermissionServer('add_new_category');
+  const canAddSlide = UsePermissionServer('add_new_slide');
 
   return (
     <>
@@ -36,10 +36,14 @@ export default function CustomSlide() {
             name: 'Slides'
           }
         ]}
-        action={{
-          href: `/admin/slides/add`,
-          title: 'Add Slide'
-        }}
+        action={
+          canAddSlide
+            ? {
+                href: `/admin/slides/add`,
+                title: 'Add Slide'
+              }
+            : null
+        }
       />
       <SlideList />
     </>

@@ -14,10 +14,10 @@ export const metadata = {
 };
 
 export default function page() {
-  // const canAdd = UsePermissionServer('add_new_category');
-  // if (!canAdd) {
-  //   return <AccessDenied message="You are not allowed to add Category." redirect="/admin/dashboard" />;
-  // }
+  const canAdd = UsePermissionServer('add_new_slide');
+  if (!canAdd) {
+    return <AccessDenied message="You are not allowed to add Slide." redirect="/admin/dashboard" />;
+  }
 
   return (
     <div>

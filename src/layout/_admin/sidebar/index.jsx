@@ -23,7 +23,7 @@ import MuiDrawer from '@mui/material/Drawer';
 // icons
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { LuLayoutDashboard, LuShield, LuShieldOff } from 'react-icons/lu';
-import { FaRegBuilding } from 'react-icons/fa';
+import { FaRegBuilding, FaSlidersH } from 'react-icons/fa';
 import { TbCategory2 } from 'react-icons/tb';
 import { BsPinAngleFill, BsPlayCircle, BsPlayCircleFill, BsShop } from 'react-icons/bs';
 import { BsCart3 } from 'react-icons/bs';
@@ -202,12 +202,21 @@ export const navlinks = [
 
   {
     id: 14,
-    title: 'Slides',
-    slug: 'slides',
-    need_permission: false,
-    permission_slug: 'settings',
+    title: 'Content Management',
+    slug: 'content-management',
+    need_permission: true,
+    permission_slug: 'view_slide_listing',
     icon: <IoLogoAmplify />,
-    isSearch: false
+    isSearch: false,
+    children: [
+      {
+        id: '14-1',
+        title: 'Slides',
+        slug: 'slides',
+        icon: <FaSlidersH />,
+        isSearch: true
+      }
+    ]
   }
 ];
 

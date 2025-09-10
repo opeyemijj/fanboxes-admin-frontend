@@ -47,8 +47,8 @@ const ThumbImgStyle = styled(Box)(({ theme }) => ({
   overflow: 'hidden'
 }));
 export default function Slide({ isLoading, row, handleClickOpen, sn }) {
-  // const canEdit = UsePermission('edit_Slide');
-  // const canDelete = UsePermission('delete_Slide');
+  const canEdit = UsePermission('edit_slide');
+  const canDelete = UsePermission('delete_slide');
   const router = useRouter();
   const theme = useTheme();
   return (
@@ -108,17 +108,21 @@ export default function Slide({ isLoading, row, handleClickOpen, sn }) {
             </>
           ) : (
             <>
-              <Tooltip title="Edit">
-                <IconButton onClick={() => router.push(`/admin/slides/${row?.slug}`)}>
-                  <MdEdit />
-                </IconButton>
-              </Tooltip>
+              {canEdit && (
+                <Tooltip title="Edit">
+                  <IconButton onClick={() => router.push(`/admin/slides/${row?.slug}`)}>
+                    <MdEdit />
+                  </IconButton>
+                </Tooltip>
+              )}
 
-              <Tooltip title="Delete">
-                <IconButton onClick={handleClickOpen(row.slug)}>
-                  <MdDelete />
-                </IconButton>
-              </Tooltip>
+              {canDelete && (
+                <Tooltip title="Delete">
+                  <IconButton onClick={handleClickOpen(row.slug)}>
+                    <MdDelete />
+                  </IconButton>
+                </Tooltip>
+              )}
             </>
           )}
         </Stack>
