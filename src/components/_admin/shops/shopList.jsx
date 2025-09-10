@@ -18,6 +18,8 @@ import { LoadingButton } from '@mui/lab';
 const TABLE_HEAD = [
   { id: 'name', label: 'Influencers', alignRight: false, sort: true },
   { id: 'products', label: 'Boxes', alignRight: false, sort: true },
+  { id: 'visitedCount', label: 'Total Visit', alignRight: false, sort: true },
+  { id: 'category', label: 'Category', alignRight: false, sort: true },
   { id: 'status', label: 'Status', alignRight: false, sort: false },
   { id: '', label: 'Actions', alignRight: true }
 ];

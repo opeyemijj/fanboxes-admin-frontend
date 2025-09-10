@@ -109,6 +109,8 @@ export default function ProductRow({
       </TableCell>
 
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row.products?.length || 0}</>}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.visitedCount || 0}</>}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.categoryDetails?.name || ''}</>}</TableCell>
 
       <TableCell>
         {isLoading ? (
