@@ -296,7 +296,7 @@ export default function AdminShopForm({
                           {'Category'}
                         </LabelStyle>
                       )}
-                      {!categoryLoading ? (
+                      {!shopLoading ? (
                         <Select
                           native
                           {...getFieldProps('category')}
@@ -330,7 +330,7 @@ export default function AdminShopForm({
                           {'Sub Category'}
                         </LabelStyle>
                       )}
-                      {!categoryLoading ? (
+                      {!shopLoading ? (
                         <Select
                           native
                           {...getFieldProps('subCategory')}
@@ -672,7 +672,7 @@ export default function AdminShopForm({
                                 checked={values.isFeatured}
                               />
                             }
-                            label={'Featured Box'}
+                            label={'Featured Influencer'}
                           />
                         </FormGroup>
                       </div>
