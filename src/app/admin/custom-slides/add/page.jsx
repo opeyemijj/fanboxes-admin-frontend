@@ -2,7 +2,7 @@ import React from 'react';
 
 // components
 import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
-import AddCategory from 'src/components/_admin/categories/addCategory';
+import AddSlide from 'src/components/_admin/custom-slides/addSlide';
 import { UsePermissionServer } from 'src/hooks/usePermissionServer';
 import AccessDenied from 'src/components/cards/AccessDenied';
 
@@ -14,31 +14,31 @@ export const metadata = {
 };
 
 export default function page() {
-  const canAdd = UsePermissionServer('add_new_category');
-  if (!canAdd) {
-    return <AccessDenied message="You are not allowed to add Category." redirect="/admin/dashboard" />;
-  }
+  // const canAdd = UsePermissionServer('add_new_category');
+  // if (!canAdd) {
+  //   return <AccessDenied message="You are not allowed to add Category." redirect="/admin/dashboard" />;
+  // }
 
   return (
     <div>
       <HeaderBreadcrumbs
         admin
-        heading="Add Category"
+        heading="Add Slide"
         links={[
           {
             name: 'Dashboard',
             href: '/admin/dashboard'
           },
           {
-            name: 'Categories',
-            href: '/admin/categories'
+            name: 'Slides',
+            href: '/admin/custom-slides'
           },
           {
-            name: 'Add Category'
+            name: 'Add Slide'
           }
         ]}
       />
-      <AddCategory />
+      <AddSlide />
     </div>
   );
 }

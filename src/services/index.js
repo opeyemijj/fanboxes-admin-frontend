@@ -100,6 +100,11 @@ export const addCategoryByAdmin = async (payload) => {
   return data;
 };
 
+export const addSlideByAdmin = async (payload) => {
+  const { data } = await http.post(`/admin/slides`, payload);
+  return data;
+};
+
 export const addAdminUserByAdmin = async (payload) => {
   const { data } = await http.post(`/admin/users/add-admin`, payload);
   return data;

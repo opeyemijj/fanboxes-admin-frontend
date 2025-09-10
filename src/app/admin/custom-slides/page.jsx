@@ -37,7 +37,7 @@ export default function CustomSlide() {
           }
         ]}
         action={{
-          href: `/admin/categories/add`,
+          href: `/admin/custom-slides/add`,
           title: 'Add Slide'
         }}
       />
