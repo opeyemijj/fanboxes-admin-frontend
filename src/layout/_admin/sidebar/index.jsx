@@ -202,8 +202,8 @@ export const navlinks = [
 
   {
     id: 14,
-    title: 'Custom Slides',
-    slug: 'custom-slides',
+    title: 'Slides',
+    slug: 'slides',
     need_permission: false,
     permission_slug: 'settings',
     icon: <IoLogoAmplify />,

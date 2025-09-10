@@ -2,7 +2,7 @@ import React from 'react';
 
 // components
 import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
-import AddSlide from 'src/components/_admin/custom-slides/addSlide';
+import AddSlide from 'src/components/_admin/slides/addSlide';
 import { UsePermissionServer } from 'src/hooks/usePermissionServer';
 import AccessDenied from 'src/components/cards/AccessDenied';
 
@@ -31,7 +31,7 @@ export default function page() {
           },
           {
             name: 'Slides',
-            href: '/admin/custom-slides'
+            href: '/admin/slides'
           },
           {
             name: 'Add Slide'

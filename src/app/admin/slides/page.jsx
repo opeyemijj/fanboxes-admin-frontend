@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Components
-import CustomSlideList from 'src/components/_admin/custom-slides/customSlideList';
+import SlideList from 'src/components/_admin/slides/slideList';
 import AccessDenied from 'src/components/cards/AccessDenied';
 import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
 import { UsePermissionServer } from 'src/hooks/usePermissionServer';
@@ -37,12 +37,11 @@ export default function CustomSlide() {
           }
         ]}
         action={{
-          href: `/admin/custom-slides/add`,
+          href: `/admin/slides/add`,
           title: 'Add Slide'
         }}
       />
-
-      <CustomSlideList />
+      <SlideList />
     </>
   );
 }

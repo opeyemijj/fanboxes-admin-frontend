@@ -23,7 +23,7 @@ const TABLE_HEAD = [
   { id: '', label: 'Actions', alignRight: true }
 ];
 // ----------------------------------------------------------------------
-export default function CustomSlideList() {
+export default function SlideList() {
   const searchParams = useSearchParams();
   const pageParam = searchParams.get('page');
   const searchParam = searchParams.get('search');

@@ -55,7 +55,7 @@ export default function SlideForm({ data: currentSlide, isLoading: slideLoading 
 
   const { mutate, isLoading } = useMutation(
     currentSlide ? 'update' : 'new',
-    currentSlide ? api.updateCategoryByAdmin : api.addCategoryByAdmin,
+    currentSlide ? api.updateCategoryByAdmin : api.addSlideByAdmin,
     {
       ...(currentSlide && {
         enabled: Boolean(currentSlide)
@@ -64,7 +64,7 @@ export default function SlideForm({ data: currentSlide, isLoading: slideLoading 
       onSuccess: (data) => {
         toast.success(data.message);
 
-        router.push('/admin/custom-slides');
+        router.push('/admin/slides');
       },
       onError: (error) => {
         console.log(error, 'check the error');
