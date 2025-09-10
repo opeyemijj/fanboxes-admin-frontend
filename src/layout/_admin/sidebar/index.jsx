@@ -29,7 +29,7 @@ import { BsPinAngleFill, BsPlayCircle, BsPlayCircleFill, BsShop } from 'react-ic
 import { BsCart3 } from 'react-icons/bs';
 import { LuUsers } from 'react-icons/lu';
 import { SlEnvolopeLetter } from 'react-icons/sl';
-import { IoSettingsOutline } from 'react-icons/io5';
+import { IoLogoAmplify, IoLogOutOutline, IoSettingsOutline } from 'react-icons/io5';
 import { RiCoupon5Line } from 'react-icons/ri';
 import { BsBuildings } from 'react-icons/bs';
 import { AiOutlineDollarCircle } from 'react-icons/ai';
@@ -70,7 +70,7 @@ export const navlinks = [
   },
 
   {
-    id: 5,
+    id: 4,
     title: 'Influencers',
     slug: 'shops',
     need_permission: true,
@@ -79,7 +79,7 @@ export const navlinks = [
     isSearch: true
   },
   {
-    id: 4,
+    id: 5,
     title: 'Boxes',
     slug: 'products',
     need_permission: true,
@@ -152,7 +152,7 @@ export const navlinks = [
     isSearch: false
   },
   {
-    id: 19,
+    id: 9,
     title: 'Brands',
     slug: 'brands',
     need_permission: true,
@@ -181,7 +181,7 @@ export const navlinks = [
   },
 
   {
-    id: 13,
+    id: 12,
     title: 'Currencies',
     slug: 'currencies',
     need_permission: true,
@@ -191,12 +191,22 @@ export const navlinks = [
   },
 
   {
-    id: 15,
+    id: 13,
     title: 'Settings',
     slug: 'settings',
     need_permission: true,
     permission_slug: 'settings',
     icon: <IoSettingsOutline />,
+    isSearch: false
+  },
+
+  {
+    id: 14,
+    title: 'Custom Slides',
+    slug: 'custom-slides',
+    need_permission: false,
+    permission_slug: 'settings',
+    icon: <IoLogoAmplify />,
     isSearch: false
   }
 ];

@@ -69,6 +69,12 @@ export const getCategoriesByAdmin = async (page, search) => {
   const { data } = await http.get(`/admin/categories?search=${search}&page=${page}`);
   return data;
 };
+
+export const getSlidesByAdmin = async (page, search) => {
+  const { data } = await http.get(`/admin/slides?search=${search}&page=${page}`);
+  return data;
+};
+
 export const getCategoryByAdmin = async (slug) => {
   const { data } = await http.get(`/admin/categories/${slug}`);
   return data;
