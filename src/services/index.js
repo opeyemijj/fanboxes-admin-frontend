@@ -95,6 +95,11 @@ export const deleteCategoryByAdmin = async (slug) => {
   return data;
 };
 
+export const deleteSlideByAdmin = async (slug) => {
+  const { data } = await http.delete(`/admin/slides/${slug}`);
+  return data;
+};
+
 export const deleteRoleByAdmin = async (slug) => {
   const { data } = await http.delete(`/admin/roles/${slug}`);
   return data;

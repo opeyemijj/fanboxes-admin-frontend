@@ -39,8 +39,6 @@ export default function SlideList() {
     }
   );
 
-  console.log(data, 'Getting slides?');
-
   const handleClickOpen = (prop) => () => {
     setId(prop);
     setOpen(true);
@@ -56,9 +54,9 @@ export default function SlideList() {
           onClose={handleClose}
           id={id}
           apicall={setApicall}
-          endPoint="deleteCategoryByAdmin"
-          type={'Category deleted'}
-          deleteMessage={'Deleting this category will permanently remove it. Are you sure you want to proceed?'}
+          endPoint="deleteSlideByAdmin"
+          type={'Slide deleted'}
+          deleteMessage={'Deleting this slide will permanently remove it. Are you sure you want to proceed?'}
         />
       </Dialog>
       <Table
