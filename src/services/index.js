@@ -80,6 +80,11 @@ export const getCategoryByAdmin = async (slug) => {
   return data;
 };
 
+export const getSlideByAdmin = async (slug) => {
+  const { data } = await http.get(`/admin/slides/${slug}`);
+  return data;
+};
+
 export const getRoleByAdmin = async (slug) => {
   const { data } = await http.get(`/admin/roles/${slug}`);
   return data;
@@ -128,6 +133,11 @@ export const getRolesByAdmin = async (params) => {
 
 export const updateCategoryByAdmin = async ({ currentSlug, ...payload }) => {
   const { data } = await http.put(`/admin/categories/${currentSlug}`, payload);
+  return data;
+};
+
+export const updateSlideByAdmin = async ({ currentSlug, ...payload }) => {
+  const { data } = await http.put(`/admin/slides/${currentSlug}`, payload);
   return data;
 };
 

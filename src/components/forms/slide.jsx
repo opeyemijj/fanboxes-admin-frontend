@@ -55,7 +55,7 @@ export default function SlideForm({ data: currentSlide, isLoading: slideLoading 
 
   const { mutate, isLoading } = useMutation(
     currentSlide ? 'update' : 'new',
-    currentSlide ? api.updateCategoryByAdmin : api.addSlideByAdmin,
+    currentSlide ? api.updateSlideByAdmin : api.addSlideByAdmin,
     {
       ...(currentSlide && {
         enabled: Boolean(currentSlide)
@@ -302,7 +302,7 @@ export default function SlideForm({ data: currentSlide, isLoading: slideLoading 
                 loading={isLoading}
                 sx={{ ml: 'auto', mt: 3 }}
               >
-                {currentSlide ? 'Edit Slide' : 'Create Slide'}
+                {currentSlide ? 'Update Slide' : 'Create Slide'}
               </LoadingButton>
             </Grid>
           </Grid>

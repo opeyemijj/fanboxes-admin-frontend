@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 // components
-import CategoryForm from 'src/components/forms/category';
+import SlideForm from 'src/components/forms/slide';
 
 EditCategory.propTypes = {
   data: PropTypes.object.isRequired,
@@ -11,7 +11,7 @@ EditCategory.propTypes = {
 export default function EditCategory({ data, isLoading }) {
   return (
     <div>
-      <CategoryForm data={data} isLoading={isLoading} />
+      <SlideForm data={data} isLoading={isLoading} />
     </div>
   );
 }

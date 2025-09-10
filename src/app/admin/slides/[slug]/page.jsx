@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 // components
 import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
-import EditCategory from 'src/components/_admin/categories/editCategory';
+import EditSlide from 'src/components/_admin/slides/editSlide';
 
 // api
 import * as api from 'src/services';
@@ -20,9 +20,9 @@ Page.propTypes = {
   }).isRequired
 };
 export default function Page({ params }) {
-  const { data, isLoading } = useQuery(['coupon-codes'], () => api.getCategoryByAdmin(params.slug), {
+  const { data, isLoading } = useQuery(['slide'], () => api.getSlideByAdmin(params.slug), {
     onError: (err) => {
-      toast.error(err.response.data.message || 'Something went wrong!');
+      toast.error(err.message || 'Something went wrong!');
     }
   });
 
@@ -35,22 +35,22 @@ export default function Page({ params }) {
     <div>
       <HeaderBreadcrumbs
         admin
-        heading="Edit Category"
+        heading="Edit Side"
         links={[
           {
             name: 'Dashboard',
             href: '/admin/dashboard'
           },
           {
-            name: 'Categories',
-            href: '/admin/categories'
+            name: 'Slides',
+            href: '/admin/slides'
           },
           {
-            name: data?.data?.name
+            name: data?.data?.title
           }
         ]}
       />
-      <EditCategory isLoading={isLoading} data={data?.data} />
+      <EditSlide isLoading={isLoading} data={data?.data} />
     </div>
   );
 }
