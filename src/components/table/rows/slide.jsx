@@ -34,18 +34,6 @@ Slide.propTypes = {
   handleClickOpen: PropTypes.func.isRequired
 };
 
-const ThumbImgStyle = styled(Box)(({ theme }) => ({
-  width: 50,
-  height: 50,
-  minWidth: 50,
-  objectFit: 'cover',
-  background: theme.palette.background.default,
-  marginRight: theme.spacing(2),
-  border: '1px solid ' + theme.palette.divider,
-  borderRadius: theme.shape.borderRadiusSm,
-  position: 'relative',
-  overflow: 'hidden'
-}));
 export default function Slide({ isLoading, row, handleClickOpen, sn }) {
   const canEdit = UsePermission('edit_slide');
   const canDelete = UsePermission('delete_slide');
@@ -83,7 +71,7 @@ export default function Slide({ isLoading, row, handleClickOpen, sn }) {
               alt={row?.title}
               // blurDataURL={row?.shopDetails ? row?.shopDetails?.logo?.blurDataURL : ''}
               // placeholder={row?.shopDetails ? 'blur' : ''}
-              src={row?.image}
+              src={row?.images[0]?.url}
               layout="fill"
               objectFit="cover"
             />
