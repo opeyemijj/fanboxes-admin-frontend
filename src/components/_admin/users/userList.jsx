@@ -113,6 +113,7 @@ export default function AdminProducts({ userType }) {
         id={setId}
         handleClickOpenStatus={handleClickOpenStatus}
         isSearch
+        userType={userType}
       />
 
       {/* Modals */}

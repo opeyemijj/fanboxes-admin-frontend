@@ -141,6 +141,11 @@ export const updateCategoryByAdmin = async ({ currentSlug, ...payload }) => {
   return data;
 };
 
+export const updateAdminUserByAdmin = async ({ id, ...payload }) => {
+  const { data } = await http.put(`/admin/users/${id}`, payload);
+  return data;
+};
+
 export const updateSlideByAdmin = async ({ currentSlug, ...payload }) => {
   const { data } = await http.put(`/admin/slides/${currentSlug}`, payload);
   return data;

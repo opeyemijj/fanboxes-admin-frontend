@@ -48,7 +48,7 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 
 const GENDER_OPTIONS = ['male', 'female'];
 
-export default function AdminUser({ data: currentUser, isLoading: userLoading }) {
+export default function AdminUser({ currentUser, isLoading: userLoading }) {
   const router = useRouter();
 
   const [allRoleList, setAllRoleList] = useState([]);
@@ -62,7 +62,6 @@ export default function AdminUser({ data: currentUser, isLoading: userLoading })
   useEffect(() => {
     async function callRolesApi(params) {
       const gettingAllRoles = await api.getAllRoles();
-      console.log(gettingAllRoles, 'Getting all role listing');
       setAllRoleList(gettingAllRoles?.data);
     }
     callRolesApi();
@@ -70,7 +69,7 @@ export default function AdminUser({ data: currentUser, isLoading: userLoading })
 
   const { mutate, isLoading } = useMutation(
     currentUser ? 'update' : 'new',
-    currentUser ? api.updateCategoryByAdmin : api.addAdminUserByAdmin,
+    currentUser ? api.updateAdminUserByAdmin : api.addAdminUserByAdmin,
     {
       ...(currentUser && {
         enabled: Boolean(currentUser)
@@ -108,17 +107,25 @@ export default function AdminUser({ data: currentUser, isLoading: userLoading })
       .required('Phone is required')
       .matches(/^(\+?[0-9]{1,4}[\s-]?)?(\(?\d{3}\)?[\s-]?)?\d{3}[\s-]?\d{4}$/, 'Enter a valid phone number'),
 
-    password: Yup.string()
-      .required('Password is required')
-      .min(8, 'Password must be at least 8 characters')
-      .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
-      .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
-      .matches(/[0-9]/, 'Password must contain at least one number')
-      .matches(/[@$!%*?&]/, 'Password must contain at least one special character'),
+    password: Yup.string().when([], {
+      is: () => !currentUser, // only required if creating
+      then: (schema) =>
+        schema
+          .required('Password is required')
+          .min(8, 'Password must be at least 8 characters')
+          .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+          .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
+          .matches(/[0-9]/, 'Password must contain at least one number')
+          .matches(/[@$!%*?&]/, 'Password must contain at least one special character'),
+      otherwise: (schema) => schema.notRequired()
+    }),
 
-    confirmPassword: Yup.string()
-      .required('Confirm Password is required')
-      .oneOf([Yup.ref('password'), null], 'Passwords must match')
+    confirmPassword: Yup.string().when('password', {
+      is: (val) => !!val, // required if password exists
+      then: (schema) =>
+        schema.required('Confirm Password is required').oneOf([Yup.ref('password'), null], 'Passwords must match'),
+      otherwise: (schema) => schema.notRequired()
+    })
   });
 
   const formik = useFormik({
@@ -129,8 +136,9 @@ export default function AdminUser({ data: currentUser, isLoading: userLoading })
       phone: currentUser?.phone || '',
       gender: currentUser?.gender || GENDER_OPTIONS[0],
       roleId: currentUser?.roleId || allRoleList[0]?._id,
-      password: '',
-      confirmPassword: ''
+      ...(currentUser
+        ? {} // skip passwords in edit mode
+        : { password: '', confirmPassword: '' })
     },
     enableReinitialize: true,
     validationSchema: NewCategorySchema,
@@ -140,7 +148,7 @@ export default function AdminUser({ data: currentUser, isLoading: userLoading })
         mutate({
           ...rest,
           ...(currentUser && {
-            currentSlug: currentUser.slug
+            id: currentUser._id
           })
         });
       } catch (error) {
@@ -166,14 +174,14 @@ export default function AdminUser({ data: currentUser, isLoading: userLoading })
                   <Grid container spacing={2}>
                     {/* First Name */}
                     <Grid item xs={12} md={6}>
-                      {isLoading ? (
+                      {userLoading ? (
                         <Skeleton variant="text" width={120} />
                       ) : (
                         <LabelStyle component={'label'} htmlFor="gender">
                           First Name
                         </LabelStyle>
                       )}
-                      {isLoading ? (
+                      {userLoading ? (
                         <Skeleton variant="rectangular" width="100%" height={56} />
                       ) : (
                         <TextField
@@ -189,14 +197,14 @@ export default function AdminUser({ data: currentUser, isLoading: userLoading })
 
                     {/* Last Name */}
                     <Grid item xs={12} md={6}>
-                      {isLoading ? (
+                      {userLoading ? (
                         <Skeleton variant="text" width={120} />
                       ) : (
                         <LabelStyle component={'label'} htmlFor="gender">
                           Last Name{' '}
                         </LabelStyle>
                       )}
-                      {isLoading ? (
+                      {userLoading ? (
                         <Skeleton variant="rectangular" width="100%" height={56} />
                       ) : (
                         <TextField
@@ -211,14 +219,14 @@ export default function AdminUser({ data: currentUser, isLoading: userLoading })
                     </Grid>
 
                     <Grid item xs={12} md={6}>
-                      {isLoading ? (
+                      {userLoading ? (
                         <Skeleton variant="text" width={120} />
                       ) : (
                         <LabelStyle component={'label'} htmlFor="gender">
                           Email{' '}
                         </LabelStyle>
                       )}
-                      {isLoading ? (
+                      {userLoading ? (
                         <Skeleton variant="rectangular" width="100%" height={56} />
                       ) : (
                         <TextField
@@ -233,14 +241,14 @@ export default function AdminUser({ data: currentUser, isLoading: userLoading })
                     </Grid>
 
                     <Grid item xs={12} md={6}>
-                      {isLoading ? (
+                      {userLoading ? (
                         <Skeleton variant="text" width={120} />
                       ) : (
                         <LabelStyle component={'label'} htmlFor="gender">
                           Phone{' '}
                         </LabelStyle>
                       )}
-                      {isLoading ? (
+                      {userLoading ? (
                         <Skeleton variant="rectangular" width="100%" height={56} />
                       ) : (
                         <TextField
@@ -322,53 +330,57 @@ export default function AdminUser({ data: currentUser, isLoading: userLoading })
                       </FormControl>
                     </Grid>
 
-                    {/* Password */}
-                    <Grid item xs={12} md={6}>
-                      <LabelStyle component={'label'} htmlFor="password">
-                        Password
-                      </LabelStyle>
-                      <TextField
-                        id="password"
-                        type={showPassword ? 'text' : 'password'}
-                        fullWidth
-                        {...getFieldProps('password')}
-                        error={Boolean(touched.password && errors.password)}
-                        helperText={touched.password && errors.password}
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              <IconButton onClick={handleClickShowPassword} edge="end">
-                                {showPassword ? <VisibilityOff /> : <Visibility />}
-                              </IconButton>
-                            </InputAdornment>
-                          )
-                        }}
-                      />
-                    </Grid>
+                    {!currentUser && !userLoading && (
+                      <>
+                        {/* Password */}
+                        <Grid item xs={12} md={6}>
+                          <LabelStyle component={'label'} htmlFor="password">
+                            Password
+                          </LabelStyle>
+                          <TextField
+                            id="password"
+                            type={showPassword ? 'text' : 'password'}
+                            fullWidth
+                            {...getFieldProps('password')}
+                            error={Boolean(touched.password && errors.password)}
+                            helperText={touched.password && errors.password}
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  <IconButton onClick={handleClickShowPassword} edge="end">
+                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                  </IconButton>
+                                </InputAdornment>
+                              )
+                            }}
+                          />
+                        </Grid>
 
-                    {/* Confirm Password */}
-                    <Grid item xs={12} md={6}>
-                      <LabelStyle component={'label'} htmlFor="confirmPassword">
-                        Confirm Password
-                      </LabelStyle>
-                      <TextField
-                        id="confirmPassword"
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        fullWidth
-                        {...getFieldProps('confirmPassword')}
-                        error={Boolean(touched.confirmPassword && errors.confirmPassword)}
-                        helperText={touched.confirmPassword && errors.confirmPassword}
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              <IconButton onClick={handleClickShowConfirmPassword} edge="end">
-                                {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                              </IconButton>
-                            </InputAdornment>
-                          )
-                        }}
-                      />
-                    </Grid>
+                        {/* Confirm Password */}
+                        <Grid item xs={12} md={6}>
+                          <LabelStyle component={'label'} htmlFor="confirmPassword">
+                            Confirm Password
+                          </LabelStyle>
+                          <TextField
+                            id="confirmPassword"
+                            type={showConfirmPassword ? 'text' : 'password'}
+                            fullWidth
+                            {...getFieldProps('confirmPassword')}
+                            error={Boolean(touched.confirmPassword && errors.confirmPassword)}
+                            helperText={touched.confirmPassword && errors.confirmPassword}
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  <IconButton onClick={handleClickShowConfirmPassword} edge="end">
+                                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                                  </IconButton>
+                                </InputAdornment>
+                              )
+                            }}
+                          />
+                        </Grid>
+                      </>
+                    )}
                   </Grid>
                 </Stack>
               </Card>

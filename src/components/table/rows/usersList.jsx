@@ -18,6 +18,7 @@ import { FaUserCheck } from 'react-icons/fa6';
 // component
 import BlurImage from 'src/components/blurImage';
 import { UsePermission } from 'src/hooks/usePermission';
+import { Edit } from 'lucide-react';
 
 UserRow.propTypes = {
   isLoading: PropTypes.bool.isRequired,
@@ -45,7 +46,7 @@ const ThumbImgStyle = styled(Box)(({ theme }) => ({
   position: 'relative',
   overflow: 'hidden'
 }));
-export default function UserRow({ isLoading, row, setId, handleClickOpenStatus, sn }) {
+export default function UserRow({ isLoading, row, setId, handleClickOpenStatus, sn, userType }) {
   const canViewDetails = UsePermission('view_user_details');
   const router = useRouter();
   console.log(row, 'row data');
@@ -100,6 +101,14 @@ export default function UserRow({ isLoading, row, setId, handleClickOpenStatus, 
                   </IconButton>
                 </Tooltip>
               )} */}
+
+              {userType === 'admin' && (
+                <Tooltip title="Edit">
+                  <IconButton onClick={() => router.push(`/admin/admin-users/edit/${row?._id}`)}>
+                    <MdEdit />
+                  </IconButton>
+                </Tooltip>
+              )}
 
               <Tooltip title={row?.isActive ? 'Approved' : 'Draft'}>
                 <IconButton onClick={handleClickOpenStatus(row)}>
