@@ -173,6 +173,8 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
     setOpenOddsVisible(false);
     setOpenAssignedTo(false);
     setMarkBox(null);
+    setSelectedUserDetails([]);
+    setSelectedUsers([]);
   };
 
   async function changeActiveInactive() {

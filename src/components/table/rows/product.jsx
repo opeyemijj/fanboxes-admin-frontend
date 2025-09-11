@@ -99,14 +99,8 @@ export default function ProductRow({
             </MenuItem>
           )}
 
-          {/* <Tooltip title="Assign To">
-            <IconButton onClick={() => openAssignUsers()}>
-              <GroupAdd />
-            </IconButton>
-          </Tooltip> */}
-
           <MenuItem style={{ marginLeft: 3 }} onClick={() => openAssignUsers()}>
-            <GroupAdd style={{ marginRight: 10, width: 30 }} size={25} color={!row.isBanned ? 'red' : ''} />{' '}
+            <GroupAdd style={{ marginRight: 10, width: 30 }} size={25} color="primary" />{' '}
             <ListItemText style={{ marginLeft: 12 }}>Assign To</ListItemText>
           </MenuItem>
         </Menu>
