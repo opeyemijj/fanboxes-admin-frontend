@@ -99,7 +99,7 @@ export default function ProductRow({
             </MenuItem>
           )}
 
-          <MenuItem style={{ marginLeft: 3 }} onClick={() => openAssignUsers()}>
+          <MenuItem style={{ marginLeft: 3 }} onClick={() => openAssignUsers(row)}>
             <GroupAdd style={{ marginRight: 10, width: 30 }} size={25} color="primary" />{' '}
             <ListItemText style={{ marginLeft: 12 }}>Assign To</ListItemText>
           </MenuItem>

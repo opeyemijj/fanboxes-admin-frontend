@@ -93,6 +93,26 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
     }
   );
 
+  const { mutate: assignUserMutation, isLoading: assignLoading } = useMutation(
+    isVendor ? null : api.updateAssignInProductByAdmin, // mutation function here
+    {
+      onSuccess: (data) => {
+        toast.success(data.message);
+        handleClose();
+        // ✅ Refetch products list
+        queryClient.invalidateQueries(['admin-products']);
+      },
+      onError: (error) => {
+        console.log(error);
+        let errorMessage = parseMongooseError(error?.message);
+        toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+          autoClose: false, // Prevents auto-dismissal
+          closeOnClick: true // Allows clicking on the close icon
+        });
+      }
+    }
+  );
+
   // prettier-ignore
   const { mutate: bannedProductMutation, isLoading: bannedLoading } = useMutation(
     isVendor ? null : api.productBannedByAdmin, // mutation function here
@@ -188,6 +208,18 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
     }
   }
 
+  async function assignUserInProduct() {
+    try {
+      assignUserMutation({
+        slug: markBox.slug,
+        selectedUsers: selectedUsers,
+        selectedUserDetails: selectedUserDetails
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   async function bannedProduct() {
     try {
       bannedProductMutation({
@@ -200,7 +232,8 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
   }
 
   // Fetch users when modal opens
-  async function openAssignUsers() {
+  async function openAssignUsers(row) {
+    setMarkBox(row);
     setOpenAssignedTo(true);
     setLoadingUsers(true);
     try {
@@ -339,6 +372,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
         handleClickOpenBanned={handleClickOpenBanned}
         handleClickOddsVisibility={handleClickOddsVisibility}
         openAssignUsers={openAssignUsers}
+        assignLoading={assignLoading}
         oddsVisibileLoading={oddsVisibileLoading}
         brands={isVendor ? [] : brands}
         categories={isVendor ? [] : categories}
@@ -436,13 +470,14 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
               Cancel
             </Button>
             <LoadingButton
+              loading={assignLoading}
               disabled={selectedUsers.length < 1 ? true : false}
               variant="contained"
               onClick={() => {
-                console.log('Selected Users:', selectedUsers);
-                console.log('Selected User Details:', selectedUserDetails);
-                toast.success('Users assigned successfully!');
-                handleClose();
+                // console.log('Selected Users:', selectedUsers);
+                // console.log('Selected User Details:', selectedUserDetails);
+                assignUserInProduct();
+                // toast.success('Users assigned successfully!');
               }}
             >
               Assign
