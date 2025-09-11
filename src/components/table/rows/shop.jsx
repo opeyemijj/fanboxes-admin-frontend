@@ -55,14 +55,14 @@ export default function ProductRow({
         <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
           {!row?.isBanned && canApprove && (
             <MenuItem onClick={handleClickOpenStatus(row)}>
-              {row.isActive ? <MdCheckCircle color="green" size={20} /> : <MdCancel color="orange" size={20} />}
+              {!row.isActive ? <MdCheckCircle color="green" size={20} /> : <MdCancel color="orange" size={20} />}
               <ListItemText sx={{ ml: 1 }}>{row.isActive ? 'Draft' : 'Approve'}</ListItemText>
             </MenuItem>
           )}
 
           {canBan && (
             <MenuItem onClick={handleClickOpenBanned(row)}>
-              <MdBlock size={20} color={row.isBanned ? 'red' : 'orange'} />
+              <MdBlock size={20} color={!row.isBanned ? 'red' : ''} />
               <ListItemText sx={{ ml: 1 }}>{!row.isBanned ? 'Ban' : 'Unban'}</ListItemText>
             </MenuItem>
           )}

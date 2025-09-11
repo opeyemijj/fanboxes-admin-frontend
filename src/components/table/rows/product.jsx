@@ -67,7 +67,7 @@ export default function ProductRow({
         <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
           {!row?.isBanned && canApprove && (
             <MenuItem onClick={handleClickOpenStatus(row)}>
-              {row.isActive ? (
+              {!row.isActive ? (
                 <MdCheckCircle style={{ width: 30 }} color="green" size={23} />
               ) : (
                 <MdCancel style={{ width: 30 }} width={50} color="orange" size={23} />
@@ -93,7 +93,7 @@ export default function ProductRow({
 
           {canBan && (
             <MenuItem style={{ marginLeft: 3 }} onClick={handleClickOpenBanned(row)}>
-              <MdBlock style={{ marginRight: 10, width: 30 }} size={25} color={row.isBanned ? 'red' : ''} />{' '}
+              <MdBlock style={{ marginRight: 10, width: 30 }} size={25} color={!row.isBanned ? 'red' : ''} />{' '}
               <ListItemText style={{ marginLeft: 12 }}>{!row.isBanned ? 'Ban' : 'Unban'}</ListItemText>
             </MenuItem>
           )}
