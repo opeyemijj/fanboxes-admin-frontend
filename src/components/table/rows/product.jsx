@@ -17,7 +17,7 @@ import BlurImage from 'src/components/blurImage';
 import { MdEdit, MdBlock, MdCheckCircle, MdCancel } from 'react-icons/md';
 import { MdDelete } from 'react-icons/md';
 
-import { MoreVert } from '@mui/icons-material';
+import { Assignment, GroupAdd, MoreVert } from '@mui/icons-material';
 
 import Link from 'next/link';
 
@@ -32,6 +32,7 @@ export default function ProductRow({
   handleClickOpenStatus,
   handleClickOpenBanned,
   handleClickOddsVisibility,
+  openAssignUsers,
   oddsVisibileLoading,
   isVendor,
   sn
@@ -97,6 +98,17 @@ export default function ProductRow({
               <ListItemText style={{ marginLeft: 12 }}>{!row.isBanned ? 'Ban' : 'Unban'}</ListItemText>
             </MenuItem>
           )}
+
+          {/* <Tooltip title="Assign To">
+            <IconButton onClick={() => openAssignUsers()}>
+              <GroupAdd />
+            </IconButton>
+          </Tooltip> */}
+
+          <MenuItem style={{ marginLeft: 3 }} onClick={() => openAssignUsers()}>
+            <GroupAdd style={{ marginRight: 10, width: 30 }} size={25} color={!row.isBanned ? 'red' : ''} />{' '}
+            <ListItemText style={{ marginLeft: 12 }}>Assign To</ListItemText>
+          </MenuItem>
         </Menu>
       </>
     );

@@ -5,7 +5,20 @@ import PropTypes from 'prop-types';
 import toast from 'react-hot-toast';
 
 // mui
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack } from '@mui/material';
+import {
+  Box,
+  Button,
+  Checkbox,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Stack,
+  TextField,
+  Typography
+} from '@mui/material';
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
 import DeleteDialog from 'src/components/dialog/delete';
 // components
@@ -37,10 +50,20 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
   const [open, setOpen] = useState(false);
   const [openStatus, setOpenStatus] = useState(false);
   const [openOddsVisible, setOpenOddsVisible] = useState(false);
+
   const [openBanned, setOpenBanned] = useState(false);
   const [apicall, setApicall] = useState(false);
   const [id, setId] = useState(null);
   const [markBox, setMarkBox] = useState(null);
+
+  // Assigned to state
+  const [openAssignTo, setOpenAssignedTo] = useState(false);
+  const [assignUsers, setAssignUsers] = useState([]);
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [selectedUserDetails, setSelectedUserDetails] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [loadingUsers, setLoadingUsers] = useState(false);
+
   const { data, isLoading } = useQuery(
     ['admin-products', apicall, searchParams.toString()],
     () => api[isVendor ? 'getVendorProducts' : 'getProductsByAdmin'](searchParams.toString()),
@@ -148,6 +171,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
     setOpenStatus(false);
     setOpenBanned(false);
     setOpenOddsVisible(false);
+    setOpenAssignedTo(false);
     setMarkBox(null);
   };
 
@@ -172,6 +196,37 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
       console.error(error);
     }
   }
+
+  // Fetch users when modal opens
+  async function openAssignUsers() {
+    setOpenAssignedTo(true);
+    setLoadingUsers(true);
+    try {
+      const res = await api.getRoleWiseUserToAssign(null, '', '');
+      setAssignUsers(res.data || []);
+    } catch (err) {
+      toast.error('Failed to load users');
+    } finally {
+      setLoadingUsers(false);
+    }
+  }
+
+  // Handle user checkbox toggle
+  const handleToggleUser = (user) => {
+    setSelectedUsers((prev) => (prev.includes(user._id) ? prev.filter((id) => id !== user._id) : [...prev, user._id]));
+
+    setSelectedUserDetails((prev) => {
+      const exists = prev.find((u) => u._id === user._id);
+      return exists
+        ? prev.filter((u) => u._id !== user._id) // remove if already selected
+        : [...prev, { _id: user._id, firstName: user.firstName, lastName: user.lastName }];
+    });
+  };
+
+  // Filtered users based on search
+  const filteredUsers = assignUsers.filter((u) =>
+    `${u.firstName} ${u.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <>
@@ -281,6 +336,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
         handleClickOpenStatus={handleClickOpenStatus}
         handleClickOpenBanned={handleClickOpenBanned}
         handleClickOddsVisibility={handleClickOddsVisibility}
+        openAssignUsers={openAssignUsers}
         oddsVisibileLoading={oddsVisibileLoading}
         brands={isVendor ? [] : brands}
         categories={isVendor ? [] : categories}
@@ -308,6 +364,90 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
         }
         isSearch
       />
+
+      {/* Assign Users Modal */}
+      <Dialog onClose={handleClose} open={openAssignTo} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+          <WarningRoundedIcon sx={{ mr: 1 }} color="primary" />
+          Assign Users
+        </DialogTitle>
+
+        <DialogContent>
+          <DialogContentText sx={{ mb: 2 }}>Select one or more users to assign.</DialogContentText>
+
+          {/* Fixed height container */}
+          <Box sx={{ height: 420, display: 'flex', flexDirection: 'column' }}>
+            {/* Search Input */}
+            <TextField
+              variant="outlined"
+              placeholder="Search by name..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              size="small"
+              fullWidth
+              InputProps={{
+                startAdornment: <WarningRoundedIcon sx={{ mr: 1, color: 'action.active' }} fontSize="small" />
+              }}
+              sx={{ mb: 2 }}
+            />
+
+            {/* Content Area */}
+            <Box sx={{ flex: 1, overflowY: 'auto', borderRadius: 1, border: '1px solid #eee', p: 1 }}>
+              {loadingUsers ? (
+                <Stack alignItems="center" justifyContent="center" sx={{ height: '100%' }}>
+                  <CircularProgress />
+                </Stack>
+              ) : (
+                <Stack spacing={1}>
+                  {filteredUsers.length === 0 && <DialogContentText align="center">No users found.</DialogContentText>}
+
+                  {filteredUsers.map((user) => (
+                    <Stack
+                      key={user._id}
+                      direction="row"
+                      alignItems="center"
+                      spacing={1.5}
+                      sx={{
+                        px: 1.5,
+                        py: 1,
+                        borderRadius: 1,
+                        transition: 'background 0.2s',
+                        '&:hover': { backgroundColor: 'action.hover' }
+                      }}
+                    >
+                      <Checkbox checked={selectedUsers.includes(user._id)} onChange={() => handleToggleUser(user)} />
+                      <Typography variant="body1">{`${user.firstName} ${user.lastName}`}</Typography>
+                    </Stack>
+                  ))}
+                </Stack>
+              )}
+            </Box>
+          </Box>
+        </DialogContent>
+
+        <DialogActions sx={{ justifyContent: 'space-between' }}>
+          <Typography variant="body2" sx={{ ml: 1, color: 'text.secondary' }}>
+            {selectedUsers.length > 0 ? `${selectedUsers.length} user(s) selected` : 'No user selected'}
+          </Typography>
+          <Box>
+            <Button onClick={handleClose} color="inherit">
+              Cancel
+            </Button>
+            <LoadingButton
+              disabled={selectedUsers.length < 1 ? true : false}
+              variant="contained"
+              onClick={() => {
+                console.log('Selected Users:', selectedUsers);
+                console.log('Selected User Details:', selectedUserDetails);
+                toast.success('Users assigned successfully!');
+                handleClose();
+              }}
+            >
+              Assign
+            </LoadingButton>
+          </Box>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
