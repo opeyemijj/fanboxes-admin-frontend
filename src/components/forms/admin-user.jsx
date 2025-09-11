@@ -33,6 +33,7 @@ import parseMongooseError from 'src/utils/errorHandler';
 
 import { IconButton, InputAdornment } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { DATA_ACCESS } from 'src/utils/const';
 
 AdminUser.propTypes = {
   data: PropTypes.object,
@@ -102,6 +103,7 @@ export default function AdminUser({ currentUser, isLoading: userLoading }) {
 
     email: Yup.string().required('Email is required').email('Enter a valid email address'),
     roleId: Yup.string().required('Role is required'),
+    dataAccess: Yup.string().required('Data access is required'),
 
     phone: Yup.string()
       .required('Phone is required')
@@ -136,6 +138,7 @@ export default function AdminUser({ currentUser, isLoading: userLoading }) {
       phone: currentUser?.phone || '',
       gender: currentUser?.gender || GENDER_OPTIONS[0],
       roleId: currentUser?.roleId || allRoleList[0]?._id,
+      dataAccess: currentUser?.dataAccess || DATA_ACCESS[0],
       ...(currentUser
         ? {} // skip passwords in edit mode
         : { password: '', confirmPassword: '' })
@@ -381,6 +384,40 @@ export default function AdminUser({ currentUser, isLoading: userLoading }) {
                         </Grid>
                       </>
                     )}
+
+                    <Grid item xs={12} md={6}>
+                      <FormControl fullWidth sx={{ select: { textTransform: 'capitalize' } }}>
+                        {userLoading ? (
+                          <Skeleton variant="text" width={70} />
+                        ) : (
+                          <LabelStyle component={'label'} htmlFor="dataAccess">
+                            {'Data Access'}
+                          </LabelStyle>
+                        )}
+                        {userLoading ? (
+                          <Skeleton variant="rectangular" width="100%" height={56} />
+                        ) : (
+                          <Select
+                            id="dataAccess"
+                            native
+                            {...getFieldProps('dataAccess')}
+                            error={Boolean(touched.dataAccess && errors.dataAccess)}
+                          >
+                            <option value="" style={{ display: 'none' }} />
+                            {DATA_ACCESS.map((dataAccess) => (
+                              <option key={dataAccess} value={dataAccess}>
+                                {dataAccess}
+                              </option>
+                            ))}
+                          </Select>
+                        )}
+                        {touched.dataAccess && errors.dataAccess && (
+                          <FormHelperText error sx={{ px: 2, mx: 0 }}>
+                            {touched.dataAccess && errors.dataAccess}
+                          </FormHelperText>
+                        )}
+                      </FormControl>
+                    </Grid>
                   </Grid>
                 </Stack>
               </Card>
