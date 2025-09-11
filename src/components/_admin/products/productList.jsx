@@ -204,7 +204,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
     setOpenAssignedTo(true);
     setLoadingUsers(true);
     try {
-      const res = await api.getRoleWiseUserToAssign(null, '', '');
+      const res = await api.getRoleWiseUserToAssign(1, '', 'admin');
       setAssignUsers(res.data || []);
     } catch (err) {
       toast.error('Failed to load users');

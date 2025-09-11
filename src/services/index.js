@@ -283,7 +283,9 @@ export const getUserByAdminsByAdmin = async (page, search, userType) => {
 };
 
 export const getRoleWiseUserToAssign = async (page, search, userType) => {
-  const { data: response } = await http.get(`/admin/users?search=${search}&page=${page}&userType=${userType}`);
+  const { data: response } = await http.get(
+    `/admin/users/assign-users?search=${search}&page=${page}&userType=${userType}`
+  );
   return response;
 };
 
