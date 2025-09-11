@@ -196,6 +196,11 @@ export const updateProductActiveInactiveByAdmin = async ({ slug, ...payload }) =
   return response;
 };
 
+export const updateUserActiveInactiveByAdmin = async ({ _id, ...payload }) => {
+  const { data: response } = await http.put(`/admin/users/active/${_id}`, payload);
+  return response;
+};
+
 export const updateShopActiveInactiveByAdmin = async ({ slug, ...payload }) => {
   const { data: response } = await http.put(`/admin/shops/active/${slug}`, payload);
   return response;

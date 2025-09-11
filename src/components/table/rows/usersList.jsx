@@ -5,6 +5,7 @@ import { useRouter } from 'next-nprogress-bar';
 // mui
 import { styled } from '@mui/material/styles';
 import { Box, TableRow, Skeleton, TableCell, Typography, Stack, IconButton, Avatar, Tooltip } from '@mui/material';
+import { MdEdit, MdBlock, MdCheckCircle, MdCancel } from 'react-icons/md';
 
 // utils
 import { fDateShort } from 'src/utils/formatTime';
@@ -44,7 +45,7 @@ const ThumbImgStyle = styled(Box)(({ theme }) => ({
   position: 'relative',
   overflow: 'hidden'
 }));
-export default function UserRow({ isLoading, row, setId, sn }) {
+export default function UserRow({ isLoading, row, setId, handleClickOpenStatus, sn }) {
   const canViewDetails = UsePermission('view_user_details');
   const router = useRouter();
   console.log(row, 'row data');
@@ -92,13 +93,23 @@ export default function UserRow({ isLoading, row, setId, sn }) {
             </>
           ) : (
             <>
-              {canViewDetails && (
+              {/* {canViewDetails && (
                 <Tooltip title="Preview">
                   <IconButton onClick={() => router.push(`/admin/users/${row?._id}`)}>
                     <FiEye />
                   </IconButton>
                 </Tooltip>
-              )}
+              )} */}
+
+              <Tooltip title={row?.isActive ? 'Approved' : 'Draft'}>
+                <IconButton onClick={handleClickOpenStatus(row)}>
+                  {row?.isActive ? (
+                    <MdCheckCircle style={{ width: 30 }} color="green" size={23} />
+                  ) : (
+                    <MdCancel style={{ width: 30 }} width={50} color="orange" size={23} />
+                  )}
+                </IconButton>
+              </Tooltip>
             </>
           )}
         </Stack>

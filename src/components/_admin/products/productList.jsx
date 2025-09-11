@@ -16,8 +16,6 @@ import * as api from 'src/services';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { LoadingButton } from '@mui/lab';
 import parseMongooseError from 'src/utils/errorHandler';
-import AccessDenied from 'src/components/cards/AccessDenied';
-import { UsePermission } from 'src/hooks/usePermission';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Box', alignRight: false, sort: true },

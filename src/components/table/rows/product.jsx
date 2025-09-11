@@ -20,10 +20,8 @@ import { MdDelete } from 'react-icons/md';
 import { MoreVert } from '@mui/icons-material';
 
 import Link from 'next/link';
-import { Check } from '@mui/icons-material';
-import { CheckBox, CheckBoxOutlineBlank, Visibility, VisibilityOff, Dangerous } from '@mui/icons-material';
-import { Menu, MenuItem, ListItemIcon, ListItemText, Switch } from '@mui/material';
-import { size } from 'lodash';
+
+import { Menu, MenuItem, ListItemText, Switch } from '@mui/material';
 import { useState } from 'react';
 import { UsePermission } from 'src/hooks/usePermission';
 
