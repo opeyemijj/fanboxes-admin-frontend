@@ -20,7 +20,7 @@ import BlurImage from 'src/components/blurImage';
 // icons
 import { MdEdit, MdDelete, MdBlock, MdCheckCircle, MdCancel } from 'react-icons/md';
 import { IoEye } from 'react-icons/io5';
-import { MoreVert } from '@mui/icons-material';
+import { GroupAdd, MoreVert } from '@mui/icons-material';
 import { useState } from 'react';
 import { UsePermission } from 'src/hooks/usePermission';
 
@@ -30,6 +30,7 @@ export default function ProductRow({
   handleClickOpen,
   handleClickOpenStatus,
   handleClickOpenBanned,
+  openAssignUsers,
   sn
 }) {
   const router = useRouter();
@@ -66,6 +67,11 @@ export default function ProductRow({
               <ListItemText sx={{ ml: 1 }}>{!row.isBanned ? 'Ban' : 'Unban'}</ListItemText>
             </MenuItem>
           )}
+
+          <MenuItem style={{ marginLeft: 3 }} onClick={() => openAssignUsers(row)}>
+            <GroupAdd style={{ marginRight: 10, width: 30 }} size={25} color="primary" />{' '}
+            <ListItemText style={{ marginLeft: 12 }}>Assign To</ListItemText>
+          </MenuItem>
         </Menu>
       </>
     );

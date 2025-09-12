@@ -213,7 +213,6 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
     }
   }
 
-  // Fetch users when modal opens
   async function openAssignUsers(row) {
     setMarkBox(row);
     setOpenAssignedTo(true);
@@ -233,7 +232,6 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
         handleClickOpenBanned={handleClickOpenBanned}
         handleClickOddsVisibility={handleClickOddsVisibility}
         openAssignUsers={openAssignUsers}
-        assignLoading={assignLoading}
         oddsVisibileLoading={oddsVisibileLoading}
         brands={isVendor ? [] : brands}
         categories={isVendor ? [] : categories}
@@ -263,13 +261,15 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
       />
 
       {/* Assign Users Modal */}
-      <AssignUsersModal
-        open={openAssignTo}
-        onClose={handleClose}
-        markItem={markBox}
-        assignLoading={assignLoading}
-        onAssign={(payload) => assignUserMutation(payload)}
-      />
+      {openAssignTo && (
+        <AssignUsersModal
+          open={openAssignTo}
+          onClose={handleClose}
+          markItem={markBox}
+          assignLoading={assignLoading}
+          onAssign={(payload) => assignUserMutation(payload)}
+        />
+      )}
 
       {/* Delete Modal */}
       <Dialog onClose={handleClose} open={open} maxWidth={'xs'}>

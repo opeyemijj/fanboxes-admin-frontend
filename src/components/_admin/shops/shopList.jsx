@@ -14,6 +14,7 @@ import DeleteDialog from 'src/components/dialog/delete';
 import Table from 'src/components/table/table';
 import Shop from 'src/components/table/rows/shop';
 import { LoadingButton } from '@mui/lab';
+import AssignUsersModal from 'src/components/modals/assignUser';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Influencers', alignRight: false, sort: true },
@@ -37,6 +38,9 @@ export default function AdminProducts() {
   const [markShop, setMarkShop] = useState(null);
   const [openStatus, setOpenStatus] = useState(false);
   const [openBanned, setOpenBanned] = useState(false);
+
+  // Assigned to state
+  const [openAssignTo, setOpenAssignedTo] = useState(false);
 
   const { data, isLoading } = useQuery(
     ['admin-shops', apicall, searchParam, pageParam],
@@ -87,6 +91,26 @@ export default function AdminProducts() {
     }
   );
 
+  const { mutate: assignUserMutation, isLoading: assignLoading } = useMutation(
+    api.updateAssignInShopByAdmin, // mutation function here
+    {
+      onSuccess: (data) => {
+        toast.success(data.message);
+        handleClose();
+        // ✅ Refetch products list
+        queryClient.invalidateQueries(['admin-shops']);
+      },
+      onError: (error) => {
+        let errorMessage = parseMongooseError(error?.message);
+        console.log(errorMessage, 'Find the error message');
+        toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+          autoClose: false, // Prevents auto-dismissal
+          closeOnClick: true // Allows clicking on the close icon
+        });
+      }
+    }
+  );
+
   const handleClickOpen = (prop) => () => {
     setId(prop);
     setOpen(true);
@@ -129,10 +153,39 @@ export default function AdminProducts() {
     setOpenStatus(false);
     setOpenBanned(false);
     setMarkShop(null);
+    setOpenAssignedTo(false);
   };
+
+  async function openAssignUsers(row) {
+    setMarkShop(row);
+    setOpenAssignedTo(true);
+  }
 
   return (
     <>
+      <Table
+        headData={TABLE_HEAD}
+        data={data}
+        isLoading={isLoading}
+        row={Shop}
+        handleClickOpen={handleClickOpen}
+        handleClickOpenBanned={handleClickOpenBanned}
+        handleClickOpenStatus={handleClickOpenStatus}
+        openAssignUsers={openAssignUsers}
+        isSearch
+      />
+
+      {/* Assign Users Modal */}
+      {openAssignTo && (
+        <AssignUsersModal
+          open={openAssignTo}
+          onClose={handleClose}
+          markItem={markShop}
+          assignLoading={assignLoading}
+          onAssign={(payload) => assignUserMutation(payload)}
+        />
+      )}
+
       {/* Delete Modal */}
       <Dialog onClose={handleClose} open={open} maxWidth={'xs'}>
         <DeleteDialog
@@ -201,17 +254,6 @@ export default function AdminProducts() {
           </LoadingButton>
         </DialogActions>
       </Dialog>
-
-      <Table
-        headData={TABLE_HEAD}
-        data={data}
-        isLoading={isLoading}
-        row={Shop}
-        handleClickOpen={handleClickOpen}
-        handleClickOpenBanned={handleClickOpenBanned}
-        handleClickOpenStatus={handleClickOpenStatus}
-        isSearch
-      />
     </>
   );
 }
