@@ -37,9 +37,9 @@ export default function Page({ params }) {
 
   // console.log(data, 'Getting data fo single user');
 
-  const canAdd = UsePermission('edit_category');
-  if (!canAdd) {
-    return <AccessDenied message="You are not allowed to edit Category." redirect="/admin/dashboard" />;
+  const canEdit = UsePermission('edit_admin_user');
+  if (!canEdit) {
+    return <AccessDenied message="You are not allowed to edit Admin User." redirect="/admin/dashboard" />;
   }
 
   return (

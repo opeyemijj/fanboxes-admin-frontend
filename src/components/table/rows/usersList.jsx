@@ -48,6 +48,9 @@ const ThumbImgStyle = styled(Box)(({ theme }) => ({
 }));
 export default function UserRow({ isLoading, row, setId, handleClickOpenStatus, sn, userType }) {
   const canViewDetails = UsePermission('view_user_details');
+
+  const canEditAdmin = UsePermission('edit_admin_user');
+  const canApprove = UsePermission('approve_user');
   const router = useRouter();
   return (
     <TableRow hover key={Math.random()}>
@@ -101,7 +104,7 @@ export default function UserRow({ isLoading, row, setId, handleClickOpenStatus, 
                 </Tooltip>
               )} */}
 
-              {userType === 'admin' && (
+              {userType === 'admin' && canEditAdmin && (
                 <Tooltip title="Edit">
                   <IconButton onClick={() => router.push(`/admin/admin-users/edit/${row?._id}`)}>
                     <MdEdit />
@@ -109,15 +112,17 @@ export default function UserRow({ isLoading, row, setId, handleClickOpenStatus, 
                 </Tooltip>
               )}
 
-              <Tooltip title={row?.isActive ? 'Approved' : 'Draft'}>
-                <IconButton onClick={handleClickOpenStatus(row)}>
-                  {row?.isActive ? (
-                    <MdCheckCircle style={{ width: 30 }} color="green" size={23} />
-                  ) : (
-                    <MdCancel style={{ width: 30 }} width={50} color="orange" size={23} />
-                  )}
-                </IconButton>
-              </Tooltip>
+              {canApprove && (
+                <Tooltip title={row?.isActive ? 'Approved' : 'Draft'}>
+                  <IconButton onClick={handleClickOpenStatus(row)}>
+                    {row?.isActive ? (
+                      <MdCheckCircle style={{ width: 30 }} color="green" size={23} />
+                    ) : (
+                      <MdCancel style={{ width: 30 }} width={50} color="orange" size={23} />
+                    )}
+                  </IconButton>
+                </Tooltip>
+              )}
             </>
           )}
         </Stack>

@@ -40,6 +40,7 @@ export default function ProductRow({
   const canViewDetails = UsePermission('view_influencer_details');
   const canApprove = UsePermission('approve_influencer');
   const canBan = UsePermission('ban_unban_influencer');
+  const canAssign = UsePermission('assign_influencer_to_user');
 
   function MoreActionsMenu({ row, handleClickOpenStatus, handleClickOpenBanned }) {
     const [anchorEl, setAnchorEl] = useState(null);
@@ -68,10 +69,12 @@ export default function ProductRow({
             </MenuItem>
           )}
 
-          <MenuItem style={{ marginLeft: 3 }} onClick={() => openAssignUsers(row)}>
-            <GroupAdd style={{ marginRight: 10, width: 30 }} size={25} color="primary" />{' '}
-            <ListItemText style={{ marginLeft: 12 }}>Assign To</ListItemText>
-          </MenuItem>
+          {canAssign && (
+            <MenuItem style={{ marginLeft: 3 }} onClick={() => openAssignUsers(row)}>
+              <GroupAdd style={{ marginRight: 10, width: 30 }} size={25} color="primary" />{' '}
+              <ListItemText style={{ marginLeft: 0 }}>Assign To</ListItemText>
+            </MenuItem>
+          )}
         </Menu>
       </>
     );

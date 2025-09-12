@@ -45,6 +45,7 @@ export default function ProductRow({
   const canBan = UsePermission('ban_unban_box');
   const canHidItemOdd = UsePermission('hide_unhide_item_odd');
   const canApprove = UsePermission('approve_box');
+  const canAssign = UsePermission('assign_box_to_user');
 
   function MoreActionsMenu({
     row,
@@ -99,10 +100,12 @@ export default function ProductRow({
             </MenuItem>
           )}
 
-          <MenuItem style={{ marginLeft: 3 }} onClick={() => openAssignUsers(row)}>
-            <GroupAdd style={{ marginRight: 10, width: 30 }} size={25} color="primary" />{' '}
-            <ListItemText style={{ marginLeft: 12 }}>Assign To</ListItemText>
-          </MenuItem>
+          {canAssign && (
+            <MenuItem style={{ marginLeft: 3 }} onClick={() => openAssignUsers(row)}>
+              <GroupAdd style={{ marginRight: 10, width: 30 }} size={25} color="primary" />{' '}
+              <ListItemText style={{ marginLeft: 0 }}>Assign To</ListItemText>
+            </MenuItem>
+          )}
         </Menu>
       </>
     );
