@@ -15,6 +15,7 @@ import Table from 'src/components/table/table';
 import Shop from 'src/components/table/rows/shop';
 import { LoadingButton } from '@mui/lab';
 import AssignUsersModal from 'src/components/modals/assignUser';
+import parseMongooseError from 'src/utils/errorHandler';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Influencers', alignRight: false, sort: true },
@@ -46,7 +47,14 @@ export default function AdminProducts() {
     ['admin-shops', apicall, searchParam, pageParam],
     () => api.getShopsByAdmin(+pageParam || 1, searchParam || ''),
     {
-      onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
+      onError: (error) => {
+        console.log(error);
+        let errorMessage = parseMongooseError(error?.message);
+        toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+          autoClose: false, // Prevents auto-dismissal
+          closeOnClick: true // Allows clicking on the close icon
+        });
+      }
     }
   );
 

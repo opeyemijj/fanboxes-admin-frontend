@@ -64,7 +64,14 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
     ['admin-products', apicall, searchParams.toString()],
     () => api[isVendor ? 'getVendorProducts' : 'getProductsByAdmin'](searchParams.toString()),
     {
-      onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
+      onError: (error) => {
+        console.log(error);
+        let errorMessage = parseMongooseError(error?.message);
+        toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+          autoClose: false, // Prevents auto-dismissal
+          closeOnClick: true // Allows clicking on the close icon
+        });
+      }
     }
   );
 
