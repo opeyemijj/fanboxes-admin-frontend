@@ -312,7 +312,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
             No, keep it
           </Button>
           <LoadingButton variant="contained" loading={activationLoading} onClick={() => changeActiveInactive()}>
-            Yes, {markBox?.isActive ? 'Draft' : 'Approved'}
+            Yes, {markBox?.isActive ? 'Draft' : 'Approve'}
           </LoadingButton>
         </DialogActions>
       </Dialog>

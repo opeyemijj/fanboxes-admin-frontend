@@ -138,7 +138,7 @@ export default function AdminProducts({ userType }) {
             No, keep it
           </Button>
           <LoadingButton variant="contained" loading={activationLoading} onClick={() => changeActiveInactive()}>
-            Yes, {markUser?.isActive ? 'Draft' : 'Approved'}
+            Yes, {markUser?.isActive ? 'Draft' : 'Approve'}
           </LoadingButton>
         </DialogActions>
       </Dialog>

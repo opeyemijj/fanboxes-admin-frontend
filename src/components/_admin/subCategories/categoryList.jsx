@@ -14,7 +14,7 @@ import Table from 'src/components/table/table';
 import SubCategory from 'src/components/table/rows/subCategory';
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Category', alignRight: false, sort: true },
+  { id: 'name', label: 'Subcategory', alignRight: false, sort: true },
   { id: 'description', label: 'Description', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false, sort: true },

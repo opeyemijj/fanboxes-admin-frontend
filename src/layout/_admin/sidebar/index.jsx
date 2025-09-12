@@ -416,49 +416,51 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
                   </ListItem>
 
                   {/* Render children if User Management is active */}
-                  {item.children && expandedParent === item.slug && open && (
-                    <List sx={{ pl: 4 }}>
+                  {item.children && expandedParent === item.slug && (
+                    <List sx={{ pl: open ? 4 : 0 }}>
                       {item.children.map((child) => (
                         <ListItem key={child.id} disablePadding>
-                          <ListItemButton
-                            onClick={() => {
-                              setActive('/admin/' + child.slug);
-                              router.push('/admin/' + child.slug);
-                              isMobile && handleDrawerClose();
-                            }}
-                            sx={{
-                              minHeight: 40,
-                              justifyContent: open ? 'initial' : 'center',
-                              px: 2.5,
-                              borderRadius: '8px',
-                              ...(active === '/admin/' + child.slug && {
-                                bgcolor: (theme) => alpha(theme.palette.primary.main, 0.2),
-                                border: (theme) => `1px solid ${theme.palette.primary.main}`,
-                                color: (theme) => theme.palette.primary.main,
-                                '& .MuiTypography-root': {
-                                  fontWeight: 600
-                                }
-                              })
-                            }}
-                          >
-                            <ListItemIcon
+                          <Tooltip title={!open ? child.title : ''} placement="left" arrow leaveDelay={200}>
+                            <ListItemButton
+                              onClick={() => {
+                                setActive('/admin/' + child.slug);
+                                router.push('/admin/' + child.slug);
+                                isMobile && handleDrawerClose();
+                              }}
                               sx={{
-                                minWidth: 0,
-                                mr: open ? 2 : 'auto',
-                                justifyContent: 'center'
+                                minHeight: 40,
+                                justifyContent: open ? 'initial' : 'center',
+                                px: 2.5,
+                                borderRadius: '8px',
+                                ...(active === '/admin/' + child.slug && {
+                                  bgcolor: (theme) => alpha(theme.palette.primary.main, 0.2),
+                                  border: (theme) => `1px solid ${theme.palette.primary.main}`,
+                                  color: (theme) => theme.palette.primary.main,
+                                  '& .MuiTypography-root': {
+                                    fontWeight: 600
+                                  }
+                                })
                               }}
                             >
-                              {child.icon}
-                            </ListItemIcon>
-                            <ListItemText
-                              primary={child.title}
-                              sx={{
-                                overflow: 'hidden',
-                                height: open ? 'auto' : 0,
-                                textTransform: 'capitalize'
-                              }}
-                            />
-                          </ListItemButton>
+                              <ListItemIcon
+                                sx={{
+                                  minWidth: 0,
+                                  mr: open ? 2 : 'auto',
+                                  justifyContent: 'center'
+                                }}
+                              >
+                                {child.icon}
+                              </ListItemIcon>
+                              <ListItemText
+                                primary={child.title}
+                                sx={{
+                                  overflow: 'hidden',
+                                  height: open ? 'auto' : 0,
+                                  textTransform: 'capitalize'
+                                }}
+                              />
+                            </ListItemButton>
+                          </Tooltip>
                         </ListItem>
                       ))}
                     </List>
