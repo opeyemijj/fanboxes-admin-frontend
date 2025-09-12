@@ -49,7 +49,6 @@ const ThumbImgStyle = styled(Box)(({ theme }) => ({
 export default function UserRow({ isLoading, row, setId, handleClickOpenStatus, sn, userType }) {
   const canViewDetails = UsePermission('view_user_details');
   const router = useRouter();
-  console.log(row, 'row data');
   return (
     <TableRow hover key={Math.random()}>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
@@ -72,7 +71,7 @@ export default function UserRow({ isLoading, row, setId, handleClickOpenStatus, 
             </Avatar>
           )}
           <Typography variant="subtitle2" noWrap sx={{ textTransform: 'capitalize' }}>
-            {isLoading ? <Skeleton variant="text" width={120} sx={{ ml: 1 }} /> : row?.firstName}
+            {isLoading ? <Skeleton variant="text" width={120} sx={{ ml: 1 }} /> : row?.firstName + ' ' + row?.lastName}
           </Typography>
         </Box>
       </TableCell>
