@@ -234,6 +234,8 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
   // Fetch users when modal opens
   async function openAssignUsers(row) {
     setMarkBox(row);
+    setSelectedUsers(row?.assignTo || []);
+    setSelectedUserDetails(row?.assignToDetails || []);
     setOpenAssignedTo(true);
     setLoadingUsers(true);
     try {
@@ -427,6 +429,40 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
               sx={{ mb: 2 }}
             />
 
+            {/* Select All Checkbox */}
+            {filteredUsers.length > 0 && (
+              <Stack
+                direction="row"
+                alignItems="center"
+                spacing={1.5}
+                sx={{
+                  px: 1.5,
+                  py: 1,
+                  borderRadius: 1,
+                  border: '1px solid #eee',
+                  mb: 1,
+                  backgroundColor: 'action.hover'
+                }}
+              >
+                <Checkbox
+                  checked={selectedUsers.length === filteredUsers.length && filteredUsers.length > 0}
+                  indeterminate={selectedUsers.length > 0 && selectedUsers.length < filteredUsers.length}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setSelectedUsers(filteredUsers.map((u) => u._id));
+                      setSelectedUserDetails(
+                        filteredUsers.map((u) => ({ _id: u._id, firstName: u.firstName, lastName: u.lastName }))
+                      );
+                    } else {
+                      setSelectedUsers([]);
+                      setSelectedUserDetails([]);
+                    }
+                  }}
+                />
+                <Typography variant="body1">Select All</Typography>
+              </Stack>
+            )}
+
             {/* Content Area */}
             <Box sx={{ flex: 1, overflowY: 'auto', borderRadius: 1, border: '1px solid #eee', p: 1 }}>
               {loadingUsers ? (
@@ -471,14 +507,9 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
             </Button>
             <LoadingButton
               loading={assignLoading}
-              disabled={selectedUsers.length < 1 ? true : false}
+              disabled={selectedUsers.length < 1}
               variant="contained"
-              onClick={() => {
-                // console.log('Selected Users:', selectedUsers);
-                // console.log('Selected User Details:', selectedUserDetails);
-                assignUserInProduct();
-                // toast.success('Users assigned successfully!');
-              }}
+              onClick={() => assignUserInProduct()}
             >
               Assign
             </LoadingButton>
