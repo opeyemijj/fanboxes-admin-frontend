@@ -75,11 +75,15 @@ export default function UserRow({ isLoading, row, setId, handleClickOpenStatus, 
         </Box>
       </TableCell>
       <TableCell style={{ minWidth: 160 }}>{isLoading ? <Skeleton variant="text" /> : row?.email}</TableCell>
-      <TableCell style={{ minWidth: 80 }}>{isLoading ? <Skeleton variant="text" /> : row?.phone}</TableCell>
-      <TableCell style={{ minWidth: 40 }}>{isLoading ? <Skeleton variant="text" /> : row?.totalOrders || 0}</TableCell>
-      <TableCell style={{ minWidth: 40, textTransform: 'capitalize' }}>
-        {isLoading ? <Skeleton variant="text" /> : row.role?.toLowerCase() === 'vendor' ? 'Influencer' : row.role}
+      <TableCell style={{ minWidth: 40 }}>
+        {isLoading ? <Skeleton variant="text" /> : row?.balanceCredits || 0}
       </TableCell>
+
+      {userType === 'admin' && (
+        <TableCell style={{ minWidth: 40, textTransform: 'capitalize' }}>
+          {isLoading ? <Skeleton variant="text" /> : row.role?.toLowerCase() === 'vendor' ? 'Influencer' : row.role}
+        </TableCell>
+      )}
       <TableCell style={{ minWidth: 40 }}>
         {isLoading ? <Skeleton variant="text" /> : fDateShort(row.createdAt, enUS)}
       </TableCell>

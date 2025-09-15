@@ -26,18 +26,15 @@ import Table from 'src/components/table/table';
 import UserList from 'src/components/table/rows/usersList';
 import RoleDialog from 'src/components/dialog/role';
 
-const TABLE_HEAD = [
-  { id: 'name', label: 'User', alignRight: false, sort: true },
-  { id: 'email', label: 'Email', alignRight: false, sort: true },
-  { id: 'phone', label: 'phone', alignRight: false, sort: false },
-  { id: 'orders', label: 'Orders', alignRight: false, sort: true },
-  { id: 'role', label: 'Role', alignRight: false, sort: true },
-  { id: 'joined', label: 'Joined', alignRight: false, sort: true },
-
-  { id: '', label: 'Actions', alignRight: true }
-];
-
 export default function AdminProducts({ userType }) {
+  const TABLE_HEAD = [
+    { id: 'name', label: 'User', alignRight: false, sort: true },
+    { id: 'email', label: 'Email', alignRight: false, sort: true },
+    { id: 'balanceCredits', label: 'Wallet Balance', alignRight: false, sort: true },
+    ...(userType === 'admin' ? [{ id: 'role', label: 'Role', alignRight: false, sort: true }] : []),
+    { id: 'joined', label: 'Joined', alignRight: false, sort: true },
+    { id: '', label: 'Actions', alignRight: true }
+  ];
   const searchParams = useSearchParams();
   const [openStatus, setOpenStatus] = useState(false);
 
@@ -61,10 +58,12 @@ export default function AdminProducts({ userType }) {
     () => api.getUserByAdminsByAdmin(+pageParam || 1, searchParam || '', userType),
     {
       onError: (err) => {
-        toast.error(err.response.data.message || 'Something went wrong!');
+        toast.error(err.message || 'Something went wrong!');
       }
     }
   );
+
+  console.log(data, 'Check the data');
 
   const [id, setId] = useState(null);
 
