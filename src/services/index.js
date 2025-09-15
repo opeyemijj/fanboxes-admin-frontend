@@ -221,6 +221,11 @@ export const updateUserTopUpByAdmin = async ({ ...payload }) => {
   return response;
 };
 
+export const getUserWalletBalanceByAdmin = async (userId) => {
+  const { data } = await http.get(`/admin/wallets/user-balance/${userId}`);
+  return data;
+};
+
 export const updateShopActiveInactiveByAdmin = async ({ slug, ...payload }) => {
   const { data: response } = await http.put(`/admin/shops/active/${slug}`, payload);
   return response;

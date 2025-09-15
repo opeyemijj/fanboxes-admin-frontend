@@ -42,6 +42,7 @@ export default function AdminProducts({ userType }) {
   const [openStatus, setOpenStatus] = useState(false);
 
   const [markUser, setMarkUser] = useState(null);
+  const [markUserCurrentBalance, setMarkUserCurrentBalance] = useState(0);
   const pageParam = searchParams.get('page');
   const searchParam = searchParams.get('search');
   const [count, setCount] = useState(0);
@@ -50,10 +51,8 @@ export default function AdminProducts({ userType }) {
   const [selectedAmount, setSelectedAmount] = useState(null);
   const [customAmount, setCustomAmount] = useState('');
   const [openTopUp, setOpenTopUp] = useState(false);
-
   const amounts = [5, 10, 15, 20, 25, 30];
-
-  const finalAmount = customAmount ? +customAmount : selectedAmount;
+  const [finalAmount, setFinalAmmount] = useState(0);
 
   const queryClient = useQueryClient();
 
@@ -140,6 +139,8 @@ export default function AdminProducts({ userType }) {
     setMarkUser(null);
     setSelectedAmount(null);
     setCustomAmount('');
+    setMarkUserCurrentBalance(0);
+    setFinalAmmount(0);
   };
 
   const handleClickOpenStatus = (prop) => () => {
@@ -147,16 +148,25 @@ export default function AdminProducts({ userType }) {
     setOpenStatus(true);
   };
 
-  const handleClickOpenTopUp = (prop) => () => {
+  async function handleClickOpenTopUp(prop) {
     setMarkUser(prop);
     setOpenTopUp(true);
-  };
+
+    try {
+      const currentBalace = await api.getUserWalletBalanceByAdmin(prop._id);
+      if (currentBalace) {
+        setMarkUserCurrentBalance(currentBalace?.data?.availableBalance || 0);
+      }
+    } catch (error) {
+      console.log('Current balance fetching failed', error);
+    }
+  }
 
   const handleConfirmTopUp = () => {
     try {
       topUpMutation({
         userId: markUser?._id,
-        amount: customAmount ? customAmount : selectedAmount,
+        amount: finalAmount,
         description: 'Credits Topup',
         currency: '',
         remarks: ''
@@ -216,8 +226,15 @@ export default function AdminProducts({ userType }) {
           {/* User name */}
           <Box mb={3}>
             <Typography variant="subtitle1" sx={{ mb: 1 }}>
-              Topping for {markUser?.firstName} {markUser?.lastName}
+              Topping For {markUser?.firstName} {markUser?.lastName}
             </Typography>
+
+            <Box display={'flex'} gap={2} mb={2}>
+              <Typography variant="subtitle1">Current Balance:</Typography>
+              <Typography variant="h6" color="primary">
+                {markUserCurrentBalance || 0}
+              </Typography>
+            </Box>
           </Box>
 
           {/* Select amount */}
@@ -238,6 +255,7 @@ export default function AdminProducts({ userType }) {
                     fontWeight: 'bold'
                   }}
                   onClick={() => {
+                    setFinalAmmount(amt);
                     setSelectedAmount(amt);
                     setCustomAmount('');
                   }}
@@ -252,6 +270,7 @@ export default function AdminProducts({ userType }) {
                 placeholder="Custom"
                 value={customAmount}
                 onChange={(e) => {
+                  setFinalAmmount(e.target.value);
                   setCustomAmount(e.target.value);
                   setSelectedAmount(null);
                 }}
@@ -268,6 +287,15 @@ export default function AdminProducts({ userType }) {
               {finalAmount ? `${finalAmount}` : 'None'}
             </Typography>
           </Box>
+
+          {finalAmount > 0 && (
+            <Box display={'flex'} gap={2} mb={2}>
+              <Typography variant="subtitle1">New Balance:</Typography>
+              <Typography variant="h6" color="primary">
+                {Number(finalAmount) + Number(markUserCurrentBalance)}
+              </Typography>
+            </Box>
+          )}
         </DialogContent>
 
         <DialogActions>

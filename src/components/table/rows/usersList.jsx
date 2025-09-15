@@ -110,7 +110,7 @@ export default function UserRow({ isLoading, row, setId, handleClickOpenStatus, 
 
               {userType === 'user' && (
                 <Tooltip title="Top Up">
-                  <IconButton onClick={handleClickOpenTopUp(row)}>
+                  <IconButton onClick={() => handleClickOpenTopUp(row)}>
                     <Wallet />
                   </IconButton>
                 </Tooltip>
