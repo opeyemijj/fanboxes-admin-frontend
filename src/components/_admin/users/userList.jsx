@@ -55,12 +55,6 @@ export default function AdminProducts({ userType }) {
 
   const finalAmount = customAmount ? +customAmount : selectedAmount;
 
-  const handleConfirm = () => {
-    // if (finalAmount && finalAmount > 0) {
-    //   onConfirm(finalAmount);
-    // }
-  };
-
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery(
@@ -108,6 +102,27 @@ export default function AdminProducts({ userType }) {
     }
   );
 
+  // prettier-ignore
+  const { mutate: topUpMutation, isLoading: topUploading } = useMutation(
+    api.updateUserTopUpByAdmin, // mutation function here
+    {
+      onSuccess: (data) => {
+        toast.success(data.message);
+        handleClose();
+        // ✅ Refetch products list
+        queryClient.invalidateQueries(['user']);
+      },
+      onError: (error) => {
+        console.log(error);
+        let errorMessage = parseMongooseError(error?.message);
+        toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+          autoClose: false, // Prevents auto-dismissal
+          closeOnClick: true // Allows clicking on the close icon
+        });
+      }
+    }
+  );
+
   async function changeActiveInactive() {
     try {
       changeActivation({
@@ -123,6 +138,8 @@ export default function AdminProducts({ userType }) {
     setOpenStatus(false);
     setOpenTopUp(false);
     setMarkUser(null);
+    setSelectedAmount(null);
+    setCustomAmount('');
   };
 
   const handleClickOpenStatus = (prop) => () => {
@@ -133,6 +150,20 @@ export default function AdminProducts({ userType }) {
   const handleClickOpenTopUp = (prop) => () => {
     setMarkUser(prop);
     setOpenTopUp(true);
+  };
+
+  const handleConfirmTopUp = () => {
+    try {
+      topUpMutation({
+        userId: markUser?._id,
+        amount: customAmount ? customAmount : selectedAmount,
+        description: 'Credits Topup',
+        currency: '',
+        remarks: ''
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -245,8 +276,9 @@ export default function AdminProducts({ userType }) {
           </Button>
           <LoadingButton
             variant="contained"
-            onClick={handleConfirm}
-            // loading={loading} disabled={!finalAmount}
+            onClick={handleConfirmTopUp}
+            loading={topUploading}
+            disabled={!customAmount && !selectedAmount}
           >
             Confirm
           </LoadingButton>
