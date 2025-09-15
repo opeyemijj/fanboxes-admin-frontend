@@ -77,7 +77,7 @@ export default function UserRow({ isLoading, row, setId, handleClickOpenStatus, 
       </TableCell>
       <TableCell style={{ minWidth: 160 }}>{isLoading ? <Skeleton variant="text" /> : row?.email}</TableCell>
       <TableCell style={{ minWidth: 40 }}>
-        {isLoading ? <Skeleton variant="text" /> : row?.balanceCredits || 0}
+        {isLoading ? <Skeleton variant="text" /> : row?.currentBalance || 0}
       </TableCell>
 
       {userType === 'admin' && (

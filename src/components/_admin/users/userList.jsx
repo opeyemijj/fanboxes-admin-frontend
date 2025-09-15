@@ -10,6 +10,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Divider,
   Stack,
   TextField,
   Typography
@@ -30,7 +31,7 @@ export default function AdminProducts({ userType }) {
   const TABLE_HEAD = [
     { id: 'name', label: 'User', alignRight: false, sort: true },
     { id: 'email', label: 'Email', alignRight: false, sort: true },
-    { id: 'balanceCredits', label: 'Wallet Balance', alignRight: false, sort: true },
+    { id: 'currentBalance', label: 'Wallet Balance', alignRight: false, sort: true },
     ...(userType === 'admin' ? [{ id: 'role', label: 'Role', alignRight: false, sort: true }] : []),
     { id: 'status', label: 'Status', alignRight: false, sort: true },
     { id: 'joined', label: 'Joined', alignRight: false, sort: true },
@@ -49,7 +50,7 @@ export default function AdminProducts({ userType }) {
   const [selectedAmount, setSelectedAmount] = useState(null);
   const [customAmount, setCustomAmount] = useState('');
   const [openTopUp, setOpenTopUp] = useState(false);
-  const amounts = [5, 10, 15, 20, 25, 30];
+  const amounts = [5, 10, 15, 20, 25, 30, 40, 50];
   const [finalAmount, setFinalAmmount] = useState(0);
 
   const queryClient = useQueryClient();
@@ -151,7 +152,7 @@ export default function AdminProducts({ userType }) {
   async function handleClickOpenTopUp(prop) {
     setMarkUser(prop);
     setOpenTopUp(true);
-    setMarkUserCurrentBalance(prop?.balanceCredits || 0);
+    setMarkUserCurrentBalance(prop?.currentBalance || 0);
   }
 
   const handleConfirmTopUp = () => {
@@ -211,12 +212,13 @@ export default function AdminProducts({ userType }) {
       </Dialog>
 
       {/* QUICK TOP UP MODAL */}
+      {/* QUICK TOP UP MODAL */}
       <Dialog onClose={handleClose} open={openTopUp} maxWidth="sm" fullWidth>
         <DialogTitle sx={{ fontWeight: 'bold', fontSize: 20 }}>Quick Top Up</DialogTitle>
 
         <DialogContent>
           {/* User name */}
-          <Box mb={3}>
+          <Box display={'flex'} gap={4} mb={3}>
             <Typography variant="subtitle1" sx={{ mb: 1 }}>
               Topping For {markUser?.firstName} {markUser?.lastName}
             </Typography>
@@ -229,6 +231,9 @@ export default function AdminProducts({ userType }) {
             </Box>
           </Box>
 
+          {/* Divider before top-up section */}
+          <Divider sx={{ my: 2 }} />
+
           {/* Select amount */}
           <Box mb={3}>
             <Typography variant="subtitle1" sx={{ mb: 1 }}>
@@ -240,8 +245,8 @@ export default function AdminProducts({ userType }) {
                   key={amt}
                   variant={selectedAmount === amt ? 'contained' : 'outlined'}
                   sx={{
-                    borderRadius: '50%',
-                    width: 60,
+                    borderRadius: '50%', // ✅ Perfect circle
+                    width: 40,
                     height: 60,
                     minWidth: 0,
                     fontWeight: 'bold'
@@ -271,6 +276,9 @@ export default function AdminProducts({ userType }) {
               />
             </Stack>
           </Box>
+
+          {/* Divider before Top Up Amount */}
+          <Divider sx={{ my: 2 }} />
 
           {/* Final selected value */}
           <Box display={'flex'} gap={2} mb={2}>
