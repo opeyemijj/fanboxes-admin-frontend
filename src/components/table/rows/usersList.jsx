@@ -10,15 +10,10 @@ import { MdEdit, MdBlock, MdCheckCircle, MdCancel } from 'react-icons/md';
 // utils
 import { fDateShort } from 'src/utils/formatTime';
 
-// icons
-import { FiEye } from 'react-icons/fi';
-import { LuUser2 } from 'react-icons/lu';
-import { FaUserCheck } from 'react-icons/fa6';
-
 // component
 import BlurImage from 'src/components/blurImage';
 import { UsePermission } from 'src/hooks/usePermission';
-import { Edit } from 'lucide-react';
+import { Banknote, CreditCardIcon, Edit, TrendingUp, Wallet } from 'lucide-react';
 
 UserRow.propTypes = {
   isLoading: PropTypes.bool.isRequired,
@@ -46,12 +41,13 @@ const ThumbImgStyle = styled(Box)(({ theme }) => ({
   position: 'relative',
   overflow: 'hidden'
 }));
-export default function UserRow({ isLoading, row, setId, handleClickOpenStatus, sn, userType }) {
+export default function UserRow({ isLoading, row, setId, handleClickOpenStatus, handleClickOpenTopUp, sn, userType }) {
   const canViewDetails = UsePermission('view_user_details');
 
   const canEditAdmin = UsePermission('edit_admin_user');
   const canApprove = UsePermission('approve_user');
   const router = useRouter();
+
   return (
     <TableRow hover key={Math.random()}>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
@@ -108,6 +104,14 @@ export default function UserRow({ isLoading, row, setId, handleClickOpenStatus, 
                 <Tooltip title="Edit">
                   <IconButton onClick={() => router.push(`/admin/admin-users/edit/${row?._id}`)}>
                     <MdEdit />
+                  </IconButton>
+                </Tooltip>
+              )}
+
+              {userType === 'user' && (
+                <Tooltip title="Top Up">
+                  <IconButton onClick={handleClickOpenTopUp(row)}>
+                    <Wallet />
                   </IconButton>
                 </Tooltip>
               )}

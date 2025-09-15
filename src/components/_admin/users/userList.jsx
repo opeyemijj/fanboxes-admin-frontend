@@ -2,7 +2,18 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useSearchParams } from 'next/navigation';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack } from '@mui/material';
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Stack,
+  TextField,
+  Typography
+} from '@mui/material';
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
 import { LoadingButton } from '@mui/lab';
 
@@ -29,10 +40,26 @@ const TABLE_HEAD = [
 export default function AdminProducts({ userType }) {
   const searchParams = useSearchParams();
   const [openStatus, setOpenStatus] = useState(false);
+
   const [markUser, setMarkUser] = useState(null);
   const pageParam = searchParams.get('page');
   const searchParam = searchParams.get('search');
   const [count, setCount] = useState(0);
+
+  // TOP UP STATE
+  const [selectedAmount, setSelectedAmount] = useState(null);
+  const [customAmount, setCustomAmount] = useState('');
+  const [openTopUp, setOpenTopUp] = useState(false);
+
+  const amounts = [5, 10, 15, 20, 25, 30];
+
+  const finalAmount = customAmount ? +customAmount : selectedAmount;
+
+  const handleConfirm = () => {
+    // if (finalAmount && finalAmount > 0) {
+    //   onConfirm(finalAmount);
+    // }
+  };
 
   const queryClient = useQueryClient();
 
@@ -94,12 +121,18 @@ export default function AdminProducts({ userType }) {
 
   const handleClose = () => {
     setOpenStatus(false);
+    setOpenTopUp(false);
     setMarkUser(null);
   };
 
   const handleClickOpenStatus = (prop) => () => {
     setMarkUser(prop);
     setOpenStatus(true);
+  };
+
+  const handleClickOpenTopUp = (prop) => () => {
+    setMarkUser(prop);
+    setOpenTopUp(true);
   };
 
   return (
@@ -113,6 +146,7 @@ export default function AdminProducts({ userType }) {
         setId={setId}
         id={setId}
         handleClickOpenStatus={handleClickOpenStatus}
+        handleClickOpenTopUp={handleClickOpenTopUp}
         isSearch
         userType={userType}
       />
@@ -139,6 +173,82 @@ export default function AdminProducts({ userType }) {
           </Button>
           <LoadingButton variant="contained" loading={activationLoading} onClick={() => changeActiveInactive()}>
             Yes, {markUser?.isActive ? 'Draft' : 'Approve'}
+          </LoadingButton>
+        </DialogActions>
+      </Dialog>
+
+      {/* QUICK TOP UP MODAL */}
+      <Dialog onClose={handleClose} open={openTopUp} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ fontWeight: 'bold', fontSize: 20 }}>Quick Top Up</DialogTitle>
+
+        <DialogContent>
+          {/* User name */}
+          <Box mb={3}>
+            <Typography variant="subtitle1" sx={{ mb: 1 }}>
+              Topping for {markUser?.firstName} {markUser?.lastName}
+            </Typography>
+          </Box>
+
+          {/* Select amount */}
+          <Box mb={3}>
+            <Typography variant="subtitle1" sx={{ mb: 1 }}>
+              Choose your top up amount
+            </Typography>
+            <Stack direction="row" flexWrap="wrap" gap={1}>
+              {amounts?.map((amt) => (
+                <Button
+                  key={amt}
+                  variant={selectedAmount === amt ? 'contained' : 'outlined'}
+                  sx={{
+                    borderRadius: '50%',
+                    width: 60,
+                    height: 60,
+                    minWidth: 0,
+                    fontWeight: 'bold'
+                  }}
+                  onClick={() => {
+                    setSelectedAmount(amt);
+                    setCustomAmount('');
+                  }}
+                >
+                  {amt}
+                </Button>
+              ))}
+
+              {/* Custom input */}
+              <TextField
+                type="number"
+                placeholder="Custom"
+                value={customAmount}
+                onChange={(e) => {
+                  setCustomAmount(e.target.value);
+                  setSelectedAmount(null);
+                }}
+                sx={{ width: 100 }}
+                size="small"
+              />
+            </Stack>
+          </Box>
+
+          {/* Final selected value */}
+          <Box display={'flex'} gap={2} mb={2}>
+            <Typography variant="subtitle1">Top Up Amount:</Typography>
+            <Typography variant="h6" color="primary">
+              {finalAmount ? `${finalAmount}` : 'None'}
+            </Typography>
+          </Box>
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleClose} color="inherit">
+            Cancel
+          </Button>
+          <LoadingButton
+            variant="contained"
+            onClick={handleConfirm}
+            // loading={loading} disabled={!finalAmount}
+          >
+            Confirm
           </LoadingButton>
         </DialogActions>
       </Dialog>
