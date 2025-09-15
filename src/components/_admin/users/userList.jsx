@@ -214,92 +214,97 @@ export default function AdminProducts({ userType }) {
       {/* QUICK TOP UP MODAL */}
       {/* QUICK TOP UP MODAL */}
       <Dialog onClose={handleClose} open={openTopUp} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ fontWeight: 'bold', fontSize: 20 }}>Quick Top Up</DialogTitle>
+        <DialogTitle mb={2} sx={{ fontWeight: 'bold', fontSize: 20 }}>
+          Quick Top Up
+        </DialogTitle>
 
         <DialogContent>
-          <Divider sx={{ my: 2 }} />
-          {/* User name */}
-          <Box display={'flex'} justifyContent={'space-between'} gap={4}>
-            <Typography variant="subtitle1" sx={{ mb: 1 }}>
-              Top Up For {markUser?.firstName} {markUser?.lastName}
-            </Typography>
+          <Stack spacing={3}>
+            {/* Divider */}
+            <Divider />
 
-            <Box display={'flex'} gap={2} mb={2}>
-              <Typography variant="subtitle1">Current Balance:</Typography>
-              <Typography variant="h6" color="primary">
-                {markUserCurrentBalance || 0}
+            {/* User info */}
+            <Box display="flex" justifyContent="space-between" alignItems="center">
+              <Typography variant="subtitle1">
+                Top Up For {markUser?.firstName} {markUser?.lastName}
               </Typography>
-            </Box>
-          </Box>
 
-          {/* Divider before top-up section */}
-          <Divider sx={{ my: 2 }} />
-
-          {/* Select amount */}
-          <Box mb={3}>
-            <Typography variant="subtitle1" sx={{ mb: 1 }}>
-              Choose your top up amount
-            </Typography>
-            <Stack direction="row" flexWrap="wrap" gap={1}>
-              {amounts?.map((amt) => (
-                <Button
-                  key={amt}
-                  variant={selectedAmount === amt ? 'contained' : 'outlined'}
-                  sx={{
-                    borderRadius: '50%', // ✅ Perfect circle
-                    width: 40,
-                    height: 60,
-                    minWidth: 0,
-                    fontWeight: 'bold'
-                  }}
-                  onClick={() => {
-                    setFinalAmmount(amt);
-                    setSelectedAmount(amt);
-                    setCustomAmount('');
-                  }}
-                >
-                  {amt}
-                </Button>
-              ))}
-
-              {/* Custom input */}
-              <TextField
-                type="number"
-                placeholder="Custom"
-                value={customAmount}
-                onChange={(e) => {
-                  setFinalAmmount(e.target.value);
-                  setCustomAmount(e.target.value);
-                  setSelectedAmount(null);
-                }}
-                sx={{ width: 100 }}
-                size="small"
-              />
-            </Stack>
-          </Box>
-
-          {/* Divider before Top Up Amount */}
-          <Divider sx={{ my: 2 }} />
-
-          {/* Final selected value */}
-
-          <Box display={'flex'} justifyContent={'space-between'} gap={4} mb={3}>
-            <Box display={'flex'} gap={2} mb={2}>
-              <Typography variant="subtitle1">Top Up Amount:</Typography>
-              <Typography variant="h6" color="primary">
-                {finalAmount ? `${finalAmount}` : 0}
-              </Typography>
-            </Box>
-
-            {finalAmount > 0 && (
-              <Box display={'flex'} gap={2} mb={2}>
-                <Typography variant="subtitle1">New Balance:</Typography>
+              <Box display="flex" gap={1} alignItems="center">
+                <Typography variant="subtitle1">Current Balance:</Typography>
                 <Typography variant="h6" color="primary">
-                  {Number(finalAmount) + Number(markUserCurrentBalance)}
+                  {markUserCurrentBalance || 0}
                 </Typography>
               </Box>
-            )}
-          </Box>
+            </Box>
+
+            {/* Divider */}
+            <Divider />
+
+            {/* Select amount */}
+            <Box>
+              <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                Choose your top up amount
+              </Typography>
+              <Stack direction="row" flexWrap="wrap" gap={1}>
+                {amounts?.map((amt) => (
+                  <Button
+                    key={amt}
+                    variant={selectedAmount === amt ? 'contained' : 'outlined'}
+                    sx={{
+                      borderRadius: '50%',
+                      width: 40,
+                      height: 60,
+                      minWidth: 0,
+                      fontWeight: 'bold'
+                    }}
+                    onClick={() => {
+                      setFinalAmmount(amt);
+                      setSelectedAmount(amt);
+                      setCustomAmount('');
+                    }}
+                  >
+                    {amt}
+                  </Button>
+                ))}
+
+                {/* Custom input */}
+                <TextField
+                  type="number"
+                  placeholder="Custom"
+                  value={customAmount}
+                  onChange={(e) => {
+                    setFinalAmmount(e.target.value);
+                    setCustomAmount(e.target.value);
+                    setSelectedAmount(null);
+                  }}
+                  sx={{ width: 100 }}
+                  size="small"
+                />
+              </Stack>
+            </Box>
+
+            {/* Divider */}
+            <Divider />
+
+            {/* Final amounts */}
+            <Box display="flex" justifyContent="space-between" alignItems="center">
+              <Box display="flex" gap={1} alignItems="center">
+                <Typography variant="subtitle1">Top Up Amount:</Typography>
+                <Typography variant="h6" color="primary">
+                  {finalAmount ? finalAmount : 0}
+                </Typography>
+              </Box>
+
+              {finalAmount > 0 && (
+                <Box display="flex" gap={1} alignItems="center">
+                  <Typography variant="subtitle1">New Balance:</Typography>
+                  <Typography variant="h6" color="primary">
+                    {Number(finalAmount) + Number(markUserCurrentBalance)}
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+          </Stack>
         </DialogContent>
 
         <DialogActions>
