@@ -49,7 +49,7 @@ export default function ShopSettingFrom({ data: currentShop, isLoading: category
       }),
       retry: false,
       onSuccess: (data) => {
-        toast.success(currentShop ? data.message : 'Shop is under review!');
+        toast.success(currentShop ? data.message : 'Influencer is under review!');
         // router.push('/dashboard/categories');
       },
       onError: (error) => {

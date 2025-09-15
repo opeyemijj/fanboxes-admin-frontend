@@ -32,10 +32,6 @@ export default function Page({ params }) {
     }
   });
 
-  // const { data: categories } = await api.getAllCategories();
-
-  console.log(categories, 'Checking the categoris');
-
   const canEdit = UsePermission('edit_influencer');
   if (!canEdit) {
     return <AccessDenied message="You are not allowed to edit Influencer." redirect="/admin/dashboard" />;

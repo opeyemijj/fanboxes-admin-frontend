@@ -80,7 +80,7 @@ export default function AdminShopForm({
       }),
       retry: false,
       onSuccess: (data) => {
-        toast.success(currentShop ? data.message : 'Shop is under review!');
+        toast.success(currentShop ? data.message : 'Influencer is under review!');
         router.push('/admin/shops');
       },
       onError: (error) => {
@@ -676,68 +676,6 @@ export default function AdminShopForm({
                           />
                         </FormGroup>
                       </div>
-
-                      {currentShop && (
-                        <Stack spacing={2}>
-                          <FormControl fullWidth sx={{ select: { textTransform: 'capitalize' } }}>
-                            {shopLoading ? (
-                              <Skeleton variant="text" width={70} />
-                            ) : (
-                              <LabelStyle component={'label'} htmlFor="status">
-                                {'Status'}
-                              </LabelStyle>
-                            )}
-                            {shopLoading ? (
-                              <Skeleton variant="rectangular" width="100%" height={56} />
-                            ) : (
-                              <Select
-                                id="status"
-                                native
-                                {...getFieldProps('status')}
-                                error={Boolean(touched.status && errors.status)}
-                              >
-                                <option value="" style={{ display: 'none' }} />
-                                {STATUS_OPTIONS.map((status) => (
-                                  <option key={status} value={status}>
-                                    {status}
-                                  </option>
-                                ))}
-                              </Select>
-                            )}
-                            {touched.status && errors.status && (
-                              <FormHelperText error sx={{ px: 2, mx: 0 }}>
-                                {touched.status && errors.status}
-                              </FormHelperText>
-                            )}
-                          </FormControl>
-                          {(values.status === 'cancel' ||
-                            values.status === 'closed' ||
-                            values.status === 'action required') && (
-                            <div>
-                              {shopLoading ? (
-                                <Skeleton variant="text" width={150} />
-                              ) : (
-                                <LabelStyle component={'label'} htmlFor="message">
-                                  Message
-                                </LabelStyle>
-                              )}
-                              {shopLoading ? (
-                                <Skeleton variant="rectangular" width="100%" height={240} />
-                              ) : (
-                                <TextField
-                                  id="message"
-                                  fullWidth
-                                  {...getFieldProps('message')}
-                                  error={Boolean(touched.message && errors.message)}
-                                  helperText={touched.message && errors.message}
-                                  rows={4}
-                                  multiline
-                                />
-                              )}
-                            </div>
-                          )}
-                        </Stack>
-                      )}
                     </Stack>
                   </Card>
                   {shopLoading ? (

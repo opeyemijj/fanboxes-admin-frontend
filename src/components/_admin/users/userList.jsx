@@ -107,7 +107,7 @@ export default function AdminProducts({ userType }) {
       <RoleDialog open={Boolean(id)} onClose={() => setId(null)} onClick={() => mutate(id)} loading={roleLoading} />
       <Table
         headData={TABLE_HEAD}
-        data={data}
+        data={data ?? { success: true, data: [], total: 0, count: 0, currentPage: 1 }}
         isLoading={isLoading}
         row={UserList}
         setId={setId}

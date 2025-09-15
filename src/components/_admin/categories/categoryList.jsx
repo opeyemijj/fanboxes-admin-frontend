@@ -59,7 +59,7 @@ export default function CategoryList() {
       </Dialog>
       <Table
         headData={TABLE_HEAD}
-        data={data}
+        data={data ?? { success: true, data: [], total: 0, count: 0, currentPage: 1 }}
         isLoading={isLoading}
         row={Category}
         handleClickOpen={handleClickOpen}

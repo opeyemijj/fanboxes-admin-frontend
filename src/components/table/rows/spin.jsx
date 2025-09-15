@@ -104,10 +104,12 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
               />
             </Box>
           )}
-          <Typography variant="" noWrap>
-            {/* <div>{row?.shopDetails?.title}</div> */}
-            <div>{row?.vendorDetails ? row?.shopDetails?.title : 'Admin'}</div>
-          </Typography>
+          {!isLoading && (
+            <Typography variant="" noWrap>
+              {/* <div>{row?.shopDetails?.title}</div> */}
+              <div>{row?.vendorDetails ? row?.shopDetails?.title : 'Admin'}</div>
+            </Typography>
+          )}
         </Box>
       </TableCell>
       <TableCell component="th" scope="row" sx={{ maxWidth: 300 }}>
@@ -145,10 +147,12 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
               />
             </Box>
           )}
-          <Typography variant="">
-            <div>{row?.winningItem?.name}</div>
-            <div>${row?.winningItem?.value}</div>
-          </Typography>
+          {!isLoading && (
+            <Typography variant="">
+              <div>{row?.winningItem?.name}</div>
+              <div>${row?.winningItem?.value}</div>
+            </Typography>
+          )}
         </Box>
       </TableCell>
       <TableCell>

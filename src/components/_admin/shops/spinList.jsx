@@ -67,7 +67,7 @@ export default function AdminSpins() {
       </Dialog>
       <Table
         headData={TABLE_HEAD}
-        data={data}
+        data={data ?? { success: true, data: [], total: 0, count: 0, currentPage: 1 }}
         isLoading={isLoading}
         row={Spin}
         handleClickOpen={handleClickOpen}

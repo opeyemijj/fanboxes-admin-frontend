@@ -50,7 +50,7 @@ export default function CreateShopSettingFrom() {
   const { mutate, isLoading } = useMutation('new-user-shop', api.addShopByUser, {
     retry: false,
     onSuccess: () => {
-      toast.success('Shop is under review!');
+      toast.success('Influencer is under review!');
       dispatch(updateUserRole());
       router.push('/vendor/dashboard');
     },

@@ -231,7 +231,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
     <>
       <Table
         headData={TABLE_HEAD}
-        data={data}
+        data={data ?? { success: true, data: [], total: 0, count: 0, currentPage: 1 }}
         isLoading={isLoading}
         row={Product}
         handleClickOpen={handleClickOpen}

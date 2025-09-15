@@ -75,7 +75,7 @@ export default function Category({ isLoading, row, handleClickOpen, sn }) {
             variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
             color={row?.status?.toLowerCase() === 'active' ? 'success' : 'error'}
           >
-            {capitalize(row?.status)}
+            {capitalize(row?.status?.toLowerCase() === 'active' ? 'Active' : 'Inactive')}
           </Label>
         )}
       </TableCell>
