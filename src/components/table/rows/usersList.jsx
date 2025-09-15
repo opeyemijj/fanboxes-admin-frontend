@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { enUS } from 'date-fns/locale';
 import { useRouter } from 'next-nprogress-bar';
+import Label from 'src/components/label';
 
 // mui
 import { styled } from '@mui/material/styles';
@@ -84,6 +85,28 @@ export default function UserRow({ isLoading, row, setId, handleClickOpenStatus, 
           {isLoading ? <Skeleton variant="text" /> : row.role?.toLowerCase() === 'vendor' ? 'Influencer' : row.role}
         </TableCell>
       )}
+
+      <TableCell>
+        {isLoading ? (
+          <Skeleton variant="text" />
+        ) : (
+          <div className="col">
+            <Label
+              sx={{
+                width: '70px',
+                fontSize: '0.60rem',
+                margin: 0.2,
+                bgcolor: row?.isActive ? 'success.light' : 'warning.light',
+                color: row?.isActive ? 'success.dark' : 'white',
+                textTransform: 'capitalize'
+              }}
+            >
+              {row?.isActive ? 'Approved' : 'Draft'}
+            </Label>
+          </div>
+        )}
+      </TableCell>
+
       <TableCell style={{ minWidth: 40 }}>
         {isLoading ? <Skeleton variant="text" /> : fDateShort(row.createdAt, enUS)}
       </TableCell>
@@ -121,9 +144,9 @@ export default function UserRow({ isLoading, row, setId, handleClickOpenStatus, 
               )}
 
               {canApprove && (
-                <Tooltip title={row?.isActive ? 'Approved' : 'Draft'}>
+                <Tooltip title={!row?.isActive ? 'Approve' : 'Draft'}>
                   <IconButton onClick={handleClickOpenStatus(row)}>
-                    {row?.isActive ? (
+                    {!row?.isActive ? (
                       <MdCheckCircle style={{ width: 30 }} color="green" size={23} />
                     ) : (
                       <MdCancel style={{ width: 30 }} width={50} color="orange" size={23} />

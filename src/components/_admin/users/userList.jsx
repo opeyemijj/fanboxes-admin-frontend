@@ -32,6 +32,7 @@ export default function AdminProducts({ userType }) {
     { id: 'email', label: 'Email', alignRight: false, sort: true },
     { id: 'balanceCredits', label: 'Wallet Balance', alignRight: false, sort: true },
     ...(userType === 'admin' ? [{ id: 'role', label: 'Role', alignRight: false, sort: true }] : []),
+    { id: 'status', label: 'Status', alignRight: false, sort: true },
     { id: 'joined', label: 'Joined', alignRight: false, sort: true },
     { id: '', label: 'Actions', alignRight: true }
   ];
@@ -150,15 +151,7 @@ export default function AdminProducts({ userType }) {
   async function handleClickOpenTopUp(prop) {
     setMarkUser(prop);
     setOpenTopUp(true);
-
-    try {
-      const currentBalace = await api.getUserWalletBalanceByAdmin(prop._id);
-      if (currentBalace) {
-        setMarkUserCurrentBalance(currentBalace?.data?.availableBalance || 0);
-      }
-    } catch (error) {
-      console.log('Current balance fetching failed', error);
-    }
+    setMarkUserCurrentBalance(prop?.balanceCredits || 0);
   }
 
   const handleConfirmTopUp = () => {
