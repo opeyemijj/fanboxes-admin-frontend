@@ -217,10 +217,11 @@ export default function AdminProducts({ userType }) {
         <DialogTitle sx={{ fontWeight: 'bold', fontSize: 20 }}>Quick Top Up</DialogTitle>
 
         <DialogContent>
+          <Divider sx={{ my: 2 }} />
           {/* User name */}
-          <Box display={'flex'} gap={4} mb={3}>
+          <Box display={'flex'} justifyContent={'space-between'} gap={4}>
             <Typography variant="subtitle1" sx={{ mb: 1 }}>
-              Topping For {markUser?.firstName} {markUser?.lastName}
+              Top Up For {markUser?.firstName} {markUser?.lastName}
             </Typography>
 
             <Box display={'flex'} gap={2} mb={2}>
@@ -281,21 +282,24 @@ export default function AdminProducts({ userType }) {
           <Divider sx={{ my: 2 }} />
 
           {/* Final selected value */}
-          <Box display={'flex'} gap={2} mb={2}>
-            <Typography variant="subtitle1">Top Up Amount:</Typography>
-            <Typography variant="h6" color="primary">
-              {finalAmount ? `${finalAmount}` : 'None'}
-            </Typography>
-          </Box>
 
-          {finalAmount > 0 && (
+          <Box display={'flex'} justifyContent={'space-between'} gap={4} mb={3}>
             <Box display={'flex'} gap={2} mb={2}>
-              <Typography variant="subtitle1">New Balance:</Typography>
+              <Typography variant="subtitle1">Top Up Amount:</Typography>
               <Typography variant="h6" color="primary">
-                {Number(finalAmount) + Number(markUserCurrentBalance)}
+                {finalAmount ? `${finalAmount}` : 0}
               </Typography>
             </Box>
-          )}
+
+            {finalAmount > 0 && (
+              <Box display={'flex'} gap={2} mb={2}>
+                <Typography variant="subtitle1">New Balance:</Typography>
+                <Typography variant="h6" color="primary">
+                  {Number(finalAmount) + Number(markUserCurrentBalance)}
+                </Typography>
+              </Box>
+            )}
+          </Box>
         </DialogContent>
 
         <DialogActions>
