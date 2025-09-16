@@ -52,9 +52,9 @@ export default function CreditList() {
           onClose={handleClose}
           id={id}
           apicall={setApicall}
-          endPoint="deleteCategoryByAdmin"
-          type={'Category deleted'}
-          deleteMessage={'Deleting this category will permanently remove it. Are you sure you want to proceed?'}
+          endPoint="deleteConversionByAdmin"
+          type={'Conversion deleted'}
+          deleteMessage={'Deleting this conversion will permanently remove it. Are you sure you want to proceed?'}
         />
       </Dialog>
       <Table
