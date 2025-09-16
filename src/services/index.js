@@ -70,6 +70,11 @@ export const getCategoriesByAdmin = async (page, search) => {
   return data;
 };
 
+export const getCreditsByAdmin = async (page, search) => {
+  const { data } = await http.get(`/admin/credits?search=${search}&page=${page}`);
+  return data;
+};
+
 export const getSlidesByAdmin = async (page, search) => {
   const { data } = await http.get(`/admin/slides?search=${search}&page=${page}`);
   return data;

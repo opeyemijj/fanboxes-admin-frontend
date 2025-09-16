@@ -11,12 +11,12 @@ import { Dialog } from '@mui/material';
 // components
 import DeleteDialog from 'src/components/dialog/delete';
 import Table from 'src/components/table/table';
-import Category from 'src/components/table/rows/category';
+import Credit from 'src/components/table/rows/credit';
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Category', alignRight: false, sort: true },
-  { id: 'description', label: 'Description', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
+  { id: 'name', label: 'Name', alignRight: false, sort: true },
+  { id: 'type', label: 'Type', alignRight: false },
+  { id: 'value', label: 'Value', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false, sort: true },
   { id: '', label: 'Actions', alignRight: true }
 ];
@@ -30,8 +30,8 @@ export default function CreditList() {
   const [id, setId] = useState(null);
 
   const { data, isLoading } = useQuery(
-    ['categories', apicall, searchParam, pageParam],
-    () => api.getCategoriesByAdmin(+pageParam || 1, searchParam || ''),
+    ['credits', apicall, searchParam, pageParam],
+    () => api.getCreditsByAdmin(+pageParam || 1, searchParam || ''),
     {
       onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
     }
@@ -59,12 +59,11 @@ export default function CreditList() {
       </Dialog>
       <Table
         headData={TABLE_HEAD}
-        // data={data ?? { success: true, data: [], total: 0, count: 0, currentPage: 1 }}
-        data={{ success: true, data: [], total: 0, count: 0, currentPage: 1 }}
+        data={data ?? { success: true, data: [], total: 0, count: 0, currentPage: 1 }}
         isLoading={isLoading}
-        row={Category}
+        row={Credit}
         handleClickOpen={handleClickOpen}
-        isSearch
+        // isSearch
       />
     </>
   );
