@@ -84,6 +84,10 @@ export const getCategoryByAdmin = async (slug) => {
   const { data } = await http.get(`/admin/categories/${slug}`);
   return data;
 };
+export const getCreditByAdmin = async (slug) => {
+  const { data } = await http.get(`/admin/credits/${slug}`);
+  return data;
+};
 
 export const getSlideByAdmin = async (slug) => {
   const { data } = await http.get(`/admin/slides/${slug}`);
@@ -148,6 +152,11 @@ export const getRolesByAdmin = async (params) => {
 
 export const updateCategoryByAdmin = async ({ currentSlug, ...payload }) => {
   const { data } = await http.put(`/admin/categories/${currentSlug}`, payload);
+  return data;
+};
+
+export const updateCreditByAdmin = async ({ currentSlug, ...payload }) => {
+  const { data } = await http.put(`/admin/credits/${currentSlug}`, payload);
   return data;
 };
 

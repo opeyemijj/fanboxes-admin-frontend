@@ -54,7 +54,7 @@ export default function CreditForm({ data: currentConversion, isLoading: creditL
 
   const { mutate, isLoading } = useMutation(
     currentConversion ? 'update' : 'new',
-    currentConversion ? api.updateCategoryByAdmin : api.addCreditByAdmin,
+    currentConversion ? api.updateCreditByAdmin : api.addCreditByAdmin,
     {
       ...(currentConversion && {
         enabled: Boolean(currentConversion)
@@ -91,7 +91,8 @@ export default function CreditForm({ data: currentConversion, isLoading: creditL
     initialValues: {
       name: currentConversion?.name || '',
       value: currentConversion?.value || '',
-      type: currentConversion?.type || CONVERSION_TYPE_OPTIONS[0]
+      type: currentConversion?.type || CONVERSION_TYPE_OPTIONS[0],
+      valueType: currentConversion?.valueType || VALUE_TYPE_OPTIONS[0]
     },
     enableReinitialize: true,
     validationSchema: NewCategorySchema,

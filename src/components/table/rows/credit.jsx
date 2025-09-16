@@ -84,7 +84,7 @@ export default function Category({ isLoading, row, handleClickOpen, sn }) {
             <>
               {canEdit && (
                 <Tooltip title="Edit">
-                  <IconButton onClick={() => router.push(`/admin/categories/${row?.slug}`)}>
+                  <IconButton onClick={() => router.push(`/admin/credits/${row?.slug}`)}>
                     <MdEdit />
                   </IconButton>
                 </Tooltip>
