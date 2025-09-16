@@ -38,8 +38,8 @@ import { LuBadgePercent } from 'react-icons/lu';
 
 // components
 import Scrollbar from 'src/components/Scrollbar';
-import { User, User2Icon, UserCheck, UserRound } from 'lucide-react';
-import { MonetizationOn, Person, Security } from '@mui/icons-material';
+import { Logs, User, User2Icon, UserCheck, UserRound } from 'lucide-react';
+import { MonetizationOn, Person, ReceiptLong, Security, SyncAlt, Transcribe } from '@mui/icons-material';
 import { UsePermission } from 'src/hooks/usePermission';
 
 // Dashboard Side NevLinks
@@ -88,15 +88,15 @@ export const navlinks = [
     isSearch: true
   },
 
-  {
-    id: 6,
-    title: 'Spins',
-    slug: 'spins',
-    need_permission: true,
-    permission_slug: 'view_spin_listing',
-    icon: <BsPlayCircle />,
-    isSearch: true
-  },
+  // {
+  //   id: 6,
+  //   title: 'Spins',
+  //   slug: 'spins',
+  //   need_permission: true,
+  //   permission_slug: 'view_spin_listing',
+  //   icon: <BsPlayCircle />,
+  //   isSearch: true
+  // },
   // {
   //   id: 20,
   //   title: 'Users',
@@ -217,10 +217,36 @@ export const navlinks = [
         isSearch: true
       },
       {
-        id: '14-1',
+        id: '14-2',
         title: 'Credits & Conversation',
         slug: 'credits',
         icon: <MonetizationOn size={18} />,
+        isSearch: true
+      }
+    ]
+  },
+
+  {
+    id: 15,
+    title: 'Logs',
+    slug: 'logs',
+    // need_permission: true,
+    // permission_slug: 'view_slide_listing',
+    icon: <Logs />,
+    isSearch: false,
+    children: [
+      {
+        id: '15-1',
+        title: 'Spins',
+        slug: 'spins',
+        icon: <BsPlayCircle />,
+        isSearch: true
+      },
+      {
+        id: '15-2',
+        title: 'Transections',
+        slug: 'transections',
+        icon: <SyncAlt size={18} />,
         isSearch: true
       }
     ]
