@@ -110,6 +110,11 @@ export const addCategoryByAdmin = async (payload) => {
   return data;
 };
 
+export const addCreditByAdmin = async (payload) => {
+  const { data } = await http.post(`/admin/credits`, payload);
+  return data;
+};
+
 export const addSlideByAdmin = async (payload) => {
   const { data } = await http.post(`/admin/slides`, payload);
   return data;
