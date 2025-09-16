@@ -39,7 +39,7 @@ import { LuBadgePercent } from 'react-icons/lu';
 // components
 import Scrollbar from 'src/components/Scrollbar';
 import { User, User2Icon, UserCheck, UserRound } from 'lucide-react';
-import { Person, Security } from '@mui/icons-material';
+import { MonetizationOn, Person, Security } from '@mui/icons-material';
 import { UsePermission } from 'src/hooks/usePermission';
 
 // Dashboard Side NevLinks
@@ -118,26 +118,26 @@ export const navlinks = [
         id: '7-1',
         title: 'Roles',
         slug: 'roles',
-        icon: <LuShield />,
+        icon: <LuShield size={18} />,
         isSearch: true
       },
       {
         id: '7-2',
         title: 'User',
         slug: 'users',
-        icon: <User />
+        icon: <User size={18} />
       },
       {
         id: '7-3',
         title: 'Admin',
         slug: 'admin-users',
-        icon: <Security />
+        icon: <Security size={18} />
       },
       {
         id: '7-4',
         title: 'Influencer',
         slug: 'influencer-users',
-        icon: <BsBuildings />
+        icon: <BsBuildings size={18} />
       }
     ]
   },
@@ -202,8 +202,8 @@ export const navlinks = [
 
   {
     id: 14,
-    title: 'Content Management',
-    slug: 'content-management',
+    title: 'Configuration',
+    slug: 'configuration',
     need_permission: true,
     permission_slug: 'view_slide_listing',
     icon: <IoLogoAmplify />,
@@ -214,6 +214,13 @@ export const navlinks = [
         title: 'Slides',
         slug: 'slides',
         icon: <FaSlidersH />,
+        isSearch: true
+      },
+      {
+        id: '14-1',
+        title: 'Credits & Conversation',
+        slug: 'credits',
+        icon: <MonetizationOn size={18} />,
         isSearch: true
       }
     ]
