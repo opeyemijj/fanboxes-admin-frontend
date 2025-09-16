@@ -529,6 +529,11 @@ export const getSpinsByAdmin = async (page, search) => {
   return data;
 };
 
+export const getTransectionsByAdmin = async (page, search) => {
+  const { data } = await http.get(`admin/transections?search=${search}&page=${page}`);
+  return data;
+};
+
 export const getProductDetails = async (pid) => {
   const { data } = await http.get(`/products/${pid}`);
   return data;

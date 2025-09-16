@@ -44,11 +44,11 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
   const dispatch = useDispatch();
   const router = useRouter();
   function shortenString(str, remainChar, showDots) {
-    if (str.length <= remainChar) {
+    if (str?.length <= remainChar) {
       return str; // return as is if string is 10 chars or less
     }
     if (showDots) {
-      return str.slice(0, remainChar) + '...';
+      return str?.slice(0, remainChar) + '...';
     } else {
       return str.slice(0, remainChar);
     }

@@ -11,23 +11,20 @@ import { Dialog } from '@mui/material';
 // components
 import DeleteDialog from 'src/components/dialog/delete';
 import Table from 'src/components/table/table';
-import Spin from 'src/components/table/rows/spin';
+import Transection from 'src/components/table/rows/transection';
 
 const TABLE_HEAD = [
-  { id: 'box', label: 'Box', alignRight: false, sort: true },
-  { id: 'influencer', label: 'Influencer', alignRight: false, sort: true },
-  { id: 'item', label: 'Winning Item', alignRight: false, sort: true },
-
-  { id: 'odd', label: 'Odd/Weight', alignRight: false, sort: true },
-
-  { id: 'clientSeed', label: 'Client Seed', alignRight: false, sort: true },
-  { id: 'serverSeed', label: 'Server Seed', alignRight: false, sort: true },
+  { id: 'type', label: 'Type', alignRight: false, sort: true },
   { id: 'user', label: 'User', alignRight: false, sort: true },
-  { id: 'date', label: 'Date', alignRight: false, sort: true },
-  { id: '', label: 'Actions', alignRight: false }
+  { id: 'paymentMethod', label: 'Payment Method', alignRight: false, sort: true },
+  { id: 'amount', label: 'Amount', alignRight: false, sort: true },
+  { id: 'description', label: 'Description', alignRight: false, sort: true },
+  { id: 'reference', label: 'Reference', alignRight: false, sort: true },
+  { id: 'status', label: 'Status', alignRight: false, sort: true },
+  { id: 'date', label: 'date', alignRight: false, sort: true }
 ];
 
-export default function AdminSpins() {
+export default function AdminTransections() {
   const searchParams = useSearchParams();
   const pageParam = searchParams.get('page');
   const searchParam = searchParams.get('search');
@@ -37,9 +34,9 @@ export default function AdminSpins() {
 
   const { data, isLoading } = useQuery(
     ['admin-spins', apicall, searchParam, pageParam],
-    () => api.getSpinsByAdmin(+pageParam || 1, searchParam || ''),
+    () => api.getTransectionsByAdmin(+pageParam || 1, searchParam || ''),
     {
-      onError: (err) => toast.error(err.response?.data?.message || 'Something went wrong!')
+      onError: (err) => toast.error(err.message || 'Something went wrong!')
     }
   );
 
@@ -69,13 +66,13 @@ export default function AdminSpins() {
         headData={TABLE_HEAD}
         data={data ?? { success: true, data: [], total: 0, count: 0, currentPage: 1 }}
         isLoading={isLoading}
-        row={Spin}
+        row={Transection}
         handleClickOpen={handleClickOpen}
         // isSearch
       />
     </>
   );
 }
-AdminSpins.propTypes = {
+AdminTransections.propTypes = {
   isVendor: PropTypes.boolean
 };
