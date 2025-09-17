@@ -33,7 +33,7 @@ export default function AdminTransections() {
   const [id, setId] = useState(null);
 
   const { data, isLoading } = useQuery(
-    ['admin-spins', apicall, searchParam, pageParam],
+    ['transections', apicall, searchParam, pageParam],
     () => api.getTransectionsByAdmin(+pageParam || 1, searchParam || ''),
     {
       onError: (err) => toast.error(err.message || 'Something went wrong!')
@@ -73,6 +73,3 @@ export default function AdminTransections() {
     </>
   );
 }
-AdminTransections.propTypes = {
-  isVendor: PropTypes.boolean
-};

@@ -33,7 +33,7 @@ export default function CategoryList() {
     ['categories', apicall, searchParam, pageParam],
     () => api.getCategoriesByAdmin(+pageParam || 1, searchParam || ''),
     {
-      onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
+      onError: (err) => toast.error(err.message || 'Something went wrong!')
     }
   );
 

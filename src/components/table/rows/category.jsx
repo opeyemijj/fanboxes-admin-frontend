@@ -34,18 +34,6 @@ Category.propTypes = {
   handleClickOpen: PropTypes.func.isRequired
 };
 
-const ThumbImgStyle = styled(Box)(({ theme }) => ({
-  width: 50,
-  height: 50,
-  minWidth: 50,
-  objectFit: 'cover',
-  background: theme.palette.background.default,
-  marginRight: theme.spacing(2),
-  border: '1px solid ' + theme.palette.divider,
-  borderRadius: theme.shape.borderRadiusSm,
-  position: 'relative',
-  overflow: 'hidden'
-}));
 export default function Category({ isLoading, row, handleClickOpen, sn }) {
   const canEdit = UsePermission('edit_category');
   const canDelete = UsePermission('delete_category');
