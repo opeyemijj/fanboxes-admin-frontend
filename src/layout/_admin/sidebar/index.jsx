@@ -100,6 +100,17 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
+  function CheckMulitplePermission(permissionArray) {
+    let permission = false;
+    if (!permissionArray || permissionArray.length == 0) return permission;
+    for (let i = 0; i < permissionArray.length; i++) {
+      if (UsePermission(permissionArray[i])) {
+        permission = true;
+      }
+    }
+
+    return permission;
+  }
   const navlinks = [
     {
       id: 1,
@@ -148,13 +159,19 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
       slug: 'user-management',
       icon: <LuUsers />,
       need_permission: true,
-      hasPermission: UsePermission('view_user_listing'),
+      hasPermission: CheckMulitplePermission([
+        'view_user_listing',
+        'view_influencer_user_listing',
+        'view_admin_listing',
+        'view_role_listing'
+      ]),
       isSearch: true,
       children: [
         {
           id: '7-1',
           title: 'Roles',
           slug: 'roles',
+          hasPermission: UsePermission('view_role_listing'),
           icon: <LuShield size={18} />,
           isSearch: true
         },
@@ -162,18 +179,21 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
           id: '7-2',
           title: 'User',
           slug: 'users',
+          hasPermission: UsePermission('view_user_listing'),
           icon: <User size={18} />
         },
         {
           id: '7-3',
           title: 'Admin',
           slug: 'admin-users',
+          hasPermission: UsePermission('view_admin_listing'),
           icon: <Security size={18} />
         },
         {
           id: '7-4',
           title: 'Influencer',
           slug: 'influencer-users',
+          hasPermission: UsePermission('view_influencer_user_listing'),
           icon: <BsBuildings size={18} />
         }
       ]
@@ -235,7 +255,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
       id: 14,
       title: 'Configuration',
       slug: 'configuration',
-      hasPermission: UsePermission('view_slide_listing'),
+      hasPermission: CheckMulitplePermission(['view_slide_listing', 'view_conversion_listing']),
       icon: <IoLogoAmplify />,
       isSearch: false,
       children: [
@@ -243,13 +263,15 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
           id: '14-1',
           title: 'Slides',
           slug: 'slides',
+          hasPermission: UsePermission('view_slide_listing'),
           icon: <FaSlidersH />,
           isSearch: true
         },
         {
           id: '14-2',
-          title: 'Credits & Conversation',
+          title: 'Credits & Conversion',
           slug: 'credits',
+          hasPermission: UsePermission('view_conversion_listing'),
           icon: <MonetizationOn size={18} />,
           isSearch: true
         }
@@ -260,7 +282,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
       id: 15,
       title: 'Logs',
       slug: 'logs',
-      hasPermission: true,
+      hasPermission: CheckMulitplePermission(['view_spin_listing', 'view_transections_listing']),
       // need_permission: true,
       // permission_slug: 'view_slide_listing',
       icon: <Logs />,
@@ -270,6 +292,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
           id: '15-1',
           title: 'Spins',
           slug: 'spins',
+          hasPermission: UsePermission('view_spin_listing'),
           icon: <BsPlayCircle />,
           isSearch: true
         },
@@ -277,6 +300,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
           id: '15-2',
           title: 'Transections',
           slug: 'transections',
+          hasPermission: UsePermission('view_transections_listing'),
           icon: <SyncAlt size={18} />,
           isSearch: true
         }
@@ -426,8 +450,12 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
                   {/* Render children if User Management is active */}
                   {item.children && expandedParent === item.slug && (
                     <List sx={{ pl: open ? 4 : 0 }}>
-                      {item.children.map((child) => (
-                        <ListItem key={child.id} disablePadding>
+                      {item.children?.map((child) => (
+                        <ListItem
+                          style={{ display: `${child.hasPermission ? 'block' : 'none'}` }}
+                          key={child.id}
+                          disablePadding
+                        >
                           <Tooltip title={!open ? child.title : ''} placement="left" arrow leaveDelay={200}>
                             <ListItemButton
                               onClick={() => {
