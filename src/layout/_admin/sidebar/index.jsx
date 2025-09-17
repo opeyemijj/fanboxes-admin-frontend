@@ -154,6 +154,77 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
     },
 
     {
+      id: 10,
+      title: 'Orders',
+      slug: 'orders',
+      hasPermission: UsePermission('view_order_listing'),
+      icon: <BsCart3 />,
+      isSearch: true
+    },
+
+    {
+      id: 8,
+      title: 'Payouts',
+      slug: 'payouts',
+      hasPermission: UsePermission('view_payout_listing'),
+      icon: <BsCashCoin />,
+      isSearch: false
+    },
+    {
+      id: 9,
+      title: 'Brands',
+      slug: 'brands',
+      hasPermission: UsePermission('view_brand_listing'),
+      icon: <FaRegBuilding />,
+      isSearch: true
+    },
+    {
+      id: 12,
+      title: 'Currencies',
+      slug: 'currencies',
+      hasPermission: UsePermission('view_currency_listing'),
+      icon: <AiOutlineDollarCircle />,
+      isSearch: true
+    },
+    {
+      id: 11,
+      title: 'Coupon codes',
+      slug: 'coupon-codes',
+      hasPermission: UsePermission('view_copon_code_listing'),
+      icon: <RiCoupon5Line />,
+      isSearch: true
+    },
+
+    {
+      id: 15,
+      title: 'Logs',
+      slug: 'logs',
+      hasPermission: CheckMulitplePermission(['view_spin_listing', 'view_transections_listing']),
+      // need_permission: true,
+      // permission_slug: 'view_slide_listing',
+      icon: <Logs />,
+      isSearch: false,
+      children: [
+        {
+          id: '15-1',
+          title: 'Spins',
+          slug: 'spins',
+          hasPermission: UsePermission('view_spin_listing'),
+          icon: <BsPlayCircle />,
+          isSearch: true
+        },
+        {
+          id: '15-2',
+          title: 'Transections',
+          slug: 'transections',
+          hasPermission: UsePermission('view_transections_listing'),
+          icon: <SyncAlt size={18} />,
+          isSearch: true
+        }
+      ]
+    },
+
+    {
       id: 7,
       title: 'User Management',
       slug: 'user-management',
@@ -200,49 +271,6 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
     },
 
     {
-      id: 8,
-      title: 'Payouts',
-      slug: 'payouts',
-      hasPermission: UsePermission('view_payout_listing'),
-      icon: <BsCashCoin />,
-      isSearch: false
-    },
-    {
-      id: 9,
-      title: 'Brands',
-      slug: 'brands',
-      hasPermission: UsePermission('view_brand_listing'),
-      icon: <FaRegBuilding />,
-      isSearch: true
-    },
-
-    {
-      id: 10,
-      title: 'Orders',
-      slug: 'orders',
-      hasPermission: UsePermission('view_order_listing'),
-      icon: <BsCart3 />,
-      isSearch: true
-    },
-    {
-      id: 11,
-      title: 'Coupon codes',
-      slug: 'coupon-codes',
-      hasPermission: UsePermission('view_copon_code_listing'),
-      icon: <RiCoupon5Line />,
-      isSearch: true
-    },
-
-    {
-      id: 12,
-      title: 'Currencies',
-      slug: 'currencies',
-      hasPermission: UsePermission('view_currency_listing'),
-      icon: <AiOutlineDollarCircle />,
-      isSearch: true
-    },
-
-    {
       id: 13,
       title: 'Settings',
       slug: 'settings',
@@ -273,35 +301,6 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
           slug: 'credits',
           hasPermission: UsePermission('view_conversion_listing'),
           icon: <MonetizationOn size={18} />,
-          isSearch: true
-        }
-      ]
-    },
-
-    {
-      id: 15,
-      title: 'Logs',
-      slug: 'logs',
-      hasPermission: CheckMulitplePermission(['view_spin_listing', 'view_transections_listing']),
-      // need_permission: true,
-      // permission_slug: 'view_slide_listing',
-      icon: <Logs />,
-      isSearch: false,
-      children: [
-        {
-          id: '15-1',
-          title: 'Spins',
-          slug: 'spins',
-          hasPermission: UsePermission('view_spin_listing'),
-          icon: <BsPlayCircle />,
-          isSearch: true
-        },
-        {
-          id: '15-2',
-          title: 'Transections',
-          slug: 'transections',
-          hasPermission: UsePermission('view_transections_listing'),
-          icon: <SyncAlt size={18} />,
           isSearch: true
         }
       ]
