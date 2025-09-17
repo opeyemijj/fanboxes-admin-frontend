@@ -43,215 +43,6 @@ import { MonetizationOn, Person, ReceiptLong, Security, SyncAlt, Transcribe } fr
 import { UsePermission } from 'src/hooks/usePermission';
 
 // Dashboard Side NevLinks
-export const navlinks = [
-  {
-    id: 1,
-    title: 'Dashboard',
-    slug: 'dashboard',
-    icon: <LuLayoutDashboard />
-  },
-  {
-    id: 2,
-    title: 'Categories',
-    slug: 'categories',
-    need_permission: true,
-    permission_slug: 'view_category_listing',
-    icon: <TbCategory2 />,
-    isSearch: true
-  },
-  {
-    id: 3,
-    title: 'Sub Categories',
-    slug: 'sub-categories',
-    need_permission: true,
-    permission_slug: 'view_subcategory_listing',
-    icon: <TbCategory2 />,
-    isSearch: true
-  },
-
-  {
-    id: 4,
-    title: 'Influencers',
-    slug: 'shops',
-    need_permission: true,
-    permission_slug: 'view_influencer_listing',
-    icon: <BsBuildings />,
-    isSearch: true
-  },
-  {
-    id: 5,
-    title: 'Boxes',
-    slug: 'products',
-    need_permission: true,
-    permission_slug: 'view_box_listing',
-    icon: <BsShop />,
-    isSearch: true
-  },
-
-  // {
-  //   id: 6,
-  //   title: 'Spins',
-  //   slug: 'spins',
-  //   need_permission: true,
-  //   permission_slug: 'view_spin_listing',
-  //   icon: <BsPlayCircle />,
-  //   isSearch: true
-  // },
-  // {
-  //   id: 20,
-  //   title: 'Users',
-  //   slug: 'users',
-  //   icon: <User />,
-  //   isSearch: true
-  // },
-
-  {
-    id: 7,
-    title: 'User Management',
-    slug: 'user-management',
-    icon: <LuUsers />,
-    need_permission: true,
-    permission_slug: 'view_user_listing',
-    isSearch: true,
-    children: [
-      {
-        id: '7-1',
-        title: 'Roles',
-        slug: 'roles',
-        icon: <LuShield size={18} />,
-        isSearch: true
-      },
-      {
-        id: '7-2',
-        title: 'User',
-        slug: 'users',
-        icon: <User size={18} />
-      },
-      {
-        id: '7-3',
-        title: 'Admin',
-        slug: 'admin-users',
-        icon: <Security size={18} />
-      },
-      {
-        id: '7-4',
-        title: 'Influencer',
-        slug: 'influencer-users',
-        icon: <BsBuildings size={18} />
-      }
-    ]
-  },
-
-  {
-    id: 8,
-    title: 'Payouts',
-    slug: 'payouts',
-    need_permission: true,
-    permission_slug: 'view_payout_listing',
-    icon: <BsCashCoin />,
-    isSearch: false
-  },
-  {
-    id: 9,
-    title: 'Brands',
-    slug: 'brands',
-    need_permission: true,
-    permission_slug: 'view_brand_listing',
-    icon: <FaRegBuilding />,
-    isSearch: true
-  },
-
-  {
-    id: 10,
-    title: 'Orders',
-    slug: 'orders',
-    need_permission: true,
-    permission_slug: 'view_order_listing',
-    icon: <BsCart3 />,
-    isSearch: true
-  },
-  {
-    id: 11,
-    title: 'Coupon codes',
-    slug: 'coupon-codes',
-    need_permission: true,
-    permission_slug: 'view_copon_code_listing',
-    icon: <RiCoupon5Line />,
-    isSearch: true
-  },
-
-  {
-    id: 12,
-    title: 'Currencies',
-    slug: 'currencies',
-    need_permission: true,
-    permission_slug: 'view_currency_listing',
-    icon: <AiOutlineDollarCircle />,
-    isSearch: true
-  },
-
-  {
-    id: 13,
-    title: 'Settings',
-    slug: 'settings',
-    need_permission: true,
-    permission_slug: 'settings',
-    icon: <IoSettingsOutline />,
-    isSearch: false
-  },
-
-  {
-    id: 14,
-    title: 'Configuration',
-    slug: 'configuration',
-    need_permission: true,
-    permission_slug: 'view_slide_listing',
-    icon: <IoLogoAmplify />,
-    isSearch: false,
-    children: [
-      {
-        id: '14-1',
-        title: 'Slides',
-        slug: 'slides',
-        icon: <FaSlidersH />,
-        isSearch: true
-      },
-      {
-        id: '14-2',
-        title: 'Credits & Conversation',
-        slug: 'credits',
-        icon: <MonetizationOn size={18} />,
-        isSearch: true
-      }
-    ]
-  },
-
-  {
-    id: 15,
-    title: 'Logs',
-    slug: 'logs',
-    // need_permission: true,
-    // permission_slug: 'view_slide_listing',
-    icon: <Logs />,
-    isSearch: false,
-    children: [
-      {
-        id: '15-1',
-        title: 'Spins',
-        slug: 'spins',
-        icon: <BsPlayCircle />,
-        isSearch: true
-      },
-      {
-        id: '15-2',
-        title: 'Transections',
-        slug: 'transections',
-        icon: <SyncAlt size={18} />,
-        isSearch: true
-      }
-    ]
-  }
-];
 
 const drawerWidth = 240;
 const openedMixin = (theme) => ({
@@ -309,6 +100,190 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
+  const navlinks = [
+    {
+      id: 1,
+      title: 'Dashboard',
+      hasPermission: true,
+      slug: 'dashboard',
+      icon: <LuLayoutDashboard />
+    },
+    {
+      id: 2,
+      title: 'Categories',
+      slug: 'categories',
+      hasPermission: UsePermission('view_category_listing'),
+      icon: <TbCategory2 />,
+      isSearch: true
+    },
+    {
+      id: 3,
+      title: 'Sub Categories',
+      slug: 'sub-categories',
+      hasPermission: UsePermission('view_subcategory_listing'),
+      icon: <TbCategory2 />,
+      isSearch: true
+    },
+
+    {
+      id: 4,
+      title: 'Influencers',
+      slug: 'shops',
+      hasPermission: UsePermission('view_influencer_listing'),
+      icon: <BsBuildings />,
+      isSearch: true
+    },
+    {
+      id: 5,
+      title: 'Boxes',
+      slug: 'products',
+      hasPermission: UsePermission('view_box_listing'),
+      icon: <BsShop />,
+      isSearch: true
+    },
+
+    {
+      id: 7,
+      title: 'User Management',
+      slug: 'user-management',
+      icon: <LuUsers />,
+      need_permission: true,
+      hasPermission: UsePermission('view_user_listing'),
+      isSearch: true,
+      children: [
+        {
+          id: '7-1',
+          title: 'Roles',
+          slug: 'roles',
+          icon: <LuShield size={18} />,
+          isSearch: true
+        },
+        {
+          id: '7-2',
+          title: 'User',
+          slug: 'users',
+          icon: <User size={18} />
+        },
+        {
+          id: '7-3',
+          title: 'Admin',
+          slug: 'admin-users',
+          icon: <Security size={18} />
+        },
+        {
+          id: '7-4',
+          title: 'Influencer',
+          slug: 'influencer-users',
+          icon: <BsBuildings size={18} />
+        }
+      ]
+    },
+
+    {
+      id: 8,
+      title: 'Payouts',
+      slug: 'payouts',
+      hasPermission: UsePermission('view_payout_listing'),
+      icon: <BsCashCoin />,
+      isSearch: false
+    },
+    {
+      id: 9,
+      title: 'Brands',
+      slug: 'brands',
+      hasPermission: UsePermission('view_brand_listing'),
+      icon: <FaRegBuilding />,
+      isSearch: true
+    },
+
+    {
+      id: 10,
+      title: 'Orders',
+      slug: 'orders',
+      hasPermission: UsePermission('view_order_listing'),
+      icon: <BsCart3 />,
+      isSearch: true
+    },
+    {
+      id: 11,
+      title: 'Coupon codes',
+      slug: 'coupon-codes',
+      hasPermission: UsePermission('view_copon_code_listing'),
+      icon: <RiCoupon5Line />,
+      isSearch: true
+    },
+
+    {
+      id: 12,
+      title: 'Currencies',
+      slug: 'currencies',
+      hasPermission: UsePermission('view_currency_listing'),
+      icon: <AiOutlineDollarCircle />,
+      isSearch: true
+    },
+
+    {
+      id: 13,
+      title: 'Settings',
+      slug: 'settings',
+      hasPermission: UsePermission('settings'),
+      icon: <IoSettingsOutline />,
+      isSearch: false
+    },
+
+    {
+      id: 14,
+      title: 'Configuration',
+      slug: 'configuration',
+      hasPermission: UsePermission('view_slide_listing'),
+      icon: <IoLogoAmplify />,
+      isSearch: false,
+      children: [
+        {
+          id: '14-1',
+          title: 'Slides',
+          slug: 'slides',
+          icon: <FaSlidersH />,
+          isSearch: true
+        },
+        {
+          id: '14-2',
+          title: 'Credits & Conversation',
+          slug: 'credits',
+          icon: <MonetizationOn size={18} />,
+          isSearch: true
+        }
+      ]
+    },
+
+    {
+      id: 15,
+      title: 'Logs',
+      slug: 'logs',
+      hasPermission: true,
+      // need_permission: true,
+      // permission_slug: 'view_slide_listing',
+      icon: <Logs />,
+      isSearch: false,
+      children: [
+        {
+          id: '15-1',
+          title: 'Spins',
+          slug: 'spins',
+          icon: <BsPlayCircle />,
+          isSearch: true
+        },
+        {
+          id: '15-2',
+          title: 'Transections',
+          slug: 'transections',
+          icon: <SyncAlt size={18} />,
+          isSearch: true
+        }
+      ]
+    }
+  ];
+
   const theme = useTheme();
   const router = useRouter();
   const pathname = usePathname();
@@ -394,7 +369,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
                   <ListItem
                     disablePadding
                     sx={{
-                      display: `${!item?.need_permission ? 'block' : UsePermission(item?.permission_slug) ? 'block' : 'none'}`,
+                      display: `${item.hasPermission ? 'block' : 'none'}`,
                       borderRadius: '8px',
                       border: `1px solid transparent`,
                       ...(active === '/admin/' + item.slug &&
