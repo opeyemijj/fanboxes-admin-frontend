@@ -139,8 +139,8 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
             >
               <BlurImage
                 alt={row?.winningItem?.name}
-                blurDataURL={row?.winningItem?.images[0]?.blurDataURL}
-                placeholder="blur"
+                blurDataURL={row?.winningItem?.images[0]?.blurDataURL || ''}
+                // placeholder={row?.winningItem?.images[0]?.blurDataURL ? 'blur' : ''}
                 src={row?.winningItem?.images[0]?.url}
                 layout="fill"
                 objectFit="cover"

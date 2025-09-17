@@ -75,7 +75,7 @@ export default function TransectionRow({ isLoading, row, handleClickOpen, sn }) 
         {isLoading ? (
           <Skeleton variant="text" />
         ) : (
-          <>{capitalize(row?.userData?.firstName + ' ' + row?.userData?.lastName)}</>
+          <>{capitalize(row?.userData?.firstName || '' + ' ' + row?.userData?.lastName || '') || ''}</>
         )}
       </TableCell>
 
@@ -84,9 +84,11 @@ export default function TransectionRow({ isLoading, row, handleClickOpen, sn }) 
 
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.description}</>}</TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.referenceId}</>}</TableCell>
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.status}</>}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{capitalize(row?.status)}</>}</TableCell>
 
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{formatDateToDDYYYYMM(row?.createdAt)}</>}</TableCell>
+      <TableCell>
+        {isLoading ? <Skeleton variant="text" /> : <>{formatDateToDDYYYYMM(row?.createdAt) || ''}</>}
+      </TableCell>
 
       {/* <TableCell align="left">
         {isLoading ? (
@@ -134,10 +136,7 @@ TransectionRow.propTypes = {
     price: PropTypes.number.isRequired,
     slug: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
-    vendor: PropTypes.object.isRequired,
-    status: PropTypes.object.isRequired,
-    approved: PropTypes.bool.isRequired,
-    approvedAt: PropTypes.string.isRequired
+    status: PropTypes.object.isRequired
   }).isRequired,
   handleClickOpen: PropTypes.func.isRequired
 };
