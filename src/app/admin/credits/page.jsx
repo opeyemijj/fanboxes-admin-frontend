@@ -14,19 +14,19 @@ export const metadata = {
 };
 
 export default function Categories() {
-  // const canView = UsePermissionServer('view_category_listing'); // check required permission
+  const canView = UsePermissionServer('view_conversion_listing'); // check required permission
 
-  // if (!canView) {
-  //   return <AccessDenied message="You are not allowed to manage Category." redirect="/admin/dashboard" />;
-  // }
+  if (!canView) {
+    return <AccessDenied message="You are not allowed to manage Credits & Conversion." redirect="/admin/dashboard" />;
+  }
 
-  const canAddCategory = UsePermissionServer('add_new_category');
+  const canAddConversion = UsePermissionServer('add_new_conversion');
 
   return (
     <>
       <HeaderBreadcrumbs
         admin
-        heading="Credits & Conversionis"
+        heading="Credits & Conversions"
         links={[
           {
             name: 'Dashboard',
@@ -36,10 +36,14 @@ export default function Categories() {
             name: 'Credits'
           }
         ]}
-        action={{
-          href: `/admin/credits/add`,
-          title: 'Add Converstion'
-        }}
+        action={
+          canAddConversion
+            ? {
+                href: `/admin/credits/add`,
+                title: 'Add'
+              }
+            : null
+        }
       />
 
       <CreditList />

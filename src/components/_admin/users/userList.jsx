@@ -65,8 +65,6 @@ export default function AdminProducts({ userType }) {
     }
   );
 
-  console.log(data, 'Check the data');
-
   const [id, setId] = useState(null);
 
   const { mutate, isLoading: roleLoading } = useMutation(api.updateUserRoleByAdmin, {

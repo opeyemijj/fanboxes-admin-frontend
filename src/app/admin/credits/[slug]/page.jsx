@@ -29,10 +29,10 @@ export default function Page({ params }) {
 
   console.log(data, 'Check the edit data');
 
-  // const canAdd = UsePermission('edit_category');
-  // if (!canAdd) {
-  //   return <AccessDenied message="You are not allowed to edit Category." redirect="/admin/dashboard" />;
-  // }
+  const canAdd = UsePermission('edit_conversion');
+  if (!canAdd) {
+    return <AccessDenied message="You are not allowed to edit conversion." redirect="/admin/dashboard" />;
+  }
 
   return (
     <div>

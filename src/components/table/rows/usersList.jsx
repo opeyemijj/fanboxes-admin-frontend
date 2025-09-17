@@ -46,6 +46,7 @@ export default function UserRow({ isLoading, row, setId, handleClickOpenStatus, 
   const canViewDetails = UsePermission('view_user_details');
 
   const canEditAdmin = UsePermission('edit_admin_user');
+  const canTopUp = UsePermission('top_up');
   const canApprove = UsePermission('approve_user');
   const router = useRouter();
 
@@ -135,7 +136,7 @@ export default function UserRow({ isLoading, row, setId, handleClickOpenStatus, 
                 </Tooltip>
               )}
 
-              {userType === 'user' && (
+              {userType === 'user' && canTopUp && (
                 <Tooltip title="Top Up">
                   <IconButton onClick={() => handleClickOpenTopUp(row)}>
                     <Wallet />

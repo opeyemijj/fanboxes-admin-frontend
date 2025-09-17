@@ -47,8 +47,8 @@ const ThumbImgStyle = styled(Box)(({ theme }) => ({
   overflow: 'hidden'
 }));
 export default function Category({ isLoading, row, handleClickOpen, sn }) {
-  const canEdit = UsePermission('edit_category');
-  const canDelete = UsePermission('delete_category');
+  const canEdit = UsePermission('edit_conversion');
+  const canDelete = UsePermission('delete_conversion');
   const router = useRouter();
   const theme = useTheme();
   return (
