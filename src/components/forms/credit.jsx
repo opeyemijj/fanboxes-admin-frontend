@@ -46,7 +46,7 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 }));
 
 const STATUS_OPTIONS = ['active', 'deactive'];
-const CONVERSION_TYPE_OPTIONS = ['base', 'refund', 'shipping'];
+const CONVERSION_TYPE_OPTIONS = ['credit rate', 'refund', 'shipping'];
 const VALUE_TYPE_OPTIONS = ['number', 'percentage'];
 
 export default function CreditForm({ data: currentConversion, isLoading: creditLoading }) {
@@ -124,8 +124,8 @@ export default function CreditForm({ data: currentConversion, isLoading: creditL
           <Grid container spacing={2}>
             <Grid item xs={12} md={12}>
               <Card sx={{ p: 3 }}>
-                <Stack spacing={3}>
-                  <Grid container spacing={2}>
+                <Stack>
+                  <Grid container spacing={1}>
                     {/* Name Field */}
                     <Grid item xs={12} md={6}>
                       <Stack spacing={1}>
@@ -185,32 +185,7 @@ export default function CreditForm({ data: currentConversion, isLoading: creditL
                       </Stack>
                     </Grid>
 
-                    {/* value Field */}
-                    <Grid item xs={12} md={6}>
-                      <Stack spacing={1}>
-                        {creditLoading ? (
-                          <Skeleton variant="text" width={140} />
-                        ) : (
-                          <LabelStyle component="label" htmlFor="conversion-value">
-                            Value
-                          </LabelStyle>
-                        )}
-
-                        {creditLoading ? (
-                          <Skeleton variant="rectangular" width="100%" height={56} />
-                        ) : (
-                          <TextField
-                            id="conversion-value"
-                            fullWidth
-                            {...getFieldProps('value')}
-                            error={Boolean(touched.value && errors.value)}
-                            helperText={touched.value && errors.value}
-                          />
-                        )}
-                      </Stack>
-                    </Grid>
-
-                    {/* Value Field */}
+                    {/* Value Type Field */}
                     <Grid item xs={12} md={6}>
                       <Stack spacing={1}>
                         {creditLoading ? (
@@ -242,6 +217,31 @@ export default function CreditForm({ data: currentConversion, isLoading: creditL
                               <FormHelperText error>{errors.valueType}</FormHelperText>
                             )}
                           </FormControl>
+                        )}
+                      </Stack>
+                    </Grid>
+
+                    {/* value Field */}
+                    <Grid item xs={12} md={6}>
+                      <Stack spacing={1}>
+                        {creditLoading ? (
+                          <Skeleton variant="text" width={140} />
+                        ) : (
+                          <LabelStyle component="label" htmlFor="conversion-value">
+                            Value
+                          </LabelStyle>
+                        )}
+
+                        {creditLoading ? (
+                          <Skeleton variant="rectangular" width="100%" height={56} />
+                        ) : (
+                          <TextField
+                            id="conversion-value"
+                            fullWidth
+                            {...getFieldProps('value')}
+                            error={Boolean(touched.value && errors.value)}
+                            helperText={touched.value && errors.value}
+                          />
                         )}
                       </Stack>
                     </Grid>
