@@ -54,18 +54,8 @@ export default function Category({ isLoading, row, handleClickOpen, sn }) {
   return (
     <TableRow hover key={Math.random()}>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
-      <TableCell component="th" scope="row">
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center'
-          }}
-        >
-          <Typography variant="subtitle2" noWrap>
-            {isLoading ? <Skeleton variant="text" width={120} sx={{ ml: 1 }} /> : row?.name}
-          </Typography>
-        </Box>
-      </TableCell>
+
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : capitalize(row.name)}</TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : capitalize(row.type)}</TableCell>
       <TableCell>
         {isLoading ? <Skeleton variant="text" /> : `${row.value} ${row.valueType === 'percentage' ? '%' : ''}`}

@@ -99,7 +99,7 @@ export default function Dashboard({ isVendor }) {
           <Grid item xs={12} sm={isVendor ? 12 : 6} md={3}>
             <DashboardCard
               color="success"
-              title="Total Vendors"
+              title="Total Influencers"
               value={totalVendors}
               icon={<GrWorkshop size={24} />}
               isLoading={isLoading}

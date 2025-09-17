@@ -38,7 +38,7 @@ export default function Page({ params }) {
     <div>
       <HeaderBreadcrumbs
         admin
-        heading="Edit Credit"
+        heading="Edit"
         links={[
           {
             name: 'Dashboard',

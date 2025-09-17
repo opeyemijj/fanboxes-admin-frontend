@@ -14,16 +14,16 @@ export const metadata = {
 };
 
 export default function page() {
-  // const canAdd = UsePermissionServer('add_new_category');
-  // if (!canAdd) {
-  //   return <AccessDenied message="You are not allowed to add Category." redirect="/admin/dashboard" />;
-  // }
+  const canAdd = UsePermissionServer('add_new_conversion');
+  if (!canAdd) {
+    return <AccessDenied message="You are not allowed to add conversion." redirect="/admin/dashboard" />;
+  }
 
   return (
     <div>
       <HeaderBreadcrumbs
         admin
-        heading="Add Converstion"
+        heading="Add"
         links={[
           {
             name: 'Dashboard',

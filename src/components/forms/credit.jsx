@@ -46,7 +46,12 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 }));
 
 const STATUS_OPTIONS = ['active', 'deactive'];
-const CONVERSION_TYPE_OPTIONS = ['credit rate', 'refund', 'shipping'];
+// const CONVERSION_TYPE_OPTIONS = ['credit rate', 'refund', 'shipping'];
+const CONVERSION_TYPE_OPTIONS = [
+  { key: 'credit rate', valueType: 'number', label: 'Enter USD value for 1 Credit' },
+  { key: 'refund', valueType: 'percentage', label: 'Sell-back Refund Deduction (%)' },
+  { key: 'shipping', valueType: 'percentage', label: 'Shipping Cost (Fixed or % of Item Value)' }
+];
 const VALUE_TYPE_OPTIONS = ['number', 'percentage'];
 
 export default function CreditForm({ data: currentConversion, isLoading: creditLoading }) {
@@ -91,8 +96,8 @@ export default function CreditForm({ data: currentConversion, isLoading: creditL
     initialValues: {
       name: currentConversion?.name || '',
       value: currentConversion?.value || '',
-      type: currentConversion?.type || CONVERSION_TYPE_OPTIONS[0],
-      valueType: currentConversion?.valueType || VALUE_TYPE_OPTIONS[0]
+      type: currentConversion?.type || CONVERSION_TYPE_OPTIONS[0]?.key,
+      valueType: currentConversion?.valueType || CONVERSION_TYPE_OPTIONS[0]?.valueType
     },
     enableReinitialize: true,
     validationSchema: NewCategorySchema,
@@ -158,7 +163,7 @@ export default function CreditForm({ data: currentConversion, isLoading: creditL
                           <Skeleton variant="text" width={70} />
                         ) : (
                           <LabelStyle component="label" htmlFor="type">
-                            Conversion Type
+                            Type
                           </LabelStyle>
                         )}
 
@@ -169,16 +174,27 @@ export default function CreditForm({ data: currentConversion, isLoading: creditL
                             <Select
                               id="type"
                               native
-                              {...getFieldProps('type')}
+                              value={values.type}
+                              onChange={(e) => {
+                                const selectedType = e.target.value;
+                                setFieldValue('type', selectedType);
+
+                                // auto set valueType from CONVERSION_TYPE_OPTIONS
+                                const matched = CONVERSION_TYPE_OPTIONS.find((opt) => opt.key === selectedType);
+                                if (matched) {
+                                  setFieldValue('valueType', matched.valueType);
+                                }
+                              }}
                               error={Boolean(touched.type && errors.type)}
                             >
                               <option value="" style={{ display: 'none' }} />
-                              {CONVERSION_TYPE_OPTIONS?.map((type) => (
-                                <option key={type} value={type}>
-                                  {type}
+                              {CONVERSION_TYPE_OPTIONS.map((opt) => (
+                                <option key={opt.key} value={opt.key}>
+                                  {opt.key}
                                 </option>
                               ))}
                             </Select>
+
                             {touched.type && errors.type && <FormHelperText error>{errors.type}</FormHelperText>}
                           </FormControl>
                         )}
@@ -186,7 +202,7 @@ export default function CreditForm({ data: currentConversion, isLoading: creditL
                     </Grid>
 
                     {/* Value Type Field */}
-                    <Grid item xs={12} md={6}>
+                    <Grid mt={2} item xs={12} md={6}>
                       <Stack spacing={1}>
                         {creditLoading ? (
                           <Skeleton variant="text" width={70} />
@@ -203,16 +219,18 @@ export default function CreditForm({ data: currentConversion, isLoading: creditL
                             <Select
                               id="value-type"
                               native
-                              {...getFieldProps('valueType')}
+                              value={values.valueType}
+                              onChange={(e) => setFieldValue('valueType', e.target.value)} // user can override
                               error={Boolean(touched.valueType && errors.valueType)}
                             >
                               <option value="" style={{ display: 'none' }} />
-                              {VALUE_TYPE_OPTIONS?.map((valueType) => (
-                                <option key={valueType} value={valueType}>
-                                  {valueType}
+                              {VALUE_TYPE_OPTIONS.map((val) => (
+                                <option key={val} value={val}>
+                                  {val}
                                 </option>
                               ))}
                             </Select>
+
                             {touched.valueType && errors.valueType && (
                               <FormHelperText error>{errors.valueType}</FormHelperText>
                             )}
@@ -222,13 +240,13 @@ export default function CreditForm({ data: currentConversion, isLoading: creditL
                     </Grid>
 
                     {/* value Field */}
-                    <Grid item xs={12} md={6}>
+                    <Grid mt={2} item xs={12} md={6}>
                       <Stack spacing={1}>
                         {creditLoading ? (
                           <Skeleton variant="text" width={140} />
                         ) : (
                           <LabelStyle component="label" htmlFor="conversion-value">
-                            Value
+                            {CONVERSION_TYPE_OPTIONS?.find((item) => item.key === formik?.values?.type)?.label}
                           </LabelStyle>
                         )}
 
@@ -260,7 +278,7 @@ export default function CreditForm({ data: currentConversion, isLoading: creditL
                 loading={isLoading}
                 sx={{ ml: 'auto', mt: 3 }}
               >
-                {currentConversion ? 'Edit Conferstion' : 'Create Conversion'}
+                {currentConversion ? 'Edit' : 'Create'}
               </LoadingButton>
             )}
           </Grid>
