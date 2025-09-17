@@ -78,22 +78,53 @@ export default function TransectionRow({ isLoading, row, handleClickOpen, sn }) 
     <TableRow hover key={Math.random()}>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
 
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{capitalize(row?.transactionType)}</>}</TableCell>
+      <TableCell>
+        {isLoading ? (
+          <Skeleton variant="text" />
+        ) : (
+          <>
+            <Label
+              sx={{
+                bgcolor: row?.transactionType === 'credit' ? 'success.light' : 'error.light',
+                color: row?.transactionType === 'credit' ? 'success.dark' : 'white'
+              }}
+            >
+              {capitalize(row?.transactionType)}
+            </Label>
+          </>
+        )}
+      </TableCell>
 
       <TableCell>
         {isLoading ? (
           <Skeleton variant="text" />
         ) : (
-          <>{capitalize(row?.userData?.firstName || '' + ' ' + row?.userData?.lastName || '') || ''}</>
+          <>{capitalize(row?.userData?.firstName + ' ' + row?.userData?.lastName) || ''}</>
         )}
       </TableCell>
 
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{capitalize(row?.paymentMethod)}</>}</TableCell>
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.amount}</>}</TableCell>
+      <TableCell>
+        {isLoading ? (
+          <Skeleton variant="text" />
+        ) : (
+          <>{row?.transactionType === 'credit' ? '+' + row.amount : '-' + row.amount}</>
+        )}
+      </TableCell>
 
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.description}</>}</TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.referenceId}</>}</TableCell>
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{capitalize(row?.status)}</>}</TableCell>
+      <TableCell>
+        {isLoading ? (
+          <Skeleton variant="text" />
+        ) : (
+          <>
+            <Label sx={{ bgcolor: row?.status === 'completed' ? 'success.light' : 'warning.light' }}>
+              {capitalize(row?.status)}
+            </Label>
+          </>
+        )}
+      </TableCell>
 
       <TableCell>
         {isLoading ? <Skeleton variant="text" /> : <>{formatDateToDDYYYYMM(row?.createdAt) || ''}</>}
