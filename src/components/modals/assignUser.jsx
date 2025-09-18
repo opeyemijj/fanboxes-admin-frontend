@@ -67,7 +67,7 @@ export default function AssignUsersModal({ open, onClose, markItem, onAssign, as
 
   const handleAssign = () => {
     onAssign({
-      slug: markItem?.slug,
+      slug: markItem?.slug || markItem?._id,
       selectedUsers,
       selectedUserDetails
     });

@@ -52,7 +52,8 @@ export default function ProductRow({
     handleClickOpenStatus,
     handleClickOddsVisibility,
     oddsVisibileLoading,
-    handleClickOpenBanned
+    handleClickOpenBanned,
+    openAssignUsers
   }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);

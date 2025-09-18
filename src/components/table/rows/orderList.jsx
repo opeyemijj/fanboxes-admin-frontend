@@ -6,6 +6,8 @@ import { useRouter } from 'next-nprogress-bar';
 import { useTheme, styled } from '@mui/material/styles';
 import { Box, TableRow, Skeleton, TableCell, Typography, Stack, IconButton, Tooltip } from '@mui/material';
 
+import { Menu, MenuItem, ListItemText, Switch } from '@mui/material';
+
 // components
 
 import Label from 'src/components/label';
@@ -17,6 +19,7 @@ import { fCurrency } from 'src/utils/formatNumber';
 
 // icons
 import { IoEye } from 'react-icons/io5';
+import { GroupAdd } from '@mui/icons-material';
 
 OrderList.propTypes = {
   isLoading: PropTypes.bool.isRequired,
@@ -51,7 +54,7 @@ const ThumbImgStyle = styled(Box)(({ theme }) => ({
   position: 'relative',
   overflow: 'hidden'
 }));
-export default function OrderList({ isLoading, row, isUser, isVendor }) {
+export default function OrderList({ isLoading, row, isUser, isVendor, openAssignUsers }) {
   const theme = useTheme();
   const router = useRouter();
   return (
@@ -68,29 +71,29 @@ export default function OrderList({ isLoading, row, isUser, isVendor }) {
             <Skeleton variant="rectangular" width={50} height={50} sx={{ borderRadius: 1 }} />
           ) : (
             <ThumbImgStyle>
-              <BlurImage
+              {/* <BlurImage
                 priority
                 fill
-                alt={row.items[0]?.name}
-                src={row.items[0].cover || row.items[0]?.imageUrl}
+                alt={row?.items[0]?.name}
+                src={row?.items[0]?.cover || row.items[0]?.imageUrl}
                 objectFit="cover"
-              />
+              /> */}
             </ThumbImgStyle>
           )}
           <Typography variant="subtitle2" noWrap>
             {isLoading ? (
               <Skeleton variant="text" width={120} sx={{ ml: 1 }} />
             ) : !isUser ? (
-              row.user.firstName + ' ' + row.user.lastName
+              row?.user?.firstName + ' ' + row?.user?.lastName
             ) : (
-              row.items[0]?.name
+              row?.items[0]?.name
             )}
           </Typography>
         </Box>
       </TableCell>
 
       <TableCell>{isLoading ? <Skeleton variant="text" /> : fCurrency(row.total)}</TableCell>
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : row.items.length}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.items?.length}</TableCell>
       <TableCell>
         {isLoading ? (
           <Skeleton variant="text" />
@@ -115,11 +118,20 @@ export default function OrderList({ isLoading, row, isUser, isVendor }) {
           {isLoading ? (
             <Skeleton variant="circular" width={34} height={34} sx={{ mr: 1 }} />
           ) : (
-            <Tooltip title="Preview">
-              <IconButton onClick={() => router.push(`/${isVendor ? 'vendor' : 'admin'}/orders/${row._id}`)}>
-                <IoEye />
-              </IconButton>
-            </Tooltip>
+            <>
+              <Tooltip title="Assign To">
+                <MenuItem style={{ marginLeft: 3 }} onClick={() => openAssignUsers(row)}>
+                  <GroupAdd style={{ marginRight: 10, width: 30 }} size={25} color="primary" />{' '}
+                  {/* <ListItemText style={{ marginLeft: 0 }}>Assign To</ListItemText> */}
+                </MenuItem>
+              </Tooltip>
+
+              {/* <Tooltip title="Preview">
+                <IconButton onClick={() => router.push(`/${isVendor ? 'vendor' : 'admin'}/orders/${row._id}`)}>
+                  <IoEye />
+                </IconButton>
+              </Tooltip> */}
+            </>
           )}
         </Stack>
       </TableCell>
