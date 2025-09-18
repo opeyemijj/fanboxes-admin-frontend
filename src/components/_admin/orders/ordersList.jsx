@@ -14,10 +14,16 @@ import * as api from 'src/services';
 import { useQueryClient, useMutation, useQuery } from 'react-query';
 import AssignUsersModal from 'src/components/modals/assignUser';
 const TABLE_HEAD = [
-  { id: 'name', label: 'User', alignRight: false },
-  { id: 'total', label: 'Total', alignRight: false, sort: true },
+  { id: 'orderNo', label: 'Order No', alignRight: false },
   { id: 'items', label: 'items', alignRight: false },
-  // { id: 'inventoryType', label: 'status', alignRight: false, sort: true },
+  { id: 'name', label: 'User', alignRight: false },
+  { id: 'transaction', label: 'Transaction Category', alignRight: false, sort: true },
+  { id: 'transactionAmount', label: 'Amount', alignRight: false, sort: true },
+  { id: 'paymentMethod', label: 'Payment Method', alignRight: false, sort: true },
+  { id: 'transactionStatus', label: 'Transaction Status', alignRight: false, sort: true },
+  { id: 'totalAmountPaid', label: 'Amount Paid', alignRight: false, sort: true },
+
+  { id: 'inventoryType', label: 'status', alignRight: false, sort: true },
   { id: 'createdAt', label: 'Date', alignRight: false, sort: true },
   { id: '', label: 'actions', alignRight: true }
 ];
@@ -34,6 +40,8 @@ export default function OrdersAdminList({ isVendor, shops }) {
       onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
     }
   );
+
+  console.log(data, 'Checking the data');
   const [open, setOpen] = useState(false);
   const [openAssignTo, setOpenAssignedTo] = useState(false);
   const [markUser, setMarkUser] = useState(null);

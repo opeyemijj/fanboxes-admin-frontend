@@ -20,6 +20,7 @@ import { fCurrency } from 'src/utils/formatNumber';
 // icons
 import { IoEye } from 'react-icons/io5';
 import { GroupAdd } from '@mui/icons-material';
+import { capitalize } from 'lodash';
 
 OrderList.propTypes = {
   isLoading: PropTypes.bool.isRequired,
@@ -54,11 +55,15 @@ const ThumbImgStyle = styled(Box)(({ theme }) => ({
   position: 'relative',
   overflow: 'hidden'
 }));
-export default function OrderList({ isLoading, row, isUser, isVendor, openAssignUsers }) {
+export default function OrderList({ isLoading, row, isUser, sn, isVendor, openAssignUsers }) {
   const theme = useTheme();
   const router = useRouter();
   return (
     <TableRow hover key={Math.random()}>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
+
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.orderNo}</TableCell>
+
       <TableCell component="th" scope="row">
         <Box
           sx={{
@@ -71,29 +76,29 @@ export default function OrderList({ isLoading, row, isUser, isVendor, openAssign
             <Skeleton variant="rectangular" width={50} height={50} sx={{ borderRadius: 1 }} />
           ) : (
             <ThumbImgStyle>
-              {/* <BlurImage
+              <BlurImage
                 priority
                 fill
                 alt={row?.items[0]?.name}
-                src={row?.items[0]?.cover || row.items[0]?.imageUrl}
+                src={row?.items[0]?.images[0]?.url}
                 objectFit="cover"
-              /> */}
+              />
             </ThumbImgStyle>
           )}
-          <Typography variant="subtitle2" noWrap>
-            {isLoading ? (
-              <Skeleton variant="text" width={120} sx={{ ml: 1 }} />
-            ) : !isUser ? (
-              row?.user?.firstName + ' ' + row?.user?.lastName
-            ) : (
-              row?.items[0]?.name
-            )}
-          </Typography>
         </Box>
       </TableCell>
 
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : fCurrency(row.total)}</TableCell>
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.items?.length}</TableCell>
+      <TableCell>
+        {isLoading ? <Skeleton variant="text" /> : `${row?.user?.firstName + ' ' + row?.user?.lastName}`}
+      </TableCell>
+
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : capitalize(row?.transaction?.category)}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.transaction?.amount}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.transaction?.paymentMethod}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : capitalize(row?.transaction?.status)}</TableCell>
+
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.totalAmountPaid}</TableCell>
+
       <TableCell>
         {isLoading ? (
           <Skeleton variant="text" />
