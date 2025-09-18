@@ -87,7 +87,6 @@ export default function SlideForm({ data: currentSlide, isLoading: slideLoading 
     buttonText: Yup.string().optional().max(50, 'Max button text caracter 50'),
     buttonLink: Yup.string().optional().url('Please enter a valid URL (e.g., https://example.com)'),
     description: Yup.string().optional().max(200, 'Title max character limit 200'),
-    status: Yup.string().required('Status is required'),
     images: Yup.array().min(1, 'Image is required')
   });
 
@@ -170,7 +169,7 @@ export default function SlideForm({ data: currentSlide, isLoading: slideLoading 
         _id: uploaded._id
       }));
 
-      console.log(newImages, 'Is it uploading');
+      // console.log(newImages, 'Is it uploading');
 
       // Merge with existing images
       setFieldValue('images', values.images.concat(newImages[0]));
@@ -230,29 +229,8 @@ export default function SlideForm({ data: currentSlide, isLoading: slideLoading 
                       helperText={touched.buttonText && errors.buttonText}
                     />
                   </Grid>
-                  <Grid item xs={12} md={6}>
-                    <LabelStyle component="label" htmlFor="status">
-                      Status
-                    </LabelStyle>
-                    <FormControl fullWidth sx={{ textTransform: 'capitalize' }}>
-                      <Select
-                        id="status"
-                        native
-                        {...getFieldProps('status')}
-                        error={Boolean(touched.status && errors.status)}
-                      >
-                        <option value="" style={{ display: 'none' }} />
-                        {STATUS_OPTIONS.map((status) => (
-                          <option key={status} value={status}>
-                            {status}
-                          </option>
-                        ))}
-                      </Select>
-                      {touched.status && errors.status && <FormHelperText error>{errors.status}</FormHelperText>}
-                    </FormControl>
-                  </Grid>
 
-                  <Grid item xs={12} md={12}>
+                  <Grid item xs={12} md={6}>
                     <LabelStyle component="label" htmlFor="button-link">
                       Button Link
                     </LabelStyle>

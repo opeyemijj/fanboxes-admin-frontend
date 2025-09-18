@@ -215,7 +215,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
         },
         {
           id: '15-2',
-          title: 'Transections',
+          title: 'Transactions',
           slug: 'transections',
           hasPermission: UsePermission('view_transections_listing'),
           icon: <SyncAlt size={18} />,
