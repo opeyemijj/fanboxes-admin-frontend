@@ -25,7 +25,7 @@ export default function page() {
     <>
       <HeaderBreadcrumbs
         admin
-        heading="Users List"
+        heading="Admin List"
         links={[
           {
             name: 'Dashboard',

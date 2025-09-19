@@ -22,7 +22,7 @@ export default function page() {
     <>
       <HeaderBreadcrumbs
         admin
-        heading="Users List"
+        heading="Influencer List"
         links={[
           {
             name: 'Dashboard',
