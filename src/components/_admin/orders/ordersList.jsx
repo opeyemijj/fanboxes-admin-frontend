@@ -106,7 +106,8 @@ export default function OrdersAdminList({ isVendor, shops }) {
     {
       onSuccess: (data) => {
         toast.success(data.message);
-        handleClose();
+        shippingFormik.resetForm();
+        // handleClose();
         // ✅ Refetch products list
         queryClient.invalidateQueries(['orders']);
       },
@@ -193,6 +194,8 @@ export default function OrdersAdminList({ isVendor, shops }) {
     setOpenAssignedTo(false);
     setOpenTraking(false);
     setopenShipping(false);
+    shippingFormik.resetForm();
+    trackingFormik.resetForm();
   };
 
   async function openAssignUsers(row) {

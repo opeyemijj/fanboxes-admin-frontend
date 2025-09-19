@@ -6,8 +6,6 @@ import { useRouter } from 'next-nprogress-bar';
 import { useTheme, styled } from '@mui/material/styles';
 import { Box, TableRow, Skeleton, TableCell, Typography, Stack, IconButton, Tooltip } from '@mui/material';
 
-import { MenuItem } from '@mui/material';
-
 // components
 
 import Label from 'src/components/label';
@@ -132,25 +130,25 @@ export default function OrderList({
           ) : (
             <>
               <Tooltip title="Assign To">
-                <MenuItem style={{ padding: 10 }} onClick={() => openAssignUsers(row)}>
-                  <GroupAdd />{' '}
-                </MenuItem>
+                <IconButton style={{ padding: 10 }} onClick={() => openAssignUsers(row)}>
+                  <GroupAdd fontSize="small" />{' '}
+                </IconButton>
               </Tooltip>
 
               <Tooltip title="Tracking Info">
-                <MenuItem style={{ marginLeft: 0, padding: 0 }} onClick={() => handleClickOpenTraking(row)}>
-                  <TrackChangesTwoTone /> {/* <ListItemText style={{ marginLeft: 0 }}>Assign To</ListItemText> */}
-                </MenuItem>
+                <IconButton style={{ marginLeft: 0, padding: 0 }} onClick={() => handleClickOpenTraking(row)}>
+                  <TrackChangesTwoTone fontSize="small" />{' '}
+                </IconButton>
               </Tooltip>
 
               {row?.trackingInfo ? (
                 <Tooltip title="Shipping Info">
-                  <MenuItem style={{ marginLeft: 0, padding: 10 }} onClick={() => handleClickOpenShipping(row)}>
-                    <ShipIcon /> {/* <ListItemText style={{ marginLeft: 0 }}>Assign To</ListItemText> */}
-                  </MenuItem>
+                  <IconButton style={{ marginLeft: 0, padding: 10 }} onClick={() => handleClickOpenShipping(row)}>
+                    <ShipIcon fontSize="small" />
+                  </IconButton>
                 </Tooltip>
               ) : (
-                <MenuItem style={{ paddingLeft: 32 }} />
+                <IconButton style={{ paddingLeft: 32 }} />
               )}
 
               {/* <Tooltip title="Preview">

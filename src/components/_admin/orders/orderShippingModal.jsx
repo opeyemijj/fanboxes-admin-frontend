@@ -19,6 +19,8 @@ import {
 import { LoadingButton } from '@mui/lab';
 import { Form, FormikProvider } from 'formik';
 import dayjs from 'dayjs';
+import { IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 const LabelStyle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
@@ -54,8 +56,21 @@ export default function OrderShippingModal({ open, onClose, formik, loading, ite
           mb: 1
         }}
       >
-        <span>Tracking Number: {trackingInfo?.trackingNumber}</span>
-        <span>Recipient: {item?.user?.firstName + ' ' + item?.user?.lastName}</span>
+        <span style={{ marginTop: 15 }}>Tracking Number: {trackingInfo?.trackingNumber}</span>
+        <span style={{ marginTop: 15 }}>Recipient: {item?.user?.firstName + ' ' + item?.user?.lastName}</span>
+
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500]
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
       </DialogTitle>
 
       <Divider />
