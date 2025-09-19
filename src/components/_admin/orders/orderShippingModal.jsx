@@ -14,12 +14,15 @@ import {
   Typography,
   styled,
   Select,
-  FormHelperText
+  MenuItem,
+  FormHelperText,
+  IconButton,
+  Box,
+  Paper
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Form, FormikProvider } from 'formik';
 import dayjs from 'dayjs';
-import { IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import Table from 'src/components/table/table';
 import Shipping from 'src/components/table/rows/shipping';
@@ -28,8 +31,7 @@ import { capitalize } from 'lodash';
 const LabelStyle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
   color: theme.palette.text.secondary,
-  marginBottom: theme.spacing(1),
-  lineHeight: 2.5
+  marginBottom: theme.spacing(1)
 }));
 
 export default function OrderShippingModal({ open, onClose, formik, loading, item }) {
@@ -41,16 +43,16 @@ export default function OrderShippingModal({ open, onClose, formik, loading, ite
   };
 
   const SHIPPING_STATU = [
-    'pending', // Order placed, waiting to be processed
-    'processing', // Payment confirmed, preparing for shipment
-    'shipped', // Package handed over to statusComment
-    'in transit', // Courier is transporting the package
-    'out for delivery', // Package is with delivery agent
-    'delivered', // Successfully delivered to recipient
-    'delayed', // Shipment delayed due to issues
-    'returned', // Customer returned the order
-    'cancelled', // Order cancelled before shipping/delivery
-    'failed delivery' // Courier attempted but delivery failed
+    'pending',
+    'processing',
+    'shipped',
+    'in transit',
+    'out for delivery',
+    'delivered',
+    'delayed',
+    'returned',
+    'cancelled',
+    'failed delivery'
   ];
 
   const TABLE_HEAD = [
@@ -61,17 +63,35 @@ export default function OrderShippingModal({ open, onClose, formik, loading, ite
 
   return (
     <Dialog scroll="paper" onClose={onClose} open={open} maxWidth="md" fullWidth>
+      {/* Header */}
       <DialogTitle
         sx={{
+          pb: 1,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          mb: 1
+          pr: 6 // leaves space so text doesn't clash with close icon
         }}
       >
-        <span style={{ marginTop: 15 }}>Tracking Number: {trackingInfo?.trackingNumber}</span>
-        <span style={{ marginTop: 15 }}>Recipient: {item?.user?.firstName + ' ' + item?.user?.lastName}</span>
+        {/* Left side: Tracking Number */}
+        <Box>
+          <Typography variant="body2" color="text.secondary">
+            Tracking Number
+          </Typography>
+          <Typography fontWeight="bold">{trackingInfo?.trackingNumber}</Typography>
+        </Box>
 
+        {/* Right side: Recipient */}
+        <Box>
+          <Typography variant="body2" color="text.secondary">
+            Recipient
+          </Typography>
+          <Typography fontWeight="bold">
+            {item?.user?.firstName} {item?.user?.lastName}
+          </Typography>
+        </Box>
+
+        {/* Close Button */}
         <IconButton
           aria-label="close"
           onClick={onClose}
@@ -87,90 +107,95 @@ export default function OrderShippingModal({ open, onClose, formik, loading, ite
       </DialogTitle>
 
       <DialogContent>
-        <Divider sx={{ mt: 2 }} />
-        <DialogContent
-          sx={{
-            display: 'flex',
-            flexDirection: { xs: 'column', md: 'row' },
-            justifyContent: { xs: 'flex-start', md: 'space-between' },
-            gap: 2 // spacing between items
-          }}
-        >
-          <span>Courier: {trackingInfo?.courier}</span>
-          <span>Shipped: {trackingInfo?.shipped}</span>
-          <span>Expected: {trackingInfo?.expected}</span>
-        </DialogContent>
+        <Divider sx={{ mb: 3 }} />
 
-        <Divider />
+        {/* Courier / Shipped / Expected */}
+        <Grid container spacing={2} sx={{ mb: 3 }}>
+          <Grid item xs={12} sm={4}>
+            <Typography variant="body2" color="text.secondary">
+              Courier
+            </Typography>
+            <Typography fontWeight="bold">{trackingInfo?.courier}</Typography>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <Typography variant="body2" color="text.secondary">
+              Shipped
+            </Typography>
+            <Typography fontWeight="bold">{trackingInfo?.shipped}</Typography>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <Typography variant="body2" color="text.secondary">
+              Expected
+            </Typography>
+            <Typography fontWeight="bold">{trackingInfo?.expected}</Typography>
+          </Grid>
+        </Grid>
 
+        <Divider sx={{ mb: 3 }} />
+
+        {/* Form Section */}
         <FormikProvider value={formik}>
-          <Form style={{ marginBottom: 50 }} noValidate autoComplete="off" onSubmit={handleSubmit}>
-            <DialogContent>
-              <Grid container spacing={2}>
-                {/* Tracking Number */}
-                <Grid item xs={12} md={6}>
-                  <LabelStyle component="label" htmlFor="status">
-                    Status
-                  </LabelStyle>
-                  <FormControl fullWidth sx={{ textTransform: 'capitalize' }}>
-                    <Select
-                      id="status"
-                      native
-                      {...getFieldProps('status')}
-                      error={Boolean(touched.status && errors.status)}
-                    >
-                      <option value="" style={{ display: 'none' }} />
-                      {SHIPPING_STATU.map((status) => (
-                        <option key={status} value={status}>
-                          {capitalize(status)}
-                        </option>
-                      ))}
-                    </Select>
-                    {touched.status && errors.status && <FormHelperText error>{errors.status}</FormHelperText>}
-                  </FormControl>
-                </Grid>
-
-                {/* Shipped Date */}
-                <Grid item xs={12} md={6}>
-                  <LabelStyle component="label" htmlFor="status-date">
-                    Status
-                  </LabelStyle>
-                  <TextField
-                    id="status-date"
-                    type="date"
-                    fullWidth
-                    InputLabelProps={{ shrink: true }}
-                    value={values.statusDate ? dayjs(values.statusDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : ''}
-                    onChange={(e) => setFieldValue('statusDate', dayjs(e.target.value).format('DD/MM/YYYY'))}
-                    error={Boolean(touched.statusDate && errors.statusDate)}
-                    helperText={touched.statusDate && errors.statusDate}
-                  />
-                </Grid>
-
-                {/* Courier */}
-                <Grid item xs={12} md={12}>
-                  <LabelStyle component="label" htmlFor="status-comment">
-                    Status Comment
-                  </LabelStyle>
-                  <TextField
-                    id="status-comment"
-                    fullWidth
-                    {...getFieldProps('statusComment')}
-                    error={Boolean(touched.statusComment && errors.statusComment)}
-                    helperText={touched.statusComment && errors.statusComment}
-                  />
-                </Grid>
+          <Form noValidate autoComplete="off" onSubmit={handleSubmit}>
+            <Grid container spacing={2} sx={{ mb: 2 }}>
+              {/* Status */}
+              <Grid item xs={12} md={4}>
+                <LabelStyle>Status</LabelStyle>
+                <FormControl fullWidth error={Boolean(touched.status && errors.status)}>
+                  <Select {...getFieldProps('status')} displayEmpty>
+                    <MenuItem value="">
+                      <em>Select status</em>
+                    </MenuItem>
+                    {SHIPPING_STATU.map((status) => (
+                      <MenuItem key={status} value={status}>
+                        {capitalize(status)}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {touched.status && errors.status && <FormHelperText>{errors.status}</FormHelperText>}
+                </FormControl>
               </Grid>
-            </DialogContent>
 
-            <DialogActions>
+              {/* Status Date */}
+              <Grid item xs={12} md={4}>
+                <LabelStyle>Status Date</LabelStyle>
+                <TextField
+                  type="date"
+                  fullWidth
+                  InputLabelProps={{ shrink: true }}
+                  value={values.statusDate ? dayjs(values.statusDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : ''}
+                  onChange={(e) => setFieldValue('statusDate', dayjs(e.target.value).format('DD/MM/YYYY'))}
+                  error={Boolean(touched.statusDate && errors.statusDate)}
+                  helperText={touched.statusDate && errors.statusDate}
+                />
+              </Grid>
+
+              {/* Comment */}
+              <Grid item xs={12} md={4}>
+                <LabelStyle>Status Comment</LabelStyle>
+                <TextField
+                  fullWidth
+                  placeholder="Add a note..."
+                  {...getFieldProps('statusComment')}
+                  error={Boolean(touched.statusComment && errors.statusComment)}
+                  helperText={touched.statusComment && errors.statusComment}
+                />
+              </Grid>
+            </Grid>
+
+            <DialogActions style={{ padding: 0 }} sx={{ padding: 0 }}>
               <LoadingButton type="submit" variant="contained" loading={loading}>
-                Add Shipment
+                Add
               </LoadingButton>
             </DialogActions>
           </Form>
         </FormikProvider>
 
+        <Divider sx={{ my: 3 }} />
+
+        {/* Table Section */}
+        <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+          Shipping History
+        </Typography>
         <Table headData={TABLE_HEAD} data={tableData} isLoading={false} row={Shipping} isSearch={false} />
       </DialogContent>
     </Dialog>

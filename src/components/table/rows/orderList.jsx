@@ -100,9 +100,6 @@ export default function OrderList({
       <TableCell>{isLoading ? <Skeleton variant="text" /> : capitalize(row?.transaction?.category)}</TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.transaction?.amount}</TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.transaction?.paymentMethod}</TableCell>
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : capitalize(row?.transaction?.status)}</TableCell>
-
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.totalAmountPaid}</TableCell>
 
       <TableCell>
         {isLoading ? (

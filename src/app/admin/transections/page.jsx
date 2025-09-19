@@ -24,14 +24,14 @@ export default async function AdminProducts() {
     <>
       <HeaderBreadcrumbs
         admin
-        heading="Transections"
+        heading="Transactions"
         links={[
           {
             name: 'Dashboard',
             href: '/admin/dashboard'
           },
           {
-            name: 'Transections'
+            name: 'Transactions'
           }
         ]}
         // action={{

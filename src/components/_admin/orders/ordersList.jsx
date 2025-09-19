@@ -26,13 +26,11 @@ import OrderTrackingModal from './orderTrackingModal';
 import OrderShippingModal from './orderShippingModal';
 const TABLE_HEAD = [
   { id: 'orderNo', label: 'Order No', alignRight: false },
-  { id: 'items', label: 'items', alignRight: false },
+  { id: 'items', label: 'item', alignRight: false },
   { id: 'name', label: 'User', alignRight: false },
-  { id: 'transaction', label: 'Transaction Category', alignRight: false, sort: true },
+  { id: 'transaction', label: 'Transaction Type', alignRight: false, sort: true },
   { id: 'transactionAmount', label: 'Amount', alignRight: false, sort: true },
   { id: 'paymentMethod', label: 'Payment Method', alignRight: false, sort: true },
-  { id: 'transactionStatus', label: 'Transaction Status', alignRight: false, sort: true },
-  { id: 'totalAmountPaid', label: 'Amount Paid', alignRight: false, sort: true },
 
   { id: 'inventoryType', label: 'status', alignRight: false, sort: true },
   { id: 'createdAt', label: 'Date', alignRight: false, sort: true },

@@ -74,7 +74,7 @@ export default function OrderTrackingModal({ open, onClose, formik, loading, ite
               Cancel
             </Button>
             <LoadingButton type="submit" variant="contained" loading={loading}>
-              Add
+              {item?.trackingInfo ? 'Update' : 'Add'}
             </LoadingButton>
           </DialogActions>
         </Form>
