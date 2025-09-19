@@ -18,6 +18,7 @@ import { fDateShort } from 'src/utils/formatTime';
 import { GroupAdd, TrackChangesTwoTone } from '@mui/icons-material';
 import { capitalize } from 'lodash';
 import { ShipIcon } from 'lucide-react';
+import { UsePermission } from 'src/hooks/usePermission';
 
 OrderList.propTypes = {
   isLoading: PropTypes.bool.isRequired,
@@ -63,6 +64,10 @@ export default function OrderList({
 }) {
   const theme = useTheme();
   const router = useRouter();
+
+  const canAssign = UsePermission('assign_order_to_user');
+  const canAddTrackingInfo = UsePermission('update_order_tracking');
+  const canAddShippinInfo = UsePermission('update_order_shipping');
   return (
     <TableRow hover key={Math.random()}>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
@@ -126,19 +131,23 @@ export default function OrderList({
             <Skeleton variant="circular" width={34} height={34} sx={{ mr: 1 }} />
           ) : (
             <>
-              <Tooltip title="Assign To">
-                <IconButton style={{ padding: 10 }} onClick={() => openAssignUsers(row)}>
-                  <GroupAdd fontSize="small" />{' '}
-                </IconButton>
-              </Tooltip>
+              {canAssign && (
+                <Tooltip title="Assign To">
+                  <IconButton style={{ padding: 10 }} onClick={() => openAssignUsers(row)}>
+                    <GroupAdd fontSize="small" />{' '}
+                  </IconButton>
+                </Tooltip>
+              )}
 
-              <Tooltip title="Tracking Info">
-                <IconButton style={{ marginLeft: 0, padding: 0 }} onClick={() => handleClickOpenTraking(row)}>
-                  <TrackChangesTwoTone fontSize="small" />{' '}
-                </IconButton>
-              </Tooltip>
+              {canAddTrackingInfo && (
+                <Tooltip title="Tracking Info">
+                  <IconButton style={{ marginLeft: 0, padding: 0 }} onClick={() => handleClickOpenTraking(row)}>
+                    <TrackChangesTwoTone fontSize="small" />{' '}
+                  </IconButton>
+                </Tooltip>
+              )}
 
-              {row?.trackingInfo ? (
+              {row?.trackingInfo && canAddShippinInfo ? (
                 <Tooltip title="Shipping Info">
                   <IconButton style={{ marginLeft: 0, padding: 10 }} onClick={() => handleClickOpenShipping(row)}>
                     <ShipIcon fontSize="small" />
