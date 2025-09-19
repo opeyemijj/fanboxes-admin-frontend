@@ -22,6 +22,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 // formik
 import { Form, FormikProvider, useFormik } from 'formik';
 import parseMongooseError from 'src/utils/errorHandler';
+import OrderTrackingModal from './orderTrackingModal';
 const TABLE_HEAD = [
   { id: 'orderNo', label: 'Order No', alignRight: false },
   { id: 'items', label: 'items', alignRight: false },
@@ -101,7 +102,7 @@ export default function OrdersAdminList({ isVendor, shops }) {
   // ✅ Yup Validation Schema
   // ✅ Yup Validation Schema
   const TrackingSchema = Yup.object().shape({
-    tracking: Yup.string()
+    trackingNumber: Yup.string()
       .required('Tracking number is required')
       .max(8, 'Tracking should be 8 character')
       .min(8, 'Tracking should be 8 character'),
@@ -112,9 +113,9 @@ export default function OrdersAdminList({ isVendor, shops }) {
 
   dayjs.extend(customParseFormat);
   const today = dayjs().format('YYYY-MM-DD');
-  const formik = useFormik({
+  const trackingFormik = useFormik({
     initialValues: {
-      tracking: '',
+      trackingNumber: '',
       courier: '',
       shipped: null,
       expected: null
@@ -127,36 +128,11 @@ export default function OrdersAdminList({ isVendor, shops }) {
           slug: markOrder._id,
           ...rest
         });
-        // console.log(values, 'OKKK SEEE');
-        // toast.success('Tracking info added!');
-        // // resetTrackingForm();
-        // // handleClose();
       } catch (error) {
         toast.error('Something went wrong!');
       }
     }
   });
-
-  const {
-    errors,
-    touched,
-    handleSubmit,
-    getFieldProps: getTrackingFieldProps,
-    setFieldValue: setTrackingFieldValue,
-    values: trackingVelues,
-    resetForm: resetTrackingForm
-  } = formik;
-
-  async function UpdateTrackingInfo() {
-    try {
-      trackingMutation({
-        slug: markOrder._id,
-        payload: trackingVelues
-      });
-    } catch (error) {
-      console.log(error, 'Failed to update tracking info');
-    }
-  }
 
   const handleClickOpen = (props) => () => {
     setId(props);
@@ -168,7 +144,6 @@ export default function OrdersAdminList({ isVendor, shops }) {
     setMarkOrder(null);
     setOpenAssignedTo(false);
     setOpenTraking(false);
-    resetTrackingForm();
   };
 
   async function openAssignUsers(row) {
@@ -179,6 +154,19 @@ export default function OrdersAdminList({ isVendor, shops }) {
   function handleClickOpenTraking(prop) {
     setMarkOrder(prop);
     setOpenTraking(true);
+
+    // Prefill Formik values if trackingInfo exists
+    if (prop.trackingInfo) {
+      const info = prop.trackingInfo;
+      trackingFormik.setValues({
+        trackingNumber: info.trackingNumber || '',
+        courier: info.courier || '',
+        shipped: info.shipped || '',
+        expected: info.expected || ''
+      });
+    } else {
+      trackingFormik.resetForm();
+    }
   }
 
   const isLoading = loadingList;
@@ -230,94 +218,15 @@ export default function OrdersAdminList({ isVendor, shops }) {
 
       {/* Traking Moal */}
 
-      <Dialog onClose={handleClose} open={openTraking} maxWidth="xs" fullWidth>
-        <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>Tracking Info</DialogTitle>
-
-        <FormikProvider value={formik}>
-          <Form noValidate autoComplete="off" onSubmit={handleSubmit}>
-            <DialogContent>
-              {/* <DialogContentText sx={{ mb: 2 }}>Add Tracking info</DialogContentText> */}
-
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Grid container spacing={2}>
-                    {/* Traking */}
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        label="Tracking"
-                        fullWidth
-                        {...getTrackingFieldProps('tracking')}
-                        error={Boolean(touched.tracking && errors.tracking)}
-                        helperText={touched.tracking && errors.tracking}
-                      />
-                    </Grid>
-
-                    {/* Highlight */}
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        label="Courier"
-                        fullWidth
-                        {...getTrackingFieldProps('courier')}
-                        error={Boolean(touched.courier && errors.courier)}
-                        helperText={touched.courier && errors.courier}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        label="Shipped"
-                        type="date"
-                        fullWidth
-                        InputLabelProps={{ shrink: true }}
-                        value={
-                          trackingVelues.shipped ? dayjs(trackingVelues.shipped, 'DD/MM/YYYY').format('YYYY-MM-DD') : ''
-                        }
-                        onChange={(e) => setTrackingFieldValue('shipped', dayjs(e.target.value).format('DD/MM/YYYY'))}
-                        error={Boolean(touched.shipped && errors.shipped)}
-                        helperText={touched.shipped && errors.shipped}
-                        // inputProps={{ min: today }} // ✅ restrict past dates
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        label="Expected"
-                        type="date"
-                        fullWidth
-                        InputLabelProps={{ shrink: true }}
-                        value={
-                          trackingVelues.expected
-                            ? dayjs(trackingVelues.expected, 'DD/MM/YYYY').format('YYYY-MM-DD')
-                            : ''
-                        }
-                        onChange={(e) => setTrackingFieldValue('expected', dayjs(e.target.value).format('DD/MM/YYYY'))}
-                        error={Boolean(touched.expected && errors.expected)}
-                        helperText={touched.expected && errors.expected}
-                        // inputProps={{ min: today }} // ✅ restrict past dates
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </DialogContent>
-
-            <DialogActions>
-              <Button onClick={handleClose} color="inherit">
-                Cancel
-              </Button>
-
-              <LoadingButton
-                type="submit"
-                variant="contained"
-                loading={trackingLoading}
-                // onClick={() => UpdateTrackingInfo()}
-              >
-                Add
-              </LoadingButton>
-            </DialogActions>
-          </Form>
-        </FormikProvider>
-      </Dialog>
+      {openTraking && (
+        <OrderTrackingModal
+          open={openTraking}
+          onClose={handleClose}
+          formik={trackingFormik}
+          loading={trackingLoading}
+          item={markOrder}
+        />
+      )}
     </>
   );
 }
