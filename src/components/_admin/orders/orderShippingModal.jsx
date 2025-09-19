@@ -21,6 +21,9 @@ import { Form, FormikProvider } from 'formik';
 import dayjs from 'dayjs';
 import { IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import Table from 'src/components/table/table';
+import Shipping from 'src/components/table/rows/shipping';
+import { capitalize } from 'lodash';
 
 const LabelStyle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
@@ -32,6 +35,10 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 export default function OrderShippingModal({ open, onClose, formik, loading, item }) {
   const { values, touched, errors, handleSubmit, getFieldProps, setFieldValue } = formik;
   const trackingInfo = item.trackingInfo;
+
+  const tableData = {
+    data: (item?.shippingInfo || []).slice().reverse()
+  };
 
   const SHIPPING_STATU = [
     'pending', // Order placed, waiting to be processed
@@ -46,8 +53,14 @@ export default function OrderShippingModal({ open, onClose, formik, loading, ite
     'failed delivery' // Courier attempted but delivery failed
   ];
 
+  const TABLE_HEAD = [
+    { id: 'status', label: 'Status', alignRight: false },
+    { id: 'statsDate', label: 'Status Date', alignRight: false, sort: true },
+    { id: 'statsComment', label: 'Status Comment', alignRight: false, sort: true }
+  ];
+
   return (
-    <Dialog onClose={onClose} open={open} maxWidth="md" fullWidth>
+    <Dialog scroll="paper" onClose={onClose} open={open} maxWidth="md" fullWidth>
       <DialogTitle
         sx={{
           display: 'flex',
@@ -73,93 +86,93 @@ export default function OrderShippingModal({ open, onClose, formik, loading, ite
         </IconButton>
       </DialogTitle>
 
-      <Divider />
+      <DialogContent>
+        <Divider sx={{ mt: 2 }} />
+        <DialogContent
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', md: 'row' },
+            justifyContent: { xs: 'flex-start', md: 'space-between' },
+            gap: 2 // spacing between items
+          }}
+        >
+          <span>Courier: {trackingInfo?.courier}</span>
+          <span>Shipped: {trackingInfo?.shipped}</span>
+          <span>Expected: {trackingInfo?.expected}</span>
+        </DialogContent>
 
-      <DialogContent
-        sx={{
-          display: 'flex',
-          flexDirection: { xs: 'column', md: 'row' },
-          justifyContent: { xs: 'flex-start', md: 'space-between' },
-          gap: 2 // spacing between items
-        }}
-      >
-        <span>Courier: {trackingInfo?.courier}</span>
-        <span>Shipped: {trackingInfo?.shipped}</span>
-        <span>Expected: {trackingInfo?.expected}</span>
+        <Divider />
+
+        <FormikProvider value={formik}>
+          <Form style={{ marginBottom: 50 }} noValidate autoComplete="off" onSubmit={handleSubmit}>
+            <DialogContent>
+              <Grid container spacing={2}>
+                {/* Tracking Number */}
+                <Grid item xs={12} md={6}>
+                  <LabelStyle component="label" htmlFor="status">
+                    Status
+                  </LabelStyle>
+                  <FormControl fullWidth sx={{ textTransform: 'capitalize' }}>
+                    <Select
+                      id="status"
+                      native
+                      {...getFieldProps('status')}
+                      error={Boolean(touched.status && errors.status)}
+                    >
+                      <option value="" style={{ display: 'none' }} />
+                      {SHIPPING_STATU.map((status) => (
+                        <option key={status} value={status}>
+                          {capitalize(status)}
+                        </option>
+                      ))}
+                    </Select>
+                    {touched.status && errors.status && <FormHelperText error>{errors.status}</FormHelperText>}
+                  </FormControl>
+                </Grid>
+
+                {/* Shipped Date */}
+                <Grid item xs={12} md={6}>
+                  <LabelStyle component="label" htmlFor="status-date">
+                    Status
+                  </LabelStyle>
+                  <TextField
+                    id="status-date"
+                    type="date"
+                    fullWidth
+                    InputLabelProps={{ shrink: true }}
+                    value={values.statusDate ? dayjs(values.statusDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : ''}
+                    onChange={(e) => setFieldValue('statusDate', dayjs(e.target.value).format('DD/MM/YYYY'))}
+                    error={Boolean(touched.statusDate && errors.statusDate)}
+                    helperText={touched.statusDate && errors.statusDate}
+                  />
+                </Grid>
+
+                {/* Courier */}
+                <Grid item xs={12} md={12}>
+                  <LabelStyle component="label" htmlFor="status-comment">
+                    Status Comment
+                  </LabelStyle>
+                  <TextField
+                    id="status-comment"
+                    fullWidth
+                    {...getFieldProps('statusComment')}
+                    error={Boolean(touched.statusComment && errors.statusComment)}
+                    helperText={touched.statusComment && errors.statusComment}
+                  />
+                </Grid>
+              </Grid>
+            </DialogContent>
+
+            <DialogActions>
+              <LoadingButton type="submit" variant="contained" loading={loading}>
+                Add Shipment
+              </LoadingButton>
+            </DialogActions>
+          </Form>
+        </FormikProvider>
+
+        <Table headData={TABLE_HEAD} data={tableData} isLoading={false} row={Shipping} isSearch={false} />
       </DialogContent>
-
-      <Divider />
-
-      <FormikProvider value={formik}>
-        <Form noValidate autoComplete="off" onSubmit={handleSubmit}>
-          <DialogContent>
-            <Grid container spacing={2}>
-              {/* Tracking Number */}
-              <Grid item xs={12} md={6}>
-                <LabelStyle component="label" htmlFor="status">
-                  Status
-                </LabelStyle>
-                <FormControl fullWidth sx={{ textTransform: 'capitalize' }}>
-                  <Select
-                    id="status"
-                    native
-                    {...getFieldProps('status')}
-                    error={Boolean(touched.status && errors.status)}
-                  >
-                    <option value="" style={{ display: 'none' }} />
-                    {SHIPPING_STATU.map((status) => (
-                      <option key={status} value={status}>
-                        {status}
-                      </option>
-                    ))}
-                  </Select>
-                  {touched.status && errors.status && <FormHelperText error>{errors.status}</FormHelperText>}
-                </FormControl>
-              </Grid>
-
-              {/* Shipped Date */}
-              <Grid item xs={12} md={6}>
-                <LabelStyle component="label" htmlFor="status-date">
-                  Status
-                </LabelStyle>
-                <TextField
-                  id="status-date"
-                  type="date"
-                  fullWidth
-                  InputLabelProps={{ shrink: true }}
-                  value={values.statusDate ? dayjs(values.statusDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : ''}
-                  onChange={(e) => setFieldValue('statusDate', dayjs(e.target.value).format('DD/MM/YYYY'))}
-                  error={Boolean(touched.statusDate && errors.statusDate)}
-                  helperText={touched.statusDate && errors.statusDate}
-                />
-              </Grid>
-
-              {/* Courier */}
-              <Grid item xs={12} md={12}>
-                <LabelStyle component="label" htmlFor="status-comment">
-                  Status Comment
-                </LabelStyle>
-                <TextField
-                  id="status-comment"
-                  fullWidth
-                  {...getFieldProps('statusComment')}
-                  error={Boolean(touched.statusComment && errors.statusComment)}
-                  helperText={touched.statusComment && errors.statusComment}
-                />
-              </Grid>
-            </Grid>
-          </DialogContent>
-
-          <DialogActions>
-            <Button onClick={onClose} color="inherit">
-              Cancel
-            </Button>
-            <LoadingButton type="submit" variant="contained" loading={loading}>
-              Add Shipment
-            </LoadingButton>
-          </DialogActions>
-        </Form>
-      </FormikProvider>
     </Dialog>
   );
 }

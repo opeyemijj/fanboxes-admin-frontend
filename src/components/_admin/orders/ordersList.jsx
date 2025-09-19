@@ -106,6 +106,7 @@ export default function OrdersAdminList({ isVendor, shops }) {
     {
       onSuccess: (data) => {
         toast.success(data.message);
+        setMarkOrder(data.data);
         shippingFormik.resetForm();
         // handleClose();
         // ✅ Refetch products list
@@ -164,7 +165,7 @@ export default function OrdersAdminList({ isVendor, shops }) {
 
   const shippingFormik = useFormik({
     initialValues: {
-      status: '',
+      status: 'pending',
       statusDate: null,
       statusComment: ''
     },
