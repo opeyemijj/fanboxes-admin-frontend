@@ -26,6 +26,7 @@ import { useMutation } from 'react-query';
 import Table from 'src/components/table/table';
 import UserList from 'src/components/table/rows/usersList';
 import RoleDialog from 'src/components/dialog/role';
+import parseMongooseError from 'src/utils/errorHandler';
 
 export default function AdminProducts({ userType }) {
   const TABLE_HEAD = [

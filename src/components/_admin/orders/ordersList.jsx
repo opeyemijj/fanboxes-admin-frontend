@@ -21,6 +21,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 // formik
 import { Form, FormikProvider, useFormik } from 'formik';
+import parseMongooseError from 'src/utils/errorHandler';
 const TABLE_HEAD = [
   { id: 'orderNo', label: 'Order No', alignRight: false },
   { id: 'items', label: 'items', alignRight: false },
@@ -77,6 +78,26 @@ export default function OrdersAdminList({ isVendor, shops }) {
     }
   );
 
+  const { mutate: trackingMutation, isLoading: trackingLoading } = useMutation(
+    isVendor ? null : api.updateTrackingInOrderByAdmin, // mutation function here
+    {
+      onSuccess: (data) => {
+        toast.success(data.message);
+        handleClose();
+        // ✅ Refetch products list
+        queryClient.invalidateQueries(['orders']);
+      },
+      onError: (error) => {
+        console.log(error, 'is it error');
+        let errorMessage = parseMongooseError(error?.message);
+        toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+          autoClose: false, // Prevents auto-dismissal
+          closeOnClick: true // Allows clicking on the close icon
+        });
+      }
+    }
+  );
+
   // ✅ Yup Validation Schema
   // ✅ Yup Validation Schema
   const TrackingSchema = Yup.object().shape({
@@ -85,8 +106,8 @@ export default function OrdersAdminList({ isVendor, shops }) {
       .max(8, 'Tracking should be 8 character')
       .min(8, 'Tracking should be 8 character'),
     courier: Yup.string().required('Courier name is required'),
-    shipped: Yup.date().required('Shipped date is required'),
-    expected: Yup.date().required('Expected date is required')
+    shipped: Yup.string().required('Shipped date is required'),
+    expected: Yup.string().required('Expected date is required')
   });
 
   dayjs.extend(customParseFormat);
@@ -99,26 +120,43 @@ export default function OrdersAdminList({ isVendor, shops }) {
       expected: null
     },
     validationSchema: TrackingSchema,
-    onSubmit: async (values, { resetForm }) => {
+    onSubmit: async (values, { resetTrackingForm }) => {
       try {
-        // Format date before submit
-        const payload = {
-          ...values,
-          shipped: dayjs(values.shipped).format('DD/MM/YYYY'),
-          expected: dayjs(values.expected).format('DD/MM/YYYY')
-        };
-        console.log('Submitted values:', payload);
-
-        toast.success('Tracking info added!');
-        resetForm();
-        handleClose();
+        const { ...rest } = values;
+        trackingMutation({
+          slug: markOrder._id,
+          ...rest
+        });
+        // console.log(values, 'OKKK SEEE');
+        // toast.success('Tracking info added!');
+        // // resetTrackingForm();
+        // // handleClose();
       } catch (error) {
         toast.error('Something went wrong!');
       }
     }
   });
 
-  const { errors, touched, handleSubmit, getFieldProps, setFieldValue, values, resetForm } = formik;
+  const {
+    errors,
+    touched,
+    handleSubmit,
+    getFieldProps: getTrackingFieldProps,
+    setFieldValue: setTrackingFieldValue,
+    values: trackingVelues,
+    resetForm: resetTrackingForm
+  } = formik;
+
+  async function UpdateTrackingInfo() {
+    try {
+      trackingMutation({
+        slug: markOrder._id,
+        payload: trackingVelues
+      });
+    } catch (error) {
+      console.log(error, 'Failed to update tracking info');
+    }
+  }
 
   const handleClickOpen = (props) => () => {
     setId(props);
@@ -130,7 +168,7 @@ export default function OrdersAdminList({ isVendor, shops }) {
     setMarkOrder(null);
     setOpenAssignedTo(false);
     setOpenTraking(false);
-    resetForm();
+    resetTrackingForm();
   };
 
   async function openAssignUsers(row) {
@@ -139,8 +177,7 @@ export default function OrdersAdminList({ isVendor, shops }) {
   }
 
   function handleClickOpenTraking(prop) {
-    console.log('Come here', prop);
-    // setMarkOrder(prop);
+    setMarkOrder(prop);
     setOpenTraking(true);
   }
 
@@ -209,7 +246,7 @@ export default function OrdersAdminList({ isVendor, shops }) {
                       <TextField
                         label="Tracking"
                         fullWidth
-                        {...getFieldProps('tracking')}
+                        {...getTrackingFieldProps('tracking')}
                         error={Boolean(touched.tracking && errors.tracking)}
                         helperText={touched.tracking && errors.tracking}
                       />
@@ -220,7 +257,7 @@ export default function OrdersAdminList({ isVendor, shops }) {
                       <TextField
                         label="Courier"
                         fullWidth
-                        {...getFieldProps('courier')}
+                        {...getTrackingFieldProps('courier')}
                         error={Boolean(touched.courier && errors.courier)}
                         helperText={touched.courier && errors.courier}
                       />
@@ -232,8 +269,10 @@ export default function OrdersAdminList({ isVendor, shops }) {
                         type="date"
                         fullWidth
                         InputLabelProps={{ shrink: true }}
-                        value={values.shipped ? dayjs(values.shipped, 'DD/MM/YYYY').format('YYYY-MM-DD') : ''}
-                        onChange={(e) => setFieldValue('shipped', dayjs(e.target.value).format('DD/MM/YYYY'))}
+                        value={
+                          trackingVelues.shipped ? dayjs(trackingVelues.shipped, 'DD/MM/YYYY').format('YYYY-MM-DD') : ''
+                        }
+                        onChange={(e) => setTrackingFieldValue('shipped', dayjs(e.target.value).format('DD/MM/YYYY'))}
                         error={Boolean(touched.shipped && errors.shipped)}
                         helperText={touched.shipped && errors.shipped}
                         // inputProps={{ min: today }} // ✅ restrict past dates
@@ -246,8 +285,12 @@ export default function OrdersAdminList({ isVendor, shops }) {
                         type="date"
                         fullWidth
                         InputLabelProps={{ shrink: true }}
-                        value={values.expected ? dayjs(values.expected, 'DD/MM/YYYY').format('YYYY-MM-DD') : ''}
-                        onChange={(e) => setFieldValue('expected', dayjs(e.target.value).format('DD/MM/YYYY'))}
+                        value={
+                          trackingVelues.expected
+                            ? dayjs(trackingVelues.expected, 'DD/MM/YYYY').format('YYYY-MM-DD')
+                            : ''
+                        }
+                        onChange={(e) => setTrackingFieldValue('expected', dayjs(e.target.value).format('DD/MM/YYYY'))}
                         error={Boolean(touched.expected && errors.expected)}
                         helperText={touched.expected && errors.expected}
                         // inputProps={{ min: today }} // ✅ restrict past dates
@@ -263,7 +306,12 @@ export default function OrdersAdminList({ isVendor, shops }) {
                 Cancel
               </Button>
 
-              <LoadingButton type="submit" variant="contained" loading={false}>
+              <LoadingButton
+                type="submit"
+                variant="contained"
+                loading={trackingLoading}
+                // onClick={() => UpdateTrackingInfo()}
+              >
                 Add
               </LoadingButton>
             </DialogActions>
