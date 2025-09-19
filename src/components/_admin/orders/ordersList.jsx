@@ -23,6 +23,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { Form, FormikProvider, useFormik } from 'formik';
 import parseMongooseError from 'src/utils/errorHandler';
 import OrderTrackingModal from './orderTrackingModal';
+import OrderShippingModal from './orderShippingModal';
 const TABLE_HEAD = [
   { id: 'orderNo', label: 'Order No', alignRight: false },
   { id: 'items', label: 'items', alignRight: false },
@@ -53,6 +54,7 @@ export default function OrdersAdminList({ isVendor, shops }) {
 
   const [open, setOpen] = useState(false);
   const [openTraking, setOpenTraking] = useState(false);
+  const [openShipping, setopenShipping] = useState(false);
 
   const [openAssignTo, setOpenAssignedTo] = useState(false);
   const [markOrder, setMarkOrder] = useState(null);
@@ -99,6 +101,26 @@ export default function OrdersAdminList({ isVendor, shops }) {
     }
   );
 
+  const { mutate: shippingMutation, isLoading: shippingLoading } = useMutation(
+    isVendor ? null : api.updateShippingInOrderByAdmin, // mutation function here
+    {
+      onSuccess: (data) => {
+        toast.success(data.message);
+        handleClose();
+        // ✅ Refetch products list
+        queryClient.invalidateQueries(['orders']);
+      },
+      onError: (error) => {
+        console.log(error, 'is it error');
+        let errorMessage = parseMongooseError(error?.message);
+        toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+          autoClose: false, // Prevents auto-dismissal
+          closeOnClick: true // Allows clicking on the close icon
+        });
+      }
+    }
+  );
+
   // ✅ Yup Validation Schema
   // ✅ Yup Validation Schema
   const TrackingSchema = Yup.object().shape({
@@ -109,6 +131,11 @@ export default function OrdersAdminList({ isVendor, shops }) {
     courier: Yup.string().required('Courier name is required'),
     shipped: Yup.string().required('Shipped date is required'),
     expected: Yup.string().required('Expected date is required')
+  });
+
+  const ShippingSchema = Yup.object().shape({
+    status: Yup.string().required('Status is required'),
+    statusDate: Yup.string().required('Status date is required')
   });
 
   dayjs.extend(customParseFormat);
@@ -134,6 +161,27 @@ export default function OrdersAdminList({ isVendor, shops }) {
     }
   });
 
+  const shippingFormik = useFormik({
+    initialValues: {
+      status: '',
+      statusDate: null,
+      statusComment: ''
+    },
+    validationSchema: ShippingSchema,
+    onSubmit: async (values) => {
+      try {
+        console.log(values, 'Come here to update shipping details');
+        const { ...rest } = values;
+        shippingMutation({
+          slug: markOrder._id,
+          ...rest
+        });
+      } catch (error) {
+        toast.error('Something went wrong!');
+      }
+    }
+  });
+
   const handleClickOpen = (props) => () => {
     setId(props);
     setOpen(true);
@@ -144,6 +192,7 @@ export default function OrdersAdminList({ isVendor, shops }) {
     setMarkOrder(null);
     setOpenAssignedTo(false);
     setOpenTraking(false);
+    setopenShipping(false);
   };
 
   async function openAssignUsers(row) {
@@ -169,6 +218,11 @@ export default function OrdersAdminList({ isVendor, shops }) {
     }
   }
 
+  function handleClickOpenShipping(prop) {
+    setMarkOrder(prop);
+    setopenShipping(true);
+  }
+
   const isLoading = loadingList;
   return (
     <>
@@ -190,6 +244,7 @@ export default function OrdersAdminList({ isVendor, shops }) {
         handleClickOpen={handleClickOpen}
         openAssignUsers={openAssignUsers}
         handleClickOpenTraking={handleClickOpenTraking}
+        handleClickOpenShipping={handleClickOpenShipping}
         isVendor={isVendor}
         isSearch
         filters={
@@ -224,6 +279,16 @@ export default function OrdersAdminList({ isVendor, shops }) {
           onClose={handleClose}
           formik={trackingFormik}
           loading={trackingLoading}
+          item={markOrder}
+        />
+      )}
+
+      {openShipping && (
+        <OrderShippingModal
+          open={openShipping}
+          onClose={handleClose}
+          formik={shippingFormik}
+          loading={shippingLoading}
           item={markOrder}
         />
       )}

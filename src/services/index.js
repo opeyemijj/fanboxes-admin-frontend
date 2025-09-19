@@ -240,6 +240,11 @@ export const updateTrackingInOrderByAdmin = async ({ slug, ...payload }) => {
   return response;
 };
 
+export const updateShippingInOrderByAdmin = async ({ slug, ...payload }) => {
+  const { data: response } = await http.put(`/admin/orders/shipping/${slug}`, payload);
+  return response;
+};
+
 export const updateAssignInShopByAdmin = async ({ slug, ...payload }) => {
   const { data: response } = await http.put(`/admin/shops/assign/${slug}`, payload);
   return response;

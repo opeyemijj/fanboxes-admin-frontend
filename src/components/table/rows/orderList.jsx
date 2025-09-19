@@ -19,6 +19,7 @@ import { fDateShort } from 'src/utils/formatTime';
 // icons
 import { GroupAdd, TrackChangesTwoTone } from '@mui/icons-material';
 import { capitalize } from 'lodash';
+import { ShipIcon } from 'lucide-react';
 
 OrderList.propTypes = {
   isLoading: PropTypes.bool.isRequired,
@@ -53,7 +54,15 @@ const ThumbImgStyle = styled(Box)(({ theme }) => ({
   position: 'relative',
   overflow: 'hidden'
 }));
-export default function OrderList({ isLoading, row, sn, openAssignUsers, handleClickOpenTraking }) {
+
+export default function OrderList({
+  isLoading,
+  row,
+  sn,
+  openAssignUsers,
+  handleClickOpenTraking,
+  handleClickOpenShipping
+}) {
   const theme = useTheme();
   const router = useRouter();
   return (
@@ -123,17 +132,26 @@ export default function OrderList({ isLoading, row, sn, openAssignUsers, handleC
           ) : (
             <>
               <Tooltip title="Assign To">
-                <MenuItem style={{ marginLeft: 3 }} onClick={() => openAssignUsers(row)}>
-                  <GroupAdd style={{}} size={25} color="primary" />{' '}
+                <MenuItem style={{ padding: 10 }} onClick={() => openAssignUsers(row)}>
+                  <GroupAdd />{' '}
                 </MenuItem>
               </Tooltip>
 
-              <Tooltip title="Tracking Number">
-                <MenuItem style={{ marginLeft: 0 }} onClick={() => handleClickOpenTraking(row)}>
-                  <TrackChangesTwoTone size={25} color="primary" />{' '}
-                  {/* <ListItemText style={{ marginLeft: 0 }}>Assign To</ListItemText> */}
+              <Tooltip title="Tracking Info">
+                <MenuItem style={{ marginLeft: 0, padding: 0 }} onClick={() => handleClickOpenTraking(row)}>
+                  <TrackChangesTwoTone /> {/* <ListItemText style={{ marginLeft: 0 }}>Assign To</ListItemText> */}
                 </MenuItem>
               </Tooltip>
+
+              {row?.trackingInfo ? (
+                <Tooltip title="Shipping Info">
+                  <MenuItem style={{ marginLeft: 0, padding: 10 }} onClick={() => handleClickOpenShipping(row)}>
+                    <ShipIcon /> {/* <ListItemText style={{ marginLeft: 0 }}>Assign To</ListItemText> */}
+                  </MenuItem>
+                </Tooltip>
+              ) : (
+                <MenuItem style={{ paddingLeft: 32 }} />
+              )}
 
               {/* <Tooltip title="Preview">
                 <IconButton onClick={() => router.push(`/${isVendor ? 'vendor' : 'admin'}/orders/${row._id}`)}>
