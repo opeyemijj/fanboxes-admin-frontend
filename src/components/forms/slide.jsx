@@ -7,20 +7,8 @@ import PropTypes from 'prop-types';
 // mui
 import { styled } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
-import {
-  Card,
-  Stack,
-  TextField,
-  Typography,
-  Box,
-  Select,
-  FormControl,
-  FormHelperText,
-  Grid,
-  Skeleton
-} from '@mui/material';
+import { Card, Stack, TextField, Typography, Box, FormHelperText, Grid } from '@mui/material';
 // components
-import UploadSingleFile from 'src/components/upload/UploadSingleFile';
 // yup
 import * as Yup from 'yup';
 // axios

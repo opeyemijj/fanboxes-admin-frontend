@@ -8,11 +8,19 @@ import OrderList from 'src/components/table/rows/orderList';
 import DeleteDialog from 'src/components/dialog/delete';
 import PropTypes from 'prop-types';
 // mui
-import { Dialog } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { Card, Stack, TextField, Typography, Box, FormHelperText, Grid } from '@mui/material';
 // api
 import * as api from 'src/services';
 import { useQueryClient, useMutation, useQuery } from 'react-query';
 import AssignUsersModal from 'src/components/modals/assignUser';
+import { LoadingButton } from '@mui/lab';
+import * as Yup from 'yup';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+// formik
+import { Form, FormikProvider, useFormik } from 'formik';
 const TABLE_HEAD = [
   { id: 'orderNo', label: 'Order No', alignRight: false },
   { id: 'items', label: 'items', alignRight: false },
@@ -41,10 +49,11 @@ export default function OrdersAdminList({ isVendor, shops }) {
     }
   );
 
-  console.log(data, 'Checking the data');
   const [open, setOpen] = useState(false);
+  const [openTraking, setOpenTraking] = useState(false);
+
   const [openAssignTo, setOpenAssignedTo] = useState(false);
-  const [markUser, setMarkUser] = useState(null);
+  const [markOrder, setMarkOrder] = useState(null);
 
   const [id, setId] = useState(null);
 
@@ -68,6 +77,49 @@ export default function OrdersAdminList({ isVendor, shops }) {
     }
   );
 
+  // ✅ Yup Validation Schema
+  // ✅ Yup Validation Schema
+  const TrackingSchema = Yup.object().shape({
+    tracking: Yup.string()
+      .required('Tracking number is required')
+      .max(8, 'Tracking should be 8 character')
+      .min(8, 'Tracking should be 8 character'),
+    courier: Yup.string().required('Courier name is required'),
+    shipped: Yup.date().required('Shipped date is required'),
+    expected: Yup.date().required('Expected date is required')
+  });
+
+  dayjs.extend(customParseFormat);
+  const today = dayjs().format('YYYY-MM-DD');
+  const formik = useFormik({
+    initialValues: {
+      tracking: '',
+      courier: '',
+      shipped: null,
+      expected: null
+    },
+    validationSchema: TrackingSchema,
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        // Format date before submit
+        const payload = {
+          ...values,
+          shipped: dayjs(values.shipped).format('DD/MM/YYYY'),
+          expected: dayjs(values.expected).format('DD/MM/YYYY')
+        };
+        console.log('Submitted values:', payload);
+
+        toast.success('Tracking info added!');
+        resetForm();
+        handleClose();
+      } catch (error) {
+        toast.error('Something went wrong!');
+      }
+    }
+  });
+
+  const { errors, touched, handleSubmit, getFieldProps, setFieldValue, values, resetForm } = formik;
+
   const handleClickOpen = (props) => () => {
     setId(props);
     setOpen(true);
@@ -75,13 +127,21 @@ export default function OrdersAdminList({ isVendor, shops }) {
 
   const handleClose = () => {
     setOpen(false);
-    setMarkUser(null);
+    setMarkOrder(null);
     setOpenAssignedTo(false);
+    setOpenTraking(false);
+    resetForm();
   };
 
   async function openAssignUsers(row) {
-    setMarkUser(row);
+    setMarkOrder(row);
     setOpenAssignedTo(true);
+  }
+
+  function handleClickOpenTraking(prop) {
+    console.log('Come here', prop);
+    // setMarkOrder(prop);
+    setOpenTraking(true);
   }
 
   const isLoading = loadingList;
@@ -104,6 +164,7 @@ export default function OrdersAdminList({ isVendor, shops }) {
         row={OrderList}
         handleClickOpen={handleClickOpen}
         openAssignUsers={openAssignUsers}
+        handleClickOpenTraking={handleClickOpenTraking}
         isVendor={isVendor}
         isSearch
         filters={
@@ -124,11 +185,91 @@ export default function OrdersAdminList({ isVendor, shops }) {
         <AssignUsersModal
           open={openAssignTo}
           onClose={handleClose}
-          markItem={markUser}
+          markItem={markOrder}
           assignLoading={assignLoading}
           onAssign={(payload) => assignUserMutation(payload)}
         />
       )}
+
+      {/* Traking Moal */}
+
+      <Dialog onClose={handleClose} open={openTraking} maxWidth="xs" fullWidth>
+        <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>Tracking Info</DialogTitle>
+
+        <FormikProvider value={formik}>
+          <Form noValidate autoComplete="off" onSubmit={handleSubmit}>
+            <DialogContent>
+              {/* <DialogContentText sx={{ mb: 2 }}>Add Tracking info</DialogContentText> */}
+
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Grid container spacing={2}>
+                    {/* Traking */}
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        label="Tracking"
+                        fullWidth
+                        {...getFieldProps('tracking')}
+                        error={Boolean(touched.tracking && errors.tracking)}
+                        helperText={touched.tracking && errors.tracking}
+                      />
+                    </Grid>
+
+                    {/* Highlight */}
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        label="Courier"
+                        fullWidth
+                        {...getFieldProps('courier')}
+                        error={Boolean(touched.courier && errors.courier)}
+                        helperText={touched.courier && errors.courier}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        label="Shipped"
+                        type="date"
+                        fullWidth
+                        InputLabelProps={{ shrink: true }}
+                        value={values.shipped ? dayjs(values.shipped, 'DD/MM/YYYY').format('YYYY-MM-DD') : ''}
+                        onChange={(e) => setFieldValue('shipped', dayjs(e.target.value).format('DD/MM/YYYY'))}
+                        error={Boolean(touched.shipped && errors.shipped)}
+                        helperText={touched.shipped && errors.shipped}
+                        // inputProps={{ min: today }} // ✅ restrict past dates
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        label="Expected"
+                        type="date"
+                        fullWidth
+                        InputLabelProps={{ shrink: true }}
+                        value={values.expected ? dayjs(values.expected, 'DD/MM/YYYY').format('YYYY-MM-DD') : ''}
+                        onChange={(e) => setFieldValue('expected', dayjs(e.target.value).format('DD/MM/YYYY'))}
+                        error={Boolean(touched.expected && errors.expected)}
+                        helperText={touched.expected && errors.expected}
+                        // inputProps={{ min: today }} // ✅ restrict past dates
+                      />
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </DialogContent>
+
+            <DialogActions>
+              <Button onClick={handleClose} color="inherit">
+                Cancel
+              </Button>
+
+              <LoadingButton type="submit" variant="contained" loading={false}>
+                Add
+              </LoadingButton>
+            </DialogActions>
+          </Form>
+        </FormikProvider>
+      </Dialog>
     </>
   );
 }

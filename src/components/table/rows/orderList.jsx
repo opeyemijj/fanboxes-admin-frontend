@@ -6,7 +6,7 @@ import { useRouter } from 'next-nprogress-bar';
 import { useTheme, styled } from '@mui/material/styles';
 import { Box, TableRow, Skeleton, TableCell, Typography, Stack, IconButton, Tooltip } from '@mui/material';
 
-import { Menu, MenuItem, ListItemText, Switch } from '@mui/material';
+import { MenuItem } from '@mui/material';
 
 // components
 
@@ -15,11 +15,9 @@ import BlurImage from 'src/components/blurImage';
 import { fDateShort } from 'src/utils/formatTime';
 
 // utils
-import { fCurrency } from 'src/utils/formatNumber';
 
 // icons
-import { IoEye } from 'react-icons/io5';
-import { GroupAdd } from '@mui/icons-material';
+import { GroupAdd, TrackChangesTwoTone } from '@mui/icons-material';
 import { capitalize } from 'lodash';
 
 OrderList.propTypes = {
@@ -55,7 +53,7 @@ const ThumbImgStyle = styled(Box)(({ theme }) => ({
   position: 'relative',
   overflow: 'hidden'
 }));
-export default function OrderList({ isLoading, row, isUser, sn, isVendor, openAssignUsers }) {
+export default function OrderList({ isLoading, row, sn, openAssignUsers, handleClickOpenTraking }) {
   const theme = useTheme();
   const router = useRouter();
   return (
@@ -126,7 +124,13 @@ export default function OrderList({ isLoading, row, isUser, sn, isVendor, openAs
             <>
               <Tooltip title="Assign To">
                 <MenuItem style={{ marginLeft: 3 }} onClick={() => openAssignUsers(row)}>
-                  <GroupAdd style={{ marginRight: 10, width: 30 }} size={25} color="primary" />{' '}
+                  <GroupAdd style={{}} size={25} color="primary" />{' '}
+                </MenuItem>
+              </Tooltip>
+
+              <Tooltip title="Tracking Number">
+                <MenuItem style={{ marginLeft: 0 }} onClick={() => handleClickOpenTraking(row)}>
+                  <TrackChangesTwoTone size={25} color="primary" />{' '}
                   {/* <ListItemText style={{ marginLeft: 0 }}>Assign To</ListItemText> */}
                 </MenuItem>
               </Tooltip>
