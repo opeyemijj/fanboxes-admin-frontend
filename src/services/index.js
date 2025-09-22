@@ -255,6 +255,11 @@ export const updateUserActiveInactiveByAdmin = async ({ _id, ...payload }) => {
   return response;
 };
 
+export const updateSlideActiveInactiveByAdmin = async ({ slug, ...payload }) => {
+  const { data: response } = await http.put(`/admin/slides/active/${slug}`, payload);
+  return response;
+};
+
 export const updateUserTopUpByAdmin = async ({ ...payload }) => {
   const { data: response } = await http.post(`/admin/wallets/credit-user/`, payload);
   return response;

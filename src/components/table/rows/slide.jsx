@@ -8,7 +8,7 @@ import { styled } from '@mui/material/styles';
 import { Box, TableRow, Skeleton, TableCell, Typography, Stack, IconButton, Tooltip, useTheme } from '@mui/material';
 
 // icons
-import { MdEdit } from 'react-icons/md';
+import { MdCancel, MdCheckCircle, MdEdit } from 'react-icons/md';
 import { MdDelete } from 'react-icons/md';
 
 // components
@@ -34,9 +34,10 @@ Slide.propTypes = {
   handleClickOpen: PropTypes.func.isRequired
 };
 
-export default function Slide({ isLoading, row, handleClickOpen, sn }) {
+export default function Slide({ isLoading, row, handleClickOpen, sn, handleClickOpenStatus }) {
   const canEdit = UsePermission('edit_slide');
   const canDelete = UsePermission('delete_slide');
+  const canApprove = UsePermission('approve_slide');
   const router = useRouter();
   const theme = useTheme();
   return (
@@ -84,9 +85,30 @@ export default function Slide({ isLoading, row, handleClickOpen, sn }) {
       </Box>
 
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <> {row.buttonText} </>}</TableCell>
-      {/* <TableCell>{isLoading ? <Skeleton variant="text" /> : row.description?.slice(0, 50)}</TableCell> */}
+
+      <TableCell>
+        {isLoading ? (
+          <Skeleton variant="text" />
+        ) : (
+          <div className="col">
+            <Label
+              sx={{
+                width: '70px',
+                fontSize: '0.60rem',
+                margin: 0.2,
+                bgcolor: row?.isActive ? 'success.light' : 'warning.light',
+                color: row?.isActive ? 'success.dark' : 'white',
+                textTransform: 'capitalize'
+              }}
+            >
+              {row?.isActive ? 'Approved' : 'Draft'}
+            </Label>
+          </div>
+        )}
+      </TableCell>
 
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <> {fDateShort(row.createdAt)} </>}</TableCell>
+
       <TableCell align="right">
         <Stack direction="row" justifyContent="flex-end">
           {isLoading ? (
@@ -96,6 +118,18 @@ export default function Slide({ isLoading, row, handleClickOpen, sn }) {
             </>
           ) : (
             <>
+              {canApprove && (
+                <Tooltip title={!row?.isActive ? 'Approve' : 'Draft'}>
+                  <IconButton onClick={handleClickOpenStatus(row)}>
+                    {!row?.isActive ? (
+                      <MdCheckCircle style={{ width: 30 }} color="green" size={23} />
+                    ) : (
+                      <MdCancel style={{ width: 30 }} width={50} color="orange" size={23} />
+                    )}
+                  </IconButton>
+                </Tooltip>
+              )}
+
               {canEdit && (
                 <Tooltip title="Edit">
                   <IconButton onClick={() => router.push(`/admin/slides/${row?.slug}`)}>

@@ -234,6 +234,7 @@ export default function AdminUser({ currentUser, isLoading: userLoading }) {
                         <Skeleton variant="rectangular" width="100%" height={56} />
                       ) : (
                         <TextField
+                          disabled={currentUser ? true : false}
                           id="email"
                           fullWidth
                           // placeholder="Enter last name"
