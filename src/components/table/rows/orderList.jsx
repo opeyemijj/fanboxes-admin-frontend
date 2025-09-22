@@ -104,7 +104,9 @@ export default function OrderList({
 
       <TableCell>{isLoading ? <Skeleton variant="text" /> : capitalize(row?.transaction?.category)}</TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.transaction?.amount}</TableCell>
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.transaction?.paymentMethod}</TableCell>
+      <TableCell>
+        {isLoading ? <Skeleton variant="text" /> : capitalize(row?.transaction?.paymentMethod?.replace(/_/g, ' '))}
+      </TableCell>
 
       <TableCell>
         {isLoading ? (
@@ -113,13 +115,13 @@ export default function OrderList({
           <Label
             variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
             color={
-              (row?.status === 'delivered' && 'success') ||
-              (row?.status === 'ontheway' && 'warning') ||
-              (row?.status === 'pending' && 'info') ||
+              (row?.shippingInfo?.at(-1)?.status === 'delivered' && 'success') ||
+              (row?.shippingInfo?.at(-1)?.status === 'ontheway' && 'warning') ||
+              (row?.shippingInfo?.at(-1)?.status === 'pending' && 'info') ||
               'error'
             }
           >
-            {row.status}
+            {row?.shippingInfo?.at(-1)?.status || 'pending'}
           </Label>
         )}
       </TableCell>
