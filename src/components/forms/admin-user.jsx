@@ -34,6 +34,7 @@ import parseMongooseError from 'src/utils/errorHandler';
 import { IconButton, InputAdornment } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { DATA_ACCESS } from 'src/utils/const';
+import { SortArrayAlphabetically } from 'src/utils/sorting';
 
 AdminUser.propTypes = {
   data: PropTypes.object,
@@ -137,7 +138,7 @@ export default function AdminUser({ currentUser, isLoading: userLoading }) {
       email: currentUser?.email || '',
       phone: currentUser?.phone || '',
       gender: currentUser?.gender || GENDER_OPTIONS[0],
-      roleId: currentUser?.roleId || allRoleList[0]?._id,
+      roleId: currentUser?.roleId || SortArrayAlphabetically(allRoleList, 'role')[0]?._id,
       dataAccess: currentUser?.dataAccess || DATA_ACCESS[0],
       ...(currentUser
         ? {} // skip passwords in edit mode
@@ -318,7 +319,7 @@ export default function AdminUser({ currentUser, isLoading: userLoading }) {
                             error={Boolean(touched.roleId && errors.roleId)}
                           >
                             <option value="" style={{ display: 'none' }} />
-                            {allRoleList?.map((item, idx) => (
+                            {SortArrayAlphabetically(allRoleList, 'role')?.map((item, idx) => (
                               <option key={idx} value={item?._id}>
                                 {item?.role}
                               </option>

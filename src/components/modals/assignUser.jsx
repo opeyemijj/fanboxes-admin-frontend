@@ -19,6 +19,7 @@ import { LoadingButton } from '@mui/lab';
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
 import toast from 'react-hot-toast';
 import * as api from 'src/services';
+import { SortArrayAlphabetically } from 'src/utils/sorting';
 
 export default function AssignUsersModal({ open, onClose, markItem, onAssign, assignLoading }) {
   const [assignUsers, setAssignUsers] = useState([]);
@@ -147,7 +148,7 @@ export default function AssignUsersModal({ open, onClose, markItem, onAssign, as
               <Stack spacing={1}>
                 {filteredUsers.length === 0 && <DialogContentText align="center">No users found.</DialogContentText>}
 
-                {filteredUsers.map((user) => (
+                {SortArrayAlphabetically(filteredUsers, 'firstName')?.map((user) => (
                   <Stack
                     key={user._id}
                     direction="row"

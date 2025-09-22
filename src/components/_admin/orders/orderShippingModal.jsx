@@ -27,6 +27,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Table from 'src/components/table/table';
 import Shipping from 'src/components/table/rows/shipping';
 import { capitalize } from 'lodash';
+import { SortArrayAlphabetically } from 'src/utils/sorting';
 
 const LabelStyle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
@@ -145,7 +146,7 @@ export default function OrderShippingModal({ open, onClose, formik, loading, ite
                     <MenuItem value="">
                       <em>Select status</em>
                     </MenuItem>
-                    {SHIPPING_STATU.map((status) => (
+                    {SortArrayAlphabetically(SHIPPING_STATU)?.map((status) => (
                       <MenuItem key={status} value={status}>
                         {capitalize(status)}
                       </MenuItem>

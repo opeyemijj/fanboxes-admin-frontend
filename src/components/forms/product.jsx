@@ -38,6 +38,7 @@ import { fCurrency } from 'src/utils/formatNumber';
 import uploadToSpaces from 'src/utils/upload';
 import parseMongooseError from 'src/utils/errorHandler';
 import { fanboxesAdminInfluencer } from 'src/utils/const';
+import { SortArrayAlphabetically } from 'src/utils/sorting';
 
 // ----------------------------------------------------------------------
 
@@ -102,7 +103,8 @@ export default function ProductForm({
     enableReinitialize: true,
     initialValues: {
       name: currentProduct?.name || '',
-      category: currentProduct?.category || (categories.length && categories[0]?._id) || '',
+      category:
+        currentProduct?.category || (categories.length && SortArrayAlphabetically(categories, 'name')[0]?._id) || '',
       subCategory: currentProduct?.subCategory || (categories.length && categories[0].subCategories[0]?._id) || '',
       description: currentProduct?.description || '',
       slug: currentProduct?.slug || '',
@@ -317,7 +319,7 @@ export default function ProductForm({
                                 value={values.category}
                                 id="grouped-native-select"
                               >
-                                {categories?.map((category) => (
+                                {SortArrayAlphabetically(categories, 'name')?.map((category) => (
                                   <option key={category._id} value={category._id}>
                                     {category.name}
                                   </option>
@@ -351,15 +353,16 @@ export default function ProductForm({
                                 value={values.subCategory}
                                 id="grouped-native-select-subCategory"
                               >
-                                {categories
-                                  .find((v) => v._id.toString() === values.category)
-                                  ?.subCategories?.map((subCategory) => (
-                                    <option key={subCategory._id} value={subCategory._id}>
-                                      {subCategory.name}
-                                    </option>
+                                {SortArrayAlphabetically(
+                                  categories.find((v) => v._id.toString() === values.category)?.subCategories,
+                                  'name'
+                                )?.map((subCategory) => (
+                                  <option key={subCategory._id} value={subCategory._id}>
+                                    {subCategory.name}
+                                  </option>
 
-                                    // </optgroup>
-                                  ))}
+                                  // </optgroup>
+                                ))}
                               </Select>
                             ) : (
                               <Skeleton variant="rectangular" width={'100%'} height={56} />
