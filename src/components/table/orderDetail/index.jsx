@@ -65,13 +65,9 @@ export default function TableDetails({ ...props }) {
         <Table className="table-main">
           <TableHead>
             <TableRow className="head-row">
-              <TableCell className="head-row-cell">Product</TableCell>
-              <TableCell className="head-row-cell active">Color</TableCell>
-              <TableCell className="head-row-cell active">Size</TableCell>
-              <TableCell className="head-row-cell">Quantity</TableCell>
-              <TableCell className="head-row-cell" align="right">
-                Price
-              </TableCell>
+              <TableCell className="head-row-cell">Item</TableCell>
+              <TableCell className="head-row-cell active">Value</TableCell>
+              <TableCell className="head-row-cell active">Odd</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -81,7 +77,7 @@ export default function TableDetails({ ...props }) {
                   {row ? (
                     <Stack direction="row" spacing={2} alignItems="center">
                       <ThumbImgStyle>
-                        <BlurImage priority fill alt={row?.name} src={row?.imageUrl} objectFit="cover" />
+                        <BlurImage priority fill alt={row?.name} src={row?.images[0]?.url} objectFit="cover" />
                       </ThumbImgStyle>
                       <Stack spacing={0.5}>
                         <Typography variant={'subtitle2'} noWrap fontSize={{ xs: '12px', sm: '0.875rem' }}>
@@ -121,7 +117,7 @@ export default function TableDetails({ ...props }) {
                     textTransform: 'capitalize'
                   }}
                 >
-                  {row ? row.color : <Skeleton variant="text" width={100} />}
+                  {row ? row.value : <Skeleton variant="text" width={100} />}
                 </TableCell>
                 <TableCell
                   className="body-column-cell"
@@ -129,16 +125,7 @@ export default function TableDetails({ ...props }) {
                     textTransform: 'uppercase'
                   }}
                 >
-                  {row ? row?.size : <Skeleton variant="text" width={100} />}
-                </TableCell>
-                <TableCell>{row ? row?.quantity : <Skeleton variant="text" width={100} />}</TableCell>
-
-                <TableCell align="right">
-                  {row ? (
-                    `${fCurrency((row?.priceSale || row?.price) * conversionRate)}`
-                  ) : (
-                    <Skeleton variant="text" width={100} />
-                  )}
+                  {row ? row?.odd : <Skeleton variant="text" width={100} />}
                 </TableCell>
               </TableRow>
             ))}

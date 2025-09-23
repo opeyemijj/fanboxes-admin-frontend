@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next-nprogress-bar';
 
@@ -15,10 +15,12 @@ import { fDateShort } from 'src/utils/formatTime';
 // utils
 
 // icons
-import { GroupAdd, TrackChangesTwoTone } from '@mui/icons-material';
+import { GroupAdd, MoreVert, TrackChangesTwoTone } from '@mui/icons-material';
 import { capitalize } from 'lodash';
 import { ShipIcon } from 'lucide-react';
 import { UsePermission } from 'src/hooks/usePermission';
+import { IoEye } from 'react-icons/io5';
+import { Menu, MenuItem, ListItemText, Switch } from '@mui/material';
 
 OrderList.propTypes = {
   isLoading: PropTypes.bool.isRequired,
@@ -68,6 +70,39 @@ export default function OrderList({
   const canAssign = UsePermission('assign_order_to_user');
   const canAddTrackingInfo = UsePermission('update_order_tracking');
   const canAddShippinInfo = UsePermission('update_order_shipping');
+
+  function MoreActionsMenu({ row, handleClickOpenTraking, handleClickOpenShipping }) {
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+
+    const handleClick = (event) => setAnchorEl(event.currentTarget);
+    const handleClose = () => setAnchorEl(null);
+
+    return (
+      <>
+        <IconButton onClick={handleClick}>
+          <MoreVert />
+        </IconButton>
+
+        <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+          {canAddTrackingInfo && (
+            <MenuItem style={{ marginLeft: 3 }} onClick={() => handleClickOpenTraking(row)}>
+              <TrackChangesTwoTone style={{ marginRight: 10, width: 30 }} size={25} />{' '}
+              <ListItemText style={{ marginLeft: 12 }}>Trakcing Info</ListItemText>
+            </MenuItem>
+          )}
+
+          {row?.trackingInfo && canAddShippinInfo && (
+            <MenuItem style={{ marginLeft: 3 }} onClick={() => handleClickOpenShipping(row)}>
+              <ShipIcon style={{ marginRight: 10, width: 30 }} size={25} />{' '}
+              <ListItemText style={{ marginLeft: 12 }}>Shipping Info</ListItemText>
+            </MenuItem>
+          )}
+        </Menu>
+      </>
+    );
+  }
+
   return (
     <TableRow hover key={Math.random()}>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
@@ -133,6 +168,12 @@ export default function OrderList({
             <Skeleton variant="circular" width={34} height={34} sx={{ mr: 1 }} />
           ) : (
             <>
+              <Tooltip title="Preview">
+                <IconButton onClick={() => router.push(`/admin/orders/${row._id}`)}>
+                  <IoEye />
+                </IconButton>
+              </Tooltip>
+
               {canAssign && (
                 <Tooltip title="Assign To">
                   <IconButton style={{ padding: 10 }} onClick={() => openAssignUsers(row)}>
@@ -140,31 +181,16 @@ export default function OrderList({
                   </IconButton>
                 </Tooltip>
               )}
-
-              {canAddTrackingInfo && (
-                <Tooltip title="Tracking Info">
-                  <IconButton style={{ marginLeft: 0, padding: 0 }} onClick={() => handleClickOpenTraking(row)}>
-                    <TrackChangesTwoTone fontSize="small" />{' '}
-                  </IconButton>
-                </Tooltip>
-              )}
-
-              {row?.trackingInfo && canAddShippinInfo ? (
-                <Tooltip title="Shipping Info">
-                  <IconButton style={{ marginLeft: 0, padding: 10 }} onClick={() => handleClickOpenShipping(row)}>
-                    <ShipIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              ) : (
-                <IconButton style={{ paddingLeft: 32 }} />
-              )}
-
-              {/* <Tooltip title="Preview">
-                <IconButton onClick={() => router.push(`/${isVendor ? 'vendor' : 'admin'}/orders/${row._id}`)}>
-                  <IoEye />
-                </IconButton>
-              </Tooltip> */}
             </>
+          )}
+
+          {/* More actions */}
+          {!isLoading && (
+            <MoreActionsMenu
+              row={row}
+              handleClickOpenTraking={handleClickOpenTraking}
+              handleClickOpenShipping={handleClickOpenShipping}
+            />
           )}
         </Stack>
       </TableCell>

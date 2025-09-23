@@ -52,7 +52,7 @@ export default function Details({ ...props }) {
                 ) : (
                   <>
                     <Typography variant="body2">
-                      <strong>Name</strong>: {user?.firstName + ' ' + user?.lastName}
+                      <strong>Name</strong>: {user?.firstName || '' + ' ' + user?.lastName}
                     </Typography>
                     <Typography variant="body2">
                       <strong>Phone</strong>: {user?.phone}
@@ -61,7 +61,8 @@ export default function Details({ ...props }) {
                       <strong>Email</strong>: {user?.email}
                     </Typography>
                     <Typography variant="body2">
-                      <strong>Address</strong>: {user?.address} {user?.zip}, {user?.city} {user?.state}, {user?.country}
+                      <strong>Address</strong>: {user?.shippingAddress?.address} {user?.shippingAddress?.zip},{' '}
+                      {user?.shippingAddress?.city} {user?.shippingAddress?.state}, {user?.shippingAddress?.country}
                     </Typography>
                   </>
                 )}
@@ -115,7 +116,7 @@ export default function Details({ ...props }) {
                       <strong>Status</strong>: {data?.status}
                     </Typography>
                     <Typography variant="body2" textTransform="capitalize">
-                      <strong>Shipping Fee</strong>: {fCurrency(data?.shipping * data?.conversionRate)}
+                      <strong>Shipping Fee</strong>: {data.shippingFee}
                     </Typography>
                     <Typography variant="body2">
                       <strong>Order Date</strong>:{' '}

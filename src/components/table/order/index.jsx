@@ -28,18 +28,20 @@ TableCard.propTypes = {
 
 export default function TableCard({ ...props }) {
   const { data, isLoading } = props;
+
+  console.log(data, 'Checking the data');
   const items = data?.items;
   const fCurrency = useCurrencyFormatter(data?.currency);
   const conversionRate = data?.conversionRate;
   return (
     <RootStyled>
-      {isLoading ? (
+      {/* {isLoading ? (
         <Skeleton variant="text" width={100} className="skeleton-h5" />
       ) : (
         <Typography variant="h5" p={2}>
           {data?.totalItems} {data?.totalItems > 1 ? 'Items' : 'Item'}
         </Typography>
-      )}
+      )} */}
       <OrderDetailsTable data={items} isLoading={isLoading} conversionRate={conversionRate} currency={data?.currency} />
       <Divider />
       <Table>
@@ -57,7 +59,7 @@ export default function TableCard({ ...props }) {
               {isLoading ? (
                 <Skeleton variant="text" className="skeleton-text" width={100} />
               ) : (
-                <strong>{fCurrency(data?.subTotal)}</strong>
+                <strong>{data?.subTotal || 0}</strong>
               )}
             </TableCell>
           </TableRow>
@@ -76,7 +78,7 @@ export default function TableCard({ ...props }) {
               {isLoading ? (
                 <Skeleton variant="text" className="skeleton-text" width={100} />
               ) : (
-                <strong>{fCurrency(data?.shipping * conversionRate)}</strong>
+                <strong>{data?.shippingFee || 0}</strong>
               )}
             </TableCell>
           </TableRow>
@@ -93,7 +95,7 @@ export default function TableCard({ ...props }) {
               {isLoading ? (
                 <Skeleton variant="text" className="skeleton-text" width={100} />
               ) : (
-                <strong>-{fCurrency(data?.discount * conversionRate)}</strong>
+                <strong>-{data?.discountApplied?.amount || 0}</strong>
               )}
             </TableCell>
           </TableRow>
@@ -106,7 +108,7 @@ export default function TableCard({ ...props }) {
               {isLoading ? (
                 <Skeleton variant="text" className="skeleton-text" width={100} />
               ) : (
-                <strong>{fCurrency(data?.total * conversionRate)}</strong>
+                <strong>{data?.transaction?.amount}</strong>
               )}
             </TableCell>
           </TableRow>

@@ -27,6 +27,7 @@ export default function OrderDetail({ params }) {
       toast.error(err?.response?.data?.message || 'Something went wrong!');
     }
   });
+
   return (
     <Box>
       <HeaderBreadcrumbs
