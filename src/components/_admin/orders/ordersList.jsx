@@ -254,7 +254,7 @@ export default function OrdersAdminList({ isVendor, shops }) {
             ? []
             : [
                 {
-                  name: 'Shop',
+                  name: 'Influencer',
                   param: 'shop',
                   data: shops
                 }

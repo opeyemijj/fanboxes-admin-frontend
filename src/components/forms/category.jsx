@@ -45,7 +45,7 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
   lineHeight: 2.5
 }));
 
-const STATUS_OPTIONS = ['active', 'deactive'];
+const STATUS_OPTIONS = ['active', 'inactive'];
 
 export default function CategoryForm({ data: currentCategory, isLoading: categoryLoading }) {
   const router = useRouter();
