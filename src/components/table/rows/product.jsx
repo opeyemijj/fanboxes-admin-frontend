@@ -114,7 +114,6 @@ export default function ProductRow({
   return (
     <TableRow hover key={Math.random()}>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
-
       <TableCell component="th" scope="row" sx={{ maxWidth: 300 }}>
         <Link
           style={{ textDecoration: 'none', color: 'inherit' }}
@@ -162,7 +161,20 @@ export default function ProductRow({
         </Link>
       </TableCell>
 
-      <TableCell component="th" scope="row" sx={{ maxWidth: 300 }}>
+      <TableCell
+        onClick={() => {
+          if (row?.shop) {
+            router.push(`/admin/products?shop=${row?.shopDetails?.slug}`, undefined, { shallow: false });
+            router.refresh(); // forces reload
+          } else {
+            router.push(`/admin/products?shop=admin-box`);
+            router.refresh(); // forces reload
+          }
+        }}
+        component="th"
+        scope="row"
+        sx={{ maxWidth: 300, cursor: 'pointer' }}
+      >
         <Box
           sx={{
             display: 'flex',
@@ -202,12 +214,10 @@ export default function ProductRow({
           </Typography>
         </Box>
       </TableCell>
-
       <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.ownerType ? row?.ownerType : 'Influencer'}</TableCell>
       <TableCell align="center">
         {isLoading ? <Skeleton variant="text" /> : row?.visitedCount ? row?.visitedCount : 0}
       </TableCell>
-
       <TableCell align="left">
         {isLoading ? (
           <Skeleton variant="text" />
@@ -247,9 +257,7 @@ export default function ProductRow({
           </div>
         )}
       </TableCell>
-
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{fDateShort(row?.createdAt, enUS)}</>}</TableCell>
-
       <TableCell align="right">
         {isLoading ? (
           <Stack direction="row" justifyContent="flex-end">

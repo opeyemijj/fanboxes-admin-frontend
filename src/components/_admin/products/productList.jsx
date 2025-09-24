@@ -59,11 +59,15 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
 
   // Assigned to state
   const [openAssignTo, setOpenAssignedTo] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const { data, isLoading } = useQuery(
     ['admin-products', apicall, searchParams.toString()],
     () => api[isVendor ? 'getVendorProducts' : 'getProductsByAdmin'](searchParams.toString()),
     {
+      onSuccess: () => {
+        setRefreshKey(refreshKey + 1);
+      },
       onError: (error) => {
         console.log(error);
         let errorMessage = parseMongooseError(error?.message);
@@ -230,6 +234,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
   return (
     <>
       <Table
+        key={refreshKey}
         headData={TABLE_HEAD}
         data={data ?? { success: true, data: [], total: 0, count: 0, currentPage: 1 }}
         isLoading={isLoading}
