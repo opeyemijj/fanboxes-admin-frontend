@@ -117,7 +117,18 @@ export default function ProductRow({
         </Box>
       </TableCell>
 
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row.products?.length || 0}</>}</TableCell>
+      <TableCell
+        onClick={() => {
+          if (row?.products?.length > 0) {
+            router.push(`/admin/products?shop=${row?.slug}`);
+          }
+        }}
+        sx={{
+          cursor: 'pointer'
+        }}
+      >
+        {isLoading ? <Skeleton variant="text" /> : <>{row.products?.length || 0}</>}
+      </TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.visitedCount || 0}</>}</TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.categoryDetails?.name || ''}</>}</TableCell>
 
