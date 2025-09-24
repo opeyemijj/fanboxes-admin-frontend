@@ -74,7 +74,21 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
     <TableRow hover key={Math.random()}>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
 
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{row?.boxDetails?.name}</>}</TableCell>
+      <TableCell>
+        {isLoading ? (
+          <Skeleton variant="text" />
+        ) : (
+          <>
+            <Link
+              style={{ textDecoration: 'none', color: 'inherit' }}
+              target="_blank"
+              href={`${process.env.USER_FRONTEND_URL}/boxes/${row?.boxDetails?.slug}`}
+            >
+              {row?.boxDetails?.name}
+            </Link>
+          </>
+        )}
+      </TableCell>
       <TableCell component="th" scope="row" sx={{ maxWidth: 300 }}>
         <Box
           sx={{
