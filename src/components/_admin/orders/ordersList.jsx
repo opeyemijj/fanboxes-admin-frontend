@@ -24,6 +24,8 @@ import { Form, FormikProvider, useFormik } from 'formik';
 import parseMongooseError from 'src/utils/errorHandler';
 import OrderTrackingModal from './orderTrackingModal';
 import OrderShippingModal from './orderShippingModal';
+import { SHIPPING_STATU, SHIPPING_STATUS_FOR_FILTER } from 'src/utils/const';
+import { SortArrayAlphabetically } from 'src/utils/sorting';
 const TABLE_HEAD = [
   { id: 'orderNo', label: 'Order No', alignRight: false },
   { id: 'items', label: 'item', alignRight: false },
@@ -170,7 +172,6 @@ export default function OrdersAdminList({ isVendor, shops }) {
     validationSchema: ShippingSchema,
     onSubmit: async (values) => {
       try {
-        console.log(values, 'Come here to update shipping details');
         const { ...rest } = values;
         shippingMutation({
           slug: markOrder._id,
@@ -249,17 +250,13 @@ export default function OrdersAdminList({ isVendor, shops }) {
         handleClickOpenShipping={handleClickOpenShipping}
         isVendor={isVendor}
         isSearch
-        filters={
-          isVendor
-            ? []
-            : [
-                {
-                  name: 'Influencer',
-                  param: 'shop',
-                  data: shops
-                }
-              ]
-        }
+        filters={[
+          {
+            name: 'Status',
+            param: 'status',
+            data: SortArrayAlphabetically(SHIPPING_STATUS_FOR_FILTER, 'name')
+          }
+        ]}
       />
 
       {/* Assign Users Modal */}

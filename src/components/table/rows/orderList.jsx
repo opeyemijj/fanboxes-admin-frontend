@@ -150,13 +150,13 @@ export default function OrderList({
           <Label
             variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
             color={
-              (row?.shippingInfo?.at(-1)?.status === 'delivered' && 'success') ||
-              (row?.shippingInfo?.at(-1)?.status === 'ontheway' && 'warning') ||
-              (row?.shippingInfo?.at(-1)?.status === 'pending' && 'info') ||
+              (row?.status === 'delivered' && 'success') ||
+              (row?.status === 'ontheway' && 'warning') ||
+              (row?.status === 'pending' && 'info') ||
               'error'
             }
           >
-            {row?.shippingInfo?.at(-1)?.status || 'pending'}
+            {row?.status || 'pending'}
           </Label>
         )}
       </TableCell>

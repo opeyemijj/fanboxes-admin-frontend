@@ -28,6 +28,7 @@ import Table from 'src/components/table/table';
 import Shipping from 'src/components/table/rows/shipping';
 import { capitalize } from 'lodash';
 import { SortArrayAlphabetically } from 'src/utils/sorting';
+import { SHIPPING_STATU } from 'src/utils/const';
 
 const LabelStyle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
@@ -42,19 +43,6 @@ export default function OrderShippingModal({ open, onClose, formik, loading, ite
   const tableData = {
     data: (item?.shippingInfo || []).slice().reverse()
   };
-
-  const SHIPPING_STATU = [
-    'pending',
-    'processing',
-    'shipped',
-    'in transit',
-    'out for delivery',
-    'delivered',
-    'delayed',
-    'returned',
-    'cancelled',
-    'failed delivery'
-  ];
 
   const TABLE_HEAD = [
     { id: 'status', label: 'Status', alignRight: false },
