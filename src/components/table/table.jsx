@@ -100,7 +100,7 @@ export default function CustomTable({ filters = [], ...props }) {
                     label={item?.name}
                     onChange={(e) => handleChange(item.param, e.target.value)}
                   >
-                    <MenuItem value="">None</MenuItem>
+                    <MenuItem value="">ALL</MenuItem>
                     {item.data.map((v) => (
                       <MenuItem value={v.slug} key={v._id}>
                         {v.name || v.title}

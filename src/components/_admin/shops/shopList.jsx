@@ -203,7 +203,7 @@ export default function AdminProducts() {
           endPoint={'deleteShop'}
           type={'Influencer deleted'}
           deleteMessage={
-            'Are you really sure you want to remove this Influencer? Just making sure before we go ahead with it.'
+            'Are you sure you’d like to remove this influencer? Once deleted, all of their related boxes will also be removed. We just want to double-check before moving forward.'
           }
         />
       </Dialog>
