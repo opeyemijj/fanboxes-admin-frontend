@@ -8,6 +8,7 @@ import { UsePermissionServer } from 'src/hooks/usePermissionServer';
 
 // api
 import * as api from 'src/services';
+import { SortArrayAlphabetically } from 'src/utils/sorting';
 
 // Meta information
 export const metadata = {
@@ -52,7 +53,11 @@ export default async function AdminProducts() {
             : null
         }
       />
-      <ProductList categories={categories} shops={shops} brands={brands} />
+      <ProductList
+        categories={SortArrayAlphabetically(categories, 'name')}
+        shops={SortArrayAlphabetically(shops, 'title')}
+        brands={brands}
+      />
     </>
   );
 }
