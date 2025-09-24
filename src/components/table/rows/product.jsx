@@ -293,22 +293,41 @@ export default function ProductRow({
 }
 ProductRow.propTypes = {
   isLoading: PropTypes.bool.isRequired,
+  sn: PropTypes.number, // you are rendering {sn}
+  isVendor: PropTypes.bool,
+  oddsVisibileLoading: PropTypes.bool,
 
   row: PropTypes.shape({
-    image: PropTypes.object.isRequired,
+    slug: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    images: PropTypes.arrayOf(
-      PropTypes.shape({
-        url: PropTypes.string.isRequired
+
+    image: PropTypes.shape({
+      url: PropTypes.string.isRequired,
+      blurDataURL: PropTypes.string
+    }).isRequired,
+
+    shopDetails: PropTypes.shape({
+      title: PropTypes.string,
+      logo: PropTypes.shape({
+        url: PropTypes.string,
+        blurDataURL: PropTypes.string
       })
-    ).isRequired,
-    createdAt: PropTypes.instanceOf(Date).isRequired,
-    available: PropTypes.number,
-    averageRating: PropTypes.number.isRequired,
+    }),
+
+    ownerType: PropTypes.string,
+    visitedCount: PropTypes.number,
+    items: PropTypes.arrayOf(PropTypes.object),
     priceSale: PropTypes.number,
-    price: PropTypes.number.isRequired,
-    slug: PropTypes.string.isRequired
+    price: PropTypes.number,
+    isActive: PropTypes.bool,
+    isBanned: PropTypes.bool,
+    isItemOddsHidden: PropTypes.bool,
+    createdAt: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)])
   }).isRequired,
 
-  handleClickOpen: PropTypes.func.isRequired
+  handleClickOpen: PropTypes.func.isRequired,
+  handleClickOpenStatus: PropTypes.func,
+  handleClickOpenBanned: PropTypes.func,
+  handleClickOddsVisibility: PropTypes.func,
+  openAssignUsers: PropTypes.func
 };

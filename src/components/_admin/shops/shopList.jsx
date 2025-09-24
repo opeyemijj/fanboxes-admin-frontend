@@ -201,7 +201,7 @@ export default function AdminProducts() {
           id={id}
           apicall={setApicall}
           endPoint={'deleteShop'}
-          type={'Shop deleted'}
+          type={'Influencer deleted'}
           deleteMessage={
             'Are you really sure you want to remove this Influencer? Just making sure before we go ahead with it.'
           }

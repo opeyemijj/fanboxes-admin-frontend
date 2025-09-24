@@ -242,13 +242,13 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
         oddsVisibileLoading={oddsVisibileLoading}
         brands={isVendor ? [] : brands}
         categories={isVendor ? [] : categories}
-        isVendor={isVendor}
+        isSearch={true}
         filters={
           isVendor
             ? []
             : [
                 {
-                  name: 'Shop',
+                  name: 'Influencer',
                   param: 'shop',
                   data: shops
                 },
@@ -256,15 +256,14 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
                   name: 'Category',
                   param: 'category',
                   data: categories
-                },
-                {
-                  name: 'Brand',
-                  param: 'brand',
-                  data: brands
                 }
+                // {
+                //   name: 'Brand',
+                //   param: 'brand',
+                //   data: brands
+                // }
               ]
         }
-        isSearch
       />
 
       {/* Assign Users Modal */}

@@ -81,17 +81,17 @@ export default function CustomTable({ filters = [], ...props }) {
   return (
     <Card>
       <>
-        {!filters.length && !heading ? (
+        {(filters.length > 0 || heading) && (
           <Stack spacing={2} direction="row" alignItems="center" justifyContent="space-between" sx={{ p: 2 }}>
-            {heading ? (
+            {heading && (
               <Typography variant="h4" color="text.primary" px={2} py={2}>
                 {heading}
               </Typography>
-            ) : null}
-            {isSearch ? <Search /> : null}{' '}
+            )}
+            {isSearch ? <Search /> : null}
             <Stack spacing={2} direction="row">
               {filters.map((item) => (
-                <FormControl fullWidth key={Math.random()} sx={{ maxWidth: 200, minWidth: 140, width: '100%' }}>
+                <FormControl fullWidth key={item.param} sx={{ maxWidth: 200, minWidth: 140, width: '100%' }}>
                   <InputLabel id={'select-' + item?.name}>{item?.name}</InputLabel>
                   <Select
                     labelId={'select-' + item?.name}
@@ -102,7 +102,7 @@ export default function CustomTable({ filters = [], ...props }) {
                   >
                     <MenuItem value="">None</MenuItem>
                     {item.data.map((v) => (
-                      <MenuItem value={v.slug} key={Math.random()}>
+                      <MenuItem value={v.slug} key={v._id}>
                         {v.name || v.title}
                       </MenuItem>
                     ))}
@@ -111,7 +111,7 @@ export default function CustomTable({ filters = [], ...props }) {
               ))}
             </Stack>
           </Stack>
-        ) : null}
+        )}
 
         {!isLoading && data?.data?.length === 0 ? (
           <>

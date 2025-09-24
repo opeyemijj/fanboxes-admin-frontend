@@ -59,7 +59,7 @@ export default function AdminSpins() {
           id={id}
           apicall={setApicall}
           endPoint={'deleteShop'}
-          type={'Shop deleted'}
+          type={'Influencer deleted'}
           deleteMessage={
             'Are you really sure you want to remove this Shop? Just making sure before we go ahead with it.'
           }

@@ -35,7 +35,7 @@ export default function Page({ params }) {
     <div>
       <HeaderBreadcrumbs
         admin
-        heading="Edit Side"
+        heading="Edit Slide"
         links={[
           {
             name: 'Dashboard',
