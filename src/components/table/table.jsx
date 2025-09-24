@@ -81,7 +81,7 @@ export default function CustomTable({ filters = [], ...props }) {
   return (
     <Card>
       <>
-        {(filters.length > 0 || heading) && (
+        {(filters.length > 0 || heading || isSearch) && (
           <Stack spacing={2} direction="row" alignItems="center" justifyContent="space-between" sx={{ p: 2 }}>
             {heading && (
               <Typography variant="h4" color="text.primary" px={2} py={2}>
