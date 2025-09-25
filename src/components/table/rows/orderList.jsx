@@ -134,7 +134,11 @@ export default function OrderList({
       </TableCell>
 
       <TableCell>
-        {isLoading ? <Skeleton variant="text" /> : `${row?.user?.firstName + ' ' + row?.user?.lastName}`}
+        {isLoading ? (
+          <Skeleton variant="text" />
+        ) : (
+          `${row?.user?.firstName ? row?.user?.firstName : +' ' + row?.user?.lastName}`
+        )}
       </TableCell>
 
       <TableCell>{isLoading ? <Skeleton variant="text" /> : capitalize(row?.transaction?.category)}</TableCell>
