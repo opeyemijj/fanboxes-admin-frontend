@@ -94,6 +94,7 @@ export default function ProductForm({
     description: Yup.string().required('Description is required'),
     shop: isVendor ? Yup.string().nullable().notRequired() : Yup.string().optional(),
     slug: Yup.string().required('Slug is required'),
+    category: Yup.string().required('Category is required'),
     priceSale: Yup.number().required('Sale price is required'),
     images: Yup.array().min(1, 'Images is required'),
     ownerType: Yup.string().required('Owner is required')
@@ -103,8 +104,7 @@ export default function ProductForm({
     enableReinitialize: true,
     initialValues: {
       name: currentProduct?.name || '',
-      category:
-        currentProduct?.category || (categories.length && SortArrayAlphabetically(categories, 'name')[0]?._id) || '',
+      category: categories?.some((c) => c._id === currentProduct?.category) ? currentProduct?.category : '', // empty if not found
       subCategory: currentProduct?.subCategory || (categories.length && categories[0].subCategories[0]?._id) || '',
       description: currentProduct?.description || '',
       slug: currentProduct?.slug || '',
@@ -316,15 +316,16 @@ export default function ProductForm({
                               <Select
                                 native
                                 {...getFieldProps('category')}
-                                value={values.category}
+                                value={values.category || ''} // ensure empty string if no match
                                 id="grouped-native-select"
                               >
+                                {/* Empty option */}
+                                <option value="">-- Select Category --</option>
+
                                 {SortArrayAlphabetically(categories, 'name')?.map((category) => (
                                   <option key={category._id} value={category._id}>
                                     {category.name}
                                   </option>
-
-                                  // </optgroup>
                                 ))}
                               </Select>
                             ) : (
@@ -353,6 +354,9 @@ export default function ProductForm({
                                 value={values.subCategory}
                                 id="grouped-native-select-subCategory"
                               >
+                                {/* Empty option */}
+                                <option value="">-- Select Sub Category --</option>
+
                                 {SortArrayAlphabetically(
                                   categories.find((v) => v._id.toString() === values.category)?.subCategories,
                                   'name'

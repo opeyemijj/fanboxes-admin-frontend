@@ -103,6 +103,7 @@ export default function AdminShopForm({
     cover: Yup.mixed().required('Cover is required'),
     logo: Yup.mixed().required('logo is required'),
     slug: Yup.string().required('Slug is required'),
+    category: Yup.string().required('Category is required'),
     description: Yup.string().optional('Description is required'),
     phone: Yup.string().required('Phone Number is required'),
     instagramLink: Yup.string()
@@ -128,9 +129,7 @@ export default function AdminShopForm({
   const formik = useFormik({
     initialValues: {
       title: currentShop?.title || '',
-      category:
-        currentShop?.category || (categories?.length && SortArrayAlphabetically(categories, 'name')[0]?._id) || '',
-      subCategory: currentShop?.subCategory || (categories?.length && categories[0].subCategories[0]?._id) || '',
+      category: categories?.some((c) => c._id === currentShop?.category) ? currentShop?.category : '', // empty if not foundsubCategory: currentShop?.subCategory || (categories?.length && categories[0].subCategories[0]?._id) || '',
       cover: currentShop?.cover || null,
       logo: currentShop?.logo || null,
       description: currentShop?.description || '',
@@ -305,6 +304,9 @@ export default function AdminShopForm({
                           value={values.category}
                           id="grouped-native-select"
                         >
+                          {/* Empty option */}
+                          <option value="">-- Select Category --</option>
+
                           {SortArrayAlphabetically(categories, 'name')?.map((category) => (
                             <option key={category._id} value={category._id}>
                               {category.name}
@@ -339,6 +341,8 @@ export default function AdminShopForm({
                           value={values.subCategory}
                           id="grouped-native-select-subCategory"
                         >
+                          {/* Empty option */}
+                          <option value="">-- Select Sub Category --</option>
                           {SortArrayAlphabetically(
                             categories?.find((v) => v._id.toString() === values.category)?.subCategories,
                             'name'
