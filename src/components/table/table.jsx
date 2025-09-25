@@ -15,7 +15,9 @@ import {
   InputLabel,
   MenuItem,
   FormControl,
-  Select
+  Select,
+  Autocomplete,
+  TextField
 } from '@mui/material';
 
 // components
@@ -67,13 +69,32 @@ export default function CustomTable({ filters = [], ...props }) {
     },
     [searchParams]
   );
+  // useEffect(() => {
+  //   const params = new URLSearchParams('?' + queryString);
+  //   const paramsObject = {};
+  //   for (const [key, value] of params.entries()) {
+  //     paramsObject[key] = value;
+  //   }
+  //   setState({ ...state, ...paramsObject });
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
+
   useEffect(() => {
     const params = new URLSearchParams('?' + queryString);
     const paramsObject = {};
+
     for (const [key, value] of params.entries()) {
       paramsObject[key] = value;
     }
-    setState({ ...state, ...paramsObject });
+
+    // ✅ Ensure every filter param exists in state (default to 'ALL' => '')
+    filters.forEach((filter) => {
+      if (!(filter.param in paramsObject)) {
+        paramsObject[filter.param] = '';
+      }
+    });
+
+    setState(paramsObject);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -91,22 +112,52 @@ export default function CustomTable({ filters = [], ...props }) {
             {isSearch ? <Search /> : null}
             <Stack spacing={2} direction="row">
               {filters.map((item) => (
-                <FormControl fullWidth key={item.param} sx={{ maxWidth: 200, minWidth: 140, width: '100%' }}>
-                  <InputLabel id={'select-' + item?.name}>{item?.name}</InputLabel>
-                  <Select
-                    labelId={'select-' + item?.name}
-                    id={'select-' + item?.name}
-                    value={state[item.param] ?? ''}
-                    label={item?.name}
-                    onChange={(e) => handleChange(item.param, e.target.value)}
-                  >
-                    <MenuItem value="">ALL</MenuItem>
-                    {item.data.map((v, idx) => (
-                      <MenuItem value={v.slug || v.name} key={idx}>
-                        {v.name || v.title}
-                      </MenuItem>
-                    ))}
-                  </Select>
+                <FormControl fullWidth key={item.param} sx={{ maxWidth: 240, minWidth: 160 }}>
+                  <Autocomplete
+                    id={`autocomplete-${item.param}`}
+                    size="small"
+                    fullWidth
+                    freeSolo
+                    disableClearable
+                    value={(() => {
+                      const matchedOption = item.data.find(
+                        (v) => v.slug === state[item.param] || v.name === state[item.param]
+                      );
+
+                      if (matchedOption) {
+                        return {
+                          label: matchedOption.name || matchedOption.title,
+                          value: matchedOption.slug || matchedOption.name
+                        };
+                      }
+
+                      if (state[item.param]) {
+                        return {
+                          label: state[item.param], // fallback display
+                          value: state[item.param]
+                        };
+                      }
+
+                      return { label: 'ALL', value: '' };
+                    })()}
+                    onChange={(event, newValue) => {
+                      if (typeof newValue === 'string') {
+                        handleChange(item.param, newValue);
+                      } else if (newValue && newValue.value !== undefined) {
+                        handleChange(item.param, newValue.value);
+                      } else {
+                        handleChange(item.param, '');
+                      }
+                    }}
+                    options={[
+                      { label: 'ALL', value: '' },
+                      ...item.data.map((v) => ({
+                        label: v.name || v.title,
+                        value: v.slug || v.name
+                      }))
+                    ]}
+                    renderInput={(params) => <TextField {...params} label={item.name} variant="outlined" />}
+                  />
                 </FormControl>
               ))}
             </Stack>
