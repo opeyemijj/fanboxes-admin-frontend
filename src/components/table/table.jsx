@@ -134,9 +134,29 @@ export default function CustomTable({ filters = [], ...props }) {
                 </TableBody>
               </Table>
             </TableContainer>
+
             <Divider />
             {!isLoading && (
-              <Stack alignItems="flex-end" mt={2} pr={2}>
+              <Stack direction="row" alignItems="center" justifyContent="flex-end" pb={3} spacing={2} mt={2} pr={2}>
+                {/* Rows per page dropdown */}
+                <FormControl sx={{ minWidth: 120 }} size="small">
+                  <InputLabel id="rows-per-page-label">Rows</InputLabel>
+                  <Select
+                    labelId="rows-per-page-label"
+                    id="rows-per-page"
+                    value={state.limit ?? 10}
+                    label="Rows"
+                    onChange={(e) => handleChange('limit', e.target.value)}
+                  >
+                    {[10, 20, 50, 100].map((num) => (
+                      <MenuItem key={num} value={num}>
+                        {num}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                {/* Pagination on the right */}
                 <Pagination data={data} />
               </Stack>
             )}
