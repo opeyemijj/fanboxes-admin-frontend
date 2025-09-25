@@ -44,8 +44,8 @@ export default function AdminProducts() {
   const [openAssignTo, setOpenAssignedTo] = useState(false);
 
   const { data, isLoading } = useQuery(
-    ['admin-shops', apicall, searchParam, pageParam],
-    () => api.getShopsByAdmin(+pageParam || 1, searchParam || ''),
+    ['admin-shops', apicall, searchParams.toString()],
+    () => api.getShopsByAdmin(searchParams.toString()),
     {
       onError: (error) => {
         console.log(error);

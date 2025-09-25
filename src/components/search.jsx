@@ -45,9 +45,14 @@ export default function Search() {
   const createQueryString = useCallback(
     (name, value) => {
       const params = new URLSearchParams(searchParams);
-      params.set(name, value);
-      params.delete('page');
 
+      if (value) {
+        params.set(name, value);
+      } else {
+        params.delete(name);
+      }
+
+      params.delete('page'); // reset page on new search
       return params.toString();
     },
     [searchParams]
@@ -59,8 +64,20 @@ export default function Search() {
         setInitial(true);
         router.push(`${pathname}?${createQueryString('search', search)}`);
       } else {
-        if (initial) {
-          router.push(`${pathname}`);
+        // if (initial) {
+        //   router.push(`${pathname}`);
+        // }
+
+        if (Boolean(search)) {
+          setInitial(true);
+          router.push(`${pathname}?${createQueryString('search', search)}`);
+        } else {
+          if (initial) {
+            // remove only "search", keep other params like limit
+            const params = new URLSearchParams(searchParams);
+            params.delete('search');
+            router.push(`${pathname}?${params.toString()}`);
+          }
         }
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps

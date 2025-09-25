@@ -409,8 +409,8 @@ export const getLowStockProductsByAdmin = async (page) => {
   const { data: response } = await http.get(`/admin/low-stock-products?page=${page}`);
   return response;
 };
-export const getShopsByAdmin = async (page, search) => {
-  const { data: response } = await http.get(`/admin/shops?search=${search}&page=${page}`);
+export const getShopsByAdmin = async (params) => {
+  const { data: response } = await http.get(`/admin/shops?${params}`);
   return response;
 };
 export const getShopIncomeByAdmin = async (slug, page) => {
