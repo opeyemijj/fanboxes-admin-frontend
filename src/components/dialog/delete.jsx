@@ -37,7 +37,7 @@ export default function DeleteDialog({ onClose, id, apicall, endPoint, type, del
       }
     },
     onError: (err) => {
-      toast.error(err.response.data.message);
+      toast.error(err.message);
     }
   });
   const handleDelete = () => {

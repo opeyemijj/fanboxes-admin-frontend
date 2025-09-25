@@ -20,7 +20,7 @@ import { UsePermission } from 'src/hooks/usePermission';
 export default function AdminBoxeItems({ boxDetails, brands, categories, shops, isVendor }) {
   // console.log(boxDetails, 'Check the box details');
   const fullUrl = typeof window !== 'undefined' ? window.location.href : '';
-  const lastSegmentForSlug = fullUrl.substring(fullUrl.lastIndexOf('/') + 1);
+  const lastSegmentForSlug = fullUrl.substring(fullUrl.lastIndexOf('/') + 1).split('?')[0];
 
   // ✅ Get current page & limit from URL
   const searchParams = useSearchParams();
