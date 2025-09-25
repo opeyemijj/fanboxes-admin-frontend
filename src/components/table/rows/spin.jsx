@@ -200,7 +200,14 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
       <TableCell title={row?.serverSeed}>
         {isLoading ? <Skeleton variant="text" /> : <>{shortenString(row?.serverSeed, 10, true)}</>}
       </TableCell>
-      <TableCell>
+      <TableCell
+        sx={{ cursor: 'pointer' }}
+        onClick={() => {
+          if (row?.userId) {
+            router.push(`/admin/users/${row?.userId}`);
+          }
+        }}
+      >
         {isLoading ? (
           <Skeleton variant="text" />
         ) : (
