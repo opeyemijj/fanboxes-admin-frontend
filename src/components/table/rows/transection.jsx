@@ -102,7 +102,14 @@ export default function TransectionRow({ isLoading, row, handleClickOpen, sn }) 
         )}
       </TableCell>
 
-      <TableCell>
+      <TableCell
+        sx={{ cursor: 'pointer' }}
+        onClick={() => {
+          if (row?.userData) {
+            router.push(`/admin/users/${row?.userData?.id}`);
+          }
+        }}
+      >
         {isLoading ? (
           <Skeleton variant="text" />
         ) : (
