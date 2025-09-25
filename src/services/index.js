@@ -150,7 +150,6 @@ export const updateRoleByAdmin = async ({ slug, payload }) => {
 };
 
 export const getRolesByAdmin = async (params) => {
-  console.log(params, 'Check the params');
   const { data } = await http.get(`/admin/roles?${params}`);
   return data;
 };
@@ -341,8 +340,8 @@ export const updateOrderStatus = async ({ id, ...payload }) => {
   const { data } = await http.put(`/admin/orders/${id}`, payload);
   return data;
 };
-export const getUserByAdminsByAdmin = async (page, search, userType) => {
-  const { data: response } = await http.get(`/admin/users?search=${search}&page=${page}&userType=${userType}`);
+export const getUserByAdminsByAdmin = async (params, userType) => {
+  const { data: response } = await http.get(`/admin/users?${params}&userType=${userType}`);
   return response;
 };
 

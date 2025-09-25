@@ -57,8 +57,8 @@ export default function AdminProducts({ userType }) {
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery(
-    ['user', pageParam, searchParam, count],
-    () => api.getUserByAdminsByAdmin(+pageParam || 1, searchParam || '', userType),
+    ['user', searchParams.toString()],
+    () => api.getUserByAdminsByAdmin(searchParams.toString(), userType),
     {
       onError: (err) => {
         toast.error(err.message || 'Something went wrong!');
