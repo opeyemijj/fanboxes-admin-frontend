@@ -92,7 +92,12 @@ export default function ProductForm({
   const NewProductSchema = Yup.object().shape({
     name: Yup.string().required('Box title is required'),
     description: Yup.string().required('Description is required'),
-    shop: isVendor ? Yup.string().nullable().notRequired() : Yup.string().optional(),
+    description: Yup.string().required('Description is required'),
+    shop: Yup.string().when('ownerType', {
+      is: (val) => val === 'Influencer',
+      then: (schema) => schema.required('Influencer is required'),
+      otherwise: (schema) => schema.notRequired().nullable()
+    }),
     slug: Yup.string().required('Slug is required'),
     category: Yup.string().required('Category is required'),
     priceSale: Yup.number().required('Sale price is required'),
@@ -108,7 +113,7 @@ export default function ProductForm({
       subCategory: currentProduct?.subCategory || (categories.length && categories[0].subCategories[0]?._id) || '',
       description: currentProduct?.description || '',
       slug: currentProduct?.slug || '',
-      shop: isVendor ? null : currentProduct?.shop || (shops?.length && shops[0]?._id) || '',
+      shop: isVendor ? null : shops?.some((s) => s._id === currentProduct?.shop) ? currentProduct.shop : '',
       priceSale: currentProduct?.priceSale || '',
       images: currentProduct?.images || [],
       blob: currentProduct?.blob || [],
@@ -284,12 +289,16 @@ export default function ProductForm({
                                   )}
 
                                   <Select native {...getFieldProps('shop')} value={values.shop} id="shop-select">
-                                    {values.ownerType != 'Admin' &&
-                                      shops?.map((shop) => (
-                                        <option key={shop._id} value={shop._id}>
-                                          {shop.title}
-                                        </option>
-                                      ))}
+                                    {values.ownerType != 'Admin' && (
+                                      <>
+                                        <option value="">-- Select Influencer --</option>
+                                        {shops?.map((shop) => (
+                                          <option key={shop._id} value={shop._id}>
+                                            {shop.title}
+                                          </option>
+                                        ))}
+                                      </>
+                                    )}
                                   </Select>
 
                                   {touched.shop && errors.shop && (
