@@ -39,7 +39,7 @@ export default function AdminSpins() {
     ['admin-spins', apicall, searchParams.toString()],
     () => api.getSpinsByAdmin(searchParams.toString()),
     {
-      onError: (err) => toast.error(err.response?.data?.message || 'Something went wrong!')
+      onError: (err) => toast.error(err.message || 'Something went wrong!')
     }
   );
 
@@ -71,7 +71,7 @@ export default function AdminSpins() {
         isLoading={isLoading}
         row={Spin}
         handleClickOpen={handleClickOpen}
-        // isSearch
+        isSearch
       />
     </>
   );
