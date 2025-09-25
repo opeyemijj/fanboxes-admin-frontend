@@ -8,6 +8,7 @@ import EditProduct from 'src/components/_admin/products/editProduct';
 import * as api from 'src/services';
 import { UsePermissionServer } from 'src/hooks/usePermissionServer';
 import AccessDenied from 'src/components/cards/AccessDenied';
+import { SortArrayAlphabetically } from 'src/utils/sorting';
 
 export default async function page({ params }) {
   const { data: categories } = await api.getAllCategories();
@@ -38,7 +39,12 @@ export default async function page({ params }) {
           }
         ]}
       />
-      <EditProduct brands={brands} shops={shops} categories={categories} slug={params.slug} />
+      <EditProduct
+        brands={brands}
+        categories={SortArrayAlphabetically(categories, 'name')}
+        shops={SortArrayAlphabetically(shops, 'title')}
+        slug={params.slug}
+      />
     </div>
   );
 }

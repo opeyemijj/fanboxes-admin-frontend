@@ -8,6 +8,7 @@ import AddProduct from 'src/components/_admin/products/addProduct';
 import * as api from 'src/services';
 import { UsePermissionServer } from 'src/hooks/usePermissionServer';
 import AccessDenied from 'src/components/cards/AccessDenied';
+import { SortArrayAlphabetically } from 'src/utils/sorting';
 
 export default async function page() {
   const canAdd = UsePermissionServer('add_new_box');
@@ -38,7 +39,11 @@ export default async function page() {
           }
         ]}
       />
-      <AddProduct brands={brands} shops={shops} categories={categories} />
+      <AddProduct
+        brands={brands}
+        categories={SortArrayAlphabetically(categories, 'name')}
+        shops={SortArrayAlphabetically(shops, 'title')}
+      />
     </div>
   );
 }
