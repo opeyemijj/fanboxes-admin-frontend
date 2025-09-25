@@ -138,7 +138,7 @@ export default function CustomTable({ filters = [], showRowCount = true, showPag
                         };
                       }
 
-                      return { label: 'ALL', value: '' };
+                      return { label: 'All', value: '' };
                     })()}
                     onChange={(event, newValue) => {
                       if (typeof newValue === 'string') {
