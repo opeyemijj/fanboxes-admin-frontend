@@ -68,7 +68,7 @@ export default function AdminTransections() {
         isLoading={isLoading}
         row={Transection}
         handleClickOpen={handleClickOpen}
-        // isSearch
+        isSearch
       />
     </>
   );

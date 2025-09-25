@@ -22,10 +22,10 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
   const fullUrl = typeof window !== 'undefined' ? window.location.href : '';
   const lastSegmentForSlug = fullUrl.substring(fullUrl.lastIndexOf('/') + 1);
 
-  // ✅ Get current page from URL
-  const itemLimit = 10;
+  // ✅ Get current page & limit from URL
   const searchParams = useSearchParams();
   const pageParam = parseInt(searchParams.get('page')) || 1;
+  const itemLimit = parseInt(searchParams.get('limit')) || 10;
 
   const [open, setOpen] = useState(false);
   const [apicall, setApicall] = useState(false);
@@ -64,16 +64,16 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
     }
   }
 
-  function DataSetupAccordingToPagination(page) {
+  function DataSetupAccordingToPagination(page, limit) {
     if (!boxDetails) return;
 
-    const startingRange = itemLimit * (page - 1);
-    const endingRange = startingRange + itemLimit;
+    const startingRange = limit * (page - 1);
+    const endingRange = startingRange + limit;
     const paginateData = boxDetails.items.slice(startingRange, endingRange);
 
     const temdata = {
       data: paginateData,
-      count: Math.ceil(boxDetails?.items.length / itemLimit)
+      count: Math.ceil(boxDetails?.items.length / limit)
     };
 
     setData(temdata);
@@ -82,9 +82,9 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
   // ✅ Sync page from URL whenever it changes
   useEffect(() => {
     if (boxDetails) {
-      DataSetupAccordingToPagination(pageParam);
+      DataSetupAccordingToPagination(pageParam, itemLimit);
     }
-  }, [boxDetails, pageParam]);
+  }, [boxDetails, pageParam, itemLimit]); // 👈 added itemLimit
 
   function distributeItems(items) {
     // Step 1: compute inverses of values
@@ -140,8 +140,6 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
     },
     { id: '', label: 'Actions', alignRight: true }
   ];
-
-  // console.log(data, 'Check the data');
 
   const handleClickOpen = (prop) => () => {
     setId({ itemSlug: prop, boxSlug: lastSegmentForSlug });
