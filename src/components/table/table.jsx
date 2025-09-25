@@ -46,7 +46,7 @@ CustomTable.propTypes = {
   filters: PropTypes.arr,
   isSearch: PropTypes.bool
 };
-export default function CustomTable({ filters = [], ...props }) {
+export default function CustomTable({ filters = [], showRowCount = true, showPagination = true, ...props }) {
   const { headData, data, isLoading, heading, isSearch, row, ...rest } = props;
   const { push } = useRouter();
   const pathname = usePathname();
@@ -197,26 +197,27 @@ export default function CustomTable({ filters = [], ...props }) {
                 mt={2}
                 pr={2}
               >
-                {/* Rows per page dropdown */}
-                <FormControl sx={{ minWidth: 120, marginLeft: 10 }} size="small">
-                  <InputLabel id="rows-per-page-label">Show per page</InputLabel>
-                  <Select
-                    labelId="rows-per-page-label"
-                    id="rows-per-page"
-                    value={state.limit ?? 10}
-                    label="Rows"
-                    onChange={(e) => handleChange('limit', e.target.value)}
-                  >
-                    {[10, 20, 50, 100].map((num) => (
-                      <MenuItem key={num} value={num}>
-                        {num}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                {showRowCount && (
+                  <FormControl sx={{ minWidth: 120, marginLeft: 10 }} size="small">
+                    <InputLabel id="rows-per-page-label">Show per page</InputLabel>
+                    <Select
+                      labelId="rows-per-page-label"
+                      id="rows-per-page"
+                      value={state.limit ?? 10}
+                      label="Rows"
+                      onChange={(e) => handleChange('limit', e.target.value)}
+                    >
+                      {[10, 20, 50, 100].map((num) => (
+                        <MenuItem key={num} value={num}>
+                          {num}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                )}
 
                 {/* Pagination on the right */}
-                <Pagination data={data} />
+                {showPagination && <Pagination data={data} />}
               </Stack>
             )}
           </>

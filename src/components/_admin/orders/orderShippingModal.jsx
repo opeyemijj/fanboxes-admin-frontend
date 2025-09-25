@@ -185,7 +185,15 @@ export default function OrderShippingModal({ open, onClose, formik, loading, ite
         <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
           Shipping History
         </Typography>
-        <Table headData={TABLE_HEAD} data={tableData} isLoading={false} row={Shipping} isSearch={false} />
+        <Table
+          headData={TABLE_HEAD}
+          data={tableData}
+          isLoading={false}
+          row={Shipping}
+          isSearch={false}
+          showRowCount={false}
+          showPagination={false}
+        />
       </DialogContent>
     </Dialog>
   );
