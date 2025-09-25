@@ -30,8 +30,8 @@ export default function CreditList() {
   const [id, setId] = useState(null);
 
   const { data, isLoading } = useQuery(
-    ['credits', apicall, searchParam, pageParam],
-    () => api.getCreditsByAdmin(+pageParam || 1, searchParam || ''),
+    ['credits', apicall, searchParams.toString()],
+    () => api.getCreditsByAdmin(searchParams.toString()),
     {
       onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
     }

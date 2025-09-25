@@ -75,8 +75,8 @@ export const getCreditsByAdmin = async (page, search) => {
   return data;
 };
 
-export const getSlidesByAdmin = async (page, search) => {
-  const { data } = await http.get(`/admin/slides?search=${search}&page=${page}`);
+export const getSlidesByAdmin = async (params) => {
+  const { data } = await http.get(`/admin/slides?${params}`);
   return data;
 };
 

@@ -41,8 +41,8 @@ export default function SlideList() {
   const [markSlide, setMarkSlide] = useState(null);
 
   const { data, isLoading } = useQuery(
-    ['slides', apicall, searchParam, pageParam],
-    () => api.getSlidesByAdmin(+pageParam || 1, searchParam || ''),
+    ['slides', apicall, searchParams.toString()],
+    () => api.getSlidesByAdmin(searchParams.toString()),
     {
       onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
     }
