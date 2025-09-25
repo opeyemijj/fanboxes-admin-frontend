@@ -5,6 +5,8 @@ import ShopList from 'src/components/_admin/shops/shopList';
 import AccessDenied from 'src/components/cards/AccessDenied';
 import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
 import { UsePermissionServer } from 'src/hooks/usePermissionServer';
+import { SortArrayAlphabetically } from 'src/utils/sorting';
+import * as api from 'src/services';
 
 // Meta information
 export const metadata = {
@@ -21,6 +23,8 @@ export default async function AdminProducts() {
   }
 
   const canAddInfluencer = UsePermissionServer('add_new_influencer');
+
+  const { data: categories } = await api.getAllCategoriesByAdmin();
 
   return (
     <>
@@ -45,7 +49,7 @@ export default async function AdminProducts() {
             : null
         }
       />
-      <ShopList />
+      <ShopList categories={SortArrayAlphabetically(categories, 'name')} />
     </>
   );
 }

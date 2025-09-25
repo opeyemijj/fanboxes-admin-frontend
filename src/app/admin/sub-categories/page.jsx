@@ -8,6 +8,7 @@ import { UsePermissionServer } from 'src/hooks/usePermissionServer';
 
 // apo
 import * as api from 'src/services';
+import { SortArrayAlphabetically } from 'src/utils/sorting';
 
 // Meta information
 export const metadata = {
@@ -50,7 +51,7 @@ export default async function Categories() {
             : null
         }
       />
-      <SubCategoryList categories={categories} />
+      <SubCategoryList categories={SortArrayAlphabetically(categories, 'name')} />
     </>
   );
 }

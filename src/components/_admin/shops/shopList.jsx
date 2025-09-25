@@ -26,7 +26,7 @@ const TABLE_HEAD = [
   { id: '', label: 'Actions', alignRight: true }
 ];
 
-export default function AdminProducts() {
+export default function AdminProducts({ categories }) {
   const searchParams = useSearchParams();
   const queryClient = useQueryClient(); // ✅ get queryClient
 
@@ -181,6 +181,13 @@ export default function AdminProducts() {
         handleClickOpenStatus={handleClickOpenStatus}
         openAssignUsers={openAssignUsers}
         isSearch
+        filters={[
+          {
+            name: 'Category',
+            param: 'category',
+            data: categories
+          }
+        ]}
       />
 
       {/* Assign Users Modal */}
