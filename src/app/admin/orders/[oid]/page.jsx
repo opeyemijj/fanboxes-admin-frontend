@@ -47,11 +47,11 @@ export default function OrderDetail({ params }) {
             href: ''
           }
         ]}
-        action={
-          <>
-            <OrderToolbarActions data={data?.data} />
-          </>
-        }
+        // action={
+        //   <>
+        //     <OrderToolbarActions data={data?.data} />
+        //   </>
+        // }
       />
       <Container maxWidth="xl">
         <Grid container direction={{ xs: 'row', md: 'row-reverse' }} spacing={2}>
