@@ -137,9 +137,17 @@ export default function CustomTable({ filters = [], ...props }) {
 
             <Divider />
             {!isLoading && (
-              <Stack direction="row" alignItems="center" justifyContent="flex-end" pb={3} spacing={2} mt={2} pr={2}>
+              <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+                padding={2}
+                spacing={2}
+                mt={2}
+                pr={2}
+              >
                 {/* Rows per page dropdown */}
-                <FormControl sx={{ minWidth: 120 }} size="small">
+                <FormControl sx={{ minWidth: 120, marginLeft: 10 }} size="small">
                   <InputLabel id="rows-per-page-label">Rows</InputLabel>
                   <Select
                     labelId="rows-per-page-label"
