@@ -73,7 +73,8 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
 
     const temdata = {
       data: paginateData,
-      count: Math.ceil(boxDetails?.items.length / limit)
+      count: Math.ceil(boxDetails?.items.length / limit),
+      currentPage: page // 👈 add this
     };
 
     setData(temdata);

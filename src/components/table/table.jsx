@@ -177,7 +177,9 @@ export default function CustomTable({ filters = [], showRowCount = true, showPag
                 <TableHead headData={updatedHeadData} />
                 <TableBody>
                   {(isLoading ? Array.from(new Array(6)) : data?.data)?.map((item, index) => {
-                    const serialNumber = (data?.currentPage ? data?.currentPage - 1 : 0) * 10 + index + 1;
+                    const limit = Number(state.limit) || 10;
+                    const serialNumber = (data?.currentPage ? data.currentPage - 1 : 0) * limit + index + 1;
+
                     return (
                       <Component key={Math.random()} sn={serialNumber} row={item} isLoading={isLoading} {...rest} />
                     );
