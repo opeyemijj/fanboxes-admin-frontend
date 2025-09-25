@@ -65,8 +65,8 @@ export const deleteBrandByAdmin = async (slug) => {
   return data;
 };
 
-export const getCategoriesByAdmin = async (page, search) => {
-  const { data } = await http.get(`/admin/categories?search=${search}&page=${page}`);
+export const getCategoriesByAdmin = async (params) => {
+  const { data } = await http.get(`/admin/categories?${params}`);
   return data;
 };
 
