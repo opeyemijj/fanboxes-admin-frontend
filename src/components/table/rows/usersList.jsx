@@ -15,6 +15,7 @@ import { fDateShort } from 'src/utils/formatTime';
 import BlurImage from 'src/components/blurImage';
 import { UsePermission } from 'src/hooks/usePermission';
 import { Banknote, CreditCardIcon, Edit, TrendingUp, Wallet } from 'lucide-react';
+import { FiEye } from 'react-icons/fi';
 
 UserRow.propTypes = {
   isLoading: PropTypes.bool.isRequired,
@@ -120,13 +121,13 @@ export default function UserRow({ isLoading, row, setId, handleClickOpenStatus, 
             </>
           ) : (
             <>
-              {/* {canViewDetails && (
+              {canViewDetails && (
                 <Tooltip title="Preview">
                   <IconButton onClick={() => router.push(`/admin/users/${row?._id}`)}>
                     <FiEye />
                   </IconButton>
                 </Tooltip>
-              )} */}
+              )}
 
               {userType === 'admin' && canEditAdmin && (
                 <Tooltip title="Edit">

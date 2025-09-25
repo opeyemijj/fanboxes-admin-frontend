@@ -16,12 +16,16 @@ UserProfile.propTypes = {
 };
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Product', alignRight: false },
+  { id: 'orderNo', label: 'Order No', alignRight: false },
+  { id: 'items', label: 'item', alignRight: false },
+  { id: 'name', label: 'User', alignRight: false },
+  { id: 'transaction', label: 'Transaction Type', alignRight: false, sort: true },
+  { id: 'transactionAmount', label: 'Amount', alignRight: false, sort: true },
+  { id: 'paymentMethod', label: 'Payment Method', alignRight: false, sort: true },
+
+  { id: 'inventoryType', label: 'status', alignRight: false, sort: true },
   { id: 'createdAt', label: 'Date', alignRight: false, sort: true },
-  { id: 'inventoryType', label: 'Status', alignRight: false, sort: true },
-  { id: 'price', label: 'Price', alignRight: false, sort: true },
-  { id: 'quantity', label: 'Quantity', alignRight: false },
-  { id: '', label: 'Actions', alignRight: true }
+  { id: '', label: 'actions', alignRight: true }
 ];
 export default function UserProfile({ id }) {
   const searchParams = useSearchParams();

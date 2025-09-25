@@ -199,7 +199,7 @@ export default function CustomTable({ filters = [], ...props }) {
               >
                 {/* Rows per page dropdown */}
                 <FormControl sx={{ minWidth: 120, marginLeft: 10 }} size="small">
-                  <InputLabel id="rows-per-page-label">Rows</InputLabel>
+                  <InputLabel id="rows-per-page-label">Show per page</InputLabel>
                   <Select
                     labelId="rows-per-page-label"
                     id="rows-per-page"
