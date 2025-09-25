@@ -544,13 +544,13 @@ export const getProducts = async (query = '', cat, rate) => {
   return data;
 };
 
-export const getSpinsByAdmin = async (page, search) => {
-  const { data } = await http.get(`admin/spins?search=${search}&page=${page}`);
+export const getSpinsByAdmin = async (params) => {
+  const { data } = await http.get(`admin/spins?${params}`);
   return data;
 };
 
-export const getTransectionsByAdmin = async (page, search) => {
-  const { data } = await http.get(`admin/transections?search=${search}&page=${page}`);
+export const getTransectionsByAdmin = async (params) => {
+  const { data } = await http.get(`admin/transections?${params}`);
   return data;
 };
 

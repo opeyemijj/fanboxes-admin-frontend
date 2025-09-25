@@ -36,8 +36,8 @@ export default function AdminSpins() {
   const [id, setId] = useState(null);
 
   const { data, isLoading } = useQuery(
-    ['admin-spins', apicall, searchParam, pageParam],
-    () => api.getSpinsByAdmin(+pageParam || 1, searchParam || ''),
+    ['admin-spins', apicall, searchParams.toString()],
+    () => api.getSpinsByAdmin(searchParams.toString()),
     {
       onError: (err) => toast.error(err.response?.data?.message || 'Something went wrong!')
     }

@@ -33,8 +33,8 @@ export default function AdminTransections() {
   const [id, setId] = useState(null);
 
   const { data, isLoading } = useQuery(
-    ['transections', apicall, searchParam, pageParam],
-    () => api.getTransectionsByAdmin(+pageParam || 1, searchParam || ''),
+    ['transections', apicall, searchParams.toString()],
+    () => api.getTransectionsByAdmin(searchParams.toString()),
     {
       onError: (err) => toast.error(err.message || 'Something went wrong!')
     }
