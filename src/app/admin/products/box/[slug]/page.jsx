@@ -25,6 +25,11 @@ export default function AdminBoxItems() {
         const { data: brandData } = await api.getAllBrandsByAdmin();
         const { data: shopData } = await api.getAllShopsByAdmin();
 
+        // ✅ Reverse the items array
+        if (productData?.items) {
+          productData.items = [...productData.items].reverse();
+        }
+
         setProductDetails(productData);
         setBrands(brandData);
         setShops(shopData);
