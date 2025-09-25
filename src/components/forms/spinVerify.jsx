@@ -291,6 +291,8 @@ export default function CategoryForm({ spinItem, isLoading: categoryLoading }) {
                     isLoading={isLoading}
                     row={OddsMapping}
                     handleClickOpen={() => console.log('Nothing')}
+                    showRowCount={false}
+                    showPagination={false}
                   />
                 </Card>
               </Grid>
