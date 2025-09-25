@@ -89,7 +89,17 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
           </>
         )}
       </TableCell>
-      <TableCell component="th" scope="row" sx={{ maxWidth: 300 }}>
+
+      <TableCell
+        onClick={() => {
+          if (row?.shopDetails && row?.vendorDetails) {
+            router.push(`/admin/shops/${row?.shopDetails?.slug}`);
+          }
+        }}
+        component="th"
+        scope="row"
+        sx={{ maxWidth: 300, cursor: 'pointer' }}
+      >
         <Box
           sx={{
             display: 'flex',
