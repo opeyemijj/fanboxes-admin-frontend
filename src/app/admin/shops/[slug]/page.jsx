@@ -28,13 +28,12 @@ Page.propTypes = {
 
 export default function Page({ params: { slug } }) {
   const theme = useTheme();
-  const [count, setCount] = React.useState(0);
+  const [count, setCount] = useState(0);
   const { data, isLoading } = useQuery(['shop-by-admin', count], () => api.getShopDetailsByAdmin(slug));
 
   const [viewSection, setViewSection] = useState('box');
 
   function SetDataType(type) {
-    console.log('Check the type');
     setViewSection(type);
   }
 
@@ -43,7 +42,8 @@ export default function Page({ params: { slug } }) {
       name: 'Total Income',
       items: data?.totalEarnings,
       color: theme.palette.error.main,
-      icon: <FaWallet size={30} />
+      icon: <FaWallet size={30} />,
+      viewFunction: () => SetDataType('income')
     },
     {
       name: 'Total Commission',
@@ -73,7 +73,11 @@ export default function Page({ params: { slug } }) {
       {/* {JSON.stringify(data)} */}
       <ShopDetailCover data={data?.data} isLoading={isLoading} />
       <ShopDetail data={dataMain} isLoading={isLoading} />
-      {/* <ShopIcomeList slug={slug} onUpdatePayment={() => setCount((prev) => prev + 1)} count={count} /> */}
+
+      {viewSection === 'income' && (
+        // <ShopIcomeList slug={slug} onUpdatePayment={() => setCount((prev) => prev + 1)} count={count} />
+        <ShopIcomeList slug={slug} />
+      )}
 
       {viewSection === 'box' && <ShopProductList slug={slug} />}
     </div>

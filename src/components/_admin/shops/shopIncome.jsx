@@ -33,8 +33,8 @@ export default function ShopIcomeList({ slug, onUpdatePayment, isVendor }) {
     ['income', pageParam, count],
     () => api[isVendor ? 'getIncomeByVendor' : 'getShopIncomeByAdmin'](slug, pageParam),
     {
-      onSuccess: () => onUpdatePayment(),
-      onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
+      // onSuccess: () => onUpdatePayment(),
+      onError: (err) => toast.error(err.message || 'Something went wrong!')
     }
   );
 

@@ -105,6 +105,9 @@ export default function AdminShopForm({
     slug: Yup.string().required('Slug is required'),
     category: Yup.string().required('Category is required'),
     description: Yup.string().optional('Description is required'),
+    commission: Yup.number()
+      .typeError('Commission must be a number') // Error if not a number
+      .optional(), // Field is optional
     phone: Yup.string().required('Phone Number is required'),
     instagramLink: Yup.string()
       .optional()
@@ -133,6 +136,7 @@ export default function AdminShopForm({
       cover: currentShop?.cover || null,
       logo: currentShop?.logo || null,
       description: currentShop?.description || '',
+      commission: currentShop?.commission || '',
       ...(currentShop && {
         status: currentShop ? currentShop.status : STATUS_OPTIONS[0], // Only include message if currentShop exists
         message:
@@ -364,6 +368,31 @@ export default function AdminShopForm({
                       )}
                     </FormControl>
                   </Grid>
+                </Stack>
+                <Stack mt={3} spacing={3} direction="row" flexGrow="wrap">
+                  <Box sx={{ width: '100%' }}>
+                    {shopLoading ? (
+                      <Skeleton variant="text" width={100} height={56} />
+                    ) : (
+                      <LabelStyle component={'label'} htmlFor="commission">
+                        {' '}
+                        {'Commission %'}{' '}
+                      </LabelStyle>
+                    )}
+                    {shopLoading ? (
+                      <Skeleton variant="rectangular" width="100%" />
+                    ) : (
+                      <TextField
+                        type="number"
+                        fullWidth
+                        id="commission"
+                        {...getFieldProps('commission')}
+                        error={Boolean(touched.commission && errors.commission)}
+                        helperText={touched.commission && errors.commission}
+                        multiline
+                      />
+                    )}
+                  </Box>
                 </Stack>
                 <Stack mt={3} spacing={3} direction="row" flexGrow="wrap">
                   <Box sx={{ width: '100%' }}>

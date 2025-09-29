@@ -51,6 +51,7 @@ IncomeList.propTypes = {
 };
 
 export default function IncomeList({ isLoading, row, handleClickOpen, isPayout, isVendor, sn }) {
+  console.log(row, 'Checking the income row');
   const theme = useTheme();
   const router = useRouter();
   return (
@@ -120,7 +121,7 @@ export default function IncomeList({ isLoading, row, handleClickOpen, isPayout, 
           </Label>
         )}
       </TableCell>
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{fDateShort(row.date).slice(3)}</>}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{fDateShort(row.date)?.slice(3)}</>}</TableCell>
 
       <TableCell align="right">
         <Stack direction="row" justifyContent="flex-end">

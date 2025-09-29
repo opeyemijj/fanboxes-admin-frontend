@@ -145,14 +145,16 @@ export default function ProductRow({
                   }
                 }}
               >
-                <BlurImage
-                  alt={row?.name}
-                  // placeholder="blur"
-                  blurDataURL={row?.images[0]?.blurDataURL || ''}
-                  src={row?.images[0]?.url || ''}
-                  layout="fill"
-                  objectFit="cover"
-                />
+                {row?.images && (
+                  <BlurImage
+                    alt={row?.name}
+                    // placeholder="blur"
+                    blurDataURL={row?.images[0]?.blurDataURL || ''}
+                    src={row?.images[0]?.url || ''}
+                    layout="fill"
+                    objectFit="cover"
+                  />
+                )}
               </Box>
             )}
             <Typography variant="subtitle2" noWrap>
