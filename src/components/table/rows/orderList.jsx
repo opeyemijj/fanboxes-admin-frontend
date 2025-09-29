@@ -4,7 +4,7 @@ import { useRouter } from 'next-nprogress-bar';
 
 // mui
 import { useTheme, styled } from '@mui/material/styles';
-import { Box, TableRow, Skeleton, TableCell, Typography, Stack, IconButton, Tooltip } from '@mui/material';
+import { Box, TableRow, Skeleton, TableCell, Typography, Stack, IconButton, Tooltip, Checkbox } from '@mui/material';
 
 // components
 
@@ -62,7 +62,9 @@ export default function OrderList({
   sn,
   openAssignUsers,
   handleClickOpenTraking,
-  handleClickOpenShipping
+  handleClickOpenShipping,
+  selectedRows,
+  UpdateSelectedRow
 }) {
   const theme = useTheme();
   const router = useRouter();
@@ -88,7 +90,7 @@ export default function OrderList({
           {canAddTrackingInfo && handleClickOpenTraking && (
             <MenuItem style={{ marginLeft: 3 }} onClick={() => handleClickOpenTraking(row)}>
               <TrackChangesTwoTone style={{ marginRight: 10, width: 30 }} size={25} />{' '}
-              <ListItemText style={{ marginLeft: 12 }}>Trakcing Info</ListItemText>
+              <ListItemText style={{ marginLeft: 12 }}>Tracking Info</ListItemText>
             </MenuItem>
           )}
 
@@ -105,7 +107,24 @@ export default function OrderList({
 
   return (
     <TableRow hover key={Math.random()}>
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
+      {/* ✅ Checkbox column */}
+      <TableCell padding="checkbox">
+        <Stack direction="row" alignItems="center" spacing={1}>
+          {/* {isLoading ? (
+            <Skeleton variant="circular" width={20} height={20} />
+          ) : (
+            <Checkbox
+              size="small"
+              checked={selectedRows?.includes(row?._id)}
+              onChange={() => UpdateSelectedRow(row?._id)}
+            />
+          )} */}
+
+          {isLoading ? <Skeleton variant="text" width={20} /> : <Typography variant="body2">{sn}</Typography>}
+        </Stack>
+      </TableCell>
+
+      {/* <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell> */}
 
       <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.orderNo}</TableCell>
 

@@ -55,6 +55,7 @@ export default function OrdersAdminList({ isVendor, shops }) {
   const [open, setOpen] = useState(false);
   const [openTraking, setOpenTraking] = useState(false);
   const [openShipping, setopenShipping] = useState(false);
+  const [selectedRows, setSelectedRows] = useState([]);
 
   const [openAssignTo, setOpenAssignedTo] = useState(false);
   const [markOrder, setMarkOrder] = useState(null);
@@ -226,6 +227,10 @@ export default function OrdersAdminList({ isVendor, shops }) {
     setopenShipping(true);
   }
 
+  function UpdateSelectedRow(id) {
+    setSelectedRows((prev) => (prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]));
+  }
+
   const isLoading = loadingList;
   return (
     <>
@@ -244,12 +249,15 @@ export default function OrdersAdminList({ isVendor, shops }) {
         data={data}
         isLoading={isLoading}
         row={OrderList}
+        // UpdateSelectedRow={UpdateSelectedRow}
         handleClickOpen={handleClickOpen}
         openAssignUsers={openAssignUsers}
         handleClickOpenTraking={handleClickOpenTraking}
         handleClickOpenShipping={handleClickOpenShipping}
         isVendor={isVendor}
         isSearch
+        // bulkAction={['Assign', 'Delete']}
+        // selectedRows={selectedRows}
         filters={[
           {
             name: 'Status',
