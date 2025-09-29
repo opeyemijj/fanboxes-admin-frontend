@@ -85,14 +85,14 @@ export default function OrderList({
         </IconButton>
 
         <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-          {canAddTrackingInfo && (
+          {canAddTrackingInfo && handleClickOpenTraking && (
             <MenuItem style={{ marginLeft: 3 }} onClick={() => handleClickOpenTraking(row)}>
               <TrackChangesTwoTone style={{ marginRight: 10, width: 30 }} size={25} />{' '}
               <ListItemText style={{ marginLeft: 12 }}>Trakcing Info</ListItemText>
             </MenuItem>
           )}
 
-          {row?.trackingInfo && canAddShippinInfo && (
+          {row?.trackingInfo && canAddShippinInfo && handleClickOpenShipping && (
             <MenuItem style={{ marginLeft: 3 }} onClick={() => handleClickOpenShipping(row)}>
               <ShipIcon style={{ marginRight: 10, width: 30 }} size={25} />{' '}
               <ListItemText style={{ marginLeft: 12 }}>Shipping Info</ListItemText>
@@ -178,7 +178,7 @@ export default function OrderList({
                 </IconButton>
               </Tooltip>
 
-              {canAssign && (
+              {canAssign && openAssignUsers && (
                 <Tooltip title="Assign To">
                   <IconButton style={{ padding: 10 }} onClick={() => openAssignUsers(row)}>
                     <GroupAdd fontSize="small" />{' '}
