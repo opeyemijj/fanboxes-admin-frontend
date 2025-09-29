@@ -21,6 +21,7 @@ import * as api from 'src/services';
 import { useQuery } from 'react-query';
 import AdminShopWiseProducts from 'src/components/_admin/products/shopWiseProductList';
 import ShopProductList from 'src/components/_admin/shops/shopProduct';
+import ShopOrderList from 'src/components/_admin/shops/shopOrder';
 
 Page.propTypes = {
   params: PropTypes.object.isRequired
@@ -80,6 +81,7 @@ export default function Page({ params: { slug } }) {
       )}
 
       {viewSection === 'box' && <ShopProductList slug={slug} />}
+      {viewSection === 'order' && <ShopOrderList slug={slug} />}
     </div>
   );
 }

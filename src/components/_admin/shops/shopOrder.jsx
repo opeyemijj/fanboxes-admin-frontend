@@ -9,26 +9,28 @@ import { useQuery } from 'react-query';
 // components
 import Table from 'src/components/table/table';
 
-import Product from 'src/components/table/rows/product';
+import OrderList from 'src/components/table/rows/orderList';
 
 // mui
 import { Typography } from '@mui/material';
 const TABLE_HEAD = [
-  { id: 'name', label: 'Box', alignRight: false, sort: true },
-  { id: 'influencer', label: 'Influencer', alignRight: false, sort: true },
-  { id: 'owner', label: 'Owner', alignRight: false, sort: true },
-  { id: 'visitedCount', label: 'Total Visit', alignRight: false, sort: true },
-  { id: 'items', label: 'Items', alignRight: false, sort: true },
-  { id: 'price', label: 'Price', alignRight: false, sort: true },
-  { id: 'status', label: 'Status', alignRight: false, sort: true },
-  { id: 'createdAt', label: 'Date Created', alignRight: false, sort: true }
+  { id: 'orderNo', label: 'Order No', alignRight: false },
+  { id: 'items', label: 'item', alignRight: false },
+  { id: 'name', label: 'User', alignRight: false },
+  { id: 'transaction', label: 'Transaction Type', alignRight: false, sort: true },
+  { id: 'transactionAmount', label: 'Amount', alignRight: false, sort: true },
+  { id: 'paymentMethod', label: 'Payment Method', alignRight: false, sort: true },
+
+  { id: 'inventoryType', label: 'status', alignRight: false, sort: true },
+  { id: 'createdAt', label: 'Date', alignRight: false, sort: true },
+  { id: '', label: 'actions', alignRight: true }
 ];
-export default function ShopProductList({ slug, onUpdatePayment, isVendor }) {
+export default function ShopOrderList({ slug, onUpdatePayment, isVendor }) {
   const searchParams = useSearchParams();
   const pageParam = searchParams.get('page');
   const [count, setCount] = useState(0);
-  const { data, isLoading: loadingList } = useQuery(['products', pageParam, count], () =>
-    api[isVendor ? 'getIncomeByVendor' : 'getShopwiseProductsByAdmin'](slug, pageParam)
+  const { data, isLoading: loadingList } = useQuery(['orders', pageParam, count], () =>
+    api[isVendor ? 'getIncomeByVendor' : 'getShopwiseOrdersByAdmin'](slug, pageParam)
   );
 
   const isLoading = loadingList;
@@ -36,14 +38,14 @@ export default function ShopProductList({ slug, onUpdatePayment, isVendor }) {
   return (
     <>
       <Typography variant="h5" color="text.primary" my={2}>
-        Box
+        Order
       </Typography>
 
       <Table
         headData={TABLE_HEAD}
         data={data ?? { success: true, data: [], total: 0, count: 0, currentPage: 1 }}
         isLoading={isLoading}
-        row={Product}
+        row={OrderList}
         showAction={false}
         handleClickOpenStatus={null}
         handleClickOddsVisibility={null}
@@ -56,6 +58,6 @@ export default function ShopProductList({ slug, onUpdatePayment, isVendor }) {
     </>
   );
 }
-ShopProductList.propTypes = {
+ShopOrderList.propTypes = {
   slug: PropTypes.string
 };
