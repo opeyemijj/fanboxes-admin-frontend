@@ -392,6 +392,12 @@ export const getShopDetailsByAdmin = async (slug) => {
   const { data } = await http.get(`/admin/shops/${slug}`);
   return data;
 };
+
+export const getShopwiseProductsByAdmin = async (slug) => {
+  const { data } = await http.get(`/admin/shops/products/${slug}`);
+  return data;
+};
+
 export const addAdminShopByAdmin = async (payload) => {
   const { data } = await http.post(`/admin/shops`, payload);
   return data;

@@ -27,6 +27,7 @@ import { UsePermission } from 'src/hooks/usePermission';
 
 export default function ProductRow({
   isLoading,
+  showAction = true,
   row,
   handleClickOpen,
   handleClickOpenStatus,
@@ -146,9 +147,9 @@ export default function ProductRow({
               >
                 <BlurImage
                   alt={row?.name}
-                  placeholder="blur"
-                  blurDataURL={row?.image.blurDataURL}
-                  src={row?.image.url}
+                  // placeholder="blur"
+                  blurDataURL={row?.images[0]?.blurDataURL || ''}
+                  src={row?.images[0]?.url || ''}
                   layout="fill"
                   objectFit="cover"
                 />
@@ -258,44 +259,48 @@ export default function ProductRow({
         )}
       </TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{fDateShort(row?.createdAt, enUS)}</>}</TableCell>
-      <TableCell align="right">
-        {isLoading ? (
-          <Stack direction="row" justifyContent="flex-end">
-            <Skeleton variant="circular" width={34} height={34} sx={{ mr: 1 }} />
-            <Skeleton variant="circular" width={34} height={34} sx={{ mr: 1 }} />
-            <Skeleton variant="circular" width={34} height={34} />
-          </Stack>
-        ) : (
-          <Stack direction="row" justifyContent="flex-end" spacing={1}>
-            {/* Edit */}
-            {canEdit && (
-              <Tooltip title="Edit">
-                <IconButton onClick={() => router.push(`/${isVendor ? 'vendor' : 'admin'}/products/${row.slug}`)}>
-                  <MdEdit />
-                </IconButton>
-              </Tooltip>
-            )}
+      {showAction && (
+        <TableCell align="right">
+          {isLoading ? (
+            <Stack direction="row" justifyContent="flex-end">
+              <Skeleton variant="circular" width={34} height={34} sx={{ mr: 1 }} />
+              <Skeleton variant="circular" width={34} height={34} sx={{ mr: 1 }} />
+              <Skeleton variant="circular" width={34} height={34} />
+            </Stack>
+          ) : (
+            <Stack direction="row" justifyContent="flex-end" spacing={1}>
+              {/* Edit */}
+              {canEdit && showAction && (
+                <Tooltip title="Edit">
+                  <IconButton onClick={() => router.push(`/${isVendor ? 'vendor' : 'admin'}/products/${row.slug}`)}>
+                    <MdEdit />
+                  </IconButton>
+                </Tooltip>
+              )}
 
-            {/* Delete */}
-            {canDelete && (
-              <Tooltip title="Delete">
-                <IconButton onClick={handleClickOpen(row.slug)}>
-                  <MdDelete />
-                </IconButton>
-              </Tooltip>
-            )}
+              {/* Delete */}
+              {canDelete && showAction && (
+                <Tooltip title="Delete">
+                  <IconButton onClick={handleClickOpen(row.slug)}>
+                    <MdDelete />
+                  </IconButton>
+                </Tooltip>
+              )}
 
-            {/* More actions */}
-            <MoreActionsMenu
-              row={row}
-              handleClickOpenStatus={handleClickOpenStatus}
-              handleClickOddsVisibility={handleClickOddsVisibility}
-              oddsVisibileLoading={oddsVisibileLoading}
-              handleClickOpenBanned={handleClickOpenBanned}
-            />
-          </Stack>
-        )}
-      </TableCell>
+              {/* More actions */}
+              {showAction && (
+                <MoreActionsMenu
+                  row={row}
+                  handleClickOpenStatus={handleClickOpenStatus}
+                  handleClickOddsVisibility={handleClickOddsVisibility}
+                  oddsVisibileLoading={oddsVisibileLoading}
+                  handleClickOpenBanned={handleClickOpenBanned}
+                />
+              )}
+            </Stack>
+          )}
+        </TableCell>
+      )}
     </TableRow>
   );
 }
