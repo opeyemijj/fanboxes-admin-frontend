@@ -187,7 +187,7 @@ export default function CustomTable({
                   freeSolo
                   disableClearable
                   value={(() => {
-                    const matchedOption = item.data.find(
+                    const matchedOption = item.data?.find(
                       (v) => v.slug === state[item.param] || v.name === state[item.param]
                     );
                     if (matchedOption) {
@@ -212,7 +212,7 @@ export default function CustomTable({
                   }}
                   options={[
                     { label: 'ALL', value: '' },
-                    ...item.data.map((v) => ({ label: v.name || v.title, value: v.slug || v.name }))
+                    ...item.data?.map((v) => ({ label: v.name || v.title, value: v.slug || v.name }))
                   ]}
                   renderInput={(params) => <TextField {...params} label={item.name} variant="outlined" />}
                 />

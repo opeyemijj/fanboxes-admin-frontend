@@ -82,7 +82,11 @@ export default function AdminShopForm({
       retry: false,
       onSuccess: (data) => {
         toast.success(currentShop ? data.message : 'Influencer is under review!');
-        router.push('/admin/shops');
+        if (currentShop) {
+          router.back();
+        } else {
+          router.push('/admin/shops');
+        }
       },
       onError: (error) => {
         let errorMessage = parseMongooseError(error?.message);

@@ -13,6 +13,7 @@ import Product from 'src/components/table/rows/product';
 
 // mui
 import { Typography } from '@mui/material';
+import ProductList from 'src/components/_admin/products/productList';
 const TABLE_HEAD = [
   { id: 'name', label: 'Box', alignRight: false, sort: true },
   { id: 'influencer', label: 'Influencer', alignRight: false, sort: true },
@@ -36,10 +37,12 @@ export default function ShopProductList({ slug, onUpdatePayment, isVendor }) {
   return (
     <>
       <Typography variant="h5" color="text.primary" my={2}>
-        Box
+        My Box
       </Typography>
 
-      <Table
+      <ProductList categories={null} shops={null} brands={null} searchBy={{ key: 'shop', value: slug }} />
+
+      {/* <Table
         headData={TABLE_HEAD}
         data={data ?? { success: true, data: [], total: 0, count: 0, currentPage: 1 }}
         isLoading={isLoading}
@@ -52,7 +55,7 @@ export default function ShopProductList({ slug, onUpdatePayment, isVendor }) {
         isSearch={false}
         showRowCount={false}
         showPagination={false}
-      />
+      /> */}
     </>
   );
 }

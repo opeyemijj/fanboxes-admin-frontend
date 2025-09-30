@@ -43,9 +43,16 @@ const TABLE_HEAD = [
   // { id: 'inventoryType', label: 'Status', alignRight: false, sort: false },
   { id: '', label: 'Actions', alignRight: true }
 ];
-export default function AdminProducts({ brands, categories, shops, isVendor }) {
+export default function AdminProducts({ brands, categories, shops, isVendor, searchBy }) {
   const searchParams = useSearchParams();
+  const params = new URLSearchParams(searchParams);
 
+  // always set searchBy (replace if exists, add if not)
+  if (searchBy) {
+    params.set(searchBy.key, searchBy.value);
+  }
+
+  console.log(params?.toString(), 'OKKK');
   const queryClient = useQueryClient(); // ✅ get queryClient
 
   const [open, setOpen] = useState(false);
@@ -62,8 +69,8 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
   const [refreshKey, setRefreshKey] = useState(0);
 
   const { data, isLoading } = useQuery(
-    ['admin-products', apicall, searchParams.toString()],
-    () => api[isVendor ? 'getVendorProducts' : 'getProductsByAdmin'](searchParams.toString()),
+    ['admin-products', apicall, params.toString()],
+    () => api[isVendor ? 'getVendorProducts' : 'getProductsByAdmin'](params.toString()),
     {
       onSuccess: () => {
         setRefreshKey(refreshKey + 1);
@@ -247,9 +254,9 @@ export default function AdminProducts({ brands, categories, shops, isVendor }) {
         oddsVisibileLoading={oddsVisibileLoading}
         brands={isVendor ? [] : brands}
         categories={isVendor ? [] : categories}
-        isSearch={true}
+        isSearch={!searchBy ? true : false}
         filters={
-          isVendor
+          searchBy
             ? []
             : [
                 {
