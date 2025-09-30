@@ -21,7 +21,7 @@ import toast from 'react-hot-toast';
 import * as api from 'src/services';
 import { SortArrayAlphabetically } from 'src/utils/sorting';
 
-export default function AssignUsersModal({ open, onClose, markItem, onAssign, assignLoading }) {
+export default function AssignUsersModal({ open, onClose, markItem, onAssign, assignLoading, selectedRows = [] }) {
   const [assignUsers, setAssignUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [selectedUserDetails, setSelectedUserDetails] = useState([]);
@@ -30,9 +30,13 @@ export default function AssignUsersModal({ open, onClose, markItem, onAssign, as
 
   // Fetch users when modal opens
   useEffect(() => {
-    if (open) {
-      setSelectedUsers(markItem?.assignTo || []);
-      setSelectedUserDetails(markItem?.assignToDetails || []);
+    if (selectedRows?.length == 0) {
+      if (open) {
+        setSelectedUsers(markItem?.assignTo || []);
+        setSelectedUserDetails(markItem?.assignToDetails || []);
+        fetchUsers();
+      }
+    } else {
       fetchUsers();
     }
   }, [open, markItem]);
@@ -69,6 +73,14 @@ export default function AssignUsersModal({ open, onClose, markItem, onAssign, as
   const handleAssign = () => {
     onAssign({
       slug: markItem?.slug || markItem?._id,
+      selectedUsers,
+      selectedUserDetails
+    });
+  };
+
+  const handleAssignForMulitpleRecords = () => {
+    onAssign({
+      selectedItems: selectedRows,
       selectedUsers,
       selectedUserDetails
     });
@@ -184,7 +196,7 @@ export default function AssignUsersModal({ open, onClose, markItem, onAssign, as
             loading={assignLoading}
             disabled={selectedUsers.length < 1}
             variant="contained"
-            onClick={handleAssign}
+            onClick={selectedRows.length > 0 ? handleAssignForMulitpleRecords : handleAssign}
           >
             Assign
           </LoadingButton>

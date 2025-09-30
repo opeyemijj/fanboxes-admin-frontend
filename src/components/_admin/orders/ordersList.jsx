@@ -56,13 +56,12 @@ export default function OrdersAdminList({ isVendor, shops }) {
   const [modalType, setModalType] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
 
-  const [openAssignTo, setOpenAssignedTo] = useState(false);
   const [markOrder, setMarkOrder] = useState(null);
 
   const [id, setId] = useState(null);
 
   const { mutate: assignUserMutation, isLoading: assignLoading } = useMutation(
-    isVendor ? null : api.updateAssignInOrderByAdmin, // mutation function here
+    modalType === 'assignSelectedRecords' ? api.updateMulitpleAssignInOrderByAdmin : api.updateAssignInOrderByAdmin,
     {
       onSuccess: (data) => {
         toast.success(data.message);
@@ -71,7 +70,7 @@ export default function OrdersAdminList({ isVendor, shops }) {
         queryClient.invalidateQueries(['orders']);
       },
       onError: (error) => {
-        console.log(error);
+        console.log(error, 'mutation error');
         let errorMessage = parseMongooseError(error?.message);
         toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
           autoClose: false, // Prevents auto-dismissal
@@ -194,11 +193,16 @@ export default function OrdersAdminList({ isVendor, shops }) {
     shippingFormik.resetForm();
     trackingFormik.resetForm();
     setModalType('');
+    setSelectedRows([]);
   };
 
   async function openAssignUsers(row) {
     setMarkOrder(row);
     setModalType('assign');
+  }
+
+  async function openAssignUsersForSelectedRecords() {
+    setModalType('assignSelectedRecords');
   }
 
   function handleClickOpenTraking(prop) {
@@ -256,15 +260,7 @@ export default function OrdersAdminList({ isVendor, shops }) {
         bulkAction={[
           {
             actionName: 'Assign',
-            action: (selectedRows) => {
-              console.log('Assign called for rows:', selectedRows);
-            }
-          },
-          {
-            actionName: 'Delete',
-            action: (selectedRows) => {
-              console.log('Delete called for rows:', selectedRows);
-            }
+            action: openAssignUsersForSelectedRecords
           }
         ]}
         selectedRows={selectedRows}
@@ -278,13 +274,14 @@ export default function OrdersAdminList({ isVendor, shops }) {
       />
 
       {/* Assign Users Modal */}
-      {modalType === 'assign' && (
+      {(modalType === 'assign' || modalType === 'assignSelectedRecords') && (
         <AssignUsersModal
-          open={modalType === 'assign'}
+          open={modalType === 'assign' || modalType || 'assignSelectedRecords'}
           onClose={handleClose}
           markItem={markOrder}
           assignLoading={assignLoading}
           onAssign={(payload) => assignUserMutation(payload)}
+          selectedRows={modalType === 'assignSelectedRecords' ? selectedRows : []}
         />
       )}
 
