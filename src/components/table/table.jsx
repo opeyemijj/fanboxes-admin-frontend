@@ -21,9 +21,10 @@ import {
   Button,
   ButtonGroup,
   IconButton,
-  Tooltip
+  Tooltip,
+  Menu
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 // components
 import NotFound from 'src/illustrations/dataNotFound';
@@ -63,6 +64,22 @@ export default function CustomTable({
   const searchParams = useSearchParams();
   const [state, setState] = useState({});
   const queryString = searchParams.toString();
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleOpenMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+
+  const handleActionClick = (actionObj) => {
+    actionObj.action(selectedRows);
+    handleCloseMenu();
+  };
 
   const handleChange = (param, val) => {
     setState({ ...state, [param]: val });
@@ -117,36 +134,46 @@ export default function CustomTable({
           )}
 
           <Stack direction="row" spacing={2} alignItems="center">
-            {/* ✅ Search Field */}
-            {isSearch ? <Search /> : null}
-
-            {/* ✅ Bulk action buttons beside search */}
+            {/* ✅ 3 dots menu if rows selected */}
             {bulkAction.length > 0 && selectedRows.length > 0 && (
-              <Stack direction="row" spacing={1} alignItems="center">
-                <ButtonGroup variant="contained" sx={{ borderRadius: 1, boxShadow: 2, height: 50 }}>
+              <>
+                <IconButton onClick={handleOpenMenu} sx={{ border: '1px solid #ddd', borderRadius: 1 }}>
+                  <MoreVertIcon />
+                </IconButton>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleCloseMenu}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left'
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left'
+                  }}
+                >
                   {bulkAction.map((actionObj) => {
                     const isDelete = actionObj.actionName.toLowerCase() === 'delete';
                     return (
-                      <Tooltip key={actionObj.actionName} title={`Click to ${actionObj.actionName}`}>
-                        <Button
-                          onClick={() => actionObj.action(selectedRows)}
-                          color={isDelete ? 'error' : 'primary'}
-                          size="100"
-                          sx={{
-                            textTransform: 'capitalize',
-                            fontWeight: 500,
-                            px: 2,
-                            borderRadius: 1
-                          }}
-                        >
-                          {actionObj.actionName}
-                        </Button>
-                      </Tooltip>
+                      <MenuItem
+                        key={actionObj.actionName}
+                        onClick={() => handleActionClick(actionObj)}
+                        sx={{
+                          color: isDelete ? 'error.main' : 'inherit',
+                          fontWeight: 500
+                        }}
+                      >
+                        {actionObj.actionName}
+                      </MenuItem>
                     );
                   })}
-                </ButtonGroup>
-              </Stack>
+                </Menu>
+              </>
             )}
+
+            {/* ✅ Search Field */}
+            {isSearch ? <Search /> : null}
           </Stack>
 
           {/* ✅ Filters aligned right */}
