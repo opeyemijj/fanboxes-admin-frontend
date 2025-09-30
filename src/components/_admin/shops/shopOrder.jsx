@@ -9,7 +9,7 @@ import { useQuery } from 'react-query';
 // components
 import Table from 'src/components/table/table';
 
-import OrderList from 'src/components/table/rows/orderList';
+import OrdersList from 'src/components/_admin/orders/ordersList';
 
 // mui
 import { Typography } from '@mui/material';
@@ -38,23 +38,10 @@ export default function ShopOrderList({ slug, onUpdatePayment, isVendor }) {
   return (
     <>
       <Typography variant="h5" color="text.primary" my={2}>
-        Order
+        My Order
       </Typography>
 
-      <Table
-        headData={TABLE_HEAD}
-        data={data ?? { success: true, data: [], total: 0, count: 0, currentPage: 1 }}
-        isLoading={isLoading}
-        row={OrderList}
-        showAction={false}
-        handleClickOpenStatus={null}
-        handleClickOddsVisibility={null}
-        oddsVisibileLoading={null}
-        handleClickOpenBanned={null}
-        isSearch={false}
-        showRowCount={false}
-        showPagination={false}
-      />
+      <OrdersList shops={null} searchBy={{ key: 'shop', value: slug }} />
     </>
   );
 }

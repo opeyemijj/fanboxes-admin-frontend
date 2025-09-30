@@ -52,7 +52,6 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
     params.set(searchBy.key, searchBy.value);
   }
 
-  console.log(params?.toString(), 'OKKK');
   const queryClient = useQueryClient(); // ✅ get queryClient
 
   const [open, setOpen] = useState(false);

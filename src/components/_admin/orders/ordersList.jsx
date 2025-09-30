@@ -38,15 +38,22 @@ const TABLE_HEAD = [
   { id: 'createdAt', label: 'Date', alignRight: false, sort: true },
   { id: '', label: 'actions', alignRight: true }
 ];
-export default function OrdersAdminList({ isVendor, shops }) {
+export default function OrdersAdminList({ isVendor, shops, searchBy }) {
   const searchParams = useSearchParams();
+
+  const params = new URLSearchParams(searchParams);
+
+  // always set searchBy (replace if exists, add if not)
+  if (searchBy) {
+    params.set(searchBy.key, searchBy.value);
+  }
 
   const queryClient = useQueryClient();
 
   const [apicall, setApicall] = useState(false);
   const { data, isLoading: loadingList } = useQuery(
-    ['orders', apicall, searchParams.toString()],
-    () => api[isVendor ? 'getOrdersByVendor' : 'getOrdersByAdmin'](searchParams.toString()),
+    ['orders', apicall, params.toString()],
+    () => api[isVendor ? 'getOrdersByVendor' : 'getOrdersByAdmin'](params.toString()),
     {
       onError: (err) => toast.error(err.message || 'Something went wrong!')
     }
