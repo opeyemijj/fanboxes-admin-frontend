@@ -728,7 +728,7 @@ export default function AdminShopForm({
                       loading={isLoading}
                       sx={{ ml: 'auto', mt: 3 }}
                     >
-                      {currentShop ? 'Edit Shop' : 'Save'}
+                      {currentShop ? 'Save' : 'Save'}
                     </LoadingButton>
                   )}
                 </Stack>

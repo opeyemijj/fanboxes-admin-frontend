@@ -639,7 +639,7 @@ export default function ShopSettingFrom({ data: currentShop, isLoading: category
                       loading={isLoading}
                       sx={{ ml: 'auto', mt: 3 }}
                     >
-                      {currentShop ? 'Edit Shop' : 'Save'}
+                      {currentShop ? 'Save' : 'Save'}
                     </LoadingButton>
                   )}
                 </Stack>
