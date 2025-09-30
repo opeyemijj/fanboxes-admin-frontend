@@ -111,7 +111,7 @@ export default function AdminShopForm({
     description: Yup.string().optional('Description is required'),
     commission: Yup.number()
       .typeError('Commission must be a number') // Error if not a number
-      .optional(), // Field is optional
+      .required('Commission is required'), // Field is optional
     phone: Yup.string().required('Phone Number is required'),
     instagramLink: Yup.string()
       .optional()
