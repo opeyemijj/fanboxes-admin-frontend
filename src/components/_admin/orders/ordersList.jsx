@@ -53,8 +53,7 @@ export default function OrdersAdminList({ isVendor, shops }) {
   );
 
   const [open, setOpen] = useState(false);
-  const [openTraking, setOpenTraking] = useState(false);
-  const [openShipping, setopenShipping] = useState(false);
+  const [modalType, setModalType] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
 
   const [openAssignTo, setOpenAssignedTo] = useState(false);
@@ -192,21 +191,19 @@ export default function OrdersAdminList({ isVendor, shops }) {
   const handleClose = () => {
     setOpen(false);
     setMarkOrder(null);
-    setOpenAssignedTo(false);
-    setOpenTraking(false);
-    setopenShipping(false);
     shippingFormik.resetForm();
     trackingFormik.resetForm();
+    setModalType('');
   };
 
   async function openAssignUsers(row) {
     setMarkOrder(row);
-    setOpenAssignedTo(true);
+    setModalType('assign');
   }
 
   function handleClickOpenTraking(prop) {
     setMarkOrder(prop);
-    setOpenTraking(true);
+    setModalType('tracking');
 
     // Prefill Formik values if trackingInfo exists
     if (prop.trackingInfo) {
@@ -224,7 +221,7 @@ export default function OrdersAdminList({ isVendor, shops }) {
 
   function handleClickOpenShipping(prop) {
     setMarkOrder(prop);
-    setopenShipping(true);
+    setModalType('shipping');
   }
 
   function UpdateSelectedRow(id) {
@@ -281,9 +278,9 @@ export default function OrdersAdminList({ isVendor, shops }) {
       />
 
       {/* Assign Users Modal */}
-      {openAssignTo && (
+      {modalType === 'assign' && (
         <AssignUsersModal
-          open={openAssignTo}
+          open={modalType === 'assign'}
           onClose={handleClose}
           markItem={markOrder}
           assignLoading={assignLoading}
@@ -293,9 +290,9 @@ export default function OrdersAdminList({ isVendor, shops }) {
 
       {/* Traking Moal */}
 
-      {openTraking && (
+      {modalType === 'tracking' && (
         <OrderTrackingModal
-          open={openTraking}
+          open={modalType === 'tracking'}
           onClose={handleClose}
           formik={trackingFormik}
           loading={trackingLoading}
@@ -303,9 +300,9 @@ export default function OrdersAdminList({ isVendor, shops }) {
         />
       )}
 
-      {openShipping && (
+      {modalType === 'shipping' && (
         <OrderShippingModal
-          open={openShipping}
+          open={modalType === 'shipping'}
           onClose={handleClose}
           formik={shippingFormik}
           loading={shippingLoading}
