@@ -20,7 +20,8 @@ import {
   TextField,
   Button,
   ButtonGroup,
-  IconButton
+  IconButton,
+  Tooltip
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -29,6 +30,7 @@ import NotFound from 'src/illustrations/dataNotFound';
 import Pagination from 'src/components/pagination';
 import Search from 'src/components/search';
 import TableHead from './tableHead';
+import { GroupAdd } from '@mui/icons-material';
 
 CustomTable.propTypes = {
   headData: PropTypes.array.isRequired,
@@ -119,29 +121,30 @@ export default function CustomTable({
             {isSearch ? <Search /> : null}
 
             {/* ✅ Bulk action buttons beside search */}
-            {bulkAction?.length > 0 && selectedRows?.length > 0 && (
+            {bulkAction.length > 0 && selectedRows.length > 0 && (
               <Stack direction="row" spacing={1} alignItems="center">
-                {bulkAction.map((action) => {
-                  const isDelete = action.toLowerCase() === 'delete';
-
-                  return (
-                    <Button
-                      key={action}
-                      variant="contained"
-                      color={isDelete ? 'error' : 'primary'}
-                      onClick={() => console.log(`Perform ${action} on`, selectedRows)}
-                      sx={{
-                        borderRadius: 2,
-                        px: 2,
-                        boxShadow: 1,
-                        textTransform: 'capitalize',
-                        fontWeight: 500
-                      }}
-                    >
-                      {action}
-                    </Button>
-                  );
-                })}
+                <ButtonGroup variant="contained" sx={{ borderRadius: 1, boxShadow: 2, height: 50 }}>
+                  {bulkAction.map((actionObj) => {
+                    const isDelete = actionObj.actionName.toLowerCase() === 'delete';
+                    return (
+                      <Tooltip key={actionObj.actionName} title={`Click to ${actionObj.actionName}`}>
+                        <Button
+                          onClick={() => actionObj.action(selectedRows)}
+                          color={isDelete ? 'error' : 'primary'}
+                          size="100"
+                          sx={{
+                            textTransform: 'capitalize',
+                            fontWeight: 500,
+                            px: 2,
+                            borderRadius: 1
+                          }}
+                        >
+                          {actionObj.actionName}
+                        </Button>
+                      </Tooltip>
+                    );
+                  })}
+                </ButtonGroup>
               </Stack>
             )}
           </Stack>

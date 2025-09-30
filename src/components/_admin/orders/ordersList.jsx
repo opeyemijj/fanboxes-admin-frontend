@@ -256,7 +256,20 @@ export default function OrdersAdminList({ isVendor, shops }) {
         handleClickOpenShipping={handleClickOpenShipping}
         isVendor={isVendor}
         isSearch
-        bulkAction={['Assign', 'Delete']}
+        bulkAction={[
+          {
+            actionName: 'Assign',
+            action: (selectedRows) => {
+              console.log('Assign called for rows:', selectedRows);
+            }
+          },
+          {
+            actionName: 'Delete',
+            action: (selectedRows) => {
+              console.log('Delete called for rows:', selectedRows);
+            }
+          }
+        ]}
         selectedRows={selectedRows}
         filters={[
           {
