@@ -110,17 +110,18 @@ export default function OrderList({
       {/* ✅ Checkbox column */}
       <TableCell padding="checkbox">
         <Stack direction="row" alignItems="center" spacing={1}>
-          {/* {isLoading ? (
+          {isLoading ? (
             <Skeleton variant="circular" width={20} height={20} />
           ) : (
-            <Checkbox
-              size="small"
-              checked={selectedRows?.includes(row?._id)}
-              onChange={() => UpdateSelectedRow(row?._id)}
-            />
-          )} */}
-
-          {isLoading ? <Skeleton variant="text" width={20} /> : <Typography variant="body2">{sn}</Typography>}
+            <>
+              <Checkbox
+                size="small"
+                checked={selectedRows?.includes(row?._id)}
+                onChange={() => UpdateSelectedRow(row?._id)}
+              />
+              {isLoading ? <Skeleton variant="text" width={20} /> : <Typography variant="body2">{sn}</Typography>}
+            </>
+          )}
         </Stack>
       </TableCell>
 

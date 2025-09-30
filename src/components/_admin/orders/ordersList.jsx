@@ -249,15 +249,15 @@ export default function OrdersAdminList({ isVendor, shops }) {
         data={data}
         isLoading={isLoading}
         row={OrderList}
-        // UpdateSelectedRow={UpdateSelectedRow}
+        UpdateSelectedRow={UpdateSelectedRow}
         handleClickOpen={handleClickOpen}
         openAssignUsers={openAssignUsers}
         handleClickOpenTraking={handleClickOpenTraking}
         handleClickOpenShipping={handleClickOpenShipping}
         isVendor={isVendor}
         isSearch
-        // bulkAction={['Assign', 'Delete']}
-        // selectedRows={selectedRows}
+        bulkAction={['Assign', 'Delete']}
+        selectedRows={selectedRows}
         filters={[
           {
             name: 'Status',

@@ -69,8 +69,11 @@ export default function CustomTable({
 
   // 👇 Add checkbox column if bulkAction exists
   const updatedHeadData = [
-    ...(bulkAction.length > 0 ? [{ id: 'checkbox', label: '', alignRight: false }] : []),
-    { id: 'sn', label: 'S/N', alignRight: false },
+    {
+      id: 'sn',
+      label: bulkAction.length > 0 ? 'S/N' : 'S/N',
+      alignRight: false
+    },
     ...headData
   ];
 
