@@ -38,6 +38,8 @@ export default function ShopIcomeList({ slug, onUpdatePayment, isVendor }) {
     }
   );
 
+  console.log(data, 'Checking the imcome data');
+
   const isLoading = loadingList;
 
   return (
@@ -53,8 +55,6 @@ export default function ShopIcomeList({ slug, onUpdatePayment, isVendor }) {
         row={IncomeList}
         handleClickOpen={(v) => setPayment(v)}
         isVendor={isVendor}
-        showRowCount={false}
-        showPagination={false}
       />
 
       <EditPaymentDialog

@@ -37,8 +37,6 @@ export default function Page({ params: { slug } }) {
   const [count, setCount] = useState(0);
   const { data, isLoading } = useQuery(['shop-by-admin', count], () => api.getShopDetailsByAdmin(slug));
 
-  console.log(data, 'OKK SEE THE SHOP');
-
   const [viewSection, setViewSection] = useState('income');
 
   function SetDataType(type) {
@@ -57,7 +55,7 @@ export default function Page({ params: { slug } }) {
     },
     {
       name: 'Total Commission',
-      items: `${data?.data?.commission || 0}%`,
+      items: `${data?.data?.commission || 0}`,
       color: theme.palette.success.main,
       icon: <TbChartArrowsVertical size={30} />
     },

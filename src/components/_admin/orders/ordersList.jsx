@@ -263,7 +263,7 @@ export default function OrdersAdminList({ isVendor, shops, searchBy }) {
         handleClickOpenTraking={handleClickOpenTraking}
         handleClickOpenShipping={handleClickOpenShipping}
         isVendor={isVendor}
-        isSearch
+        isSearch={searchBy ? false : true}
         bulkAction={[
           {
             actionName: 'Assign',
@@ -271,13 +271,17 @@ export default function OrdersAdminList({ isVendor, shops, searchBy }) {
           }
         ]}
         selectedRows={selectedRows}
-        filters={[
-          {
-            name: 'Status',
-            param: 'status',
-            data: SortArrayAlphabetically(SHIPPING_STATUS_FOR_FILTER, 'name')
-          }
-        ]}
+        filters={
+          !searchBy
+            ? [
+                {
+                  name: 'Status',
+                  param: 'status',
+                  data: SortArrayAlphabetically(SHIPPING_STATUS_FOR_FILTER, 'name')
+                }
+              ]
+            : []
+        }
       />
 
       {/* Assign Users Modal */}
