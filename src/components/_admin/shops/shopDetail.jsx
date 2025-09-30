@@ -32,7 +32,7 @@ export default function ShopDetail({ data, isLoading }) {
                     <Typography variant="h4">
                       {isLoading ? (
                         <Skeleton variant="text" width={80} />
-                      ) : v.name === 'Total Income' || v.name === 'Total Commission' ? (
+                      ) : v.name === 'Total Income' ? (
                         fCurrency(v.items)
                       ) : (
                         v.items
