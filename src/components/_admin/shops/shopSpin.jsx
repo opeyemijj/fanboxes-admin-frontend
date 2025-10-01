@@ -9,22 +9,22 @@ import { useQuery } from 'react-query';
 // components
 import Table from 'src/components/table/table';
 
-import OrdersList from 'src/components/_admin/orders/ordersList';
+import SpinsList from 'src/components/_admin/shops/spinList';
 
 // mui
 import { Typography } from '@mui/material';
 
-export default function ShopOrderList({ slug, onUpdatePayment, isVendor }) {
+export default function ShopSpinList({ slug, onUpdatePayment, isVendor }) {
   return (
     <>
       <Typography variant="h5" color="text.primary" my={2}>
-        My Order
+        My Spin
       </Typography>
 
-      <OrdersList shops={null} searchBy={{ key: 'shop', value: slug }} />
+      <SpinsList shops={null} searchBy={{ key: 'shop', value: slug }} />
     </>
   );
 }
-ShopOrderList.propTypes = {
+ShopSpinList.propTypes = {
   slug: PropTypes.string
 };

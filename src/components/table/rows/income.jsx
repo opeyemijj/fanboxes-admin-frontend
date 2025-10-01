@@ -102,7 +102,7 @@ export default function IncomeList({ isLoading, row, handleClickOpen, isPayout, 
       <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.orders?.length || 0}</TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : fCurrency(row.total)}</TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : fCurrency(row.totalIncome)}</TableCell>
-      {/* <TableCell>{isLoading ? <Skeleton variant="text" /> : fCurrency(row.totalCommission)}</TableCell> */}
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : fCurrency(row.totalCommission)}</TableCell>
       <TableCell>
         {isLoading ? (
           <Skeleton variant="text" />

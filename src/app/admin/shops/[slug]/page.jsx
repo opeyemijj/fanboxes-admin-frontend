@@ -24,6 +24,7 @@ import { TbChartArrowsVertical } from 'react-icons/tb';
 // api
 import * as api from 'src/services';
 import { useQuery } from 'react-query';
+import ShopSpinList from 'src/components/_admin/shops/shopSpin';
 
 Page.propTypes = {
   params: PropTypes.object.isRequired
@@ -54,10 +55,11 @@ export default function Page({ params: { slug } }) {
       viewFunction: () => SetDataType('income')
     },
     {
-      name: 'Total Commission',
-      items: `${data?.data?.commission || 0}`,
+      name: 'Total Spins',
+      items: `${data?.totalSpins || 0}`,
       color: theme.palette.success.main,
-      icon: <TbChartArrowsVertical size={30} />
+      icon: <TbChartArrowsVertical size={30} />,
+      viewFunction: () => SetDataType('spin')
     },
     {
       name: 'Total Orders',
@@ -83,6 +85,7 @@ export default function Page({ params: { slug } }) {
       {viewSection === 'income' && <ShopIcomeList slug={slug} />}
       {viewSection === 'box' && <ShopProductList slug={slug} />}
       {viewSection === 'order' && <ShopOrderList slug={slug} />}
+      {viewSection === 'spin' && <ShopSpinList slug={slug} />}
     </div>
   );
 }

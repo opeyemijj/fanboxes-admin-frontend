@@ -25,15 +25,6 @@ const TABLE_HEAD = [
   { id: 'createdAt', label: 'Date Created', alignRight: false, sort: true }
 ];
 export default function ShopProductList({ slug, onUpdatePayment, isVendor }) {
-  const searchParams = useSearchParams();
-  const pageParam = searchParams.get('page');
-  const [count, setCount] = useState(0);
-  const { data, isLoading: loadingList } = useQuery(['products', pageParam, count], () =>
-    api[isVendor ? 'getIncomeByVendor' : 'getShopwiseProductsByAdmin'](slug, pageParam)
-  );
-
-  const isLoading = loadingList;
-
   return (
     <>
       <Typography variant="h5" color="text.primary" my={2}>

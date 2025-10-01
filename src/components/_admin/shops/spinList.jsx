@@ -27,17 +27,22 @@ const TABLE_HEAD = [
   { id: '', label: 'Actions', alignRight: false }
 ];
 
-export default function AdminSpins() {
+export default function AdminSpins({ searchBy }) {
   const searchParams = useSearchParams();
-  const pageParam = searchParams.get('page');
-  const searchParam = searchParams.get('search');
+  const params = new URLSearchParams(searchParams);
+
+  // always set searchBy (replace if exists, add if not)
+  if (searchBy) {
+    params.set(searchBy.key, searchBy.value);
+  }
+
   const [open, setOpen] = useState(false);
   const [apicall, setApicall] = useState(false);
   const [id, setId] = useState(null);
 
   const { data, isLoading } = useQuery(
-    ['admin-spins', apicall, searchParams.toString()],
-    () => api.getSpinsByAdmin(searchParams.toString()),
+    ['admin-spins', apicall, params.toString()],
+    () => api.getSpinsByAdmin(params.toString()),
     {
       onError: (err) => toast.error(err.message || 'Something went wrong!')
     }
@@ -71,7 +76,7 @@ export default function AdminSpins() {
         isLoading={isLoading}
         row={Spin}
         handleClickOpen={handleClickOpen}
-        isSearch
+        isSearch={!searchBy ? true : false}
       />
     </>
   );

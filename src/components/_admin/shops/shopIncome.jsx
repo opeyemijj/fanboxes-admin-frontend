@@ -18,7 +18,7 @@ const TABLE_HEAD = [
   { id: 'items', label: 'Sale', alignRight: false, sort: true },
   { id: 'total', label: 'Total', alignRight: false, sort: true },
   { id: 'earning', label: 'Total Income', alignRight: false, sort: true },
-  // { id: 'commission', label: 'commission', alignRight: false, sort: true },
+  { id: 'commission', label: 'Commission', alignRight: false, sort: true },
 
   { id: 'status', label: 'status', alignRight: false, sort: true },
   { id: 'createdAt', label: 'Created', alignRight: false },

@@ -172,11 +172,12 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
   const handleClickOpen = (prop) => () => {
     setId(prop);
     setOpen(true);
+    setModalType('delete');
   };
 
   const handleClickOpenStatus = (prop) => () => {
     setMarkBox(prop);
-    setOpenStatus(true);
+    setModalType('status');
   };
 
   const handleClickOddsVisibility = (prop) => () => {
@@ -236,7 +237,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
 
   async function openAssignUsers(row) {
     setMarkBox(row);
-    setOpenAssignedTo(true);
+    setModalType('assign');
   }
 
   // Handle user checkbox toggle
@@ -282,9 +283,9 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
       />
 
       {/* Assign Users Modal */}
-      {openAssignTo && (
+      {modalType === 'assign' && (
         <AssignUsersModal
-          open={openAssignTo}
+          open={modalType === 'assign'}
           onClose={handleClose}
           markItem={markBox}
           assignLoading={assignLoading}
