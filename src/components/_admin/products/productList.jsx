@@ -276,8 +276,13 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
         isSearch={!searchBy ? true : false}
         bulkAction={[
           {
-            actionName: 'Active',
+            actionName: 'Approve',
             action: handleClickOpenStatus(null, 'multipleStatus', 'active')
+          },
+
+          {
+            actionName: 'Draft',
+            action: handleClickOpenStatus(null, 'multipleStatus', 'inactive')
           }
         ]}
         selectedRows={selectedRows}
@@ -333,15 +338,29 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
       <Dialog onClose={handleClose} open={modalType === 'multipleStatus' || modalType === 'singleStatus'} maxWidth="xs">
         <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
           <WarningRoundedIcon sx={{ mr: 1 }} />
-          {markBox?.isActive ? 'Draft Box' : 'Approve Box'}
+          {modalType === 'singleStatus'
+            ? markBox?.isActive
+              ? 'Draft Box'
+              : 'Approve Box'
+            : multipleActionType === 'active'
+              ? 'Approve Boxes'
+              : 'Draft Boxes'}
         </DialogTitle>
 
         <DialogContent>
-          <DialogContentText>
-            {markBox?.isActive
-              ? 'Are you sure you want to draft this box? Don’t worry, you can always approve it again later.'
-              : 'Would you like to approve this box? Once approved, it will be available right away.'}
-          </DialogContentText>
+          {modalType === 'singleStatus' ? (
+            <DialogContentText>
+              {markBox?.isActive
+                ? 'Are you sure you want to draft this box? Don’t worry, you can always approve it again later.'
+                : 'Would you like to approve this box? Once approved, it will be available right away.'}
+            </DialogContentText>
+          ) : (
+            <DialogContentText>
+              {multipleActionType != 'active'
+                ? 'Are you sure you want to draft those box? Don’t worry, you can always approve those again later.'
+                : 'Would you like to approve those box? Once approved, those will be available right away.'}
+            </DialogContentText>
+          )}
         </DialogContent>
 
         <DialogActions>

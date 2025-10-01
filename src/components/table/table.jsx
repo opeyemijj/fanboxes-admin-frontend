@@ -137,7 +137,7 @@ export default function CustomTable({
             {/* ✅ 3 dots menu if rows selected */}
             {bulkAction.length > 0 && selectedRows.length > 0 && (
               <>
-                <IconButton onClick={handleOpenMenu} sx={{ border: '1px solid #ddd', borderRadius: 1 }}>
+                <IconButton onClick={handleOpenMenu} sx={{ border: '1px solid #ddd', borderRadius: 1, height: 55 }}>
                   <MoreVertIcon />
                 </IconButton>
                 <Menu
