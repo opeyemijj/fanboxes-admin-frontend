@@ -55,6 +55,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
   const queryClient = useQueryClient(); // ✅ get queryClient
 
   const [open, setOpen] = useState(false);
+  const [modalType, setModalType] = useState('');
   const [openStatus, setOpenStatus] = useState(false);
   const [openOddsVisible, setOpenOddsVisible] = useState(false);
 
@@ -181,6 +182,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
   const handleClickOddsVisibility = (prop) => () => {
     setMarkBox(prop);
     setOpenOddsVisible(true);
+    setModalType('odd-visibility');
   };
 
   function OddMutaion() {
@@ -197,6 +199,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
   const handleClickOpenBanned = (prop) => () => {
     setMarkBox(prop);
     setOpenBanned(true);
+    setModalType('bann');
   };
 
   const handleClose = () => {
@@ -206,6 +209,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
     setOpenOddsVisible(false);
     setOpenAssignedTo(false);
     setMarkBox(null);
+    setModalType('');
   };
 
   async function changeActiveInactive() {
