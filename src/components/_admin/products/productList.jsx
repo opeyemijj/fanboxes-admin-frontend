@@ -55,6 +55,9 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
   const queryClient = useQueryClient(); // ✅ get queryClient
 
   const [modalType, setModalType] = useState('');
+  const [multipleActionType, setMultipleActionType] = useState('');
+
+  const [selectedRows, setSelectedRows] = useState([]);
 
   const [apicall, setApicall] = useState(false);
   const [id, setId] = useState(null);
@@ -83,7 +86,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
 
   // prettier-ignore
   const { mutate: changeActivation, isLoading: activationLoading } = useMutation(
-    isVendor ? null : api.updateProductActiveInactiveByAdmin, // mutation function here
+    api.updateProductActiveInactiveByAdmin, // mutation function here
     {
       onSuccess: (data) => {
         toast.success(data.message);
@@ -169,9 +172,13 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
     setModalType('delete');
   };
 
-  const handleClickOpenStatus = (prop) => () => {
+  const handleClickOpenStatus = (prop, modalType, activityType) => () => {
     setMarkBox(prop);
-    setModalType('status');
+    setModalType(modalType);
+
+    if (activityType) {
+      setMultipleActionType(activityType);
+    }
   };
 
   const handleClickOddsVisibility = (prop) => () => {
@@ -198,16 +205,32 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
   const handleClose = () => {
     setMarkBox(null);
     setModalType('');
+    setSelectedRows([]);
+    setMultipleActionType('');
   };
 
   async function changeActiveInactive() {
-    try {
-      changeActivation({
-        slug: markBox.slug,
-        isActive: markBox.isActive ? false : true
-      });
-    } catch (error) {
-      console.error(error);
+    if (modalType === 'singleStatus') {
+      try {
+        changeActivation({
+          slug: markBox.slug,
+          isActive: markBox.isActive ? false : true,
+          mutationType: 'single'
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    } else if (modalType === 'multipleStatus') {
+      try {
+        changeActivation({
+          slug: '',
+          isActive: multipleActionType === 'active' ? true : false,
+          selectedItems: selectedRows,
+          mutationType: 'multiple'
+        });
+      } catch (error) {
+        console.error(error);
+      }
     }
   }
 
@@ -227,6 +250,10 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
     setModalType('assign');
   }
 
+  function UpdateSelectedRow(id) {
+    setSelectedRows((prev) => (prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]));
+  }
+
   // Handle user checkbox toggle
 
   return (
@@ -237,6 +264,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
         data={data ?? { success: true, data: [], total: 0, count: 0, currentPage: 1 }}
         isLoading={isLoading}
         row={Product}
+        UpdateSelectedRow={UpdateSelectedRow}
         handleClickOpen={handleClickOpen}
         handleClickOpenStatus={handleClickOpenStatus}
         handleClickOpenBanned={handleClickOpenBanned}
@@ -246,6 +274,13 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
         brands={isVendor ? [] : brands}
         categories={isVendor ? [] : categories}
         isSearch={!searchBy ? true : false}
+        bulkAction={[
+          {
+            actionName: 'Active',
+            action: handleClickOpenStatus(null, 'multipleStatus', 'active')
+          }
+        ]}
+        selectedRows={selectedRows}
         filters={
           searchBy
             ? []
@@ -295,7 +330,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
       </Dialog>
 
       {/* Active Inacive modal */}
-      <Dialog onClose={handleClose} open={modalType === 'status'} maxWidth="xs">
+      <Dialog onClose={handleClose} open={modalType === 'multipleStatus' || modalType === 'singleStatus'} maxWidth="xs">
         <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
           <WarningRoundedIcon sx={{ mr: 1 }} />
           {markBox?.isActive ? 'Draft Box' : 'Approve Box'}

@@ -220,7 +220,7 @@ export const updateProductByAdmin = async ({ currentSlug, ...payload }) => {
 };
 
 export const updateProductActiveInactiveByAdmin = async ({ slug, ...payload }) => {
-  const { data: response } = await http.put(`/admin/products/active/${slug}`, payload);
+  const { data: response } = await http.put(`/admin/products/active/${slug || undefined}`, payload);
   return response;
 };
 

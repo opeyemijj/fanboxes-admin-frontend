@@ -3,7 +3,18 @@ import { useRouter } from 'next-nprogress-bar';
 import { enUS } from 'date-fns/locale';
 
 // mui
-import { Box, TableRow, Skeleton, TableCell, Typography, Stack, IconButton, Rating, Tooltip } from '@mui/material';
+import {
+  Box,
+  TableRow,
+  Skeleton,
+  TableCell,
+  Typography,
+  Stack,
+  IconButton,
+  Rating,
+  Tooltip,
+  Checkbox
+} from '@mui/material';
 
 // redux
 import { fCurrency } from 'src/utils/formatNumber';
@@ -36,7 +47,9 @@ export default function ProductRow({
   openAssignUsers,
   oddsVisibileLoading,
   isVendor,
-  sn
+  sn,
+  selectedRows,
+  UpdateSelectedRow
 }) {
   // console.log(row, 'Check the row?');
   const router = useRouter();
@@ -69,7 +82,7 @@ export default function ProductRow({
 
         <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
           {!row?.isBanned && canApprove && (
-            <MenuItem onClick={handleClickOpenStatus(row)}>
+            <MenuItem onClick={handleClickOpenStatus(row, 'singleStatus')}>
               {!row.isActive ? (
                 <MdCheckCircle style={{ width: 30 }} color="green" size={23} />
               ) : (
@@ -114,7 +127,21 @@ export default function ProductRow({
 
   return (
     <TableRow hover key={Math.random()}>
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
+      <Stack direction="row" alignItems="center" spacing={1}>
+        {isLoading ? (
+          <Skeleton variant="circular" width={20} height={20} />
+        ) : (
+          <>
+            <Checkbox
+              size="small"
+              checked={selectedRows?.includes(row?._id)}
+              onChange={() => UpdateSelectedRow(row?._id)}
+            />
+            {isLoading ? <Skeleton variant="text" width={20} /> : <Typography variant="body2">{sn}</Typography>}
+          </>
+        )}
+      </Stack>
+
       <TableCell component="th" scope="row" sx={{ maxWidth: 300 }}>
         <Link
           style={{ textDecoration: 'none', color: 'inherit' }}
