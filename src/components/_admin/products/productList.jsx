@@ -54,18 +54,13 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
 
   const queryClient = useQueryClient(); // ✅ get queryClient
 
-  const [open, setOpen] = useState(false);
   const [modalType, setModalType] = useState('');
-  const [openStatus, setOpenStatus] = useState(false);
-  const [openOddsVisible, setOpenOddsVisible] = useState(false);
 
-  const [openBanned, setOpenBanned] = useState(false);
   const [apicall, setApicall] = useState(false);
   const [id, setId] = useState(null);
   const [markBox, setMarkBox] = useState(null);
 
   // Assigned to state
-  const [openAssignTo, setOpenAssignedTo] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
   const { data, isLoading } = useQuery(
@@ -171,7 +166,6 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
 
   const handleClickOpen = (prop) => () => {
     setId(prop);
-    setOpen(true);
     setModalType('delete');
   };
 
@@ -182,7 +176,6 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
 
   const handleClickOddsVisibility = (prop) => () => {
     setMarkBox(prop);
-    setOpenOddsVisible(true);
     setModalType('odd-visibility');
   };
 
@@ -199,16 +192,10 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
 
   const handleClickOpenBanned = (prop) => () => {
     setMarkBox(prop);
-    setOpenBanned(true);
     setModalType('bann');
   };
 
   const handleClose = () => {
-    setOpen(false);
-    setOpenStatus(false);
-    setOpenBanned(false);
-    setOpenOddsVisible(false);
-    setOpenAssignedTo(false);
     setMarkBox(null);
     setModalType('');
   };
@@ -294,7 +281,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
       )}
 
       {/* Delete Modal */}
-      <Dialog onClose={handleClose} open={open} maxWidth={'xs'}>
+      <Dialog onClose={handleClose} open={modalType === 'delete'} maxWidth={'xs'}>
         <DeleteDialog
           onClose={handleClose}
           id={id}
@@ -308,7 +295,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
       </Dialog>
 
       {/* Active Inacive modal */}
-      <Dialog onClose={handleClose} open={openStatus} maxWidth="xs">
+      <Dialog onClose={handleClose} open={modalType === 'status'} maxWidth="xs">
         <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
           <WarningRoundedIcon sx={{ mr: 1 }} />
           {markBox?.isActive ? 'Draft Box' : 'Approve Box'}
@@ -333,7 +320,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
       </Dialog>
 
       {/* Banned Modal */}
-      <Dialog onClose={handleClose} open={openBanned} maxWidth="xs">
+      <Dialog onClose={handleClose} open={modalType === 'bann'} maxWidth="xs">
         <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
           <WarningRoundedIcon sx={{ mr: 1 }} />
           {markBox?.isBanned ? 'Unban This Box' : 'Ban This Box'}
@@ -363,7 +350,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
       </Dialog>
 
       {/* How hide odds modal */}
-      <Dialog onClose={handleClose} open={openOddsVisible} maxWidth="xs">
+      <Dialog onClose={handleClose} open={modalType === 'odd-visibility'} maxWidth="xs">
         <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
           <WarningRoundedIcon sx={{ mr: 1 }} color="warning" />
           {markBox?.isItemOddsHidden ? 'Show Item Odds' : 'Hide Item Odds'}
