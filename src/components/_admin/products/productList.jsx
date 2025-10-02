@@ -148,7 +148,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
 
   // prettier-ignore
   const { mutate: oddsVisibileMutaion, isLoading: oddsVisibileLoading } = useMutation(
-    isVendor ? null : api.updateItemOddHideShowByAdmin, // mutation function here
+    api.updateItemOddHideShowByAdmin, // mutation function here
     {
       onSuccess: (data) => {
         toast.success(data.message);
@@ -181,19 +181,37 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
     }
   };
 
-  const handleClickOddsVisibility = (prop) => () => {
+  const handleClickOddsVisibility = (prop, modalType, activityType) => () => {
     setMarkBox(prop);
-    setModalType('odd-visibility');
+    setModalType(modalType);
+
+    if (activityType) {
+      setMultipleActionType(activityType);
+    }
   };
 
   function OddMutaion() {
-    try {
-      oddsVisibileMutaion({
-        slug: markBox.slug,
-        isItemOddsHidden: markBox.isItemOddsHidden ? false : true
-      });
-    } catch (error) {
-      console.error(error);
+    if (modalType === 'single-odd-visibility') {
+      try {
+        oddsVisibileMutaion({
+          slug: markBox.slug,
+          isItemOddsHidden: markBox.isItemOddsHidden ? false : true,
+          mutationType: 'single'
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    } else if (modalType === 'multiple-odd-visibility') {
+      try {
+        oddsVisibileMutaion({
+          slug: '',
+          isItemOddsHidden: multipleActionType === 'showOdds' ? false : true, //if showOdds then hidden false
+          selectedItems: selectedRows,
+          mutationType: 'multiple'
+        });
+      } catch (error) {
+        console.error(error);
+      }
     }
   }
 
@@ -310,6 +328,15 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
           {
             actionName: 'Unbann',
             action: handleClickOpenBanned(null, 'multipleBanned', 'unbann')
+          },
+          {
+            actionName: 'Show Odds',
+            action: handleClickOddsVisibility(null, 'multiple-odd-visibility', 'showOdds')
+          },
+
+          {
+            actionName: 'Hide Odds',
+            action: handleClickOddsVisibility(null, 'multiple-odd-visibility', 'hideOdds')
           }
         ]}
         selectedRows={selectedRows}
@@ -460,18 +487,37 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
       </Dialog>
 
       {/* How hide odds modal */}
-      <Dialog onClose={handleClose} open={modalType === 'odd-visibility'} maxWidth="xs">
-        <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
-          <WarningRoundedIcon sx={{ mr: 1 }} color="warning" />
-          {markBox?.isItemOddsHidden ? 'Show Item Odds' : 'Hide Item Odds'}
-        </DialogTitle>
+      <Dialog
+        onClose={handleClose}
+        open={modalType === 'single-odd-visibility' || modalType === 'multiple-odd-visibility'}
+        maxWidth="xs"
+      >
+        {modalType === 'single-odd-visibility' ? (
+          <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+            <WarningRoundedIcon sx={{ mr: 1 }} color="warning" />
+            {markBox?.isItemOddsHidden ? 'Show Item Odds' : 'Hide Item Odds'}
+          </DialogTitle>
+        ) : (
+          <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+            <WarningRoundedIcon sx={{ mr: 1 }} color="warning" />
+            {multipleActionType === 'showOdds' ? 'Show Items Odds' : 'Hide Items Odds'}
+          </DialogTitle>
+        )}
 
         <DialogContent>
-          <DialogContentText>
-            {markBox?.isItemOddsHidden
-              ? 'Would you like to make the item odds visible to your customers?'
-              : 'Would you like to keep the item odds private from customers?'}
-          </DialogContentText>
+          {modalType === 'single-odd-visibility' ? (
+            <DialogContentText>
+              {markBox?.isItemOddsHidden
+                ? 'Would you like to make the item odds visible to your customers?'
+                : 'Would you like to keep the item odds private from customers?'}
+            </DialogContentText>
+          ) : (
+            <DialogContentText>
+              {multipleActionType === 'showOdds'
+                ? 'Would you like to make those items odds visible to your customers?'
+                : 'Would you like to keep those items odds private from customers?'}
+            </DialogContentText>
+          )}
         </DialogContent>
 
         <DialogActions>
@@ -479,7 +525,14 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
             No, leave it as is
           </Button>
           <LoadingButton variant="contained" loading={oddsVisibileLoading} onClick={() => OddMutaion()}>
-            Yes, {markBox?.isItemOddsHidden ? 'Show Odds' : 'Hide Odds'}
+            Yes,{' '}
+            {modalType === 'single-odd-visibility'
+              ? markBox?.isItemOddsHidden
+                ? 'Show Odds'
+                : 'Hide Odds'
+              : multipleActionType === 'showOdds'
+                ? 'Show Odds'
+                : 'Hide Odds'}
           </LoadingButton>
         </DialogActions>
       </Dialog>

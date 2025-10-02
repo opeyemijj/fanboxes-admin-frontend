@@ -280,7 +280,7 @@ export const updateShopActiveInactiveByAdmin = async ({ slug, ...payload }) => {
 };
 
 export const updateItemOddHideShowByAdmin = async ({ slug, ...payload }) => {
-  const { data: response } = await http.put(`/admin/products/item-odds-visibility/${slug}`, payload);
+  const { data: response } = await http.put(`/admin/products/item-odds-visibility/${slug || undefined}`, payload);
   return response;
 };
 

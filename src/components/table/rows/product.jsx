@@ -98,7 +98,7 @@ export default function ProductRow({
                 style={{ marginRight: 10, width: 30 }}
                 size="small"
                 disabled={oddsVisibileLoading}
-                onChange={handleClickOddsVisibility(row)}
+                onChange={handleClickOddsVisibility(row, 'single-odd-visibility')}
                 checked={row?.isItemOddsHidden}
               />
               <ListItemText style={{ marginLeft: 10 }}>
@@ -127,20 +127,23 @@ export default function ProductRow({
 
   return (
     <TableRow hover key={Math.random()}>
-      <Stack direction="row" alignItems="center" spacing={1}>
-        {isLoading ? (
-          <Skeleton variant="circular" width={20} height={20} />
-        ) : (
-          <>
-            <Checkbox
-              size="small"
-              checked={selectedRows?.includes(row?._id)}
-              onChange={() => UpdateSelectedRow(row?._id)}
-            />
-            {isLoading ? <Skeleton variant="text" width={20} /> : <Typography variant="body2">{sn}</Typography>}
-          </>
-        )}
-      </Stack>
+      {/* ✅ Checkbox column */}
+      <TableCell padding="checkbox">
+        <Stack direction="row" alignItems="center" spacing={1}>
+          {isLoading ? (
+            <Skeleton variant="circular" width={20} height={20} />
+          ) : (
+            <>
+              <Checkbox
+                size="small"
+                checked={selectedRows?.includes(row?._id)}
+                onChange={() => UpdateSelectedRow(row?._id)}
+              />
+              {isLoading ? <Skeleton variant="text" width={20} /> : <Typography variant="body2">{sn}</Typography>}
+            </>
+          )}
+        </Stack>
+      </TableCell>
 
       <TableCell component="th" scope="row" sx={{ maxWidth: 300 }}>
         <Link
