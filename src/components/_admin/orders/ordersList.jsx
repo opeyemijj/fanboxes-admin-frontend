@@ -287,7 +287,7 @@ export default function OrdersAdminList({ isVendor, shops, searchBy }) {
       {/* Assign Users Modal */}
       {(modalType === 'assign' || modalType === 'assignSelectedRecords') && (
         <AssignUsersModal
-          open={modalType === 'assign' || modalType || 'assignSelectedRecords'}
+          open={modalType === 'assign' || modalType === 'assignSelectedRecords'}
           onClose={handleClose}
           markItem={markOrder}
           assignLoading={assignLoading}

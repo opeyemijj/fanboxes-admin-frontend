@@ -106,7 +106,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
   );
 
   const { mutate: assignUserMutation, isLoading: assignLoading } = useMutation(
-    isVendor ? null : api.updateAssignInProductByAdmin, // mutation function here
+    modalType === 'assignSelectedRecords' ? api.updateMulitpleAssignInProductByAdmin : api.updateAssignInProductByAdmin, // mutation function here
     {
       onSuccess: (data) => {
         toast.success(data.message);
@@ -290,6 +290,11 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
     setSelectedRows((prev) => (prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]));
   }
 
+  async function openAssignUsersForSelectedRecords() {
+    console.log('come here to assign');
+    setModalType('assignSelectedRecords');
+  }
+
   // Handle user checkbox toggle
 
   return (
@@ -337,6 +342,10 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
           {
             actionName: 'Hide Odds',
             action: handleClickOddsVisibility(null, 'multiple-odd-visibility', 'hideOdds')
+          },
+          {
+            actionName: 'Assign',
+            action: openAssignUsersForSelectedRecords
           }
         ]}
         selectedRows={selectedRows}
@@ -364,13 +373,14 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
       />
 
       {/* Assign Users Modal */}
-      {modalType === 'assign' && (
+      {(modalType === 'assign' || modalType === 'assignSelectedRecords') && (
         <AssignUsersModal
-          open={modalType === 'assign'}
+          open={modalType === 'assign' || modalType === 'assignSelectedRecords'}
           onClose={handleClose}
           markItem={markBox}
           assignLoading={assignLoading}
           onAssign={(payload) => assignUserMutation(payload)}
+          selectedRows={modalType === 'assignSelectedRecords' ? selectedRows : []}
         />
       )}
 

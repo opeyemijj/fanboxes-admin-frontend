@@ -239,6 +239,11 @@ export const updateMulitpleAssignInOrderByAdmin = async ({ ...payload }) => {
   return response;
 };
 
+export const updateMulitpleAssignInProductByAdmin = async ({ ...payload }) => {
+  const { data: response } = await http.put(`/admin/products/multiple-assign/`, payload);
+  return response;
+};
+
 export const updateTrackingInOrderByAdmin = async ({ slug, ...payload }) => {
   const { data: response } = await http.put(`/admin/orders/tracking/${slug}`, payload);
   return response;
