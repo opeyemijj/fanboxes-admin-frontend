@@ -291,7 +291,6 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
   }
 
   async function openAssignUsersForSelectedRecords() {
-    console.log('come here to assign');
     setModalType('assignSelectedRecords');
   }
 

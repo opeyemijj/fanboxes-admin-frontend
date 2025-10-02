@@ -34,8 +34,6 @@ export default function AdminShops({ categories }) {
   const [id, setId] = useState(null);
 
   const [markShop, setMarkShop] = useState(null);
-  const [openStatus, setOpenStatus] = useState(false);
-  const [openBanned, setOpenBanned] = useState(false);
 
   const [modalType, setModalType] = useState('');
   const [multipleActionType, setMultipleActionType] = useState('');
@@ -102,7 +100,7 @@ export default function AdminShops({ categories }) {
   );
 
   const { mutate: assignUserMutation, isLoading: assignLoading } = useMutation(
-    api.updateAssignInShopByAdmin, // mutation function here
+    modalType === 'assignSelectedRecords' ? api.updateMulitpleAssignInShopByAdmin : api.updateAssignInShopByAdmin, // mutation function here
     {
       onSuccess: (data) => {
         toast.success(data.message);
@@ -205,11 +203,15 @@ export default function AdminShops({ categories }) {
 
   async function openAssignUsers(row) {
     setMarkShop(row);
-    setOpenAssignedTo(true);
+    setModalType('assign');
   }
 
   function UpdateSelectedRow(id) {
     setSelectedRows((prev) => (prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]));
+  }
+
+  async function openAssignUsersForSelectedRecords() {
+    setModalType('assignSelectedRecords');
   }
 
   return (
@@ -241,6 +243,10 @@ export default function AdminShops({ categories }) {
           {
             actionName: 'Unbann',
             action: handleClickOpenBanned(null, 'multipleBanned', 'unbann')
+          },
+          {
+            actionName: 'Assign',
+            action: openAssignUsersForSelectedRecords
           }
         ]}
         isSearch
@@ -254,13 +260,14 @@ export default function AdminShops({ categories }) {
       />
 
       {/* Assign Users Modal */}
-      {openAssignTo && (
+      {(modalType === 'assign' || modalType === 'assignSelectedRecords') && (
         <AssignUsersModal
-          open={openAssignTo}
+          open={modalType === 'assign' || modalType === 'assignSelectedRecords'}
           onClose={handleClose}
           markItem={markShop}
           assignLoading={assignLoading}
           onAssign={(payload) => assignUserMutation(payload)}
+          selectedRows={modalType === 'assignSelectedRecords' ? selectedRows : []}
         />
       )}
 

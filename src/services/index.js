@@ -254,6 +254,11 @@ export const updateShippingInOrderByAdmin = async ({ slug, ...payload }) => {
   return response;
 };
 
+export const updateMulitpleAssignInShopByAdmin = async ({ ...payload }) => {
+  const { data: response } = await http.put(`/admin/shops/multiple-assign`, payload);
+  return response;
+};
+
 export const updateAssignInShopByAdmin = async ({ slug, ...payload }) => {
   const { data: response } = await http.put(`/admin/shops/assign/${slug}`, payload);
   return response;
