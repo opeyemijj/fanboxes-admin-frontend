@@ -127,7 +127,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
 
   // prettier-ignore
   const { mutate: bannedProductMutation, isLoading: bannedLoading } = useMutation(
-    isVendor ? null : api.productBannedByAdmin, // mutation function here
+    api.productBannedByAdmin, // mutation function here
     {
       onSuccess: (data) => {
         toast.success(data.message);
@@ -197,9 +197,13 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
     }
   }
 
-  const handleClickOpenBanned = (prop) => () => {
+  const handleClickOpenBanned = (prop, modalType, activityType) => () => {
     setMarkBox(prop);
-    setModalType('bann');
+    setModalType(modalType);
+
+    if (activityType) {
+      setMultipleActionType(activityType);
+    }
   };
 
   const handleClose = () => {
@@ -235,13 +239,27 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
   }
 
   async function bannedProduct() {
-    try {
-      bannedProductMutation({
-        slug: markBox.slug,
-        isBanned: markBox.isBanned ? false : true
-      });
-    } catch (error) {
-      console.error(error);
+    if (modalType === 'singleBanned') {
+      try {
+        bannedProductMutation({
+          slug: markBox.slug,
+          isBanned: markBox.isBanned ? false : true,
+          mutationType: 'single'
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    } else if (modalType === 'multipleBanned') {
+      try {
+        bannedProductMutation({
+          slug: '',
+          isBanned: multipleActionType === 'bann' ? true : false,
+          selectedItems: selectedRows,
+          mutationType: 'multiple'
+        });
+      } catch (error) {
+        console.error(error);
+      }
     }
   }
 
@@ -283,6 +301,15 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
           {
             actionName: 'Draft',
             action: handleClickOpenStatus(null, 'multipleStatus', 'inactive')
+          },
+
+          {
+            actionName: 'Bann',
+            action: handleClickOpenBanned(null, 'multipleBanned', 'bann')
+          },
+          {
+            actionName: 'Unbann',
+            action: handleClickOpenBanned(null, 'multipleBanned', 'unbann')
           }
         ]}
         selectedRows={selectedRows}
@@ -381,18 +408,34 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
       </Dialog>
 
       {/* Banned Modal */}
-      <Dialog onClose={handleClose} open={modalType === 'bann'} maxWidth="xs">
+      <Dialog onClose={handleClose} open={modalType === 'multipleBanned' || modalType === 'singleBanned'} maxWidth="xs">
         <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
           <WarningRoundedIcon sx={{ mr: 1 }} />
-          {markBox?.isBanned ? 'Unban This Box' : 'Ban This Box'}
+          {modalType === 'singleBanned'
+            ? markBox?.isBanned
+              ? 'Unban This Box'
+              : 'Ban This Box'
+            : modalType === 'multipleBanned'
+              ? multipleActionType === 'bann'
+                ? 'Ban Boxes'
+                : 'Unban Boxes'
+              : ''}
         </DialogTitle>
 
         <DialogContent>
-          <DialogContentText>
-            {markBox?.isBanned
-              ? 'Would you like to unban this box? Once unbanned, it will be visible and available to others again.'
-              : 'Are you sure you want to ban this box? Once banned, it will be hidden and won’t be available for others to see.'}
-          </DialogContentText>
+          {modalType === 'singleBanned' ? (
+            <DialogContentText>
+              {markBox?.isBanned
+                ? 'Would you like to unban this box? Once unbanned, it will be visible and available to others again.'
+                : 'Are you sure you want to ban this box? Once banned, it will be hidden and won’t be available for others to see.'}
+            </DialogContentText>
+          ) : (
+            <DialogContentText>
+              {multipleActionType === 'unbann'
+                ? 'Would you like to unban those boxes? Once unbanned, those will be visible and available to others again.'
+                : 'Are you sure you want to ban those boxes? Once banned, those will be hidden and won’t be available for others to see.'}
+            </DialogContentText>
+          )}
         </DialogContent>
 
         <DialogActions>
@@ -405,7 +448,13 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
             loading={bannedLoading}
             onClick={() => bannedProduct()}
           >
-            {markBox?.isBanned ? 'Yes, Unban It' : 'Yes, Ban It'}
+            {modalType === 'singleBanned'
+              ? markBox?.isBanned
+                ? 'Yes, Unban It'
+                : 'Yes, Ban It'
+              : multipleActionType === 'unbann'
+                ? 'Yes, Unban'
+                : 'Yes, Ban'}
           </LoadingButton>
         </DialogActions>
       </Dialog>
