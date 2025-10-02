@@ -24,7 +24,7 @@ const TABLE_HEAD = [
   { id: 'createdAt', label: 'Created', alignRight: false },
   { id: '', label: 'actions', alignRight: true }
 ];
-export default function ShopIcomeList({ slug, onUpdatePayment, isVendor }) {
+export default function ShopIcomeList({ slug, isVendor }) {
   const searchParams = useSearchParams();
   const pageParam = searchParams.get('page');
   const [payment, setPayment] = useState(null);
@@ -33,7 +33,6 @@ export default function ShopIcomeList({ slug, onUpdatePayment, isVendor }) {
     ['income', pageParam, count],
     () => api[isVendor ? 'getIncomeByVendor' : 'getShopIncomeByAdmin'](slug, pageParam),
     {
-      // onSuccess: () => onUpdatePayment(),
       onError: (err) => toast.error(err.message || 'Something went wrong!')
     }
   );

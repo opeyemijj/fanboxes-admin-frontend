@@ -20,7 +20,7 @@ import FormControl from '@mui/material/FormControl';
 import { Select, FormHelperText } from '@mui/material';
 // api
 import * as api from 'src/services';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 
 FormDialog.propTypes = {
   open: PropTypes.bool.isRequired,
@@ -40,15 +40,21 @@ FormDialog.propTypes = {
   setCount: PropTypes.func
 };
 export default function FormDialog({ open, handleClose, data, setCount }) {
+  const queryClient = useQueryClient();
   const [status, setStatus] = useState(data?.status || 'pending');
 
   const { mutate, isLoading } = useMutation(api[data?._id ? 'editPaymentByAdmin' : 'createPaymentByAdmin'], {
     onSuccess: () => {
       toast.success('updated');
       setCount((prev) => prev + 1);
+
+      // 🔑 Invalidate shop-by-admin query
+      queryClient.invalidateQueries(['shop-by-admin']);
+
       handleClose();
     },
-    onError: () => {
+    onError: (e) => {
+      console.log(e, 'Checked the error');
       toast.error('Something went wrong!');
     }
   });
@@ -56,13 +62,16 @@ export default function FormDialog({ open, handleClose, data, setCount }) {
     setStatus(data?.status);
   }, [data]);
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // reset time to midnight
+
   // formik
   const EditPaymentSchema = Yup.object().shape({
-    total: Yup.string().required('Total is required'),
-    totalIncome: Yup.string().required('Total Income is required'),
-    totalCommission: Yup.string().required('Total Commission is required'),
+    total: Yup.number().required('Total is required'),
+    totalIncome: Yup.number().required('Total Income is required'),
+    totalCommission: Yup.number().required('Total Commission is required'),
     status: Yup.string().required('Status is required'),
-    paidAt: Yup.date().when('eventStartDate', (eventStartDate, schema) => schema.min(new Date(), 'Date is required'))
+    paidAt: Yup.date().min(today, 'Paid date cannot be in the past').required('Paid date is required')
     // tip: Yup.string().required('Tip is required')
   });
   const formik = useFormik({
@@ -71,15 +80,15 @@ export default function FormDialog({ open, handleClose, data, setCount }) {
       totalIncome: data?.totalIncome || '',
       totalCommission: data?.totalCommission || '',
       status: data?.status,
-      paidAt: data?.paidAt?.split('T')[0],
+      paidAt: data?.paidAt ? data.paidAt.split('T')[0] : '',
       tip: data?.tip
     },
     enableReinitialize: true,
     validationSchema: EditPaymentSchema,
 
-    onSubmit: async (event, values) => {
-      event.preventDefault();
+    onSubmit: async (values, { setSubmitting }) => {
       const { ...rest } = values;
+      console.log(rest, 'Check the submitted values');
       await mutate({
         ...rest,
         shop: data.shop,
@@ -87,6 +96,7 @@ export default function FormDialog({ open, handleClose, data, setCount }) {
         date: data?.date,
         pid: data?._id || null
       });
+      setSubmitting(false);
     }
   });
   const { errors, touched, handleSubmit, getFieldProps } = formik;
@@ -172,9 +182,9 @@ export default function FormDialog({ open, handleClose, data, setCount }) {
                       label="Status"
                       name="status"
                       id="status"
-                      {...getFieldProps('status')}
+                      value={formik.values.status}
+                      onChange={(e) => formik.setFieldValue('status', e.target.value)}
                       error={Boolean(touched.status && errors.status)}
-                      onChange={(e) => setStatus(e.target.value)}
                     >
                       <MenuItem value="pending">Pending</MenuItem>
                       <MenuItem value="paid">Paid</MenuItem>
@@ -187,7 +197,7 @@ export default function FormDialog({ open, handleClose, data, setCount }) {
                     )}
                   </FormControl>
                 </Stack>
-                {status === 'paid' && (
+                {formik.values.status === 'paid' && (
                   <Stack gap={2} direction="row">
                     <TextField
                       required
@@ -197,7 +207,6 @@ export default function FormDialog({ open, handleClose, data, setCount }) {
                       type="date"
                       fullWidth
                       variant="outlined"
-                      defaultValue={data?.paidAt}
                       {...getFieldProps('paidAt')}
                       error={Boolean(touched.paidAt && errors.paidAt)}
                       helperText={touched.paidAt && errors.paidAt}
@@ -210,7 +219,6 @@ export default function FormDialog({ open, handleClose, data, setCount }) {
                       type="number"
                       fullWidth
                       variant="outlined"
-                      // defaultValue={data?.tip}
                       {...getFieldProps('tip')}
                       error={Boolean(touched.tip && errors.tip)}
                       helperText={touched.tip && errors.tip}
