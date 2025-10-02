@@ -10,7 +10,9 @@ export function fCurrency(number) {
     currency: process.env.BASE_CURRENCY
   });
 
-  return currency.format(number).slice(0, -1);
+  const value = currency.format(number).slice(0, -1);
+
+  return value === '$Na' ? '$0' : value;
 }
 
 export function fPercent(number) {
