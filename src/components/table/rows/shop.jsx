@@ -12,7 +12,8 @@ import {
   Link,
   Menu,
   MenuItem,
-  ListItemText
+  ListItemText,
+  Checkbox
 } from '@mui/material';
 import Label from 'src/components/label';
 import BlurImage from 'src/components/blurImage';
@@ -31,7 +32,9 @@ export default function ProductRow({
   handleClickOpenStatus,
   handleClickOpenBanned,
   openAssignUsers,
-  sn
+  sn,
+  selectedRows,
+  UpdateSelectedRow
 }) {
   const router = useRouter();
 
@@ -56,7 +59,7 @@ export default function ProductRow({
         </IconButton>
         <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
           {!row?.isBanned && canApprove && (
-            <MenuItem onClick={handleClickOpenStatus(row)}>
+            <MenuItem onClick={handleClickOpenStatus(row, 'singleStatus')}>
               {!row.isActive ? <MdCheckCircle color="green" size={20} /> : <MdCancel color="orange" size={20} />}
               <ListItemText sx={{ ml: 1 }}>{row.isActive ? 'Draft' : 'Approve'}</ListItemText>
             </MenuItem>
@@ -82,7 +85,24 @@ export default function ProductRow({
 
   return (
     <TableRow hover key={Math.random()}>
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
+      {/* ✅ Checkbox column */}
+      <TableCell padding="checkbox">
+        <Stack direction="row" alignItems="center" spacing={1}>
+          {isLoading ? (
+            <Skeleton variant="circular" width={20} height={20} />
+          ) : (
+            <>
+              <Checkbox
+                size="small"
+                checked={selectedRows?.includes(row?._id)}
+                onChange={() => UpdateSelectedRow(row?._id)}
+              />
+              {isLoading ? <Skeleton variant="text" width={20} /> : <Typography variant="body2">{sn}</Typography>}
+            </>
+          )}
+        </Stack>
+      </TableCell>
+
       <TableCell component="th" scope="row" sx={{ maxWidth: 300 }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           {isLoading ? (

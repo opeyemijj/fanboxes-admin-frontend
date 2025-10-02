@@ -280,7 +280,7 @@ export const getUserWalletBalanceByAdmin = async (userId) => {
 };
 
 export const updateShopActiveInactiveByAdmin = async ({ slug, ...payload }) => {
-  const { data: response } = await http.put(`/admin/shops/active/${slug}`, payload);
+  const { data: response } = await http.put(`/admin/shops/active/${slug || undefined}`, payload);
   return response;
 };
 

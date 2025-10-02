@@ -26,19 +26,21 @@ const TABLE_HEAD = [
   { id: '', label: 'Actions', alignRight: true }
 ];
 
-export default function AdminProducts({ categories }) {
+export default function AdminShops({ categories }) {
   const searchParams = useSearchParams();
   const queryClient = useQueryClient(); // ✅ get queryClient
 
-  const pageParam = searchParams.get('page');
-  const searchParam = searchParams.get('search');
-  const [open, setOpen] = useState(false);
   const [apicall, setApicall] = useState(false);
   const [id, setId] = useState(null);
 
   const [markShop, setMarkShop] = useState(null);
   const [openStatus, setOpenStatus] = useState(false);
   const [openBanned, setOpenBanned] = useState(false);
+
+  const [modalType, setModalType] = useState('');
+  const [multipleActionType, setMultipleActionType] = useState('');
+
+  const [selectedRows, setSelectedRows] = useState([]);
 
   // Assigned to state
   const [openAssignTo, setOpenAssignedTo] = useState(false);
@@ -121,12 +123,16 @@ export default function AdminProducts({ categories }) {
 
   const handleClickOpen = (prop) => () => {
     setId(prop);
-    setOpen(true);
+    setModalType('delete');
   };
 
-  const handleClickOpenStatus = (prop) => () => {
+  const handleClickOpenStatus = (prop, modalType, activityType) => () => {
     setMarkShop(prop);
-    setOpenStatus(true);
+    setModalType(modalType);
+
+    if (activityType) {
+      setMultipleActionType(activityType);
+    }
   };
 
   const handleClickOpenBanned = (prop) => () => {
@@ -135,13 +141,27 @@ export default function AdminProducts({ categories }) {
   };
 
   async function changeActiveInactive() {
-    try {
-      changeActivation({
-        slug: markShop.slug,
-        isActive: markShop.isActive ? false : true
-      });
-    } catch (error) {
-      console.error(error);
+    if (modalType === 'singleStatus') {
+      try {
+        changeActivation({
+          slug: markShop.slug,
+          isActive: markShop.isActive ? false : true,
+          mutationType: 'single'
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    } else if (modalType === 'multipleStatus') {
+      try {
+        changeActivation({
+          slug: '',
+          isActive: multipleActionType === 'active' ? true : false,
+          selectedItems: selectedRows,
+          mutationType: 'multiple'
+        });
+      } catch (error) {
+        console.error(error);
+      }
     }
   }
 
@@ -157,16 +177,23 @@ export default function AdminProducts({ categories }) {
   }
 
   const handleClose = () => {
-    setOpen(false);
     setOpenStatus(false);
     setOpenBanned(false);
     setMarkShop(null);
     setOpenAssignedTo(false);
+
+    setSelectedRows([]);
+    setModalType('');
+    setMultipleActionType('');
   };
 
   async function openAssignUsers(row) {
     setMarkShop(row);
     setOpenAssignedTo(true);
+  }
+
+  function UpdateSelectedRow(id) {
+    setSelectedRows((prev) => (prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]));
   }
 
   return (
@@ -180,6 +207,18 @@ export default function AdminProducts({ categories }) {
         handleClickOpenBanned={handleClickOpenBanned}
         handleClickOpenStatus={handleClickOpenStatus}
         openAssignUsers={openAssignUsers}
+        UpdateSelectedRow={UpdateSelectedRow}
+        selectedRows={selectedRows}
+        bulkAction={[
+          {
+            actionName: 'Approve',
+            action: handleClickOpenStatus(null, 'multipleStatus', 'active')
+          },
+          {
+            actionName: 'Draft',
+            action: handleClickOpenStatus(null, 'multipleStatus', 'inactive')
+          }
+        ]}
         isSearch
         filters={[
           {
@@ -202,7 +241,7 @@ export default function AdminProducts({ categories }) {
       )}
 
       {/* Delete Modal */}
-      <Dialog onClose={handleClose} open={open} maxWidth={'xs'}>
+      <Dialog onClose={handleClose} open={modalType === 'delete'} maxWidth={'xs'}>
         <DeleteDialog
           onClose={handleClose}
           id={id}
@@ -215,19 +254,33 @@ export default function AdminProducts({ categories }) {
         />
       </Dialog>
 
-      {/* Acive In active Modal */}
-      <Dialog onClose={handleClose} open={openStatus} maxWidth="xs">
+      {/* Active Inacive modal */}
+      <Dialog onClose={handleClose} open={modalType === 'multipleStatus' || modalType === 'singleStatus'} maxWidth="xs">
         <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
           <WarningRoundedIcon sx={{ mr: 1 }} />
-          {markShop?.isActive ? 'Draft Influencer' : 'Approve Influencer'}
+          {modalType === 'singleStatus'
+            ? markShop?.isActive
+              ? 'Move Influencer to Draft'
+              : 'Approve Influencer'
+            : multipleActionType === 'active'
+              ? 'Approve Influencers'
+              : 'Move Influencers to Draft'}
         </DialogTitle>
 
         <DialogContent>
-          <DialogContentText>
-            {markShop?.isActive
-              ? 'Are you sure you want to draft this influencer? Don’t worry, you can always approve it again later.'
-              : 'Would you like to approve this influencer? Once approved, it will be available right away.'}
-          </DialogContentText>
+          {modalType === 'singleStatus' ? (
+            <DialogContentText>
+              {markShop?.isActive
+                ? 'Are you sure you want to move this influencer to draft? Don’t worry, you can approve it again anytime.'
+                : 'Do you want to approve this influencer? Once approved, it will be available immediately.'}
+            </DialogContentText>
+          ) : (
+            <DialogContentText>
+              {multipleActionType !== 'active'
+                ? 'Are you sure you want to move these influencers to draft? Don’t worry, you can approve them again anytime.'
+                : 'Do you want to approve these influencers? Once approved, they will be available immediately.'}
+            </DialogContentText>
+          )}
         </DialogContent>
 
         <DialogActions>
@@ -235,7 +288,14 @@ export default function AdminProducts({ categories }) {
             No, keep it
           </Button>
           <LoadingButton variant="contained" loading={activationLoading} onClick={() => changeActiveInactive()}>
-            Yes, {markShop?.isActive ? 'Draft' : 'Approve'}
+            Yes,&nbsp;
+            {modalType === 'singleStatus'
+              ? markShop?.isActive
+                ? 'Move to Draft'
+                : 'Approve'
+              : multipleActionType !== 'active'
+                ? 'Move to Draft'
+                : 'Approve'}
           </LoadingButton>
         </DialogActions>
       </Dialog>
@@ -272,6 +332,6 @@ export default function AdminProducts({ categories }) {
     </>
   );
 }
-AdminProducts.propTypes = {
+AdminShops.propTypes = {
   isVendor: PropTypes.boolean
 };

@@ -306,6 +306,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
         isLoading={isLoading}
         row={Product}
         UpdateSelectedRow={UpdateSelectedRow}
+        selectedRows={selectedRows}
         handleClickOpen={handleClickOpen}
         handleClickOpenStatus={handleClickOpenStatus}
         handleClickOpenBanned={handleClickOpenBanned}
@@ -348,7 +349,6 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
             action: openAssignUsersForSelectedRecords
           }
         ]}
-        selectedRows={selectedRows}
         filters={
           searchBy
             ? []
@@ -469,8 +469,8 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
           ) : (
             <DialogContentText>
               {multipleActionType === 'unbann'
-                ? 'Would you like to unban those boxes? Once unbanned, those will be visible and available to others again.'
-                : 'Are you sure you want to ban those boxes? Once banned, those will be hidden and won’t be available for others to see.'}
+                ? 'Would you like to unban these boxes? Once unbanned, these will be visible and available to others again.'
+                : 'Are you sure you want to ban these boxes? Once banned, these will be hidden and won’t be available for others to see.'}
             </DialogContentText>
           )}
         </DialogContent>
@@ -524,8 +524,8 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
           ) : (
             <DialogContentText>
               {multipleActionType === 'showOdds'
-                ? 'Would you like to make those items odds visible to your customers?'
-                : 'Would you like to keep those items odds private from customers?'}
+                ? 'Would you like to make these items odds visible to your customers?'
+                : 'Would you like to keep these items odds private from customers?'}
             </DialogContentText>
           )}
         </DialogContent>
