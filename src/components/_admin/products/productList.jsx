@@ -340,25 +340,25 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
           <WarningRoundedIcon sx={{ mr: 1 }} />
           {modalType === 'singleStatus'
             ? markBox?.isActive
-              ? 'Draft Box'
+              ? 'Move Box to Draft'
               : 'Approve Box'
             : multipleActionType === 'active'
               ? 'Approve Boxes'
-              : 'Draft Boxes'}
+              : 'Move Boxes to Draft'}
         </DialogTitle>
 
         <DialogContent>
           {modalType === 'singleStatus' ? (
             <DialogContentText>
               {markBox?.isActive
-                ? 'Are you sure you want to draft this box? Don’t worry, you can always approve it again later.'
-                : 'Would you like to approve this box? Once approved, it will be available right away.'}
+                ? 'Are you sure you want to move this box to draft? Don’t worry, you can approve it again anytime.'
+                : 'Do you want to approve this box? Once approved, it will be available immediately.'}
             </DialogContentText>
           ) : (
             <DialogContentText>
-              {multipleActionType != 'active'
-                ? 'Are you sure you want to draft those box? Don’t worry, you can always approve those again later.'
-                : 'Would you like to approve those box? Once approved, those will be available right away.'}
+              {multipleActionType !== 'active'
+                ? 'Are you sure you want to move these boxes to draft? Don’t worry, you can approve them again anytime.'
+                : 'Do you want to approve these boxes? Once approved, they will be available immediately.'}
             </DialogContentText>
           )}
         </DialogContent>
@@ -368,7 +368,14 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
             No, keep it
           </Button>
           <LoadingButton variant="contained" loading={activationLoading} onClick={() => changeActiveInactive()}>
-            Yes, {markBox?.isActive ? 'Draft' : 'Approve'}
+            Yes,&nbsp;
+            {modalType === 'singleStatus'
+              ? markBox?.isActive
+                ? 'Move to Draft'
+                : 'Approve'
+              : multipleActionType !== 'active'
+                ? 'Move to Draft'
+                : 'Approve'}
           </LoadingButton>
         </DialogActions>
       </Dialog>

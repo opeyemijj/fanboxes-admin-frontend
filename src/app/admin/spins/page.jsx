@@ -8,7 +8,7 @@ import { UsePermissionServer } from 'src/hooks/usePermissionServer';
 
 // Meta information
 export const metadata = {
-  title: 'Boxes - Fanboxes',
+  title: 'Spins - Fanboxes',
   applicationName: 'Fanboxes',
   authors: 'Fanboxes'
 };
