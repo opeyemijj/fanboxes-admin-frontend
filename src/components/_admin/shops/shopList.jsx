@@ -135,9 +135,13 @@ export default function AdminShops({ categories }) {
     }
   };
 
-  const handleClickOpenBanned = (prop) => () => {
+  const handleClickOpenBanned = (prop, modalType, activityType) => () => {
     setMarkShop(prop);
-    setOpenBanned(true);
+    setModalType(modalType);
+
+    if (activityType) {
+      setMultipleActionType(activityType);
+    }
   };
 
   async function changeActiveInactive() {
@@ -166,19 +170,31 @@ export default function AdminShops({ categories }) {
   }
 
   async function bannedShop() {
-    try {
-      bannedShopMutation({
-        slug: markShop.slug,
-        isBanned: markShop.isBanned ? false : true
-      });
-    } catch (error) {
-      console.error(error);
+    if (modalType === 'singleBanned') {
+      try {
+        bannedShopMutation({
+          slug: markShop.slug,
+          isBanned: markShop.isBanned ? false : true,
+          mutationType: 'single'
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    } else if (modalType === 'multipleBanned') {
+      try {
+        bannedShopMutation({
+          slug: '',
+          isBanned: multipleActionType === 'bann' ? true : false,
+          selectedItems: selectedRows,
+          mutationType: 'multiple'
+        });
+      } catch (error) {
+        console.error(error);
+      }
     }
   }
 
   const handleClose = () => {
-    setOpenStatus(false);
-    setOpenBanned(false);
     setMarkShop(null);
     setOpenAssignedTo(false);
 
@@ -217,6 +233,14 @@ export default function AdminShops({ categories }) {
           {
             actionName: 'Draft',
             action: handleClickOpenStatus(null, 'multipleStatus', 'inactive')
+          },
+          {
+            actionName: 'Bann',
+            action: handleClickOpenBanned(null, 'multipleBanned', 'bann')
+          },
+          {
+            actionName: 'Unbann',
+            action: handleClickOpenBanned(null, 'multipleBanned', 'unbann')
           }
         ]}
         isSearch
@@ -301,18 +325,34 @@ export default function AdminShops({ categories }) {
       </Dialog>
 
       {/* Banned Modal */}
-      <Dialog onClose={handleClose} open={openBanned} maxWidth="xs">
+      <Dialog onClose={handleClose} open={modalType === 'multipleBanned' || modalType === 'singleBanned'} maxWidth="xs">
         <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
           <WarningRoundedIcon sx={{ mr: 1 }} />
-          {markShop?.isBanned ? 'Unban This Influencer' : 'Ban This Influencer'}
+          {modalType === 'singleBanned'
+            ? markShop?.isBanned
+              ? 'Unban This Influencer'
+              : 'Ban This Influencer'
+            : modalType === 'multipleBanned'
+              ? multipleActionType === 'bann'
+                ? 'Ban Influencers'
+                : 'Unban Influencers'
+              : ''}
         </DialogTitle>
 
         <DialogContent>
-          <DialogContentText>
-            {markShop?.isBanned
-              ? 'Would you like to unban this influencer? Once unbanned, it will be visible and available to others again.'
-              : 'Are you sure you want to ban this influencer? Once banned, it will be hidden and won’t be available for others to see.'}
-          </DialogContentText>
+          {modalType === 'singleBanned' ? (
+            <DialogContentText>
+              {markShop?.isBanned
+                ? 'Would you like to unban this influencer? Once unbanned, it will be visible and available to others again.'
+                : 'Are you sure you want to ban this influencer? Once banned, it will be hidden and won’t be available for others to see.'}
+            </DialogContentText>
+          ) : (
+            <DialogContentText>
+              {multipleActionType === 'unbann'
+                ? 'Would you like to unban these influencers? Once unbanned, these will be visible and available to others again.'
+                : 'Are you sure you want to ban these influencers? Once banned, these will be hidden and won’t be available for others to see.'}
+            </DialogContentText>
+          )}
         </DialogContent>
 
         <DialogActions>
@@ -325,7 +365,13 @@ export default function AdminShops({ categories }) {
             loading={bannedLoading}
             onClick={() => bannedShop()}
           >
-            {markShop?.isBanned ? 'Yes, Unban It' : 'Yes, Ban It'}
+            {modalType === 'singleBanned'
+              ? markShop?.isBanned
+                ? 'Yes, Unban It'
+                : 'Yes, Ban It'
+              : multipleActionType === 'unbann'
+                ? 'Yes, Unban'
+                : 'Yes, Ban'}
           </LoadingButton>
         </DialogActions>
       </Dialog>

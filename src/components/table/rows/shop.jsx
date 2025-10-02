@@ -66,7 +66,7 @@ export default function ProductRow({
           )}
 
           {canBan && (
-            <MenuItem onClick={handleClickOpenBanned(row)}>
+            <MenuItem onClick={handleClickOpenBanned(row, 'singleBanned')}>
               <MdBlock size={20} color={!row.isBanned ? 'red' : ''} />
               <ListItemText sx={{ ml: 1 }}>{!row.isBanned ? 'Ban' : 'Unban'}</ListItemText>
             </MenuItem>

@@ -295,7 +295,7 @@ export const productBannedByAdmin = async ({ slug, ...payload }) => {
 };
 
 export const shopBannedByAdmin = async ({ slug, ...payload }) => {
-  const { data: response } = await http.put(`/admin/shops/banned/${slug}`, payload);
+  const { data: response } = await http.put(`/admin/shops/banned/${slug || undefined}`, payload);
   return response;
 };
 
