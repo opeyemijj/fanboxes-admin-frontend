@@ -30,6 +30,7 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { LoadingButton } from '@mui/lab';
 import parseMongooseError from 'src/utils/errorHandler';
 import AssignUsersModal from 'src/components/modals/assignUser';
+import { UsePermission } from 'src/hooks/usePermission';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Box', alignRight: false, sort: true },
@@ -317,33 +318,40 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
         isSearch={!searchBy ? true : false}
         bulkAction={[
           {
+            hasPermission: UsePermission('approve_box'),
             actionName: 'Approve',
             action: handleClickOpenStatus(null, 'multipleStatus', 'active')
           },
 
           {
+            hasPermission: UsePermission('approve_box'),
             actionName: 'Draft',
             action: handleClickOpenStatus(null, 'multipleStatus', 'inactive')
           },
 
           {
+            hasPermission: UsePermission('ban_unban_box'),
             actionName: 'Bann',
             action: handleClickOpenBanned(null, 'multipleBanned', 'bann')
           },
           {
+            hasPermission: UsePermission('ban_unban_box'),
             actionName: 'Unbann',
             action: handleClickOpenBanned(null, 'multipleBanned', 'unbann')
           },
           {
+            hasPermission: UsePermission('hide_unhide_item_odd'),
             actionName: 'Show Odds',
             action: handleClickOddsVisibility(null, 'multiple-odd-visibility', 'showOdds')
           },
 
           {
+            hasPermission: UsePermission('hide_unhide_item_odd'),
             actionName: 'Hide Odds',
             action: handleClickOddsVisibility(null, 'multiple-odd-visibility', 'hideOdds')
           },
           {
+            hasPermission: UsePermission('assign_box_to_user'),
             actionName: 'Assign',
             action: openAssignUsersForSelectedRecords
           }

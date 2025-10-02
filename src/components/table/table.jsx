@@ -161,7 +161,8 @@ export default function CustomTable({
                         onClick={() => handleActionClick(actionObj)}
                         sx={{
                           color: isDelete ? 'error.main' : 'inherit',
-                          fontWeight: 500
+                          fontWeight: 500,
+                          display: `${actionObj?.hasPermission ? 'block' : 'none'}`
                         }}
                       >
                         {actionObj.actionName}

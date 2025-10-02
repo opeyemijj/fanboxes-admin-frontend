@@ -40,9 +40,6 @@ export default function AdminShops({ categories }) {
 
   const [selectedRows, setSelectedRows] = useState([]);
 
-  // Assigned to state
-  const [openAssignTo, setOpenAssignedTo] = useState(false);
-
   const { data, isLoading } = useQuery(
     ['admin-shops', apicall, searchParams.toString()],
     () => api.getShopsByAdmin(searchParams.toString()),
@@ -194,7 +191,6 @@ export default function AdminShops({ categories }) {
 
   const handleClose = () => {
     setMarkShop(null);
-    setOpenAssignedTo(false);
 
     setSelectedRows([]);
     setModalType('');
