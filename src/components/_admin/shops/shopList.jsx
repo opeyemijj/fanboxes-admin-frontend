@@ -16,6 +16,7 @@ import Shop from 'src/components/table/rows/shop';
 import { LoadingButton } from '@mui/lab';
 import AssignUsersModal from 'src/components/modals/assignUser';
 import parseMongooseError from 'src/utils/errorHandler';
+import { UsePermission } from 'src/hooks/usePermission';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Influencers', alignRight: false, sort: true },
@@ -225,22 +226,27 @@ export default function AdminShops({ categories }) {
         selectedRows={selectedRows}
         bulkAction={[
           {
+            hasPermission: UsePermission('approve_influencer'),
             actionName: 'Approve',
             action: handleClickOpenStatus(null, 'multipleStatus', 'active')
           },
           {
+            hasPermission: UsePermission('approve_influencer'),
             actionName: 'Draft',
             action: handleClickOpenStatus(null, 'multipleStatus', 'inactive')
           },
           {
+            hasPermission: UsePermission('ban_unban_influencer'),
             actionName: 'Bann',
             action: handleClickOpenBanned(null, 'multipleBanned', 'bann')
           },
           {
+            hasPermission: UsePermission('ban_unban_influencer'),
             actionName: 'Unbann',
             action: handleClickOpenBanned(null, 'multipleBanned', 'unbann')
           },
           {
+            hasPermission: UsePermission('assign_influencer_to_user'),
             actionName: 'Assign',
             action: openAssignUsersForSelectedRecords
           }

@@ -26,6 +26,7 @@ import OrderTrackingModal from './orderTrackingModal';
 import OrderShippingModal from './orderShippingModal';
 import { SHIPPING_STATU, SHIPPING_STATUS_FOR_FILTER } from 'src/utils/const';
 import { SortArrayAlphabetically } from 'src/utils/sorting';
+import { UsePermission } from 'src/hooks/usePermission';
 const TABLE_HEAD = [
   { id: 'orderNo', label: 'Order No', alignRight: false },
   { id: 'items', label: 'item', alignRight: false },
@@ -266,6 +267,7 @@ export default function OrdersAdminList({ isVendor, shops, searchBy }) {
         isSearch={searchBy ? false : true}
         bulkAction={[
           {
+            hasPermission: UsePermission('assign_order_to_user'),
             actionName: 'Assign',
             action: openAssignUsersForSelectedRecords
           }
