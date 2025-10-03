@@ -39,7 +39,7 @@ import { LuBadgePercent } from 'react-icons/lu';
 // components
 import Scrollbar from 'src/components/Scrollbar';
 import { Logs, User, User2Icon, UserCheck, UserRound } from 'lucide-react';
-import { MonetizationOn, Person, ReceiptLong, Security, SyncAlt, Transcribe } from '@mui/icons-material';
+import { MonetizationOn, Payment, Person, ReceiptLong, Security, SyncAlt, Transcribe } from '@mui/icons-material';
 import { UsePermission } from 'src/hooks/usePermission';
 
 // Dashboard Side NevLinks
@@ -301,6 +301,14 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
           slug: 'credits',
           hasPermission: UsePermission('view_conversion_listing'),
           icon: <MonetizationOn size={18} />,
+          isSearch: true
+        },
+        {
+          id: '14-2',
+          title: 'Payment Gateway',
+          slug: 'payment-gateway',
+          hasPermission: true, // UsePermission('view_conversion_listing'),
+          icon: <Payment size={18} />,
           isSearch: true
         }
       ]

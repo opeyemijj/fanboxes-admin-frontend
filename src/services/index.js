@@ -129,6 +129,11 @@ export const addCreditByAdmin = async (payload) => {
   return data;
 };
 
+export const addPaymentGatewayByAdmin = async (payload) => {
+  const { data } = await http.post(`/admin/payments/gateway`, payload);
+  return data;
+};
+
 export const addSlideByAdmin = async (payload) => {
   const { data } = await http.post(`/admin/slides`, payload);
   return data;
