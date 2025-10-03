@@ -75,6 +75,26 @@ export const getCreditsByAdmin = async (page, search) => {
   return data;
 };
 
+export const getPaymentGateWaysByAdmin = async (params) => {
+  const { data } = await http.get(`/admin/payments/paymentgateways?search=${params}`);
+  return data;
+};
+
+export const getStaticPagesByAdmin = async (params) => {
+  const { data } = await http.get(`/admin/static-pages?search=${params}`);
+  return data;
+};
+
+export const getPaymentGateWayByAdmin = async (slug) => {
+  const { data } = await http.get(`/admin/payments/paymentgateways/${slug}`);
+  return data;
+};
+
+export const getStaticPageByAdmin = async (slug) => {
+  const { data } = await http.get(`/admin/static-pages/${slug}`);
+  return data;
+};
+
 export const getSlidesByAdmin = async (params) => {
   const { data } = await http.get(`/admin/slides?${params}`);
   return data;
@@ -109,6 +129,16 @@ export const deleteConversionByAdmin = async (slug) => {
   return data;
 };
 
+export const deletePaymentGateWayByAdmin = async (slug) => {
+  const { data } = await http.delete(`/admin/payments/gateway/${slug}`);
+  return data;
+};
+
+export const deleteStaticPageByAdmin = async (slug) => {
+  const { data } = await http.delete(`/admin/static-pages/${slug}`);
+  return data;
+};
+
 export const deleteSlideByAdmin = async (slug) => {
   const { data } = await http.delete(`/admin/slides/${slug}`);
   return data;
@@ -126,6 +156,16 @@ export const addCategoryByAdmin = async (payload) => {
 
 export const addCreditByAdmin = async (payload) => {
   const { data } = await http.post(`/admin/credits`, payload);
+  return data;
+};
+
+export const addPaymentGatewayByAdmin = async (payload) => {
+  const { data } = await http.post(`/admin/payments/gateway`, payload);
+  return data;
+};
+
+export const addStaticPageByAdmin = async (payload) => {
+  const { data } = await http.post(`/admin/static-pages/`, payload);
   return data;
 };
 
@@ -161,6 +201,16 @@ export const updateCategoryByAdmin = async ({ currentSlug, ...payload }) => {
 
 export const updateCreditByAdmin = async ({ currentSlug, ...payload }) => {
   const { data } = await http.put(`/admin/credits/${currentSlug}`, payload);
+  return data;
+};
+
+export const updatePaymentGateWayByAdmin = async ({ currentSlug, ...payload }) => {
+  const { data } = await http.put(`/admin/payments/paymentgateways/${currentSlug}`, payload);
+  return data;
+};
+
+export const updateStaticPageByAdmin = async ({ currentSlug, ...payload }) => {
+  const { data } = await http.put(`/admin/static-pages/${currentSlug}`, payload);
   return data;
 };
 

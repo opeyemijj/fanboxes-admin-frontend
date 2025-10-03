@@ -135,8 +135,7 @@ export default function OrdersAdminList({ isVendor, shops, searchBy }) {
   const TrackingSchema = Yup.object().shape({
     trackingNumber: Yup.string()
       .required('Tracking number is required')
-      .max(8, 'Tracking should be 8 character')
-      .min(8, 'Tracking should be 8 character'),
+      .min(8, 'Tracking should be 8 character at least'),
     courier: Yup.string().required('Courier name is required'),
     shipped: Yup.string().required('Shipped date is required'),
     expected: Yup.string().required('Expected date is required')
