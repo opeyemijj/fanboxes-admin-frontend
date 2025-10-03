@@ -45,7 +45,7 @@ export default function TermsForm({ data: currentTerms, isLoading: formLoading }
   // react-query mutation
   const { mutate, isLoading } = useMutation(
     currentTerms ? 'update' : 'new',
-    currentTerms ? api.updatePaymentGateWayByAdmin : api.addStaticPageByAdmin,
+    currentTerms ? api.updateStaticPageByAdmin : api.addStaticPageByAdmin,
     {
       retry: false,
       onSuccess: (data) => {
@@ -83,7 +83,7 @@ export default function TermsForm({ data: currentTerms, isLoading: formLoading }
       try {
         mutate({
           ...values,
-          ...(currentTerms && { id: currentTerms._id })
+          ...(currentTerms && { currentSlug: currentTerms.slug })
         });
       } catch (error) {
         let errorMessage = parseMongooseError(error?.message);

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 // components
 import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
-import EditPaymentGateWay from 'src/components/_admin/payment-gateway/editPaymentGateWay';
+import EditStaticPage from 'src/components/_admin/static-page/editStatic';
 
 // api
 import * as api from 'src/services';
@@ -20,14 +20,12 @@ Page.propTypes = {
   }).isRequired
 };
 export default function Page({ params }) {
-  const { data, isLoading } = useQuery(['payment-gateway'], () => api.getPaymentGateWayByAdmin(params.slug), {
+  const { data, isLoading } = useQuery(['static-page'], () => api.getStaticPageByAdmin(params.slug), {
     onError: (err) => {
       console.log(err, 'Check the error');
       toast.error(err.message || 'Something went wrong!');
     }
   });
-
-  console.log(data, 'Check the edit data');
 
   const canAdd = UsePermission('edit_conversion');
   if (!canAdd) {
@@ -45,15 +43,15 @@ export default function Page({ params }) {
             href: '/admin/dashboard'
           },
           {
-            name: 'Payment GateWay',
-            href: '/admin/payment-gateway'
+            name: 'Static Page',
+            href: '/admin/static-page'
           },
           {
-            name: data?.data?.name
+            name: data?.data?.title
           }
         ]}
       />
-      <EditPaymentGateWay isLoading={isLoading} data={data?.data} />
+      <EditStaticPage isLoading={isLoading} data={data?.data} />
     </div>
   );
 }

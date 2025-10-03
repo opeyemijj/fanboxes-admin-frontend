@@ -90,6 +90,11 @@ export const getPaymentGateWayByAdmin = async (slug) => {
   return data;
 };
 
+export const getStaticPageByAdmin = async (slug) => {
+  const { data } = await http.get(`/admin/static-pages/${slug}`);
+  return data;
+};
+
 export const getSlidesByAdmin = async (params) => {
   const { data } = await http.get(`/admin/slides?${params}`);
   return data;
@@ -196,6 +201,11 @@ export const updateCreditByAdmin = async ({ currentSlug, ...payload }) => {
 
 export const updatePaymentGateWayByAdmin = async ({ currentSlug, ...payload }) => {
   const { data } = await http.put(`/admin/payments/paymentgateways/${currentSlug}`, payload);
+  return data;
+};
+
+export const updateStaticPageByAdmin = async ({ currentSlug, ...payload }) => {
+  const { data } = await http.put(`/admin/static-pages/${currentSlug}`, payload);
   return data;
 };
 

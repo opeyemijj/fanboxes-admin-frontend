@@ -66,7 +66,7 @@ export default function StaticPage({ isLoading, row, handleClickOpen, sn }) {
             <>
               {canEdit && (
                 <Tooltip title="Edit">
-                  <IconButton onClick={() => router.push(`/admin/payment-gateway/${row?.slug}`)}>
+                  <IconButton onClick={() => router.push(`/admin/static-page/${row?.slug}`)}>
                     <MdEdit />
                   </IconButton>
                 </Tooltip>
