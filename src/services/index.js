@@ -80,6 +80,11 @@ export const getPaymentGateWaysByAdmin = async (params) => {
   return data;
 };
 
+export const getStaticPagesByAdmin = async (params) => {
+  const { data } = await http.get(`/admin/static-pages?search=${params}`);
+  return data;
+};
+
 export const getPaymentGateWayByAdmin = async (slug) => {
   const { data } = await http.get(`/admin/payments/paymentgateways/${slug}`);
   return data;

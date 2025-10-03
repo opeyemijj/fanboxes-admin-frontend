@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Components
-import PaymentGateWayList from 'src/components/_admin/payment-gateway/paymentGateWayList';
+import StaticPageList from 'src/components/_admin/static-page/staticPageList';
 import AccessDenied from 'src/components/cards/AccessDenied';
 import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
 import { UsePermissionServer } from 'src/hooks/usePermissionServer';
@@ -26,7 +26,7 @@ export default function Payments() {
     <>
       <HeaderBreadcrumbs
         admin
-        heading="Stack Page"
+        heading="Static Page"
         links={[
           {
             name: 'Dashboard',
@@ -42,7 +42,7 @@ export default function Payments() {
         }}
       />
 
-      <PaymentGateWayList />
+      <StaticPageList />
     </>
   );
 }
