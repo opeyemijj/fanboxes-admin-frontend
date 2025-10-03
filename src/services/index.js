@@ -119,6 +119,11 @@ export const deleteConversionByAdmin = async (slug) => {
   return data;
 };
 
+export const deletePaymentGateWayByAdmin = async (slug) => {
+  const { data } = await http.delete(`/admin/payments/gateway/${slug}`);
+  return data;
+};
+
 export const deleteSlideByAdmin = async (slug) => {
   const { data } = await http.delete(`/admin/slides/${slug}`);
   return data;

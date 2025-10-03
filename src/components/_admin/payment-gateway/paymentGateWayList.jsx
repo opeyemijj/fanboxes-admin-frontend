@@ -36,7 +36,7 @@ export default function PaymentGateWayList() {
     ['payment-gate-ways', apicall, searchParams.toString()],
     () => api.getPaymentGateWaysByAdmin(searchParams.toString()),
     {
-      onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
+      onError: (err) => toast.error(err.message || 'Something went wrong!')
     }
   );
 
@@ -55,8 +55,8 @@ export default function PaymentGateWayList() {
           onClose={handleClose}
           id={id}
           apicall={setApicall}
-          endPoint="deleteConversionByAdmin"
-          type={'Conversion deleted'}
+          endPoint="deletePaymentGateWayByAdmin"
+          type={'Payment gateway deleted'}
           deleteMessage={'Deleting this conversion will permanently remove it. Are you sure you want to proceed?'}
         />
       </Dialog>
