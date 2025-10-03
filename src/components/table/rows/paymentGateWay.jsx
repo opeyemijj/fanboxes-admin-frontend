@@ -51,16 +51,22 @@ export default function PaymentGateWay({ isLoading, row, handleClickOpen, sn }) 
   const canDelete = UsePermission('delete_conversion');
   const router = useRouter();
   const theme = useTheme();
+  function getFirst20Chars(str) {
+    if (typeof str !== 'string') {
+      throw new Error('Input must be a string');
+    }
+    return `${str.slice(0, 20)}....`;
+  }
   return (
     <TableRow hover key={Math.random()}>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
 
       <TableCell>{isLoading ? <Skeleton variant="text" /> : capitalize(row?.name)}</TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : capitalize(row?.paymentMethod)}</TableCell>
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.primaryKey}</TableCell>
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.secretKey}</TableCell>
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.otherKeys[0] || ''}</TableCell>
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.otherKeys[1] || ''}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : getFirst20Chars(row?.publicKey)}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : getFirst20Chars(row?.secretKey)}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : getFirst20Chars(row?.otherKeys[0]) || ''}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : getFirst20Chars(row?.otherKeys[1]) || ''}</TableCell>
 
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <> {fDateShort(row.createdAt)} </>}</TableCell>
 

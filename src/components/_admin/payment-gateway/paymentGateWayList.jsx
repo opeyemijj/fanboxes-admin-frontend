@@ -16,7 +16,7 @@ import PaymentGateWay from 'src/components/table/rows/paymentGateWay';
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false, sort: true },
   { id: 'paymentMethod', label: 'Payment Method', alignRight: false },
-  { id: 'primaryKey', label: 'Primary Key', alignRight: false },
+  { id: 'publicKey', label: 'Public Key', alignRight: false },
   { id: 'secretKey', label: 'Secret Key', alignRight: false },
   { id: 'otherKey1', label: 'Other Key 1', alignRight: false },
   { id: 'otherKey2', label: 'Other Key 2', alignRight: false },

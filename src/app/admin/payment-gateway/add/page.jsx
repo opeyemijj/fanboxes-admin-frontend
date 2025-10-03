@@ -30,7 +30,7 @@ export default function page() {
             href: '/admin/dashboard'
           },
           {
-            name: 'Payment GateWay',
+            name: 'Payment Gateway',
             href: '/admin/payment-gateway'
           },
           {

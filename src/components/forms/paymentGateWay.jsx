@@ -66,14 +66,8 @@ export default function PaymentGateForm({ data: currentGateway, isLoading: formL
   // Validation
   const PaymentSchema = Yup.object().shape({
     name: Yup.string().required('Name is required').max(50, 'Name max character limit is 50'),
-    primaryKey: Yup.string()
-      .min(10, 'Primary sould be 10 char lengthe')
-      .max(10, 'Primary sould be 10 char lengthe')
-      .required('Primary Key is required'),
-    secretKey: Yup.string()
-      .required('Secret Key is required')
-      .min(10, 'Secret sould be 10 char lengthe')
-      .max(10, 'Secret sould be 10 char lengthe'),
+    publicKey: Yup.string().min(10, 'Primary key sould be at least 10 char').required('Primary Key is required'),
+    secretKey: Yup.string().required('Secret Key is required').min(10, 'Secret key sould be at least 10 char'),
     paymentMethod: Yup.string().required('Payment Method is required'),
     otherKey1: Yup.string().nullable(),
     otherKey2: Yup.string().nullable()
@@ -82,7 +76,7 @@ export default function PaymentGateForm({ data: currentGateway, isLoading: formL
   const formik = useFormik({
     initialValues: {
       name: currentGateway?.name || '',
-      primaryKey: currentGateway?.primaryKey || '',
+      publicKey: currentGateway?.publicKey || '',
       secretKey: currentGateway?.secretKey || '',
       paymentMethod: currentGateway?.paymentMethod || PAYMENT_METHOD_OPTIONS[0],
       otherKey1: currentGateway?.otherKeys?.[0] || '',
@@ -133,15 +127,15 @@ export default function PaymentGateForm({ data: currentGateway, isLoading: formL
 
                   {/* Primary Key */}
                   <Grid item xs={12} md={6}>
-                    <LabelStyle component="label" htmlFor="primaryKey">
-                      Primary Key
+                    <LabelStyle component="label" htmlFor="publicKey">
+                      Public Key
                     </LabelStyle>
                     <TextField
-                      id="primaryKey"
+                      id="publicKey"
                       fullWidth
-                      {...getFieldProps('primaryKey')}
-                      error={Boolean(touched.primaryKey && errors.primaryKey)}
-                      helperText={touched.primaryKey && errors.primaryKey}
+                      {...getFieldProps('publicKey')}
+                      error={Boolean(touched.publicKey && errors.publicKey)}
+                      helperText={touched.publicKey && errors.publicKey}
                     />
                   </Grid>
 

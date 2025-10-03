@@ -33,7 +33,7 @@ export default function Payments() {
             href: '/admin/dashboard'
           },
           {
-            name: 'Payment GateWay'
+            name: 'Payment Gateway'
           }
         ]}
         action={{
