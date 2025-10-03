@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Components
-import CreditList from 'src/components/_admin/credits/creditList';
+import PaymentGateWayList from 'src/components/_admin/payment-gateway/paymentGateWayList';
 import AccessDenied from 'src/components/cards/AccessDenied';
 import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
 import { UsePermissionServer } from 'src/hooks/usePermissionServer';
@@ -33,7 +33,7 @@ export default function Payments() {
             href: '/admin/dashboard'
           },
           {
-            name: 'Payments'
+            name: 'Payment GateWay'
           }
         ]}
         action={{
@@ -42,7 +42,7 @@ export default function Payments() {
         }}
       />
 
-      <CreditList />
+      <PaymentGateWayList />
     </>
   );
 }

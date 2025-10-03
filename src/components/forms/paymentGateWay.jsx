@@ -53,12 +53,16 @@ export default function PaymentGateForm({ data: currentGateway, isLoading: formL
 
   const { mutate, isLoading } = useMutation(
     currentGateway ? 'update' : 'new',
-    currentGateway ? api.addPaymentGatewayByAdmin : api.addPaymentGatewayByAdmin,
+    currentGateway ? api.updatePaymentGateWayByAdmin : api.addPaymentGatewayByAdmin,
     {
       retry: false,
       onSuccess: (data) => {
         toast.success(data.message);
-        router.push('/admin/payment-gates');
+        if (currentGateway) {
+          router.back();
+        } else {
+          router.push('/admin/payment-gateway');
+        }
       },
       onError: (error) => {
         let errorMessage = parseMongooseError(error?.message);
@@ -111,116 +115,100 @@ export default function PaymentGateForm({ data: currentGateway, isLoading: formL
     <Box position="relative">
       <FormikProvider value={formik}>
         <Form noValidate autoComplete="off" onSubmit={handleSubmit}>
-          <Grid container spacing={2}>
+          <Grid container spacing={3}>
             <Grid item xs={12}>
-              <Card sx={{ p: 3 }}>
-                <Stack spacing={2}>
-                  <Grid container spacing={2}>
-                    {/* Name */}
-                    <Grid item xs={12} md={6}>
-                      <Stack spacing={1}>
-                        <LabelStyle component="label" htmlFor="name">
-                          Name
-                        </LabelStyle>
-                        <TextField
-                          id="name"
-                          fullWidth
-                          {...getFieldProps('name')}
-                          error={Boolean(touched.name && errors.name)}
-                          helperText={touched.name && errors.name}
-                        />
-                      </Stack>
-                    </Grid>
-
-                    {/* Primary Key */}
-                    <Grid item xs={12} md={6}>
-                      <Stack spacing={1}>
-                        <LabelStyle component="label" htmlFor="primaryKey">
-                          Primary Key
-                        </LabelStyle>
-                        <TextField
-                          id="primaryKey"
-                          fullWidth
-                          {...getFieldProps('primaryKey')}
-                          error={Boolean(touched.primaryKey && errors.primaryKey)}
-                          helperText={touched.primaryKey && errors.primaryKey}
-                        />
-                      </Stack>
-                    </Grid>
-
-                    {/* Payment Method */}
-                    <Grid item xs={12} md={6}>
-                      <Stack spacing={1}>
-                        <LabelStyle component="label" htmlFor="paymentMethod">
-                          Payment Method
-                        </LabelStyle>
-                        <FormControl fullWidth>
-                          <Select
-                            id="paymentMethod"
-                            native
-                            value={values.paymentMethod}
-                            onChange={(e) => setFieldValue('paymentMethod', e.target.value)}
-                            error={Boolean(touched.paymentMethod && errors.paymentMethod)}
-                          >
-                            <option value="" style={{ display: 'none' }} />
-                            {PAYMENT_METHOD_OPTIONS.map((method) => (
-                              <option key={method} value={method}>
-                                {method}
-                              </option>
-                            ))}
-                          </Select>
-                          {touched.paymentMethod && errors.paymentMethod && (
-                            <FormHelperText error>{errors.paymentMethod}</FormHelperText>
-                          )}
-                        </FormControl>
-                      </Stack>
-                    </Grid>
-
-                    {/* Other Key 1 */}
-                    <Grid item xs={12} md={6}>
-                      <Stack spacing={1}>
-                        <LabelStyle component="label" htmlFor="otherKey1">
-                          Other Key 1
-                        </LabelStyle>
-                        <TextField
-                          id="otherKey1"
-                          fullWidth
-                          {...getFieldProps('otherKey1')}
-                          error={Boolean(touched.otherKey1 && errors.otherKey1)}
-                          helperText={touched.otherKey1 && errors.otherKey1}
-                        />
-                      </Stack>
-                    </Grid>
-
-                    {/* Other Key 2 */}
-                    <Grid item xs={12} md={6}>
-                      <Stack spacing={1}>
-                        <LabelStyle component="label" htmlFor="otherKey2">
-                          Other Key 2
-                        </LabelStyle>
-                        <TextField
-                          id="otherKey2"
-                          fullWidth
-                          {...getFieldProps('otherKey2')}
-                          error={Boolean(touched.otherKey2 && errors.otherKey2)}
-                          helperText={touched.otherKey2 && errors.otherKey2}
-                        />
-                      </Stack>
-                    </Grid>
+              <Card sx={{ p: 4 }}>
+                <Grid container spacing={3}>
+                  {/* Name */}
+                  <Grid item xs={12} md={6}>
+                    <LabelStyle component="label" htmlFor="name">
+                      Name
+                    </LabelStyle>
+                    <TextField
+                      id="name"
+                      fullWidth
+                      {...getFieldProps('name')}
+                      error={Boolean(touched.name && errors.name)}
+                      helperText={touched.name && errors.name}
+                    />
                   </Grid>
-                </Stack>
+
+                  {/* Primary Key */}
+                  <Grid item xs={12} md={6}>
+                    <LabelStyle component="label" htmlFor="primaryKey">
+                      Primary Key
+                    </LabelStyle>
+                    <TextField
+                      id="primaryKey"
+                      fullWidth
+                      {...getFieldProps('primaryKey')}
+                      error={Boolean(touched.primaryKey && errors.primaryKey)}
+                      helperText={touched.primaryKey && errors.primaryKey}
+                    />
+                  </Grid>
+
+                  {/* Payment Method */}
+                  <Grid item xs={12} md={6}>
+                    <LabelStyle component="label" htmlFor="paymentMethod">
+                      Payment Method
+                    </LabelStyle>
+                    <FormControl fullWidth error={Boolean(touched.paymentMethod && errors.paymentMethod)}>
+                      <Select
+                        id="paymentMethod"
+                        native
+                        value={values.paymentMethod}
+                        onChange={(e) => setFieldValue('paymentMethod', e.target.value)}
+                      >
+                        <option value="" style={{ display: 'none' }} />
+                        {PAYMENT_METHOD_OPTIONS.map((method) => (
+                          <option key={method} value={method}>
+                            {method}
+                          </option>
+                        ))}
+                      </Select>
+                      {touched.paymentMethod && errors.paymentMethod && (
+                        <FormHelperText>{errors.paymentMethod}</FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
+
+                  {/* Other Key 1 */}
+                  <Grid item xs={12} md={6}>
+                    <LabelStyle component="label" htmlFor="otherKey1">
+                      Other Key 1
+                    </LabelStyle>
+                    <TextField
+                      id="otherKey1"
+                      fullWidth
+                      {...getFieldProps('otherKey1')}
+                      error={Boolean(touched.otherKey1 && errors.otherKey1)}
+                      helperText={touched.otherKey1 && errors.otherKey1}
+                    />
+                  </Grid>
+
+                  {/* Other Key 2 */}
+                  <Grid item xs={12} md={6}>
+                    <LabelStyle component="label" htmlFor="otherKey2">
+                      Other Key 2
+                    </LabelStyle>
+                    <TextField
+                      id="otherKey2"
+                      fullWidth
+                      {...getFieldProps('otherKey2')}
+                      error={Boolean(touched.otherKey2 && errors.otherKey2)}
+                      helperText={touched.otherKey2 && errors.otherKey2}
+                    />
+                  </Grid>
+                </Grid>
               </Card>
             </Grid>
 
-            <LoadingButton
-              type="submit"
-              variant="contained"
-              size="large"
-              loading={isLoading}
-              sx={{ ml: 'auto', mt: 3 }}
-            >
-              {currentGateway ? 'Edit' : 'Create'}
-            </LoadingButton>
+            {/* Submit button aligned right */}
+            <Grid item xs={12} display="flex" justifyContent="flex-end">
+              <LoadingButton type="submit" variant="contained" size="large" loading={isLoading}>
+                {currentGateway ? 'Edit' : 'Create'}
+              </LoadingButton>
+            </Grid>
           </Grid>
         </Form>
       </FormikProvider>

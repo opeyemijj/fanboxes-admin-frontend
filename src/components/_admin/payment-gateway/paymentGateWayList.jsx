@@ -11,17 +11,19 @@ import { Dialog } from '@mui/material';
 // components
 import DeleteDialog from 'src/components/dialog/delete';
 import Table from 'src/components/table/table';
-import Credit from 'src/components/table/rows/credit';
+import PaymentGateWay from 'src/components/table/rows/paymentGateWay';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false, sort: true },
-  { id: 'type', label: 'Type', alignRight: false },
-  { id: 'value', label: 'Value', alignRight: false },
+  { id: 'paymentMethod', label: 'Payment Method', alignRight: false },
+  { id: 'primaryKey', label: 'Primary Key', alignRight: false },
+  { id: 'otherKey1', label: 'Other Key 1', alignRight: false },
+  { id: 'otherKey2', label: 'Other Key 2', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false, sort: true },
   { id: '', label: 'Actions', alignRight: true }
 ];
 // ----------------------------------------------------------------------
-export default function CreditList() {
+export default function PaymentGateWayList() {
   const searchParams = useSearchParams();
   const pageParam = searchParams.get('page');
   const searchParam = searchParams.get('search');
@@ -30,8 +32,8 @@ export default function CreditList() {
   const [id, setId] = useState(null);
 
   const { data, isLoading } = useQuery(
-    ['credits', apicall, searchParams.toString()],
-    () => api.getCreditsByAdmin(searchParams.toString()),
+    ['payment-gate-ways', apicall, searchParams.toString()],
+    () => api.getPaymentGateWaysByAdmin(searchParams.toString()),
     {
       onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
     }
@@ -61,7 +63,7 @@ export default function CreditList() {
         headData={TABLE_HEAD}
         data={data ?? { success: true, data: [], total: 0, count: 0, currentPage: 1 }}
         isLoading={isLoading}
-        row={Credit}
+        row={PaymentGateWay}
         handleClickOpen={handleClickOpen}
         // isSearch
       />

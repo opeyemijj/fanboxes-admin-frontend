@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 // components
 import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
-import EditCredit from 'src/components/_admin/credits/editCredit';
+import EditPaymentGateWay from 'src/components/_admin/payment-gateway/editPaymentGateWay';
 
 // api
 import * as api from 'src/services';
@@ -20,7 +20,7 @@ Page.propTypes = {
   }).isRequired
 };
 export default function Page({ params }) {
-  const { data, isLoading } = useQuery(['credit'], () => api.getCreditByAdmin(params.slug), {
+  const { data, isLoading } = useQuery(['payment-gateway'], () => api.getPaymentGateWayByAdmin(params.slug), {
     onError: (err) => {
       console.log(err, 'Check the error');
       toast.error(err.message || 'Something went wrong!');
@@ -45,15 +45,15 @@ export default function Page({ params }) {
             href: '/admin/dashboard'
           },
           {
-            name: 'Credits',
-            href: '/admin/credits'
+            name: 'Payment GateWay',
+            href: '/admin/payment-gateway'
           },
           {
             name: data?.data?.name
           }
         ]}
       />
-      <EditCredit isLoading={isLoading} data={data?.data} />
+      <EditPaymentGateWay isLoading={isLoading} data={data?.data} />
     </div>
   );
 }
