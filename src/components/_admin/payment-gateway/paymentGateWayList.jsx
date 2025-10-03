@@ -57,7 +57,7 @@ export default function PaymentGateWayList() {
           apicall={setApicall}
           endPoint="deletePaymentGateWayByAdmin"
           type={'Payment gateway deleted'}
-          deleteMessage={'Deleting this conversion will permanently remove it. Are you sure you want to proceed?'}
+          deleteMessage={'Deleting this payment gateway will permanently remove it. Are you sure you want to proceed?'}
         />
       </Dialog>
       <Table

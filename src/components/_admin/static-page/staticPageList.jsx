@@ -50,9 +50,9 @@ export default function StaticPageList() {
           onClose={handleClose}
           id={id}
           apicall={setApicall}
-          endPoint="deletePaymentGateWayByAdmin"
-          type={'Payment gateway deleted'}
-          deleteMessage={'Deleting this conversion will permanently remove it. Are you sure you want to proceed?'}
+          endPoint="deleteStaticPageByAdmin"
+          type={'Static page deleted'}
+          deleteMessage={'Deleting static page will permanently remove it. Are you sure you want to proceed?'}
         />
       </Dialog>
       <Table
