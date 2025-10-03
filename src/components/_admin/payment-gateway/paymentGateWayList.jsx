@@ -17,6 +17,7 @@ const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false, sort: true },
   { id: 'paymentMethod', label: 'Payment Method', alignRight: false },
   { id: 'primaryKey', label: 'Primary Key', alignRight: false },
+  { id: 'secretKey', label: 'Secret Key', alignRight: false },
   { id: 'otherKey1', label: 'Other Key 1', alignRight: false },
   { id: 'otherKey2', label: 'Other Key 2', alignRight: false },
   { id: 'createdAt', label: 'Date', alignRight: false, sort: true },

@@ -55,11 +55,12 @@ export default function PaymentGateWay({ isLoading, row, handleClickOpen, sn }) 
     <TableRow hover key={Math.random()}>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
 
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : capitalize(row.name)}</TableCell>
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : capitalize(row.paymentMethod)}</TableCell>
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : row.primaryKey}</TableCell>
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : row.otherKey1}</TableCell>
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : row.otherKey2}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : capitalize(row?.name)}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : capitalize(row?.paymentMethod)}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.primaryKey}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.secretKey}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.otherKeys[0] || ''}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.otherKeys[1] || ''}</TableCell>
 
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <> {fDateShort(row.createdAt)} </>}</TableCell>
 

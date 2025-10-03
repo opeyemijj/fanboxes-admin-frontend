@@ -7,18 +7,7 @@ import PropTypes from 'prop-types';
 // mui
 import { styled } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
-import {
-  Card,
-  Stack,
-  TextField,
-  Typography,
-  Box,
-  Select,
-  FormControl,
-  FormHelperText,
-  Grid,
-  Skeleton
-} from '@mui/material';
+import { Card, TextField, Typography, Box, Select, FormControl, FormHelperText, Grid } from '@mui/material';
 
 // yup
 import * as Yup from 'yup';
@@ -46,7 +35,7 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 }));
 
 // Payment Methods
-const PAYMENT_METHOD_OPTIONS = ['Stripe', 'Paypal', 'Crypto', 'Other'];
+const PAYMENT_METHOD_OPTIONS = ['Card', 'Crypto'];
 
 export default function PaymentGateForm({ data: currentGateway, isLoading: formLoading }) {
   const router = useRouter();
@@ -77,7 +66,14 @@ export default function PaymentGateForm({ data: currentGateway, isLoading: formL
   // Validation
   const PaymentSchema = Yup.object().shape({
     name: Yup.string().required('Name is required').max(50, 'Name max character limit is 50'),
-    primaryKey: Yup.string().required('Primary Key is required'),
+    primaryKey: Yup.string()
+      .min(10, 'Primary sould be 10 char lengthe')
+      .max(10, 'Primary sould be 10 char lengthe')
+      .required('Primary Key is required'),
+    secretKey: Yup.string()
+      .required('Secret Key is required')
+      .min(10, 'Secret sould be 10 char lengthe')
+      .max(10, 'Secret sould be 10 char lengthe'),
     paymentMethod: Yup.string().required('Payment Method is required'),
     otherKey1: Yup.string().nullable(),
     otherKey2: Yup.string().nullable()
@@ -87,9 +83,10 @@ export default function PaymentGateForm({ data: currentGateway, isLoading: formL
     initialValues: {
       name: currentGateway?.name || '',
       primaryKey: currentGateway?.primaryKey || '',
+      secretKey: currentGateway?.secretKey || '',
       paymentMethod: currentGateway?.paymentMethod || PAYMENT_METHOD_OPTIONS[0],
-      otherKey1: currentGateway?.otherKey1 || '',
-      otherKey2: currentGateway?.otherKey2 || ''
+      otherKey1: currentGateway?.otherKeys?.[0] || '',
+      otherKey2: currentGateway?.otherKeys?.[1] || ''
     },
     enableReinitialize: true,
     validationSchema: PaymentSchema,
@@ -97,6 +94,7 @@ export default function PaymentGateForm({ data: currentGateway, isLoading: formL
       try {
         mutate({
           ...values,
+          otherKeys: [values.otherKey1, values.otherKey2].filter(Boolean),
           ...(currentGateway && { currentSlug: currentGateway.slug })
         });
       } catch (error) {
@@ -144,6 +142,20 @@ export default function PaymentGateForm({ data: currentGateway, isLoading: formL
                       {...getFieldProps('primaryKey')}
                       error={Boolean(touched.primaryKey && errors.primaryKey)}
                       helperText={touched.primaryKey && errors.primaryKey}
+                    />
+                  </Grid>
+
+                  {/* Secret Key */}
+                  <Grid item xs={12} md={6}>
+                    <LabelStyle component="label" htmlFor="secretKey">
+                      Secret Key
+                    </LabelStyle>
+                    <TextField
+                      id="secretKey"
+                      fullWidth
+                      {...getFieldProps('secretKey')}
+                      error={Boolean(touched.secretKey && errors.secretKey)}
+                      helperText={touched.secretKey && errors.secretKey}
                     />
                   </Grid>
 
