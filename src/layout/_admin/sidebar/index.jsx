@@ -39,7 +39,17 @@ import { LuBadgePercent } from 'react-icons/lu';
 // components
 import Scrollbar from 'src/components/Scrollbar';
 import { Logs, User, User2Icon, UserCheck, UserRound } from 'lucide-react';
-import { MonetizationOn, Payment, Person, ReceiptLong, Security, SyncAlt, Transcribe } from '@mui/icons-material';
+import {
+  ContactPage,
+  MonetizationOn,
+  Payment,
+  Person,
+  ReceiptLong,
+  Security,
+  SnippetFolder,
+  SyncAlt,
+  Transcribe
+} from '@mui/icons-material';
 import { UsePermission } from 'src/hooks/usePermission';
 
 // Dashboard Side NevLinks
@@ -304,11 +314,19 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
           isSearch: true
         },
         {
-          id: '14-2',
+          id: '14-3',
           title: 'Payment Gateway',
           slug: 'payment-gateway',
           hasPermission: true, // UsePermission('view_conversion_listing'),
           icon: <Payment size={18} />,
+          isSearch: true
+        },
+        {
+          id: '14-4',
+          title: 'Static Page',
+          slug: 'static-page',
+          hasPermission: true, // UsePermission('view_conversion_listing'),
+          icon: <ContactPage size={18} />,
           isSearch: true
         }
       ]

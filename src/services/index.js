@@ -149,6 +149,11 @@ export const addPaymentGatewayByAdmin = async (payload) => {
   return data;
 };
 
+export const addStaticPageByAdmin = async (payload) => {
+  const { data } = await http.post(`/admin/static-pages/`, payload);
+  return data;
+};
+
 export const addSlideByAdmin = async (payload) => {
   const { data } = await http.post(`/admin/slides`, payload);
   return data;
