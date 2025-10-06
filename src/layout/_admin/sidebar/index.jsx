@@ -293,7 +293,12 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
       id: 14,
       title: 'Configuration',
       slug: 'configuration',
-      hasPermission: CheckMulitplePermission(['view_slide_listing', 'view_conversion_listing']),
+      hasPermission: CheckMulitplePermission([
+        'view_slide_listing',
+        'view_conversion_listing',
+        'view_payment_gateway_listing',
+        'view_static_page_listing'
+      ]),
       icon: <IoLogoAmplify />,
       isSearch: false,
       children: [
@@ -317,7 +322,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
           id: '14-3',
           title: 'Payment Gateway',
           slug: 'payment-gateway',
-          hasPermission: true, // UsePermission('view_conversion_listing'),
+          hasPermission: UsePermission('view_payment_gateway_listing'), // UsePermission('view_conversion_listing'),
           icon: <Payment size={18} />,
           isSearch: true
         },
@@ -325,7 +330,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
           id: '14-4',
           title: 'Static Page',
           slug: 'static-page',
-          hasPermission: true, // UsePermission('view_conversion_listing'),
+          hasPermission: UsePermission('view_static_page_listing'), // UsePermission('view_conversion_listing'),
           icon: <ContactPage size={18} />,
           isSearch: true
         }

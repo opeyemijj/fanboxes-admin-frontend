@@ -27,11 +27,9 @@ export default function Page({ params }) {
     }
   });
 
-  console.log(data, 'Check the edit data');
-
-  const canAdd = UsePermission('edit_conversion');
-  if (!canAdd) {
-    return <AccessDenied message="You are not allowed to edit conversion." redirect="/admin/dashboard" />;
+  const canEdit = UsePermission('edit_payment_gateway');
+  if (!canEdit) {
+    return <AccessDenied message="You are not allowed to edit payment." redirect="/admin/dashboard" />;
   }
 
   return (

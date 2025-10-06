@@ -43,8 +43,8 @@ const ThumbImgStyle = styled(Box)(({ theme }) => ({
   overflow: 'hidden'
 }));
 export default function StaticPage({ isLoading, row, handleClickOpen, sn }) {
-  const canEdit = UsePermission('edit_conversion');
-  const canDelete = UsePermission('delete_conversion');
+  const canEdit = UsePermission('edit_static_page');
+  const canDelete = UsePermission('delete_static_page');
   const router = useRouter();
   const theme = useTheme();
   return (

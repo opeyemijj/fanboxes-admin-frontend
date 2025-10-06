@@ -287,8 +287,19 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
     setModalType('assign');
   }
 
-  function UpdateSelectedRow(id) {
-    setSelectedRows((prev) => (prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]));
+  function UpdateSelectedRow(id, type, checkType) {
+    if (type === 'single') {
+      setSelectedRows((prev) => (prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]));
+    } else if (type === 'all') {
+      if (checkType) {
+        // ✅ Select all IDs
+        const allIds = data?.data?.map((item) => item._id) || [];
+        setSelectedRows(allIds);
+      } else {
+        // ✅ Deselect all
+        setSelectedRows([]);
+      }
+    }
   }
 
   async function openAssignUsersForSelectedRecords() {
@@ -331,12 +342,12 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
 
           {
             hasPermission: UsePermission('ban_unban_box'),
-            actionName: 'Bann',
+            actionName: 'Ban',
             action: handleClickOpenBanned(null, 'multipleBanned', 'bann')
           },
           {
             hasPermission: UsePermission('ban_unban_box'),
-            actionName: 'Unbann',
+            actionName: 'Unban',
             action: handleClickOpenBanned(null, 'multipleBanned', 'unbann')
           },
           {

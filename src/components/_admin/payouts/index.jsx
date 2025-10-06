@@ -9,6 +9,7 @@ import EditPaymentDialog from 'src/components/dialog/editPayment';
 // api
 import * as api from 'src/services';
 import { useQuery } from 'react-query';
+import parseMongooseError from 'src/utils/errorHandler';
 const TABLE_HEAD = [
   { id: 'name', label: 'Shop', alignRight: false },
   { id: 'items', label: 'Sale', alignRight: false, sort: true },
@@ -28,7 +29,14 @@ export default function PayoutsList({ shops }) {
     ['payouts', searchParams.toString(), count],
     () => api.getPayoutsByAdmin(searchParams.toString()),
     {
-      onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
+      onError: (error) => {
+        console.log(error);
+        let errorMessage = parseMongooseError(error?.message);
+        toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+          autoClose: false, // Prevents auto-dismissal
+          closeOnClick: true // Allows clicking on the close icon
+        });
+      }
     }
   );
 
@@ -45,7 +53,7 @@ export default function PayoutsList({ shops }) {
         isSearch
         filters={[
           {
-            name: 'Shop',
+            name: 'Influencer',
             param: 'shop',
             data: shops
           },

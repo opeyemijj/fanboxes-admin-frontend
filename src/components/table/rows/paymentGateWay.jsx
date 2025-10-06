@@ -47,8 +47,8 @@ const ThumbImgStyle = styled(Box)(({ theme }) => ({
   overflow: 'hidden'
 }));
 export default function PaymentGateWay({ isLoading, row, handleClickOpen, sn }) {
-  const canEdit = UsePermission('edit_conversion');
-  const canDelete = UsePermission('delete_conversion');
+  const canEdit = UsePermission('edit_payment_gateway');
+  const canDelete = UsePermission('delete_payment_gateway');
   const router = useRouter();
   const theme = useTheme();
   function getFirst20Chars(str) {

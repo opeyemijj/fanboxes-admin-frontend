@@ -14,10 +14,10 @@ export const metadata = {
 };
 
 export default function page() {
-  // const canAdd = UsePermissionServer('add_new_conversion');
-  // if (!canAdd) {
-  //   return <AccessDenied message="You are not allowed to add conversion." redirect="/admin/dashboard" />;
-  // }
+  const canAdd = UsePermissionServer('add_new_static_page');
+  if (!canAdd) {
+    return <AccessDenied message="You are not allowed to add static page." redirect="/admin/dashboard" />;
+  }
 
   return (
     <div>

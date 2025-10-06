@@ -73,8 +73,8 @@ export default function AssignUsersModal({ open, onClose, markItem, onAssign, as
   const handleAssign = () => {
     onAssign({
       slug: markItem?.slug || markItem?._id,
-      selectedUsers,
-      selectedUserDetails
+      selectedUsers: selectedUsers?.length > 0 ? selectedUsers : [],
+      selectedUserDetails: selectedUsers?.length > 0 ? selectedUserDetails : []
     });
   };
 
@@ -194,7 +194,7 @@ export default function AssignUsersModal({ open, onClose, markItem, onAssign, as
           </Button>
           <LoadingButton
             loading={assignLoading}
-            disabled={selectedUsers.length < 1}
+            // disabled={selectedUsers.length < 1}
             variant="contained"
             onClick={selectedRows.length > 0 ? handleAssignForMulitpleRecords : handleAssign}
           >

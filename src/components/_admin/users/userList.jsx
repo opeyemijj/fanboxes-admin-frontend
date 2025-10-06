@@ -195,7 +195,7 @@ export default function AdminProducts({ userType }) {
         <DialogContent>
           <DialogContentText>
             {markUser?.isActive
-              ? 'Are you sure you want to draft this box? Don’t worry, you can always approve it again later.'
+              ? 'Are you sure you want to draft this user? Don’t worry, you can always approve it again later.'
               : 'Would you like to approve this user? Once approved, it will be available right away.'}
           </DialogContentText>
         </DialogContent>

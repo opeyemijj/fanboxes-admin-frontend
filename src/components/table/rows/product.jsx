@@ -137,7 +137,7 @@ export default function ProductRow({
               <Checkbox
                 size="small"
                 checked={selectedRows?.includes(row?._id)}
-                onChange={() => UpdateSelectedRow(row?._id)}
+                onChange={() => UpdateSelectedRow(row?._id, 'single')}
               />
               {isLoading ? <Skeleton variant="text" width={20} /> : <Typography variant="body2">{sn}</Typography>}
             </>

@@ -22,7 +22,8 @@ import {
   ButtonGroup,
   IconButton,
   Tooltip,
-  Menu
+  Menu,
+  Checkbox
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
@@ -90,7 +91,28 @@ export default function CustomTable({
   const updatedHeadData = [
     {
       id: 'sn',
-      label: bulkAction.length > 0 ? 'S/N' : 'S/N',
+      label: UpdateSelectedRow ? (
+        <>
+          <Stack direction="row" alignItems="center">
+            <Checkbox
+              size="small"
+              onChange={(e) => UpdateSelectedRow(null, 'all', e.target.checked)}
+              checked={selectedRows?.length === data?.data?.length}
+              sx={{
+                '&.Mui-checked': {
+                  color: '#fff'
+                }
+              }}
+            />
+
+            <Typography variant="body2" sx={{ fontSize: 15 }} fontWeight={700}>
+              S/N
+            </Typography>
+          </Stack>
+        </>
+      ) : (
+        'S/N'
+      ),
       alignRight: false
     },
     ...headData

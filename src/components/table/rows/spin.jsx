@@ -74,22 +74,6 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
     <TableRow hover key={Math.random()}>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
 
-      <TableCell>
-        {isLoading ? (
-          <Skeleton variant="text" />
-        ) : (
-          <>
-            <Link
-              style={{ textDecoration: 'none', color: 'inherit' }}
-              target="_blank"
-              href={`${process.env.USER_FRONTEND_URL}/boxes/${row?.boxDetails?.slug}`}
-            >
-              {row?.boxDetails?.name}
-            </Link>
-          </>
-        )}
-      </TableCell>
-
       <TableCell
         onClick={() => {
           if (row?.shopDetails && row?.vendorDetails) {
@@ -142,6 +126,27 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
           )}
         </Box>
       </TableCell>
+
+      <TableCell>
+        {isLoading ? (
+          <Skeleton variant="text" />
+        ) : (
+          <>
+            <Link
+              style={{ textDecoration: 'none', color: 'inherit' }}
+              target="_blank"
+              href={`${process.env.USER_FRONTEND_URL}/boxes/${row?.boxDetails?.slug}`}
+            >
+              {row?.boxDetails?.name}
+            </Link>
+
+            <Typography sx={{ fontSize: 10 }}>
+              {row?.boxDetails?.priceSale ? `$${row?.boxDetails?.priceSale}` : null}
+            </Typography>
+          </>
+        )}
+      </TableCell>
+
       <TableCell component="th" scope="row" sx={{ maxWidth: 300 }}>
         <Box
           sx={{
@@ -192,6 +197,26 @@ export default function ProductRow({ isLoading, row, handleClickOpen, sn }) {
           <>{`${Number(row?.winningItem?.odd)?.toFixed(4)}/${row?.winningItem?.weight}%`}</>
         )}
       </TableCell>
+
+      <TableCell>
+        {isLoading ? (
+          <Skeleton variant="text" />
+        ) : (
+          <span
+            style={{
+              color:
+                Number(row?.boxDetails?.priceSale - row?.winningItem?.value) > 0
+                  ? 'green'
+                  : Number(row?.boxDetails?.priceSale - row?.winningItem?.value) < 0
+                    ? 'red'
+                    : 'inherit'
+            }}
+          >
+            {Number(row?.boxDetails?.priceSale - row?.winningItem?.value)}
+          </span>
+        )}
+      </TableCell>
+
       <TableCell
         title={row?.clientSeed} // full value on hover
       >
