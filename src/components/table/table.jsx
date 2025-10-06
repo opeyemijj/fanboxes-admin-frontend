@@ -97,7 +97,7 @@ export default function CustomTable({
             <Checkbox
               size="small"
               onChange={(e) => UpdateSelectedRow(null, 'all', e.target.checked)}
-              checked={state?.limit ? Number(state.limit) === selectedRows?.length : selectedRows?.length === 10}
+              checked={selectedRows?.length === data?.data?.length}
               sx={{
                 '&.Mui-checked': {
                   color: '#fff'
