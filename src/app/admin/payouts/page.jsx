@@ -6,6 +6,7 @@ import PayoutsList from 'src/components/_admin/payouts';
 
 // api
 import * as api from 'src/services';
+import { SortArrayAlphabetically } from 'src/utils/sorting';
 
 // Meta information
 export const metadata = {
@@ -30,7 +31,7 @@ export default async function page() {
           }
         ]}
       />
-      <PayoutsList shops={shops} />
+      <PayoutsList shops={SortArrayAlphabetically(shops)} />
     </div>
   );
 }
