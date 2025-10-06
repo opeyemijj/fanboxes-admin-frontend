@@ -127,9 +127,9 @@ export default function FormDialog({ open, handleClose, data, setCount }) {
           <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
             <DialogTitle>Edit Payment</DialogTitle>
             <DialogContent>
-              <DialogContentText>
+              {/* <DialogContentText>
                 To subscribe to this website, please enter your email address here. We will send updates occasionally.
-              </DialogContentText>
+              </DialogContentText> */}
 
               <Stack gap={2} mt={4}>
                 <Stack gap={2} direction="row">

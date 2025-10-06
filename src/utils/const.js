@@ -19,11 +19,11 @@ export const SHIPPING_STATUS_FOR_FILTER = [
   { name: 'Pending', slug: 'pending' },
   { name: 'Processing', slug: 'processing' },
   { name: 'Shipped', slug: 'shipped' },
-  { name: 'In Transit', slug: 'in-transit' },
+  { name: 'In Transit', slug: 'in transit' },
   { name: 'Out for Delivery', slug: 'out-for-delivery' },
   { name: 'Delivered', slug: 'delivered' },
   { name: 'Delayed', slug: 'delayed' },
   { name: 'Returned', slug: 'returned' },
   { name: 'Cancelled', slug: 'cancelled' },
-  { name: 'Failed Delivery', slug: 'failed-delivery' }
+  { name: 'Failed Delivery', slug: 'failed delivery' }
 ];

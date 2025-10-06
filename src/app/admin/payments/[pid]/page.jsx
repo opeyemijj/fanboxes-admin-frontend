@@ -24,6 +24,7 @@ import { CiNoWaitingSign } from 'react-icons/ci';
 // api
 import * as api from 'src/services';
 import { useQuery } from 'react-query';
+import parseMongooseError from 'src/utils/errorHandler';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'User', alignRight: false },
@@ -42,8 +43,17 @@ export default function Page({ params: { pid } }) {
   const searchParams = useSearchParams();
   const pageParam = searchParams.get('page');
   const { data, isLoading } = useQuery(['shop-payment', pageParam], () => api.getIncomeDetailsByAdmin(pid, pageParam), {
-    onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
+    onError: (error) => {
+      console.log(error);
+      let errorMessage = parseMongooseError(error?.message);
+      toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+        autoClose: false, // Prevents auto-dismissal
+        closeOnClick: true // Allows clicking on the close icon
+      });
+    }
   });
+
+  console.log(data, 'OKK Checking the pyament details data');
 
   const dataMain = [
     {
