@@ -14,11 +14,13 @@ import Table from 'src/components/table/table';
 import Spin from 'src/components/table/rows/spin';
 
 const TABLE_HEAD = [
-  { id: 'box', label: 'Box', alignRight: false, sort: true },
   { id: 'influencer', label: 'Influencer', alignRight: false, sort: true },
+  { id: 'box', label: 'Box', alignRight: false, sort: true },
+
   { id: 'item', label: 'Winning Item', alignRight: false, sort: true },
 
   { id: 'odd', label: 'Odd/Weight', alignRight: false, sort: true },
+  { id: 'p/l', label: 'P/L', alignRight: false, sort: true },
 
   { id: 'clientSeed', label: 'Client Seed', alignRight: false, sort: true },
   { id: 'serverSeed', label: 'Server Seed', alignRight: false, sort: true },
