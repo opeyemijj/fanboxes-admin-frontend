@@ -14,13 +14,13 @@ export const metadata = {
 };
 
 export default function Payments() {
-  // const canView = UsePermissionServer('view_conversion_listing'); // check required permission
+  const canView = UsePermissionServer('view_payment_gateway_listing'); // check required permission
 
-  // if (!canView) {
-  //   return <AccessDenied message="You are not allowed to manage Credits & Conversion." redirect="/admin/dashboard" />;
-  // }
+  if (!canView) {
+    return <AccessDenied message="You are not allowed to manage Payment Gateway." redirect="/admin/dashboard" />;
+  }
 
-  // const canAddConversion = UsePermissionServer('add_new_conversion');
+  const canAddConversion = UsePermissionServer('add_new_payment_gateway');
 
   return (
     <>
@@ -36,10 +36,14 @@ export default function Payments() {
             name: 'Payment Gateway'
           }
         ]}
-        action={{
-          href: `/admin/payment-gateway/add`,
-          title: 'Add'
-        }}
+        action={
+          canAddConversion
+            ? {
+                href: `/admin/payment-gateway/add`,
+                title: 'Add'
+              }
+            : null
+        }
       />
 
       <PaymentGateWayList />
