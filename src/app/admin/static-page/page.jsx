@@ -14,13 +14,13 @@ export const metadata = {
 };
 
 export default function Payments() {
-  // const canView = UsePermissionServer('view_conversion_listing'); // check required permission
+  const canView = UsePermissionServer('view_static_page_listing'); // check required permission
 
-  // if (!canView) {
-  //   return <AccessDenied message="You are not allowed to manage Credits & Conversion." redirect="/admin/dashboard" />;
-  // }
+  if (!canView) {
+    return <AccessDenied message="You are not allowed to manage Static pages." redirect="/admin/dashboard" />;
+  }
 
-  // const canAddConversion = UsePermissionServer('add_new_conversion');
+  const canAddStaticPages = UsePermissionServer('add_new_static_page');
 
   return (
     <>
@@ -36,10 +36,14 @@ export default function Payments() {
             name: 'Static Page'
           }
         ]}
-        action={{
-          href: `/admin/static-page/add`,
-          title: 'Add'
-        }}
+        action={
+          canAddStaticPages
+            ? {
+                href: `/admin/static-page/add`,
+                title: 'Add'
+              }
+            : null
+        }
       />
 
       <StaticPageList />

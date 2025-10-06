@@ -13,6 +13,7 @@ import { useRouter } from 'next-nprogress-bar';
 // api
 import * as api from 'src/services';
 import parseMongooseError from 'src/utils/errorHandler';
+import { capitalize } from 'lodash';
 
 const LabelStyle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
@@ -79,7 +80,6 @@ export default function RoleAddForm({ routesGropuData, currentRole, isLoading })
 
       // console.log(permittedItems, 'Permitted Item');
 
-      console.log(permittedItems, 'OKK What');
       mutate({
         slug: currentRole ? currentRole.slug : null,
         payload: {
@@ -144,7 +144,7 @@ export default function RoleAddForm({ routesGropuData, currentRole, isLoading })
                             ? 'Box'
                             : group === 'shops'
                               ? 'Influencers'
-                              : group.charAt(0).toUpperCase() + group.slice(1)}
+                              : capitalize(group)?.replace('-', ' ')}
                         </LabelStyle>
                         <Button size="small" onClick={() => handleSelectAllGroup(group)}>
                           {values.permissions[group]?.every((p) => p.checked) ? 'Unselect All' : 'Select All'}
