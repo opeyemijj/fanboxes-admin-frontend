@@ -247,12 +247,12 @@ export default function AdminShops({ categories }) {
           },
           {
             hasPermission: UsePermission('ban_unban_influencer'),
-            actionName: 'Bann',
+            actionName: 'Ban',
             action: handleClickOpenBanned(null, 'multipleBanned', 'bann')
           },
           {
             hasPermission: UsePermission('ban_unban_influencer'),
-            actionName: 'Unbann',
+            actionName: 'Unban',
             action: handleClickOpenBanned(null, 'multipleBanned', 'unbann')
           },
           {

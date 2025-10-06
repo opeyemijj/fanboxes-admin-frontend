@@ -342,12 +342,12 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
 
           {
             hasPermission: UsePermission('ban_unban_box'),
-            actionName: 'Bann',
+            actionName: 'Ban',
             action: handleClickOpenBanned(null, 'multipleBanned', 'bann')
           },
           {
             hasPermission: UsePermission('ban_unban_box'),
-            actionName: 'Unbann',
+            actionName: 'Unban',
             action: handleClickOpenBanned(null, 'multipleBanned', 'unbann')
           },
           {
