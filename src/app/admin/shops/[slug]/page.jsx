@@ -41,7 +41,8 @@ export default function Page({ params: { slug } }) {
   const [viewSection, setViewSection] = useState('income');
 
   const totalSpins = data?.totalSpins || 0;
-  const profitLoss = (data?.totalPriceSale || 0) - (data?.totalValue || 0);
+
+  const profitLoss = ((data?.totalPriceSale || 0) - (data?.totalValue || 0)).toFixed(2);
 
   function SetDataType(type) {
     // clear query params and keep only pathname
@@ -59,11 +60,17 @@ export default function Page({ params: { slug } }) {
     },
     {
       name: 'Total Spins',
-      items: `${totalSpins} (P/L: ${profitLoss})`,
-      color: theme.palette.success.main,
+      items: (
+        <>
+          {totalSpins} (P/L:{' '}
+          <span style={{ color: profitLoss > 0 ? 'green' : profitLoss < 0 ? 'red' : 'gray' }}>{profitLoss}</span>)
+        </>
+      ),
+      color: profitLoss > 0 ? 'green' : profitLoss < 0 ? 'red' : 'gray',
       icon: <TbChartArrowsVertical size={30} />,
       viewFunction: () => SetDataType('spin')
     },
+
     {
       name: 'Total Orders',
       items: data?.totalOrders,
