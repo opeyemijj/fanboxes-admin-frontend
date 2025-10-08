@@ -62,11 +62,10 @@ export default function Page({ params: { slug } }) {
       name: 'Total Spins',
       items: (
         <>
-          {totalSpins} (P/L:{' '}
-          <span style={{ color: profitLoss > 0 ? 'green' : profitLoss < 0 ? 'red' : 'gray' }}>{profitLoss}</span>)
+          {totalSpins}: {profitLoss}
         </>
       ),
-      color: profitLoss > 0 ? 'green' : profitLoss < 0 ? 'red' : 'gray',
+      color: theme.palette.secondary.main,
       icon: <TbChartArrowsVertical size={30} />,
       viewFunction: () => SetDataType('spin')
     },
