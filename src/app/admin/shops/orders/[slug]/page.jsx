@@ -1,0 +1,48 @@
+'use client';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+
+// mui
+import { useTheme } from '@mui/material';
+
+// next
+import { useRouter, usePathname } from 'next/navigation';
+
+// components
+import ShopDetailCover from 'src/components/_admin/shops/shopDetailCover';
+import ShopDetail from 'src/components/_admin/shops/shopDetail';
+import ShopIcomeList from '../../../../../components/_admin/shops/shopIncome';
+import AdminShopWiseProducts from 'src/components/_admin/products/shopWiseProductList';
+import ShopProductList from 'src/components/_admin/shops/shopProduct';
+import ShopOrderList from 'src/components/_admin/shops/shopOrder';
+
+// icons
+import { FaGifts, FaWallet } from 'react-icons/fa6';
+import { HiOutlineClipboardList } from 'react-icons/hi';
+import { TbChartArrowsVertical } from 'react-icons/tb';
+
+// api
+import * as api from 'src/services';
+import { useQuery } from 'react-query';
+import ShopSpinList from 'src/components/_admin/shops/shopSpin';
+
+Page.propTypes = {
+  params: PropTypes.object.isRequired
+};
+
+export default function Page({ params: { slug } }) {
+  const theme = useTheme();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const [count, setCount] = useState(0);
+  const { data, isLoading } = useQuery(['shop-by-admin', count], () => api.getShopDetailsByAdmin(slug));
+
+  return (
+    <div>
+      <ShopDetailCover data={data?.data} isLoading={isLoading} />
+
+      <ShopOrderList slug={slug} />
+    </div>
+  );
+}
