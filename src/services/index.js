@@ -18,6 +18,11 @@ export const login = async (payload) => {
   return data;
 };
 
+export const generateQr = async () => {
+  const { data } = await http.post(`/auth/generate-qr`);
+  return data;
+};
+
 export const forgetPassword = async (payload) => {
   const { data } = await http.post('/auth/forget-password', payload);
   return data;
