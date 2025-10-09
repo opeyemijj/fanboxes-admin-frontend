@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Box, Button, CircularProgress, TextField, Typography, Paper } from '@mui/material';
 import * as api from 'src/services';
+import toast from 'react-hot-toast';
 
 export default function TwoFASetup({ userId }) {
   const [qr, setQr] = useState(null);
@@ -52,16 +53,16 @@ export default function TwoFASetup({ userId }) {
   const verify = async () => {
     if (!token) return alert('Please enter the 2FA code.');
     setVerifying(true);
-    // try {
-    //   const { data } = await api.verify2FASetup({ userId, token, secret });
-    //   alert(data.message);
-    //   setToken('');
-    // } catch (error) {
-    //   console.error(error);
-    //   alert('Invalid 2FA code. Try again.');
-    // } finally {
-    //   setVerifying(false);
-    // }
+    try {
+      const { data } = await api.verify2FASetup({ token, secret });
+      toast.success(data.message);
+      setToken('');
+    } catch (error) {
+      console.log(error, 'Check the 2fa verify error');
+      toast.error('Invalid 2FA code. Try again.');
+    } finally {
+      setVerifying(false);
+    }
   };
 
   return (

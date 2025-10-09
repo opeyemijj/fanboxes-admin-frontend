@@ -23,6 +23,11 @@ export const generateQr = async () => {
   return data;
 };
 
+export const verify2FASetup = async (payload) => {
+  const { data } = await http.post(`/auth/verify-2fa-setup`, payload);
+  return data;
+};
+
 export const forgetPassword = async (payload) => {
   const { data } = await http.post('/auth/forget-password', payload);
   return data;
