@@ -1,74 +1,103 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
-import { Box, Button, CircularProgress, TextField, Typography, Paper } from '@mui/material';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { Box, Button, CircularProgress, Typography, Paper, TextField, Grid } from '@mui/material';
 import * as api from 'src/services';
 import toast from 'react-hot-toast';
 
 export default function TwoFASetup({ userId }) {
   const [qr, setQr] = useState(null);
   const [secret, setSecret] = useState('');
-  const [token, setToken] = useState('');
+  const [digits, setDigits] = useState(Array(6).fill(''));
   const [loading, setLoading] = useState(false);
   const [verifying, setVerifying] = useState(false);
-  const [countdown, setCountdown] = useState(30);
+  const inputRefs = useRef([]);
 
-  // Function to generate QR
+  // Generate QR code
   const generate = useCallback(async () => {
     setLoading(true);
     try {
       const { data } = await api.generateQr();
       setQr(data.qrCodeDataURL);
       setSecret(data.secret);
-      setCountdown(30); // reset timer
     } catch (error) {
       console.error(error);
-      alert('Failed to generate QR code. Try again.');
+      toast.error('Failed to generate QR code. Try again.');
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // Automatically generate QR code on page load
   useEffect(() => {
     generate();
   }, []);
 
-  // Countdown timer logic
-  //   useEffect(() => {
-  //     if (!qr) return;
-
-  //     const timer = setInterval(() => {
-  //       setCountdown((prev) => {
-  //         if (prev <= 1) {
-  //           generate(); // regenerate QR when timer ends
-  //           return 60;
-  //         }
-  //         return prev - 1;
-  //       });
-  //     }, 1000);
-
-  //     return () => clearInterval(timer);
-  //   }, [qr, generate]);
-
-  const verify = async () => {
-    if (!token) return alert('Please enter the 2FA code.');
+  const verify = async (finalToken) => {
     setVerifying(true);
     try {
-      const { data } = await api.verify2FASetup({ token, secret });
-      toast.success(data.message);
-      setToken('');
+      const { message } = await api.verify2FASetup({ token: finalToken, secret });
+      toast.success(message);
+      setDigits(Array(6).fill(''));
     } catch (error) {
-      console.log(error, 'Check the 2fa verify error');
+      console.log(error);
       toast.error('Invalid 2FA code. Try again.');
     } finally {
       setVerifying(false);
     }
   };
+  const handleChange = (e, index) => {
+    const value = e.target.value.replace(/\D/g, ''); // only digits
+
+    const newDigits = [...digits];
+    newDigits[index] = value ? value[0] : ''; // take only first digit or empty
+    setDigits(newDigits);
+
+    // Move to next input if filled
+    if (value && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+
+    // Auto-verify if all filled
+    const finalToken = newDigits.join('');
+    if (finalToken.length === 6) {
+      verify(finalToken);
+    }
+  };
+
+  const handleKeyDown = (e, index) => {
+    if (e.key === 'Backspace') {
+      e.preventDefault();
+
+      const newDigits = [...digits];
+
+      // If current box has a value → delete it
+      if (newDigits[index]) {
+        newDigits[index] = '';
+        setDigits(newDigits);
+      } else if (index > 0) {
+        // Move focus back and clear previous
+        inputRefs.current[index - 1]?.focus();
+        newDigits[index - 1] = '';
+        setDigits(newDigits);
+      }
+    }
+  };
 
   return (
     <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh" bgcolor="#f5f5f5" p={2}>
-      <Paper elevation={3} sx={{ p: 4, borderRadius: 3, maxWidth: 400, width: '100%', textAlign: 'center' }}>
-        <Typography variant="h5" mb={3}>
+      <Paper
+        elevation={3}
+        sx={{
+          p: 4,
+          borderRadius: 3,
+          width: {
+            xs: '91.66%', // ~11 columns out of 12 (small screens)
+            md: '58.33%' // ~7 columns out of 12 (medium screens)
+          },
+          textAlign: 'center',
+          background: 'white'
+        }}
+      >
+        <Typography variant="h5" mb={3} fontWeight={600}>
           Two-Factor Authentication Setup
         </Typography>
 
@@ -79,22 +108,47 @@ export default function TwoFASetup({ userId }) {
           </Box>
         ) : qr ? (
           <>
-            <img src={qr} alt="Scan QR code" style={{ width: 200, height: 200, marginBottom: 10 }} />
-            <Typography variant="body2" mb={1}>
+            <img src={qr} alt="QR Code" style={{ width: 180, height: 180, marginBottom: 12, borderRadius: 8 }} />
+            <Typography variant="body2" mb={2} color="text.secondary">
               Scan this QR code with Google Authenticator and enter the 6-digit code below.
             </Typography>
-            {/* <Typography variant="caption" mb={2} color="textSecondary">
-              Code expires in: {countdown}s
-            </Typography> */}
-            <TextField
+
+            <Box display="flex" justifyContent="center" gap={1.5} mb={3}>
+              {digits.map((digit, index) => (
+                <TextField
+                  key={index}
+                  value={digit}
+                  onChange={(e) => handleChange(e, index)}
+                  onKeyDown={(e) => handleKeyDown(e, index)}
+                  inputRef={(el) => (inputRefs.current[index] = el)}
+                  inputProps={{
+                    maxLength: 1,
+                    style: {
+                      textAlign: 'center',
+                      fontSize: '1.5rem',
+                      width: '48px',
+                      height: '56px',
+                      borderRadius: '8px'
+                    }
+                  }}
+                  variant="outlined"
+                />
+              ))}
+            </Box>
+
+            <Button
+              variant="contained"
+              color="primary"
               fullWidth
-              label="2FA Code"
-              value={token}
-              onChange={(e) => setToken(e.target.value)}
-              variant="outlined"
-              margin="normal"
-            />
-            <Button variant="contained" color="primary" fullWidth onClick={verify} disabled={verifying}>
+              onClick={() => verify(digits.join(''))}
+              disabled={verifying || digits.join('').length < 6}
+              sx={{
+                py: 1.2,
+                fontSize: '1rem',
+                fontWeight: 600,
+                borderRadius: '10px'
+              }}
+            >
               {verifying ? <CircularProgress size={24} /> : 'Verify 2FA'}
             </Button>
           </>
