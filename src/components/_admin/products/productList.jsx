@@ -374,7 +374,7 @@ export default function AdminProducts({ brands, categories, shops, isVendor, sea
                 {
                   name: 'Influencer',
                   param: 'shop',
-                  data: shops
+                  data: [{ title: 'Admin Box', slug: 'admin-box' }, ...shops]
                 },
                 {
                   name: 'Category',
