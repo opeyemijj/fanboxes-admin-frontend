@@ -30,7 +30,7 @@ export default function TwoFASetup() {
       setQr(data.qrCodeDataURL);
       setSecret(data.secret);
     },
-    onError: () => toast.error('Failed to generate QR code. Try again.')
+    onError: (error) => toast.error('Failed to generate QR code because: ' + error?.data)
   });
 
   /** ✅ Mutation 2: Verify 2FA Setup */
