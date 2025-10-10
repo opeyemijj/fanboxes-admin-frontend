@@ -95,9 +95,9 @@ export default function TwoFASetup() {
     }
   };
 
-  /** Reusable input UI */
+  /** Reusable input UI (Responsive square inputs in a row) */
   const renderCodeInputs = () => (
-    <Box display="flex" justifyContent="center" gap={1.5} mb={3}>
+    <Box display="flex" justifyContent="center" alignItems="center" gap={{ xs: 0.5, sm: 1.5 }} flexWrap="nowrap" mb={3}>
       {digits.map((digit, index) => (
         <TextField
           key={index}
@@ -105,13 +105,14 @@ export default function TwoFASetup() {
           onChange={(e) => handleChange(e, index)}
           onKeyDown={(e) => handleKeyDown(e, index)}
           inputRef={(el) => (inputRefs.current[index] = el)}
+          type="tel"
           inputProps={{
             maxLength: 1,
             style: {
               textAlign: 'center',
-              fontSize: '1.5rem',
-              width: '48px',
-              height: '56px',
+              fontSize: '1.4rem',
+              width: 'clamp(38px, 10vw, 56px)', // 👈 square + responsive
+              height: 'clamp(38px, 10vw, 56px)', // 👈 square + responsive
               borderRadius: '8px'
             }
           }}
@@ -180,15 +181,28 @@ export default function TwoFASetup() {
                 <Typography mb={3} color="text.secondary">
                   Protect your account with 2FA. Would you like to enable it now?
                 </Typography>
-                <Box display="flex" justifyContent="center" gap={2}>
+                <Box
+                  display="flex"
+                  flexDirection={{ xs: 'column', sm: 'row' }} // 👈 stack on mobile, row on larger screens
+                  justifyContent="center"
+                  alignItems="center"
+                  gap={2}
+                >
                   <Button
                     variant="contained"
                     color="primary"
                     onClick={() => setShowSetup(true)}
-                    sx={{ px: 4, py: 1.2, fontWeight: 600, borderRadius: '10px' }}
+                    sx={{
+                      px: 4,
+                      py: 1.2,
+                      fontWeight: 600,
+                      borderRadius: '10px',
+                      width: { xs: '100%', sm: 'auto' } // 👈 full width on small screens
+                    }}
                   >
                     Enable 2FA
                   </Button>
+
                   <Button
                     variant="outlined"
                     color="secondary"
@@ -196,7 +210,13 @@ export default function TwoFASetup() {
                       dispatch(setAuthPass());
                       router.push('/admin/dashboard');
                     }}
-                    sx={{ px: 4, py: 1.2, fontWeight: 600, borderRadius: '10px' }}
+                    sx={{
+                      px: 4,
+                      py: 1.2,
+                      fontWeight: 600,
+                      borderRadius: '10px',
+                      width: { xs: '100%', sm: 'auto' } // 👈 full width on small screens
+                    }}
                   >
                     Skip for now
                   </Button>
@@ -219,10 +239,16 @@ export default function TwoFASetup() {
                 <Button
                   variant="contained"
                   color="primary"
-                  fullWidth
                   onClick={() => verifySetupMutation.mutate({ token: digits.join(''), secret })}
                   disabled={verifying || digits.join('').length < 6}
-                  sx={{ py: 1.2, fontSize: '1rem', fontWeight: 600, borderRadius: '10px' }}
+                  sx={{
+                    py: 1.2,
+                    fontSize: '1rem',
+                    fontWeight: 600,
+                    borderRadius: '10px',
+                    paddingLeft: 10,
+                    paddingRight: 10
+                  }}
                 >
                   {verifying ? <CircularProgress size={24} /> : 'Verify 2FA'}
                 </Button>
