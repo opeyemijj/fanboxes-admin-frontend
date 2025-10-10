@@ -1,8 +1,9 @@
 'use client';
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Box, Button, CircularProgress, Typography, Paper, TextField, Grid } from '@mui/material';
+import { Box, Button, CircularProgress, Typography, Paper, TextField } from '@mui/material';
 import * as api from 'src/services';
 import toast from 'react-hot-toast';
+import { useRouter } from 'next-nprogress-bar';
 
 export default function TwoFASetup({ userId }) {
   const [qr, setQr] = useState(null);
@@ -10,7 +11,9 @@ export default function TwoFASetup({ userId }) {
   const [digits, setDigits] = useState(Array(6).fill(''));
   const [loading, setLoading] = useState(false);
   const [verifying, setVerifying] = useState(false);
+  const [showSetup, setShowSetup] = useState(false);
   const inputRefs = useRef([]);
+  const router = useRouter();
 
   // Generate QR code
   const generate = useCallback(async () => {
@@ -28,8 +31,8 @@ export default function TwoFASetup({ userId }) {
   }, []);
 
   useEffect(() => {
-    generate();
-  }, []);
+    if (showSetup) generate();
+  }, [showSetup, generate]);
 
   const verify = async (finalToken) => {
     setVerifying(true);
@@ -44,19 +47,17 @@ export default function TwoFASetup({ userId }) {
       setVerifying(false);
     }
   };
-  const handleChange = (e, index) => {
-    const value = e.target.value.replace(/\D/g, ''); // only digits
 
+  const handleChange = (e, index) => {
+    const value = e.target.value.replace(/\D/g, '');
     const newDigits = [...digits];
-    newDigits[index] = value ? value[0] : ''; // take only first digit or empty
+    newDigits[index] = value ? value[0] : '';
     setDigits(newDigits);
 
-    // Move to next input if filled
     if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
 
-    // Auto-verify if all filled
     const finalToken = newDigits.join('');
     if (finalToken.length === 6) {
       verify(finalToken);
@@ -66,15 +67,11 @@ export default function TwoFASetup({ userId }) {
   const handleKeyDown = (e, index) => {
     if (e.key === 'Backspace') {
       e.preventDefault();
-
       const newDigits = [...digits];
-
-      // If current box has a value → delete it
       if (newDigits[index]) {
         newDigits[index] = '';
         setDigits(newDigits);
       } else if (index > 0) {
-        // Move focus back and clear previous
         inputRefs.current[index - 1]?.focus();
         newDigits[index - 1] = '';
         setDigits(newDigits);
@@ -90,18 +87,49 @@ export default function TwoFASetup({ userId }) {
           p: 4,
           borderRadius: 3,
           width: {
-            xs: '91.66%', // ~11 columns out of 12 (small screens)
-            md: '58.33%' // ~7 columns out of 12 (medium screens)
+            xs: '91.66%',
+            md: '58.33%'
           },
           textAlign: 'center',
           background: 'white'
         }}
       >
+        {/* Company Logo */}
+        <Box display="flex" justifyContent="center" mb={2}>
+          <img src="/logo.png" alt="Company Logo" style={{ width: 300, height: 'auto' }} />
+        </Box>
+
         <Typography variant="h5" mb={3} fontWeight={600}>
-          Two-Factor Authentication Setup
+          Two-Factor Authentication
         </Typography>
 
-        {loading ? (
+        {!showSetup ? (
+          <>
+            <Typography mb={3} color="text.secondary">
+              Protect your account with 2FA. Would you like to enable it now?
+            </Typography>
+
+            <Box display="flex" justifyContent="center" gap={2}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => setShowSetup(true)}
+                sx={{ px: 4, py: 1.2, fontWeight: 600, borderRadius: '10px' }}
+              >
+                Enable 2FA
+              </Button>
+
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={() => router.push('/admin/dashboard')}
+                sx={{ px: 4, py: 1.2, fontWeight: 600, borderRadius: '10px' }}
+              >
+                Skip for now
+              </Button>
+            </Box>
+          </>
+        ) : loading ? (
           <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
             <CircularProgress />
             <Typography>Generating QR Code...</Typography>
