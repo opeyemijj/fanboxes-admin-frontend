@@ -4,8 +4,11 @@ import { Box, Button, CircularProgress, Typography, Paper, TextField } from '@mu
 import * as api from 'src/services';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next-nprogress-bar';
+import { useDispatch } from 'react-redux';
+import { setAuthPass } from 'src/redux/slices/user';
 
-export default function TwoFASetup({ userId }) {
+export default function TwoFASetup() {
+  const dispatch = useDispatch();
   const [qr, setQr] = useState(null);
   const [secret, setSecret] = useState('');
   const [digits, setDigits] = useState(Array(6).fill(''));
@@ -34,11 +37,17 @@ export default function TwoFASetup({ userId }) {
     if (showSetup) generate();
   }, [showSetup, generate]);
 
+  function authPass() {
+    dispatch(setAuthPass());
+    router.push('/admin/dashboard');
+  }
+
   const verify = async (finalToken) => {
     setVerifying(true);
     try {
       const { message } = await api.verify2FASetup({ token: finalToken, secret });
       toast.success(message);
+      authPass();
       setDigits(Array(6).fill(''));
     } catch (error) {
       console.log(error);
@@ -122,7 +131,7 @@ export default function TwoFASetup({ userId }) {
               <Button
                 variant="outlined"
                 color="secondary"
-                onClick={() => router.push('/admin/dashboard')}
+                onClick={() => authPass()}
                 sx={{ px: 4, py: 1.2, fontWeight: 600, borderRadius: '10px' }}
               >
                 Skip for now
