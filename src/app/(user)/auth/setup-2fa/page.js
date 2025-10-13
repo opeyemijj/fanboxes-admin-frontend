@@ -136,22 +136,74 @@ export default function TwoFASetup() {
             <Typography variant="h5" mb={3} fontWeight={600}>
               Verify Your 2FA Code
             </Typography>
-            <Typography mb={3} color="text.secondary">
-              Please open your Authenticator app and enter the 6-digit code to confirm your login.
-            </Typography>
 
-            {renderCodeInputs()}
+            {!showSetup ? (
+              <>
+                <Typography mb={3} color="text.secondary">
+                  Please open your Authenticator app and enter the 6-digit code to confirm your login.
+                </Typography>
 
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              onClick={() => verifyLoginMutation.mutate({ token: digits.join('') })}
-              disabled={verifying || digits.join('').length < 6}
-              sx={{ py: 1.2, fontSize: '1rem', fontWeight: 600, borderRadius: '10px' }}
-            >
-              {verifying ? <CircularProgress size={24} /> : 'Verify Code'}
-            </Button>
+                {renderCodeInputs()}
+
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  onClick={() => verifyLoginMutation.mutate({ token: digits.join('') })}
+                  disabled={verifying || digits.join('').length < 6}
+                  sx={{ py: 1.2, fontSize: '1rem', fontWeight: 600, borderRadius: '10px' }}
+                >
+                  {verifying ? <CircularProgress size={24} /> : 'Verify Code'}
+                </Button>
+
+                <Typography
+                  mt={2}
+                  color="primary"
+                  sx={{ cursor: 'pointer', textDecoration: 'underline' }}
+                  onClick={() => setShowSetup(true)}
+                >
+                  Verify with recovery code?
+                </Typography>
+              </>
+            ) : (
+              <>
+                <Typography mb={3} color="text.secondary">
+                  Enter one of your recovery codes below to access your account.
+                </Typography>
+
+                <TextField
+                  label="Recovery Code"
+                  variant="outlined"
+                  fullWidth
+                  onChange={(e) => setSecret(e.target.value.trim())}
+                  value={secret}
+                  sx={{ mb: 3 }}
+                />
+
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  onClick={() => verifyLoginMutation.mutate({ recoveryCode: secret })}
+                  disabled={verifying || !secret}
+                  sx={{ py: 1.2, fontSize: '1rem', fontWeight: 600, borderRadius: '10px' }}
+                >
+                  {verifying ? <CircularProgress size={24} /> : 'Verify Recovery Code'}
+                </Button>
+
+                <Typography
+                  mt={2}
+                  color="primary"
+                  sx={{ cursor: 'pointer', textDecoration: 'underline' }}
+                  onClick={() => {
+                    setSecret('');
+                    setShowSetup(false);
+                  }}
+                >
+                  Enter code from authenticator app?
+                </Typography>
+              </>
+            )}
           </>
         ) : (
           <>
