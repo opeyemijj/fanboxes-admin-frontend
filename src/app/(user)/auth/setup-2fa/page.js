@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next-nprogress-bar';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAuthPass } from 'src/redux/slices/user';
-import TwoFAQRCodeSetup from 'src/components/_admin/qrCodeSection/generateQrCodeFor2fa';
+import TwoFAQRCodeSetup from 'src/components/_admin/2fa-setup/generateQrCodeFor2fa';
 
 export default function TwoFASetup() {
   const dispatch = useDispatch();

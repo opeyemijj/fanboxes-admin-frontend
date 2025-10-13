@@ -4,11 +4,13 @@ import { Box, Button, CircularProgress, TextField, Typography } from '@mui/mater
 import { useMutation } from 'react-query';
 import toast from 'react-hot-toast';
 import * as api from 'src/services';
+import TwoFARecoveryCodes from './twoFARecoveryCodes';
 
 export default function TwoFAQRCodeSetup({ onSuccess }) {
   const [qr, setQr] = useState(null);
   const [secret, setSecret] = useState('');
   const [digits, setDigits] = useState(Array(6).fill(''));
+  const [showRecovery, setShowRecovery] = useState(false);
   const inputRefs = useRef([]);
 
   /** Mutation: Generate QR Code */
@@ -25,13 +27,12 @@ export default function TwoFAQRCodeSetup({ onSuccess }) {
   const verifySetupMutation = useMutation(api.verify2FASetup, {
     onSuccess: ({ message }) => {
       toast.success(message);
-      onSuccess?.();
       setDigits(Array(6).fill(''));
+      setShowRecovery(true); // ✅ Show recovery codes after success
     },
     onError: () => toast.error('Invalid 2FA code. Try again.')
   });
 
-  /** Auto-generate QR once on mount */
   useEffect(() => {
     generateMutation.mutate();
   }, []);
@@ -65,7 +66,7 @@ export default function TwoFAQRCodeSetup({ onSuccess }) {
   };
 
   const renderCodeInputs = () => (
-    <Box display="flex" justifyContent="center" alignItems="center" gap={{ xs: 0.5, sm: 1.5 }} flexWrap="nowrap" mb={3}>
+    <Box display="flex" justifyContent="center" alignItems="center" gap={{ xs: 0.5, sm: 1.5 }} mb={3}>
       {digits.map((digit, index) => (
         <TextField
           key={index}
@@ -92,6 +93,10 @@ export default function TwoFAQRCodeSetup({ onSuccess }) {
 
   const generating = generateMutation.isLoading;
   const verifying = verifySetupMutation.isLoading;
+
+  if (showRecovery) {
+    return <TwoFARecoveryCodes onContinue={onSuccess} />;
+  }
 
   if (generating) {
     return (
