@@ -24,22 +24,11 @@ export default function TwoFASetup() {
 
   const twoFAEnabled = userData?.twoFAEnabled;
 
-  /** ✅ Mutation 1: Generate QR Code */
-  const generateMutation = useMutation(api.generateQr, {
-    onMutate: () => setQr(null),
-    onSuccess: ({ data }) => {
-      setQr(data.qrCodeDataURL);
-      setSecret(data.secret);
-    },
-    onError: (error) => toast.error('Failed to generate QR code because: ' + error?.data)
-  });
-
   /** ✅ Mutation 2: Verify 2FA Setup */
   const verifySetupMutation = useMutation(api.verify2FASetup, {
     onSuccess: ({ message }) => {
       toast.success(message);
-      dispatch(setAuthPass());
-      router.push('/admin/dashboard');
+      authPass();
       setDigits(Array(6).fill(''));
     },
     onError: () => toast.error('Invalid 2FA code. Try again.')
@@ -49,11 +38,15 @@ export default function TwoFASetup() {
   const verifyLoginMutation = useMutation(api.verify2FALogin, {
     onSuccess: ({ message }) => {
       toast.success(message);
-      dispatch(setAuthPass());
-      router.push('/admin/dashboard');
+      authPass();
     },
     onError: () => toast.error('Invalid verification code. Please try again.')
   });
+
+  function authPass() {
+    dispatch(setAuthPass());
+    router.push('/admin/dashboard');
+  }
 
   /** Handle digit input */
   const handleChange = (e, index) => {
@@ -118,7 +111,6 @@ export default function TwoFASetup() {
 
   /** Shortcuts */
   const verifying = verifySetupMutation.isLoading || verifyLoginMutation.isLoading;
-  // const generating = generateMutation.isLoading;
 
   return (
     <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh" bgcolor="#f5f5f5" p={2}>
@@ -199,10 +191,7 @@ export default function TwoFASetup() {
                   <Button
                     variant="outlined"
                     color="secondary"
-                    onClick={() => {
-                      dispatch(setAuthPass());
-                      router.push('/admin/dashboard');
-                    }}
+                    onClick={() => authPass()}
                     sx={{
                       px: 4,
                       py: 1.2,
@@ -216,12 +205,7 @@ export default function TwoFASetup() {
                 </Box>
               </>
             ) : (
-              <TwoFAQRCodeSetup
-                onSuccess={() => {
-                  dispatch(setAuthPass());
-                  router.push('/admin/dashboard');
-                }}
-              />
+              <TwoFAQRCodeSetup onSuccess={() => authPass()} />
             )}
           </>
         )}
