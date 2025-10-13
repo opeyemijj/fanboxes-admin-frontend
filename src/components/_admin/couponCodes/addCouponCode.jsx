@@ -2,10 +2,10 @@ import React from 'react';
 // components
 import CouponCodeForm from 'src/components/forms/couponCode';
 
-export default function addCouponCode() {
+export default function addCouponCode({ shops }) {
   return (
     <div>
-      <CouponCodeForm />
+      <CouponCodeForm shops={shops} />
     </div>
   );
 }
