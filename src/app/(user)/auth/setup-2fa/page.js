@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next-nprogress-bar';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAuthPass } from 'src/redux/slices/user';
+import TwoFAQRCodeSetup from 'src/components/_admin/qrCodeSection/generateQrCodeFor2fa';
 
 export default function TwoFASetup() {
   const dispatch = useDispatch();
@@ -53,13 +54,6 @@ export default function TwoFASetup() {
     },
     onError: () => toast.error('Invalid verification code. Please try again.')
   });
-
-  /** Auto-generate QR after enabling setup */
-  useEffect(() => {
-    if (showSetup && !twoFAEnabled && !qr && !generateMutation.isLoading) {
-      generateMutation.mutate();
-    }
-  }, [showSetup, twoFAEnabled]);
 
   /** Handle digit input */
   const handleChange = (e, index) => {
@@ -124,7 +118,7 @@ export default function TwoFASetup() {
 
   /** Shortcuts */
   const verifying = verifySetupMutation.isLoading || verifyLoginMutation.isLoading;
-  const generating = generateMutation.isLoading;
+  // const generating = generateMutation.isLoading;
 
   return (
     <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh" bgcolor="#f5f5f5" p={2}>
@@ -183,7 +177,7 @@ export default function TwoFASetup() {
                 </Typography>
                 <Box
                   display="flex"
-                  flexDirection={{ xs: 'column', sm: 'row' }} // 👈 stack on mobile, row on larger screens
+                  flexDirection={{ xs: 'column', sm: 'row' }}
                   justifyContent="center"
                   alignItems="center"
                   gap={2}
@@ -197,12 +191,11 @@ export default function TwoFASetup() {
                       py: 1.2,
                       fontWeight: 600,
                       borderRadius: '10px',
-                      width: { xs: '100%', sm: 'auto' } // 👈 full width on small screens
+                      width: { xs: '100%', sm: 'auto' }
                     }}
                   >
                     Enable 2FA
                   </Button>
-
                   <Button
                     variant="outlined"
                     color="secondary"
@@ -215,48 +208,20 @@ export default function TwoFASetup() {
                       py: 1.2,
                       fontWeight: 600,
                       borderRadius: '10px',
-                      width: { xs: '100%', sm: 'auto' } // 👈 full width on small screens
+                      width: { xs: '100%', sm: 'auto' }
                     }}
                   >
                     Skip for now
                   </Button>
                 </Box>
               </>
-            ) : generating ? (
-              <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
-                <CircularProgress />
-                <Typography>Generating QR Code...</Typography>
-              </Box>
-            ) : qr ? (
-              <>
-                <img src={qr} alt="QR Code" style={{ width: 180, height: 180, marginBottom: 12, borderRadius: 8 }} />
-                <Typography variant="body2" mb={2} color="text.secondary">
-                  Scan this QR code with Google Authenticator and enter the 6-digit code below.
-                </Typography>
-
-                {renderCodeInputs()}
-
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => verifySetupMutation.mutate({ token: digits.join(''), secret })}
-                  disabled={verifying || digits.join('').length < 6}
-                  sx={{
-                    py: 1.2,
-                    fontSize: '1rem',
-                    fontWeight: 600,
-                    borderRadius: '10px',
-                    paddingLeft: 10,
-                    paddingRight: 10
-                  }}
-                >
-                  {verifying ? <CircularProgress size={24} /> : 'Verify 2FA'}
-                </Button>
-              </>
             ) : (
-              <Button variant="contained" color="primary" onClick={() => generateMutation.mutate()}>
-                Generate QR Code
-              </Button>
+              <TwoFAQRCodeSetup
+                onSuccess={() => {
+                  dispatch(setAuthPass());
+                  router.push('/admin/dashboard');
+                }}
+              />
             )}
           </>
         )}
