@@ -62,7 +62,7 @@ export default function Page({ params: { slug } }) {
       name: 'Total Spins',
       items: (
         <>
-          {totalSpins}: {profitLoss}
+          {totalSpins}/{profitLoss}
         </>
       ),
       color: theme.palette.secondary.main,
