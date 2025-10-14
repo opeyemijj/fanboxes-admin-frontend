@@ -25,8 +25,10 @@ import {
   FormGroup,
   Skeleton,
   Switch,
-  InputAdornment
+  InputAdornment,
+  Modal, Box, Button
 } from '@mui/material';
+
 // api
 import * as api from 'src/services';
 import { useMutation } from 'react-query';
@@ -64,6 +66,17 @@ export default function ProductForm({
 }) {
   const router = useRouter();
   const [loading, setloading] = React.useState(false);
+
+  const [openModal, setOpenModal] = React.useState(false);
+
+  const handleOpen = () => setOpenModal(true);
+  const handleClose = () => setOpenModal(false);
+
+  const handleConfirmUpdate = () => {
+    handleSubmit();
+    setOpenModal(false);
+  };
+
   const { mutate, isLoading: updateLoading } = useMutation(
     currentProduct ? 'update' : 'new',
     currentProduct
@@ -485,11 +498,63 @@ export default function ProductForm({
                     {isInitialized ? (
                       <Skeleton variant="rectangular" width="100%" height={56} />
                     ) : (
-                      <LoadingButton type="submit" variant="contained" size="large" fullWidth loading={updateLoading}>
-                        {currentProduct ? 'Update Box' : 'Create Box'}
-                      </LoadingButton>
+                      <>
+                        {currentProduct ? (
+                          <LoadingButton
+                            type="button"
+                            variant="contained"
+                            size="large"
+                            fullWidth
+                            onClick={handleOpen}
+                            loading={updateLoading}
+                          >
+                            Update Box
+                          </LoadingButton>
+                        ) : (
+                          <LoadingButton
+                            type="submit"
+                            variant="contained"
+                            size="large"
+                            fullWidth
+                            loading={updateLoading}
+                          >
+                            Create Box
+                          </LoadingButton>
+                        )}
+                      </>
                     )}
                   </Stack>
+
+                  {/* Confirmation Modal */}
+                  <Modal open={openModal} onClose={handleClose}>
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        bgcolor: 'background.paper',
+                        boxShadow: 24,
+                        p: 4,
+                        borderRadius: 2,
+                        width: 400
+                      }}
+                    >
+                      <Typography variant="h6" gutterBottom>
+                        Confirm Update
+                      </Typography>
+                      <Typography variant="body2" sx={{ mb: 3 }}>
+                        Are you sure you want to update this box? This action cannot be undone.
+                      </Typography>
+                      <Stack direction="row" justifyContent="flex-end" spacing={2}>
+                        <Button onClick={handleClose}>Update/Continue</Button>
+                        <Button variant="contained" color="primary" onClick={handleConfirmUpdate}>
+                          Proceed to Items Listing
+                        </Button>
+                      </Stack>
+                    </Box>
+                  </Modal>
+
                 </Stack>
               </Card>
             </Grid>
