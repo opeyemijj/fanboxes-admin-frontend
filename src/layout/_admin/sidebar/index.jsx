@@ -171,7 +171,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
           isSearch: true
         },
         {
-          id: '6-1',
+          id: '5-2',
           title: 'Items',
           slug: 'items',
           hasPermission: UsePermission('view_box_listing'),

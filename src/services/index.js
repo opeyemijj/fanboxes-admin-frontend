@@ -610,6 +610,12 @@ export const createAdminBoxItem = async (payload) => {
   return response;
 };
 
+export const createAdminItem = async (payload) => {
+  console.log('come here ');
+  const { data: response } = await http.post(`/admin/items`, payload);
+  return response;
+};
+
 export const updateVendorProduct = async ({ currentSlug, ...payload }) => {
   const { data: response } = await http.put(`/vendor/products/${currentSlug}`, payload);
   return response;
