@@ -49,9 +49,9 @@ export default function ItemList() {
           onClose={handleClose}
           id={id}
           apicall={setApicall}
-          endPoint="deleteCategoryByAdmin"
-          type={'Category deleted'}
-          deleteMessage={'Deleting this category will permanently remove it. Are you sure you want to proceed?'}
+          endPoint="deleteItemByAdmin"
+          type={'Item deleted'}
+          deleteMessage={'Deleting this Item will permanently remove it. Are you sure you want to proceed?'}
         />
       </Dialog>
       <Table

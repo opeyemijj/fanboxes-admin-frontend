@@ -155,6 +155,11 @@ export const deleteCategoryByAdmin = async (slug) => {
   return data;
 };
 
+export const deleteItemByAdmin = async (slug) => {
+  const { data } = await http.delete(`/admin/items/${slug}`);
+  return data;
+};
+
 export const deleteConversionByAdmin = async (slug) => {
   const { data } = await http.delete(`/admin/credits/${slug}`);
   return data;
