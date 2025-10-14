@@ -77,7 +77,8 @@ export default function LoginForm() {
       const isAdmin = data.user.role.includes('admin');
       const isVendor = data.user.role.includes('vendor');
       toast.success('Logged in successfully! ');
-      push(redirect ? redirect : isAdmin ? '/admin/dashboard' : isVendor ? '/vendor/dashboard' : '/');
+      push('/auth/setup-2fa');
+      // push(redirect ? redirect : isAdmin ? '/auth/setup-2fa' : isVendor ? '/auth/setup-2fa' : '/');
     },
     onError: (err) => {
       setloading(false);

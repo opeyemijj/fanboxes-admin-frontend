@@ -37,7 +37,7 @@ export default function Details({ ...props }) {
                     <Fab className="detail-card-btn" variant="contained" color="primary">
                       <IoPersonSharp size={25} />
                     </Fab>
-                    <Typography variant="h6">Customor Details</Typography>
+                    <Typography variant="h6">Customer Details</Typography>
                   </>
                 )}
               </Stack>

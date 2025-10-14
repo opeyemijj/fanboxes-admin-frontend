@@ -71,7 +71,14 @@ export default function FormDialog({ open, handleClose, data, setCount }) {
     totalIncome: Yup.number().required('Total Income is required'),
     totalCommission: Yup.number().required('Total Commission is required'),
     status: Yup.string().required('Status is required'),
-    paidAt: Yup.date().min(today, 'Paid date cannot be in the past').required('Paid date is required')
+    paidAt: Yup.date()
+      .nullable()
+      .when('status', {
+        is: 'paid',
+        then: (schema) => schema.required('Paid date is required').min(today, 'Paid date cannot be in the past'),
+        otherwise: (schema) => schema.notRequired().nullable()
+      }),
+    tip: Yup.number().nullable()
     // tip: Yup.string().required('Tip is required')
   });
   const formik = useFormik({

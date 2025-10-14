@@ -144,7 +144,9 @@ export default function RoleAddForm({ routesGropuData, currentRole, isLoading })
                             ? 'Box'
                             : group === 'shops'
                               ? 'Influencers'
-                              : capitalize(group)?.replace('-', ' ')}
+                              : group === 'transections'
+                                ? 'Transactions'
+                                : capitalize(group)?.replace('-', ' ')}
                         </LabelStyle>
                         <Button size="small" onClick={() => handleSelectAllGroup(group)}>
                           {values.permissions[group]?.every((p) => p.checked) ? 'Unselect All' : 'Select All'}

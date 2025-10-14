@@ -30,10 +30,11 @@ function isExpired(expirationDate) {
   const currentDateTime = new Date();
   return currentDateTime >= new Date(expirationDate);
 }
-export default function CategoryRow({ isLoading, row, handleClickOpen }) {
+export default function CategoryRow({ isLoading, row, handleClickOpen, sn }) {
   const router = useRouter();
   return (
     <TableRow hover key={Math.random()}>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
       <TableCell component="th" scope="row">
         <Box
           sx={{

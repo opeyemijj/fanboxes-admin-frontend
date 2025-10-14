@@ -18,6 +18,27 @@ export const login = async (payload) => {
   return data;
 };
 
+export const generateQr = async () => {
+  const { data } = await http.post(`/auth/generate-qr`);
+  return data;
+};
+
+export const saveRecoveryCode = async (payload) => {
+  console.log(payload, 'check');
+  const { data } = await http.post(`/auth/save-recovery-code`, payload);
+  return data;
+};
+
+export const verify2FALogin = async (payload) => {
+  const { data } = await http.post(`/auth/verify-2fa-login`, payload);
+  return data;
+};
+
+export const verify2FASetup = async (payload) => {
+  const { data } = await http.post(`/auth/verify-2fa-setup`, payload);
+  return data;
+};
+
 export const forgetPassword = async (payload) => {
   const { data } = await http.post('/auth/forget-password', payload);
   return data;

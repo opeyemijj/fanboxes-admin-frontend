@@ -8,10 +8,10 @@ EditCategory.propTypes = {
   isLoading: PropTypes.bool.isRequired
 };
 
-export default function EditCategory({ data, isLoading }) {
+export default function EditCategory({ data, isLoading, shops }) {
   return (
     <div>
-      <CouponCodeForm data={data} isLoading={isLoading} />
+      <CouponCodeForm data={data} isLoading={isLoading} shops={shops} />
     </div>
   );
 }
