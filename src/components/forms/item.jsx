@@ -31,7 +31,7 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, boxD
 
   const { mutate, isLoading: updateLoading } = useMutation(
     currentItem ? 'update' : 'new',
-    currentItem ? api.updateItemBoxByAdmin : api.createAdminItem,
+    currentItem ? api.updateItemByAdmin : api.createAdminItem,
     {
       onSuccess: (data) => {
         toast.success(data.message);
