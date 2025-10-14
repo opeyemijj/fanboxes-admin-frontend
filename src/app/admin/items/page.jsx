@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Components
-import CategoryList from 'src/components/_admin/categories/categoryList';
+import ItemList from 'src/components/_admin/items/itemList';
 import AccessDenied from 'src/components/cards/AccessDenied';
 import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
 import { UsePermissionServer } from 'src/hooks/usePermissionServer';
@@ -42,7 +42,7 @@ export default function Items() {
         }}
       />
 
-      <CategoryList />
+      <ItemList />
     </>
   );
 }

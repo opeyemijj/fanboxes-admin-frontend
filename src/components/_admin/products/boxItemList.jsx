@@ -108,7 +108,6 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
 
   const TABLE_HEAD = [
     { id: 'name', label: 'Name', alignRight: false, sort: true },
-    // { id: 'inventoryType', label: 'Status', alignRight: false, sort: false },
     { id: 'value', label: 'Item Value', alignRight: false, sort: true },
     { id: 'weight', label: 'Weight', alignRight: false, sort: true },
     {

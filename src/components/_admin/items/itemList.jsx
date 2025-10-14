@@ -11,25 +11,24 @@ import { Dialog } from '@mui/material';
 // components
 import DeleteDialog from 'src/components/dialog/delete';
 import Table from 'src/components/table/table';
-import Category from 'src/components/table/rows/category';
+import Item from 'src/components/table/rows/item';
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Category', alignRight: false, sort: true },
-  { id: 'description', label: 'Description', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
+  { id: 'name', label: 'Name', alignRight: false, sort: true },
+  { id: 'value', label: 'Item Value', alignRight: false, sort: true },
   { id: 'createdAt', label: 'Date', alignRight: false, sort: true },
   { id: '', label: 'Actions', alignRight: true }
 ];
 // ----------------------------------------------------------------------
-export default function CategoryList() {
+export default function ItemList() {
   const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
   const [apicall, setApicall] = useState(false);
   const [id, setId] = useState(null);
 
   const { data, isLoading } = useQuery(
-    ['categories', apicall, searchParams.toString()],
-    () => api.getCategoriesByAdmin(searchParams.toString()),
+    ['admin-items', apicall, searchParams.toString()],
+    () => api.getItemsByAdmin(searchParams.toString()),
     {
       onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
     }
@@ -59,7 +58,7 @@ export default function CategoryList() {
         headData={TABLE_HEAD}
         data={data ?? { success: true, data: [], total: 0, count: 0, currentPage: 1 }}
         isLoading={isLoading}
-        row={Category}
+        row={Item}
         handleClickOpen={handleClickOpen}
         isSearch
       />

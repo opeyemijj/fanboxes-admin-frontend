@@ -91,6 +91,11 @@ export const getCategoriesByAdmin = async (params) => {
   return data;
 };
 
+export const getItemsByAdmin = async (params) => {
+  const { data } = await http.get(`/admin/items?${params}`);
+  return data;
+};
+
 export const getCreditsByAdmin = async (page, search) => {
   const { data } = await http.get(`/admin/credits?search=${search}&page=${page}`);
   return data;
