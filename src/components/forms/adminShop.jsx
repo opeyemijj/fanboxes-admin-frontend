@@ -405,7 +405,7 @@ export default function AdminShopForm({
                     ) : (
                       <LabelStyle component={'label'} htmlFor="description">
                         {' '}
-                        {'Description'}{' '}
+                        {'description'}{' '}
                       </LabelStyle>
                     )}
                     {shopLoading ? (
@@ -430,7 +430,7 @@ export default function AdminShopForm({
                         <Skeleton variant="text" width={150} />
                       ) : (
                         <LabelStyle variant="body1" component={'label'} color="text.primary">
-                          Logo
+                          Logo / Profile Image
                         </LabelStyle>
                       )}
                       {shopLoading ? (
