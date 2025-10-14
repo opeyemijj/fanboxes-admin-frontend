@@ -25,13 +25,13 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function AddItemForm({ currentProduct, isLoading: isApiLoading, boxDetails, isVendor }) {
+export default function AddItemForm({ currentItem, isLoading: isApiLoading, boxDetails, isVendor }) {
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
 
   const { mutate, isLoading: updateLoading } = useMutation(
-    currentProduct ? 'update' : 'new',
-    currentProduct ? api.updateItemBoxByAdmin : api.createAdminItem,
+    currentItem ? 'update' : 'new',
+    currentItem ? api.updateItemBoxByAdmin : api.createAdminItem,
     {
       onSuccess: (data) => {
         toast.success(data.message);
@@ -55,19 +55,19 @@ export default function AddItemForm({ currentProduct, isLoading: isApiLoading, b
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      name: currentProduct?.name || '',
-      description: currentProduct?.description || '',
-      slug: currentProduct?.slug || '',
-      value: currentProduct?.value || '',
-      images: currentProduct?.images || [],
-      blob: currentProduct?.blob || []
+      name: currentItem?.name || '',
+      description: currentItem?.description || '',
+      slug: currentItem?.slug || '',
+      value: currentItem?.value || '',
+      images: currentItem?.images || [],
+      blob: currentItem?.blob || []
     },
     validationSchema: NewProductSchema,
     onSubmit: async (values) => {
       try {
         mutate({
           ...values,
-          ...(currentProduct && { currentSlug: currentProduct.slug })
+          ...(currentItem && { currentSlug: currentItem.slug })
         });
       } catch (error) {
         let errorMessage = parseMongooseError(error?.message);
@@ -120,7 +120,7 @@ export default function AddItemForm({ currentProduct, isLoading: isApiLoading, b
   };
 
   const handleTitleChange = (event) => {
-    if (!currentProduct) {
+    if (!currentItem) {
       const title = event.target.value;
       const slug = title
         .toLowerCase()
@@ -236,7 +236,7 @@ export default function AddItemForm({ currentProduct, isLoading: isApiLoading, b
                       <Skeleton variant="rectangular" width="100%" height={56} />
                     ) : (
                       <LoadingButton type="submit" variant="contained" size="large" fullWidth loading={updateLoading}>
-                        {currentProduct ? 'Update Item' : 'Create Item'}
+                        {currentItem ? 'Update Item' : 'Create Item'}
                       </LoadingButton>
                     )}
                   </Stack>
@@ -251,7 +251,7 @@ export default function AddItemForm({ currentProduct, isLoading: isApiLoading, b
 }
 
 AddItemForm.propTypes = {
-  currentProduct: PropTypes.shape({
+  currentItem: PropTypes.shape({
     _id: PropTypes.string,
     name: PropTypes.string,
     description: PropTypes.string,

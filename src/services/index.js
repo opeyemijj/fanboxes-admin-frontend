@@ -96,6 +96,11 @@ export const getItemsByAdmin = async (params) => {
   return data;
 };
 
+export const getItemBySlug = async (slug) => {
+  const { data } = await http.get(`admin/items/${slug}`);
+  return data;
+};
+
 export const getCreditsByAdmin = async (page, search) => {
   const { data } = await http.get(`/admin/credits?search=${search}&page=${page}`);
   return data;

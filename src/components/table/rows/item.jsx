@@ -88,9 +88,7 @@ export default function BoxItemRow({ isLoading, row, handleClickOpen, isVendor, 
               <Tooltip title="Edit">
                 <IconButton
                   onClick={() => {
-                    const tempData = { item: row, slug: boxDetails.slug };
-                    dispatch(selectBoxAndItem(tempData));
-                    router.push(`/${isVendor ? 'vendor' : 'admin'}/products/editItem/${row.slug}`);
+                    router.push(`/${isVendor ? 'vendor' : 'admin'}/items/${row.slug}`);
                   }}
                 >
                   <MdEdit />

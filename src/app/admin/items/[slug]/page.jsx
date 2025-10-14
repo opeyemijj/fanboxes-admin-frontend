@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 // components
 import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
-import EditCategory from 'src/components/_admin/categories/editCategory';
+import EditItem from 'src/components/_admin/items/editItem';
 
 // api
 import * as api from 'src/services';
@@ -20,37 +20,39 @@ Page.propTypes = {
   }).isRequired
 };
 export default function Page({ params }) {
-  const { data, isLoading } = useQuery(['coupon-codes'], () => api.getCategoryByAdmin(params.slug), {
+  const { data, isLoading } = useQuery(['single-item'], () => api.getItemBySlug(params.slug), {
     onError: (err) => {
-      toast.error(err.response.data.message || 'Something went wrong!');
+      toast.error(err.message || 'Something went wrong!');
     }
   });
 
-  const canAdd = UsePermission('edit_category');
-  if (!canAdd) {
-    return <AccessDenied message="You are not allowed to edit Category." redirect="/admin/dashboard" />;
-  }
+  console.log(data, 'Checking the data');
+
+  // const canAdd = UsePermission('edit_category');
+  // if (!canAdd) {
+  //   return <AccessDenied message="You are not allowed to edit Category." redirect="/admin/dashboard" />;
+  // }
 
   return (
     <div>
       <HeaderBreadcrumbs
         admin
-        heading="Edit Category"
+        heading="Edit Item"
         links={[
           {
             name: 'Dashboard',
             href: '/admin/dashboard'
           },
           {
-            name: 'Categories',
-            href: '/admin/categories'
+            name: 'Items',
+            href: '/admin/items'
           },
           {
             name: data?.data?.name
           }
         ]}
       />
-      <EditCategory isLoading={isLoading} data={data?.data} />
+      <EditItem isLoading={isLoading} data={data?.data} />
     </div>
   );
 }
