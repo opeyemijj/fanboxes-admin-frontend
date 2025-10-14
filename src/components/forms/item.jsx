@@ -7,7 +7,18 @@ import { useRouter } from 'next-nprogress-bar';
 import { Form, FormikProvider, useFormik } from 'formik';
 import { styled } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
-import { Card, Grid, Stack, TextField, Typography, FormHelperText, Skeleton, InputAdornment } from '@mui/material';
+import {
+  Card,
+  Grid,
+  Stack,
+  TextField,
+  Typography,
+  FormHelperText,
+  Skeleton,
+  InputAdornment,
+  MenuItem,
+  Avatar
+} from '@mui/material';
 import * as api from 'src/services';
 import { useMutation } from 'react-query';
 import uploadToSpaces from 'src/utils/upload';
@@ -25,7 +36,7 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function AddItemForm({ currentItem, isLoading: isApiLoading, boxDetails, isVendor }) {
+export default function AddItemForm({ currentItem, isLoading: isApiLoading, brands }) {
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
 
@@ -44,12 +55,14 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, boxD
     }
   );
 
+  // ✅ Add brand & brandDetails validation
   const NewProductSchema = Yup.object().shape({
     name: Yup.string().max(100, 'Name max limit 100 char').required('Item name is required'),
     value: Yup.string().required('Item value is required'),
     description: Yup.string().optional(),
     slug: Yup.string().required('Slug is required'),
-    images: Yup.array().min(1, 'Image is required')
+    images: Yup.array().min(1, 'Image is required'),
+    brand: Yup.string().required('Brand is required')
   });
 
   const formik = useFormik({
@@ -60,7 +73,9 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, boxD
       slug: currentItem?.slug || '',
       value: currentItem?.value || '',
       images: currentItem?.images || [],
-      blob: currentItem?.blob || []
+      blob: currentItem?.blob || [],
+      brand: currentItem?.brand || '',
+      brandDetails: currentItem?.brandDetails || {}
     },
     validationSchema: NewProductSchema,
     onSubmit: async (values) => {
@@ -131,6 +146,22 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, boxD
     formik.handleChange(event);
   };
 
+  // ✅ Handle brand selection
+  const handleBrandChange = (event) => {
+    const selectedId = event.target.value;
+    const selectedBrand = brands.find((b) => b._id === selectedId);
+
+    if (selectedBrand) {
+      setFieldValue('brand', selectedBrand._id);
+      setFieldValue('brandDetails', {
+        logo: selectedBrand.logo,
+        _id: selectedBrand._id,
+        name: selectedBrand.name,
+        slug: selectedBrand.slug
+      });
+    }
+  };
+
   return (
     <Stack spacing={3}>
       <FormikProvider value={formik}>
@@ -159,6 +190,30 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, boxD
                           helperText={touched.name && errors.name}
                         />
                       )}
+                    </div>
+
+                    {/* ✅ Brand Dropdown */}
+                    <div>
+                      <LabelStyle htmlFor="brand">Brand</LabelStyle>
+                      <TextField
+                        select
+                        fullWidth
+                        id="brand"
+                        value={values.brand}
+                        onChange={handleBrandChange}
+                        error={Boolean(touched.brand && errors.brand)}
+                        helperText={touched.brand && errors.brand}
+                      >
+                        <MenuItem value="">Select Brand</MenuItem>
+                        {brands?.map((brand) => (
+                          <MenuItem key={brand._id} value={brand._id}>
+                            <Stack direction="row" alignItems="center" spacing={1}>
+                              <Avatar src={brand.logo?.url} alt={brand.name} sx={{ width: 24, height: 24 }} />
+                              <Typography variant="body2">{brand.name}</Typography>
+                            </Stack>
+                          </MenuItem>
+                        ))}
+                      </TextField>
                     </div>
 
                     {/* Description */}
@@ -258,6 +313,10 @@ AddItemForm.propTypes = {
     slug: PropTypes.string,
     blob: PropTypes.array,
     value: PropTypes.number,
-    images: PropTypes.array
-  })
+    images: PropTypes.array,
+    brand: PropTypes.string,
+    brandDetails: PropTypes.object
+  }),
+  brands: PropTypes.array.isRequired,
+  isLoading: PropTypes.bool
 };

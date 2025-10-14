@@ -5,7 +5,8 @@ import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
 import AddItem from 'src/components/_admin/items/addItem';
 import { UsePermissionServer } from 'src/hooks/usePermissionServer';
 import AccessDenied from 'src/components/cards/AccessDenied';
-
+import * as api from 'src/services';
+import { SortArrayAlphabetically } from 'src/utils/sorting';
 // Meta information
 export const metadata = {
   title: 'Add Item - Fanboxes',
@@ -13,7 +14,8 @@ export const metadata = {
   authors: 'Fanboxes'
 };
 
-export default function page() {
+export default async function page() {
+  const { data: allBrandsData } = await api.getAllBrandsByAdmin();
   // const canAdd = UsePermissionServer('add_new_category');
   // if (!canAdd) {
   //   return <AccessDenied message="You are not allowed to add Category." redirect="/admin/dashboard" />;
@@ -38,7 +40,7 @@ export default function page() {
           }
         ]}
       />
-      <AddItem />
+      <AddItem brands={SortArrayAlphabetically(allBrandsData, 'name')} />
     </div>
   );
 }

@@ -838,6 +838,11 @@ export const getAllCategories = async () => {
   return data;
 };
 
+export const getAllItems = async () => {
+  const { data } = await http.get(`/admin/all-items`);
+  return data;
+};
+
 export const getAllRoles = async () => {
   const { data } = await http.get(`/all-roles`);
   return data;

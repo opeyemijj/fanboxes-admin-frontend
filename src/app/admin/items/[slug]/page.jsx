@@ -13,6 +13,7 @@ import { useQuery } from 'react-query';
 
 import AccessDenied from 'src/components/cards/AccessDenied';
 import { UsePermission } from 'src/hooks/usePermission';
+import { SortArrayAlphabetically } from 'src/utils/sorting';
 
 Page.propTypes = {
   params: PropTypes.shape({
@@ -26,7 +27,13 @@ export default function Page({ params }) {
     }
   });
 
-  console.log(data, 'Checking the data');
+  const {
+    data: brandsData,
+    isLoading: brandsLoading,
+    error
+  } = useQuery(['brands'], () => api.getBrandsByAdmin(), {
+    onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
+  });
 
   // const canAdd = UsePermission('edit_category');
   // if (!canAdd) {
@@ -52,7 +59,11 @@ export default function Page({ params }) {
           }
         ]}
       />
-      <EditItem isLoading={isLoading} data={data?.data} />
+      <EditItem
+        isLoading={isLoading || brandsLoading}
+        data={data?.data}
+        brands={SortArrayAlphabetically(brandsData?.data, 'name')}
+      />
     </div>
   );
 }
