@@ -43,9 +43,18 @@ export default function TwoFASetup() {
     onError: () => toast.error('Invalid verification code. Please try again.')
   });
 
+  // function authPass() {
+  //   dispatch(setAuthPass());
+
+  //   router.push('/admin/dashboard');
+  // }
+
   function authPass() {
     dispatch(setAuthPass());
-    router.push('/admin/dashboard');
+
+    setTimeout(() => {
+      router.push('/admin/dashboard');
+    }, 1500);
   }
 
   /** Handle digit input */
