@@ -74,15 +74,11 @@ export default function BoxItemRow({ isLoading, row, handleClickOpen, isVendor, 
       </TableCell>
 
       <TableCell align="left">
-        {isLoading ? (
-          <Skeleton variant="text" />
-        ) : (
-          <Typography>{boxDetails?.items_array?.find((dt) => dt.slug === row.slug)?.weight} </Typography>
-        )}
+        {isLoading ? <Skeleton variant="text" /> : <Typography>{row.weight} </Typography>}
       </TableCell>
 
       <TableCell>
-        <Typography>{boxDetails?.items_array?.find((dt) => dt.slug === row.slug)?.odd} </Typography>
+        <Typography>{row.odd} </Typography>
       </TableCell>
 
       <TableCell align="right">
