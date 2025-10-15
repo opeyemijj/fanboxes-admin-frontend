@@ -25,7 +25,13 @@ import {
   FormGroup,
   Skeleton,
   Switch,
-  InputAdornment
+  InputAdornment,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
 } from '@mui/material';
 // api
 import * as api from 'src/services';
@@ -64,6 +70,12 @@ export default function ProductForm({
 }) {
   const router = useRouter();
   const [loading, setloading] = React.useState(false);
+  const [openModal, setOpenModal] = React.useState(false);
+  const [dialogMessage, setDialogMessage] = React.useState('');
+
+  const handleOpen = () => setOpenModal(true);
+  const handleClose = () => setOpenModal(false);
+
   const { mutate, isLoading: updateLoading } = useMutation(
     currentProduct ? 'update' : 'new',
     currentProduct
@@ -75,12 +87,10 @@ export default function ProductForm({
         : api.createProductByAdmin,
     {
       onSuccess: (data) => {
-        toast.success(data.message);
-
         if (currentProduct) {
-          router.back();
+          setDialogMessage(data.message || 'Box updated successfully.');
+          handleOpen();
         } else {
-          // new product → redirect to list
           router.push((isVendor ? '/vendor' : '/admin') + '/products');
         }
       },
@@ -489,6 +499,63 @@ export default function ProductForm({
                         {currentProduct ? 'Update Box' : 'Create Box'}
                       </LoadingButton>
                     )}
+
+                    <Dialog open={openModal} onClose={handleClose} maxWidth="xs" fullWidth>
+                      <DialogTitle
+                        sx={{
+                          fontWeight: 'bold',
+                          textAlign: 'center',
+                          fontSize: '1rem',
+                          pb: 0.5,
+                        }}
+                      >
+                        Update Successful
+                      </DialogTitle>
+
+                      <DialogContent sx={{ pb: 0 }}>
+                        <DialogContentText
+                          sx={{
+                            fontSize: 13,
+                            mb: 1,
+                            textAlign: 'center',
+                            color: 'text.secondary',
+                          }}
+                        >
+                          {dialogMessage}
+                        </DialogContentText>
+                      </DialogContent>
+
+                      <DialogActions sx={{ justifyContent: 'center', p: 1.5, pt: 0 }}>
+                        <Stack direction="row" spacing={1.5}>
+                          <Button
+                            variant="outlined"
+                            color="inherit"
+                            size="small"
+                            onClick={() => {
+                              handleClose();
+                              router.back();
+                            }}
+                          >
+                            Box Listing
+                          </Button>
+
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            size="small"
+                            onClick={() => {
+                              handleClose();
+                              router.push(`${isVendor ? '/vendor' : '/admin'}/items/${currentProduct?._id}`);
+                            }}
+                          >
+                            Items Listing
+                          </Button>
+                        </Stack>
+                      </DialogActions>
+                    </Dialog>
+
+
+
                   </Stack>
                 </Stack>
               </Card>

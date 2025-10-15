@@ -120,6 +120,14 @@ export default function AdminShopForm({
         const regex = /^https?:\/\/(www\.)?instagram\.com\/[A-Za-z0-9._%-]+(\/.*)?$/;
         return regex.test(value);
       }),
+    tiktokLink: Yup.string().url('Must be a valid URL').optional().nullable(),
+    snapchatLink: Yup.string().url('Must be a valid URL').optional().nullable(),
+    xLink: Yup.string().url('Must be a valid URL').optional().nullable(),
+    youtubeLink: Yup.string().url('Must be a valid URL').optional().nullable(),
+    kickLink: Yup.string().url('Must be a valid URL').optional().nullable(),
+    twitchLink: Yup.string().url('Must be a valid URL').optional().nullable(),
+    fanboxesLink: Yup.string().url('Must be a valid URL').optional().nullable(),
+    onlyfansLink: Yup.string().url('Must be a valid URL').optional().nullable(),
     paymentInfo: Yup.object().shape({
       holderEmail: Yup.string().required('Holder email is required')
 
@@ -145,8 +153,8 @@ export default function AdminShopForm({
         status: currentShop ? currentShop.status : STATUS_OPTIONS[0], // Only include message if currentShop exists
         message:
           currentShop?.status === 'cancel' ||
-          currentShop?.status === 'closed' ||
-          currentShop?.status === 'action required'
+            currentShop?.status === 'closed' ||
+            currentShop?.status === 'action required'
             ? currentShop.message
             : ''
       }),
@@ -155,6 +163,14 @@ export default function AdminShopForm({
       slug: currentShop?.slug || '',
       phone: currentShop?.phone || Number,
       instagramLink: currentShop?.instagramLink || '',
+      tiktokLink: currentShop?.tiktokLink || '',
+      snapchatLink: currentShop?.snapchatLink || '',
+      xLink: currentShop?.xLink || '',
+      youtubeLink: currentShop?.youtubeLink || '',
+      kickLink: currentShop?.kickLink || '',
+      twitchLink: currentShop?.twitchLink || '',
+      fanboxesLink: currentShop?.fanboxesLink || '',
+      onlyfansLink: currentShop?.onlyfansLink || '',
       paymentInfo: {
         holderEmail: currentShop?.paymentInfo?.holderEmail || ''
         // bankName: currentShop?.paymentInfo?.bankName || '',
@@ -254,6 +270,18 @@ export default function AdminShopForm({
     formik.setFieldValue('slug', slug); // set the value of slug in the formik state
     formik.handleChange(event); // handle the change in formik
   };
+
+  const socialPlatforms = [
+    'Instagram',
+    'TikTok',
+    'Snapchat',
+    'X',
+    'YouTube',
+    'Kick',
+    'Twitch',
+    'Fanboxes',
+    'OnlyFans',
+  ];
 
   React.useEffect(() => {
     if (values.status === 'approved' || values.status === 'pending' || values.status === 'in review') {
@@ -405,7 +433,7 @@ export default function AdminShopForm({
                     ) : (
                       <LabelStyle component={'label'} htmlFor="description">
                         {' '}
-                        {'Description'}{' '}
+                        {'description'}{' '}
                       </LabelStyle>
                     )}
                     {shopLoading ? (
@@ -430,7 +458,7 @@ export default function AdminShopForm({
                         <Skeleton variant="text" width={150} />
                       ) : (
                         <LabelStyle variant="body1" component={'label'} color="text.primary">
-                          Logo
+                          Logo / Profile Image
                         </LabelStyle>
                       )}
                       {shopLoading ? (
@@ -552,26 +580,40 @@ export default function AdminShopForm({
                         )}
                       </div>
 
-                      <div>
-                        {shopLoading ? (
-                          <Skeleton variant="text" width={150} />
-                        ) : (
-                          <LabelStyle component={'label'} htmlFor="phone">
-                            Instagram link
-                          </LabelStyle>
-                        )}
-                        {shopLoading ? (
-                          <Skeleton variant="rectangular" width="100%" height={240} />
-                        ) : (
-                          <TextField
-                            id="instagramLink"
-                            fullWidth
-                            {...getFieldProps('instagramLink')}
-                            error={Boolean(touched.instagramLink && errors.instagramLink)}
-                            helperText={touched.instagramLink && errors.instagramLink}
-                          />
-                        )}
+                      <div className="space-y-3">
+                        {socialPlatforms.map((platform) => (
+                          <div key={platform}>
+                            {shopLoading ? (
+                              <Skeleton variant="text" width={150} />
+                            ) : (
+                              <LabelStyle component="label" htmlFor={`${platform.toLowerCase()}Link`}>
+                                {platform} Link
+                              </LabelStyle>
+                            )}
+
+                            {shopLoading ? (
+                              <Skeleton variant="rectangular" width="100%" height={56} />
+                            ) : (
+                              <TextField
+                                id={`${platform.toLowerCase()}Link`}
+                                fullWidth
+                                placeholder={`Enter ${platform} profile link`}
+                                {...getFieldProps(`${platform.toLowerCase()}Link`)}
+                                error={Boolean(
+                                  touched[`${platform.toLowerCase()}Link`] &&
+                                  errors[`${platform.toLowerCase()}Link`]
+                                )}
+                                helperText={
+                                  touched[`${platform.toLowerCase()}Link`] &&
+                                  errors[`${platform.toLowerCase()}Link`]
+                                }
+                              />
+                            )}
+                          </div>
+                        ))}
                       </div>
+
+
 
                       {/* <div>
                         {shopLoading ? (

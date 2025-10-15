@@ -256,7 +256,22 @@ export default function ProductRow({
           <Skeleton variant="text" />
         ) : (
           <Link style={{ textDecoration: 'none', color: 'inherit' }} href={`products/box/${row?.slug}`} passHref>
-            {row?.items?.length || 0} Item(s)
+            <Typography
+              sx={{
+                color: 'success.light',
+                fontSize: '0.60rem',
+                margin: 0.2,
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  boxShadow: '0px 2px 8px rgba(0, 128, 0, 0.4)',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  transform: 'scale(1.03)',
+                },
+              }}
+            >
+              {row?.items?.length || 0} Items
+            </Typography>
           </Link>
         )}
       </TableCell>
