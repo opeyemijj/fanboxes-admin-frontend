@@ -2,7 +2,9 @@ import React from 'react';
 
 // Components
 import BrandList from 'src/components/_admin/brands/brandList';
+import AccessDenied from 'src/components/cards/AccessDenied';
 import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
+import { UsePermissionServer } from 'src/hooks/usePermissionServer';
 
 // Meta information
 export const metadata = {
@@ -12,6 +14,14 @@ export const metadata = {
 };
 
 export default function Brands() {
+  const canView = UsePermissionServer('view_brand_listing'); // check required permission
+
+  if (!canView) {
+    return <AccessDenied message="You are not allowed to manage Brands." redirect="/admin/dashboard" />;
+  }
+
+  const canAdd = UsePermissionServer('add_new_brand');
+
   return (
     <>
       <HeaderBreadcrumbs
@@ -26,10 +36,14 @@ export default function Brands() {
             name: 'Brands'
           }
         ]}
-        action={{
-          href: `/admin/brands/add`,
-          title: 'Add brand'
-        }}
+        action={
+          canAdd
+            ? {
+                href: `/admin/brands/add`,
+                title: 'Add brand'
+              }
+            : null
+        }
       />
       <BrandList />
     </>

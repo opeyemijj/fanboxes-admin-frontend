@@ -167,7 +167,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
       id: 16,
       title: 'Items',
       slug: 'items',
-      hasPermission: UsePermission('view_box_listing'),
+      hasPermission: UsePermission('view_item_listing'),
       icon: <BsGift />,
       isSearch: true
     },

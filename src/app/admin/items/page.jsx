@@ -14,13 +14,13 @@ export const metadata = {
 };
 
 export default function Items() {
-  // const canView = UsePermissionServer('view_category_listing'); // check required permission
+  const canView = UsePermissionServer('view_item_listing'); // check required permission
 
-  // if (!canView) {
-  //   return <AccessDenied message="You are not allowed to manage Category." redirect="/admin/dashboard" />;
-  // }
+  if (!canView) {
+    return <AccessDenied message="You are not allowed to manage Item." redirect="/admin/dashboard" />;
+  }
 
-  // const canAddCategory = UsePermissionServer('add_new_category');
+  const canAddItem = UsePermissionServer('add_new_item');
 
   return (
     <>
@@ -36,10 +36,14 @@ export default function Items() {
             name: 'Items'
           }
         ]}
-        action={{
-          href: `/admin/items/add`,
-          title: 'Add Item'
-        }}
+        action={
+          canAddItem
+            ? {
+                href: `/admin/items/add`,
+                title: 'Add Item'
+              }
+            : null
+        }
       />
 
       <ItemList />

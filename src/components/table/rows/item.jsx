@@ -21,8 +21,8 @@ export default function BoxItemRow({ isLoading, row, handleClickOpen, isVendor, 
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const canEdit = UsePermission('edit_box_item');
-  const canDelete = UsePermission('delete_box_item');
+  const canEdit = UsePermission('edit_item');
+  const canDelete = UsePermission('delete_item');
 
   return (
     <TableRow hover key={Math.random()}>

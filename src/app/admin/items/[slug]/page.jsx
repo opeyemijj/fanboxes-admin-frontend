@@ -35,10 +35,10 @@ export default function Page({ params }) {
     onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
   });
 
-  // const canAdd = UsePermission('edit_category');
-  // if (!canAdd) {
-  //   return <AccessDenied message="You are not allowed to edit Category." redirect="/admin/dashboard" />;
-  // }
+  const canAdd = UsePermission('edit_item');
+  if (!canAdd) {
+    return <AccessDenied message="You are not allowed to edit item." redirect="/admin/dashboard" />;
+  }
 
   return (
     <div>
