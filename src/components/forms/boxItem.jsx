@@ -105,8 +105,6 @@ export default function AddItemForm({ currentItem, isInitialized = false, isVend
     }
   }
 
-  console.log(SortArrayAlphabetically(itemsData?.data, 'name'), 'OKK NICE');
-
   const itemOptions = SortArrayAlphabetically(itemsData?.data, 'name') || [];
 
   return (

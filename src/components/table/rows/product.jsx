@@ -256,7 +256,7 @@ export default function ProductRow({
           <Skeleton variant="text" />
         ) : (
           <Link style={{ textDecoration: 'none', color: 'inherit' }} href={`products/box/${row?.slug}`} passHref>
-            {row?.items?.length || 0} Item(s)
+            {row?.items_array?.length || 0} Item(s)
           </Link>
         )}
       </TableCell>
