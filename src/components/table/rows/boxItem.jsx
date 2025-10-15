@@ -15,6 +15,7 @@ import { MdEdit } from 'react-icons/md';
 import { MdDelete } from 'react-icons/md';
 import { selectBoxAndItem } from 'src/redux/slices/product';
 import { UsePermission } from 'src/hooks/usePermission';
+import { formatNumberWithCommas } from 'src/utils/formatNumber';
 
 export default function BoxItemRow({ isLoading, row, handleClickOpen, isVendor, sn, boxDetails }) {
   const dispatch = useDispatch();
@@ -69,15 +70,19 @@ export default function BoxItemRow({ isLoading, row, handleClickOpen, isVendor, 
       </TableCell>
 
       <TableCell>
-        <Typography>{row?.value} </Typography>
+        <Typography>{formatNumberWithCommas(row?.value)} </Typography>
       </TableCell>
 
       <TableCell align="left">
-        {isLoading ? <Skeleton variant="text" /> : <Typography>{row?.weight} </Typography>}
+        {isLoading ? (
+          <Skeleton variant="text" />
+        ) : (
+          <Typography>{boxDetails?.items_array?.find((dt) => dt.slug === row.slug)?.weight} </Typography>
+        )}
       </TableCell>
 
       <TableCell>
-        <Typography>{row?.odd} </Typography>
+        <Typography>{boxDetails?.items_array?.find((dt) => dt.slug === row.slug)?.odd} </Typography>
       </TableCell>
 
       <TableCell align="right">

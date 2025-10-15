@@ -680,6 +680,11 @@ export const getProductDetails = async (pid) => {
   return data;
 };
 
+export const getProductDetailsByAdmin = async (pid) => {
+  const { data } = await http.get(`/admin/products/${pid}`);
+  return data;
+};
+
 export const getAllPermissionRouteGroup = async () => {
   const { data } = await http.get(`/admin/available-routes`);
   return data;

@@ -21,13 +21,13 @@ export default function AdminBoxItems() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const { data: productData } = await api.getProductDetails(slug);
+        const { data: productData } = await api.getProductDetailsByAdmin(slug);
         const { data: brandData } = await api.getAllBrandsByAdmin();
         const { data: shopData } = await api.getAllShopsByAdmin();
 
         // ✅ Reverse the items array
-        if (productData?.items) {
-          productData.items = [...productData.items].reverse();
+        if (productData?.itemsData) {
+          productData.itemsData = [...productData.itemsData].reverse();
         }
 
         setProductDetails(productData);

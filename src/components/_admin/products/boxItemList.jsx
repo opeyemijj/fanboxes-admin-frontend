@@ -17,7 +17,7 @@ import { useSearchParams } from 'next/navigation';
 import parseMongooseError from 'src/utils/errorHandler';
 import { UsePermission } from 'src/hooks/usePermission';
 
-export default function AdminBoxeItems({ boxDetails, brands, categories, shops, isVendor }) {
+export default function AdminBoxeItems({ boxDetails, isVendor }) {
   // console.log(boxDetails, 'Check the box details');
   const fullUrl = typeof window !== 'undefined' ? window.location.href : '';
   const lastSegmentForSlug = fullUrl.substring(fullUrl.lastIndexOf('/') + 1).split('?')[0];
@@ -69,11 +69,11 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
 
     const startingRange = limit * (page - 1);
     const endingRange = startingRange + limit;
-    const paginateData = boxDetails.items.slice(startingRange, endingRange);
+    const paginateData = boxDetails.itemsData.slice(startingRange, endingRange);
 
     const temdata = {
       data: paginateData,
-      count: Math.ceil(boxDetails?.items.length / limit),
+      count: Math.ceil(boxDetails?.itemsData.length / limit),
       currentPage: page // 👈 add this
     };
 
@@ -123,7 +123,7 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
               onClick={() => {
                 // 👇 your refresh logic here
                 if (boxDetails) {
-                  const distributedItem = distributeItems(boxDetails?.items);
+                  const distributedItem = distributeItems(boxDetails?.itemsData);
                   const temdata = { data: distributedItem };
                   UpateItemOdd(temdata);
                   setData(temdata);
