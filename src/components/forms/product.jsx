@@ -26,9 +26,13 @@ import {
   Skeleton,
   Switch,
   InputAdornment,
-  Modal, Box, Button
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
 } from '@mui/material';
-
 // api
 import * as api from 'src/services';
 import { useMutation } from 'react-query';
@@ -66,16 +70,11 @@ export default function ProductForm({
 }) {
   const router = useRouter();
   const [loading, setloading] = React.useState(false);
-
   const [openModal, setOpenModal] = React.useState(false);
+  const [dialogMessage, setDialogMessage] = React.useState('');
 
   const handleOpen = () => setOpenModal(true);
   const handleClose = () => setOpenModal(false);
-
-  const handleConfirmUpdate = () => {
-    handleSubmit();
-    setOpenModal(false);
-  };
 
   const { mutate, isLoading: updateLoading } = useMutation(
     currentProduct ? 'update' : 'new',
@@ -88,12 +87,10 @@ export default function ProductForm({
         : api.createProductByAdmin,
     {
       onSuccess: (data) => {
-        toast.success(data.message);
-
         if (currentProduct) {
-          router.back();
+          setDialogMessage(data.message || 'Box updated successfully.');
+          handleOpen();
         } else {
-          // new product → redirect to list
           router.push((isVendor ? '/vendor' : '/admin') + '/products');
         }
       },
@@ -498,63 +495,68 @@ export default function ProductForm({
                     {isInitialized ? (
                       <Skeleton variant="rectangular" width="100%" height={56} />
                     ) : (
-                      <>
-                        {currentProduct ? (
-                          <LoadingButton
-                            type="button"
-                            variant="contained"
-                            size="large"
-                            fullWidth
-                            onClick={handleOpen}
-                            loading={updateLoading}
-                          >
-                            Update Box
-                          </LoadingButton>
-                        ) : (
-                          <LoadingButton
-                            type="submit"
-                            variant="contained"
-                            size="large"
-                            fullWidth
-                            loading={updateLoading}
-                          >
-                            Create Box
-                          </LoadingButton>
-                        )}
-                      </>
+                      <LoadingButton type="submit" variant="contained" size="large" fullWidth loading={updateLoading}>
+                        {currentProduct ? 'Update Box' : 'Create Box'}
+                      </LoadingButton>
                     )}
+
+                    <Dialog open={openModal} onClose={handleClose} maxWidth="xs" fullWidth>
+                      <DialogTitle
+                        sx={{
+                          fontWeight: 'bold',
+                          textAlign: 'center',
+                          fontSize: '1rem',
+                          pb: 0.5,
+                        }}
+                      >
+                        Update Successful
+                      </DialogTitle>
+
+                      <DialogContent sx={{ pb: 0 }}>
+                        <DialogContentText
+                          sx={{
+                            fontSize: 13,
+                            mb: 1,
+                            textAlign: 'center',
+                            color: 'text.secondary',
+                          }}
+                        >
+                          {dialogMessage}
+                        </DialogContentText>
+                      </DialogContent>
+
+                      <DialogActions sx={{ justifyContent: 'center', p: 1.5, pt: 0 }}>
+                        <Stack direction="row" spacing={1.5}>
+                          <Button
+                            variant="outlined"
+                            color="inherit"
+                            size="small"
+                            onClick={() => {
+                              handleClose();
+                              router.back();
+                            }}
+                          >
+                            Box Listing
+                          </Button>
+
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            size="small"
+                            onClick={() => {
+                              handleClose();
+                              router.push(`${isVendor ? '/vendor' : '/admin'}/items/${currentProduct?._id}`);
+                            }}
+                          >
+                            Items Listing
+                          </Button>
+                        </Stack>
+                      </DialogActions>
+                    </Dialog>
+
+
+
                   </Stack>
-
-                  {/* Confirmation Modal */}
-                  <Modal open={openModal} onClose={handleClose}>
-                    <Box
-                      sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        bgcolor: 'background.paper',
-                        boxShadow: 24,
-                        p: 4,
-                        borderRadius: 2,
-                        width: 400
-                      }}
-                    >
-                      <Typography variant="h6" gutterBottom>
-                        Confirm Update
-                      </Typography>
-                      <Typography variant="body2" sx={{ mb: 3 }}>
-                        Are you sure you want to update this box? This action cannot be undone.
-                      </Typography>
-                      <Stack direction="row" justifyContent="flex-end" spacing={2}>
-                        <Button onClick={handleClose}>Update/Continue</Button>
-                        <Button variant="contained" color="primary" onClick={handleConfirmUpdate}>
-                          Proceed to Items Listing
-                        </Button>
-                      </Stack>
-                    </Box>
-                  </Modal>
-
                 </Stack>
               </Card>
             </Grid>
