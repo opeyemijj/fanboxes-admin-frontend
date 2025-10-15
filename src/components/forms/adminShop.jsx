@@ -153,8 +153,8 @@ export default function AdminShopForm({
         status: currentShop ? currentShop.status : STATUS_OPTIONS[0], // Only include message if currentShop exists
         message:
           currentShop?.status === 'cancel' ||
-            currentShop?.status === 'closed' ||
-            currentShop?.status === 'action required'
+          currentShop?.status === 'closed' ||
+          currentShop?.status === 'action required'
             ? currentShop.message
             : ''
       }),
@@ -176,7 +176,8 @@ export default function AdminShopForm({
         // bankName: currentShop?.paymentInfo?.bankName || '',
         // AccountNo: currentShop?.paymentInfo?.AccountNo || Number
       },
-      isFeatured: currentShop?.isFeatured || false
+      isFeatured: currentShop?.isFeatured || false,
+      isPopular: currentShop?.isPopular || false
       // address: {
       //   country: currentShop?.address?.country || 'Andorra',
       //   city: currentShop?.address?.city || '',
@@ -271,17 +272,7 @@ export default function AdminShopForm({
     formik.handleChange(event); // handle the change in formik
   };
 
-  const socialPlatforms = [
-    'Instagram',
-    'TikTok',
-    'Snapchat',
-    'X',
-    'YouTube',
-    'Kick',
-    'Twitch',
-    'Fanboxes',
-    'OnlyFans',
-  ];
+  const socialPlatforms = ['Instagram', 'TikTok', 'Snapchat', 'X', 'YouTube', 'Kick', 'Twitch', 'Fanboxes', 'OnlyFans'];
 
   React.useEffect(() => {
     if (values.status === 'approved' || values.status === 'pending' || values.status === 'in review') {
@@ -600,20 +591,16 @@ export default function AdminShopForm({
                                 placeholder={`Enter ${platform} profile link`}
                                 {...getFieldProps(`${platform.toLowerCase()}Link`)}
                                 error={Boolean(
-                                  touched[`${platform.toLowerCase()}Link`] &&
-                                  errors[`${platform.toLowerCase()}Link`]
+                                  touched[`${platform.toLowerCase()}Link`] && errors[`${platform.toLowerCase()}Link`]
                                 )}
                                 helperText={
-                                  touched[`${platform.toLowerCase()}Link`] &&
-                                  errors[`${platform.toLowerCase()}Link`]
+                                  touched[`${platform.toLowerCase()}Link`] && errors[`${platform.toLowerCase()}Link`]
                                 }
                               />
                             )}
                           </div>
                         ))}
                       </div>
-
-
 
                       {/* <div>
                         {shopLoading ? (
@@ -755,6 +742,18 @@ export default function AdminShopForm({
                               />
                             }
                             label={'Featured Influencer'}
+                          />
+                        </FormGroup>
+
+                        <FormGroup>
+                          <FormControlLabel
+                            control={
+                              <Switch
+                                onChange={(e) => setFieldValue('isPopular', e.target.checked)}
+                                checked={values.isPopular}
+                              />
+                            }
+                            label={'Popular Influencer'}
                           />
                         </FormGroup>
                       </div>
