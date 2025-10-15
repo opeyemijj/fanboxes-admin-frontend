@@ -25,7 +25,7 @@ import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { LuLayoutDashboard, LuShield, LuShieldOff } from 'react-icons/lu';
 import { FaRegBuilding, FaSlidersH } from 'react-icons/fa';
 import { TbCategory2 } from 'react-icons/tb';
-import { BsFillBoxFill, BsFillGiftFill, BsPinAngleFill, BsPlayCircle, BsPlayCircleFill, BsShop } from 'react-icons/bs';
+import { BsFillGiftFill, BsGift, BsPinAngleFill, BsPlayCircle, BsPlayCircleFill, BsShop } from 'react-icons/bs';
 import { BsCart3 } from 'react-icons/bs';
 import { LuUsers } from 'react-icons/lu';
 import { SlEnvolopeLetter } from 'react-icons/sl';
@@ -158,27 +158,18 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
       id: 5,
       title: 'Boxes',
       slug: 'products',
-      hasPermission: CheckMulitplePermission(['view_box_listing']),
+      hasPermission: UsePermission('view_box_listing'),
       icon: <BsShop />,
-      isSearch: true,
-      children: [
-        {
-          id: '5-1',
-          title: 'Boxes',
-          slug: 'products',
-          hasPermission: UsePermission('view_box_listing'),
-          icon: <BsFillBoxFill />,
-          isSearch: true
-        },
-        {
-          id: '5-2',
-          title: 'Items',
-          slug: 'items',
-          hasPermission: UsePermission('view_box_listing'),
-          icon: <BsFillGiftFill />,
-          isSearch: true
-        }
-      ]
+      isSearch: true
+    },
+
+    {
+      id: 16,
+      title: 'Items',
+      slug: 'items',
+      hasPermission: UsePermission('view_box_listing'),
+      icon: <BsGift />,
+      isSearch: true
     },
 
     {
@@ -228,6 +219,8 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
       title: 'Logs',
       slug: 'logs',
       hasPermission: CheckMulitplePermission(['view_spin_listing', 'view_transections_listing']),
+      // need_permission: true,
+      // permission_slug: 'view_slide_listing',
       icon: <Logs />,
       isSearch: false,
       children: [

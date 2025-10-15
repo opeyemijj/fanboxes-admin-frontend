@@ -33,7 +33,7 @@ export default function Items() {
             href: '/admin/dashboard'
           },
           {
-            name: 'Itmes'
+            name: 'Items'
           }
         ]}
         action={{
