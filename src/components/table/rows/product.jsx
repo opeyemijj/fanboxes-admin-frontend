@@ -261,16 +261,17 @@ export default function ProductRow({
                 color: 'success.light',
                 fontSize: '0.60rem',
                 margin: 0.2,
+                fontSize: 13,
                 transition: 'all 0.3s ease',
                 '&:hover': {
                   boxShadow: '0px 2px 8px rgba(0, 128, 0, 0.4)',
                   borderRadius: '4px',
                   cursor: 'pointer',
-                  transform: 'scale(1.03)',
-                },
+                  transform: 'scale(1.03)'
+                }
               }}
             >
-              {row?.items?.length || 0} Items
+              {row?.items_array?.length || 0} Item(s)
             </Typography>
           </Link>
         )}

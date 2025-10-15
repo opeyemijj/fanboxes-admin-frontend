@@ -15,14 +15,14 @@ import { MdEdit } from 'react-icons/md';
 import { MdDelete } from 'react-icons/md';
 import { selectBoxAndItem } from 'src/redux/slices/product';
 import { UsePermission } from 'src/hooks/usePermission';
-import { formatNumberWithCommas } from 'src/utils/formatNumber';
+import { fDateShort } from 'src/utils/formatTime';
 
 export default function BoxItemRow({ isLoading, row, handleClickOpen, isVendor, sn, boxDetails }) {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const canEdit = UsePermission('edit_box_item');
-  const canDelete = UsePermission('delete_box_item');
+  const canEdit = UsePermission('edit_item');
+  const canDelete = UsePermission('delete_item');
 
   return (
     <TableRow hover key={Math.random()}>
@@ -70,16 +70,10 @@ export default function BoxItemRow({ isLoading, row, handleClickOpen, isVendor, 
       </TableCell>
 
       <TableCell>
-        <Typography>{formatNumberWithCommas(row?.value)} </Typography>
+        <Typography>{row?.value} </Typography>
       </TableCell>
 
-      <TableCell align="left">
-        {isLoading ? <Skeleton variant="text" /> : <Typography>{row.weight} </Typography>}
-      </TableCell>
-
-      <TableCell>
-        <Typography>{row.odd} </Typography>
-      </TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : <> {fDateShort(row.createdAt)} </>}</TableCell>
 
       <TableCell align="right">
         {isLoading ? (
@@ -94,12 +88,7 @@ export default function BoxItemRow({ isLoading, row, handleClickOpen, isVendor, 
               <Tooltip title="Edit">
                 <IconButton
                   onClick={() => {
-                    const tempData = {
-                      item: boxDetails?.items_array?.find((dt) => dt.slug === row.slug),
-                      slug: boxDetails.slug
-                    };
-                    dispatch(selectBoxAndItem(tempData));
-                    router.push(`/${isVendor ? 'vendor' : 'admin'}/products/editItem/${row.slug}`);
+                    router.push(`/${isVendor ? 'vendor' : 'admin'}/items/${row.slug}`);
                   }}
                 >
                   <MdEdit />

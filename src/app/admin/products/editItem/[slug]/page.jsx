@@ -13,7 +13,6 @@ import AccessDenied from 'src/components/cards/AccessDenied';
 
 export default function Page({ params }) {
   const selectedBoxAndItemData = useSelector(({ product }) => product?.boxAndItemData);
-  // console.log(selectedBoxAndItemData, 'Okk SEE this state');
 
   const canEdit = UsePermission('edit_box_item');
   if (!canEdit) {

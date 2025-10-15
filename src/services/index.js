@@ -91,6 +91,16 @@ export const getCategoriesByAdmin = async (params) => {
   return data;
 };
 
+export const getItemsByAdmin = async (params) => {
+  const { data } = await http.get(`/admin/items?${params}`);
+  return data;
+};
+
+export const getItemBySlug = async (slug) => {
+  const { data } = await http.get(`admin/items/${slug}`);
+  return data;
+};
+
 export const getCreditsByAdmin = async (page, search) => {
   const { data } = await http.get(`/admin/credits?search=${search}&page=${page}`);
   return data;
@@ -142,6 +152,11 @@ export const getRoleByAdmin = async (slug) => {
 
 export const deleteCategoryByAdmin = async (slug) => {
   const { data } = await http.delete(`/admin/categories/${slug}`);
+  return data;
+};
+
+export const deleteItemByAdmin = async (slug) => {
+  const { data } = await http.delete(`/admin/items/${slug}`);
   return data;
 };
 
@@ -610,6 +625,16 @@ export const createAdminBoxItem = async (payload) => {
   return response;
 };
 
+export const createAdminItem = async (payload) => {
+  const { data: response } = await http.post(`/admin/items`, payload);
+  return response;
+};
+
+export const updateItemByAdmin = async ({ currentSlug, ...payload }) => {
+  const { data } = await http.put(`/admin/items/${currentSlug}`, payload);
+  return data;
+};
+
 export const updateVendorProduct = async ({ currentSlug, ...payload }) => {
   const { data: response } = await http.put(`/vendor/products/${currentSlug}`, payload);
   return response;
@@ -652,6 +677,11 @@ export const getTransectionsByAdmin = async (params) => {
 
 export const getProductDetails = async (pid) => {
   const { data } = await http.get(`/products/${pid}`);
+  return data;
+};
+
+export const getProductDetailsByAdmin = async (pid) => {
+  const { data } = await http.get(`/admin/products/${pid}`);
   return data;
 };
 
@@ -810,6 +840,11 @@ export const getCart = async (ids) => {
 
 export const getAllCategories = async () => {
   const { data } = await http.get(`/all-categories`);
+  return data;
+};
+
+export const getAllItems = async () => {
+  const { data } = await http.get(`/admin/all-items`);
   return data;
 };
 
