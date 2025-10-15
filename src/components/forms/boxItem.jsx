@@ -14,7 +14,9 @@ import {
   Autocomplete,
   Avatar,
   CircularProgress,
-  InputAdornment
+  InputAdornment,
+  Tooltip,
+  IconButton
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
@@ -22,6 +24,7 @@ import { useMutation, useQuery } from 'react-query';
 import * as api from 'src/services';
 import parseMongooseError from 'src/utils/errorHandler';
 import { SortArrayAlphabetically } from 'src/utils/sorting';
+import { Add } from '@mui/icons-material';
 
 const LabelStyle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
@@ -117,7 +120,18 @@ export default function AddItemForm({ currentItem, isInitialized = false, isVend
                 <Stack spacing={3}>
                   {/* 🔹 Item Dropdown */}
                   <div>
-                    <LabelStyle>Select Item</LabelStyle>
+                    <Stack direction="row" alignItems="center" justifyContent="space-between">
+                      <LabelStyle>Select Item</LabelStyle>
+
+                      {/* Show plus icon only when itemsData is empty */}
+                      {(!itemsData?.data || itemsData?.data?.length === 0) && (
+                        <Tooltip title="Add new item">
+                          <IconButton color="primary" onClick={() => router.push('/admin/items/add')}>
+                            <Add />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                    </Stack>
                     {isInitialized ? (
                       <CircularProgress size={24} />
                     ) : (
