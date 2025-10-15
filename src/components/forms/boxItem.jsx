@@ -29,7 +29,7 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
   lineHeight: 2.5
 }));
 
-export default function AddItemForm({ currentProduct, isInitialized = false, isVendor, boxDetails }) {
+export default function AddItemForm({ currentItem, isInitialized = false, isVendor, boxDetails }) {
   const router = useRouter();
 
   // 🔹 Fetch items
@@ -38,8 +38,8 @@ export default function AddItemForm({ currentProduct, isInitialized = false, isV
   });
 
   const { mutate, isLoading: saving } = useMutation(
-    currentProduct ? 'update' : 'new',
-    currentProduct
+    currentItem ? 'update' : 'new',
+    currentItem
       ? isVendor
         ? api.updateItemBoxByVendor
         : api.updateItemBoxByAdmin
@@ -49,7 +49,7 @@ export default function AddItemForm({ currentProduct, isInitialized = false, isV
     {
       onSuccess: (data) => {
         toast.success(data.message);
-        router.push((isVendor ? '/vendor' : '/admin') + '/products/box/' + boxDetails?.slug);
+        router.back();
       },
       onError: (error) => {
         const errorMessage = parseMongooseError(error?.message);
@@ -65,13 +65,16 @@ export default function AddItemForm({ currentProduct, isInitialized = false, isV
     odd: Yup.number().max(1, 'Max limit 1').required('Odd is required')
   });
 
+  // 🔹 Find the full item object for initial value (if editing)
+  const initialItem = currentItem && itemsData?.data ? itemsData.data.find((i) => i._id === currentItem._id) : null;
+
   // 🔹 Formik setup
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      item: null,
-      weight: currentProduct?.weight || '',
-      odd: currentProduct?.odd || ''
+      item: initialItem || null,
+      weight: currentItem?.weight || '',
+      odd: currentItem?.odd || ''
     },
     validationSchema: Schema,
     onSubmit: async (values) => {
@@ -82,7 +85,7 @@ export default function AddItemForm({ currentProduct, isInitialized = false, isV
           slug: values.item.slug,
           weight: values.weight,
           odd: values.odd,
-          ...(currentProduct && { currentSlug: currentProduct.slug })
+          ...(currentItem && { currentSlug: currentItem.slug })
         });
       } catch (error) {
         const errorMessage = parseMongooseError(error?.message);
@@ -193,7 +196,7 @@ export default function AddItemForm({ currentProduct, isInitialized = false, isV
 
                   {/* 🔹 Submit */}
                   <LoadingButton type="submit" variant="contained" size="large" fullWidth loading={saving}>
-                    {currentProduct ? 'Update Item' : 'Create Item'}
+                    {currentItem ? 'Update Item' : 'Create Item'}
                   </LoadingButton>
                 </Stack>
               </Card>
@@ -206,7 +209,7 @@ export default function AddItemForm({ currentProduct, isInitialized = false, isV
 }
 
 AddItemForm.propTypes = {
-  currentProduct: PropTypes.object,
+  currentItem: PropTypes.object,
   isInitialized: PropTypes.bool,
   isVendor: PropTypes.bool,
   boxDetails: PropTypes.object
