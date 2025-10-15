@@ -33,7 +33,7 @@ export default function AddItemForm({ currentItem, isInitialized = false, isVend
   const router = useRouter();
 
   // 🔹 Fetch items
-  const { data: itemsData, isLoading: itemsLoading } = useQuery(['all-admin-items'], () => api.getAllItems(), {
+  const { data: itemsData, isLoading: itemsLoading } = useQuery(['admin-items'], () => api.getAllItems(), {
     onError: (err) => toast.error(err.message || 'Failed to load items')
   });
 
@@ -104,6 +104,8 @@ export default function AddItemForm({ currentItem, isInitialized = false, isVend
       setFieldValue('weight', odd * 100);
     }
   }
+
+  console.log(SortArrayAlphabetically(itemsData?.data, 'name'), 'OKK NICE');
 
   const itemOptions = SortArrayAlphabetically(itemsData?.data, 'name') || [];
 
