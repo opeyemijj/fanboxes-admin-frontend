@@ -77,6 +77,26 @@ export default function AdminShops({ categories }) {
       }
     );
 
+  const { mutate: changeFeaturedMutation, isLoading: featuredLoading } = useMutation(
+    api.updateShopFeaturedByAdmin, // mutation function here
+    {
+      onSuccess: (data) => {
+        toast.success(data.message);
+        handleClose();
+        // ✅ Refetch products list
+        queryClient.invalidateQueries(['admin-shops']);
+      },
+      onError: (error) => {
+        console.log(error);
+        let errorMessage = parseMongooseError(error?.message);
+        toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+          autoClose: false, // Prevents auto-dismissal
+          closeOnClick: true // Allows clicking on the close icon
+        });
+      }
+    }
+  );
+
   const { mutate: bannedShopMutation, isLoading: bannedLoading } = useMutation(
     api.shopBannedByAdmin, // mutation function here
     {
@@ -131,6 +151,15 @@ export default function AdminShops({ categories }) {
     }
   };
 
+  const handleClickOpenFeatured = (prop, modalType, activityType) => () => {
+    setMarkShop(prop);
+    setModalType(modalType);
+
+    if (activityType) {
+      setMultipleActionType(activityType);
+    }
+  };
+
   const handleClickOpenBanned = (prop, modalType, activityType) => () => {
     setMarkShop(prop);
     setModalType(modalType);
@@ -156,6 +185,32 @@ export default function AdminShops({ categories }) {
         changeActivation({
           slug: '',
           isActive: multipleActionType === 'active' ? true : false,
+          selectedItems: selectedRows,
+          mutationType: 'multiple'
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
+  async function changeFeatured() {
+    console.log('Come here');
+    if (modalType === 'singleFeatured') {
+      try {
+        changeFeaturedMutation({
+          slug: markShop.slug,
+          isFeatured: markShop.isFeatured ? false : true,
+          mutationType: 'single'
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    } else if (modalType === 'multipleFeatured') {
+      try {
+        changeFeaturedMutation({
+          slug: '',
+          isFeatured: multipleActionType === 'active' ? true : false,
           selectedItems: selectedRows,
           mutationType: 'multiple'
         });
@@ -232,6 +287,7 @@ export default function AdminShops({ categories }) {
         handleClickOpenBanned={handleClickOpenBanned}
         handleClickOpenStatus={handleClickOpenStatus}
         openAssignUsers={openAssignUsers}
+        handleClickOpenFeatured={handleClickOpenFeatured}
         UpdateSelectedRow={UpdateSelectedRow}
         selectedRows={selectedRows}
         bulkAction={[
@@ -259,6 +315,16 @@ export default function AdminShops({ categories }) {
             hasPermission: UsePermission('assign_influencer_to_user'),
             actionName: 'Assign',
             action: openAssignUsersForSelectedRecords
+          },
+          {
+            hasPermission: UsePermission('approve_influencer'),
+            actionName: 'Mark Featured',
+            action: handleClickOpenStatus(null, 'multipleFeatured', 'active')
+          },
+          {
+            hasPermission: UsePermission('approve_influencer'),
+            actionName: 'Unmark Featured',
+            action: handleClickOpenStatus(null, 'multipleFeatured', 'inactive')
           }
         ]}
         isSearch
@@ -339,6 +405,56 @@ export default function AdminShops({ categories }) {
               : multipleActionType !== 'active'
                 ? 'Move to Draft'
                 : 'Approve'}
+          </LoadingButton>
+        </DialogActions>
+      </Dialog>
+
+      {/* Featured modal */}
+      <Dialog
+        onClose={handleClose}
+        open={modalType === 'multipleFeatured' || modalType === 'singleFeatured'}
+        maxWidth="xs"
+      >
+        <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+          <WarningRoundedIcon sx={{ mr: 1 }} />
+          {modalType === 'singleFeatured'
+            ? markShop?.isFeatured
+              ? 'Remove Influencer from Featured'
+              : 'Mark Influencer as Featured'
+            : multipleActionType === 'active'
+              ? 'Mark Influencers as Featured'
+              : 'Remove Influencers from Featured'}
+        </DialogTitle>
+
+        <DialogContent>
+          {modalType === 'singleFeatured' ? (
+            <DialogContentText>
+              {markShop?.isFeatured
+                ? 'Are you sure you want to remove this influencer from the featured list? You can feature them again anytime.'
+                : 'Would you like to mark this influencer as featured?'}
+            </DialogContentText>
+          ) : (
+            <DialogContentText>
+              {multipleActionType !== 'active'
+                ? 'Are you sure you want to remove these influencers from the featured list? You can feature them again anytime.'
+                : 'Would you like to mark these influencers as featured?'}
+            </DialogContentText>
+          )}
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleClose} color="inherit">
+            No, keep it
+          </Button>
+          <LoadingButton variant="contained" loading={featuredLoading} onClick={() => changeFeatured()}>
+            Yes,&nbsp;
+            {modalType === 'singleFeatured'
+              ? markShop?.isFeatured
+                ? 'Remove from Featured'
+                : 'Mark as Featured'
+              : multipleActionType !== 'active'
+                ? 'Remove from Featured'
+                : 'Mark as Featured'}
           </LoadingButton>
         </DialogActions>
       </Dialog>

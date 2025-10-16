@@ -34,7 +34,8 @@ export default function ProductRow({
   openAssignUsers,
   sn,
   selectedRows,
-  UpdateSelectedRow
+  UpdateSelectedRow,
+  handleClickOpenFeatured
 }) {
   const router = useRouter();
 
@@ -45,7 +46,7 @@ export default function ProductRow({
   const canBan = UsePermission('ban_unban_influencer');
   const canAssign = UsePermission('assign_influencer_to_user');
 
-  function MoreActionsMenu({ row, handleClickOpenStatus, handleClickOpenBanned }) {
+  function MoreActionsMenu({ row, handleClickOpenStatus, handleClickOpenBanned, handleClickOpenFeatured }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
@@ -78,6 +79,16 @@ export default function ProductRow({
               <ListItemText style={{ marginLeft: 0 }}>Assign To</ListItemText>
             </MenuItem>
           )}
+
+          <MenuItem onClick={handleClickOpenFeatured(row, 'singleFeatured')}>
+            {!row.isFeatured ? <MdCheckCircle color="green" size={20} /> : <MdCancel color="orange" size={20} />}
+            <ListItemText sx={{ ml: 1 }}>{row?.isFeatured ? 'Unmark Featured' : 'Mark Featured'}</ListItemText>
+          </MenuItem>
+
+          <MenuItem onClick={handleClickOpenStatus(row, 'singleStatus')}>
+            {!row.isPopular ? <MdCheckCircle color="green" size={20} /> : <MdCancel color="orange" size={20} />}
+            <ListItemText sx={{ ml: 1 }}>{row?.isPopular ? 'Unmark Popular' : 'Mark Popular'}</ListItemText>
+          </MenuItem>
         </Menu>
       </>
     );
@@ -223,6 +234,7 @@ export default function ProductRow({
               row={row}
               handleClickOpenStatus={handleClickOpenStatus}
               handleClickOpenBanned={handleClickOpenBanned}
+              handleClickOpenFeatured={handleClickOpenFeatured}
             />
           </Stack>
         )}
