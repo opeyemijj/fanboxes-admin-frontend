@@ -201,13 +201,11 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, bran
                         <LabelStyle>Select Brand</LabelStyle>
 
                         {/* Show plus icon only when itemsData is empty */}
-                        {(!brands || brands?.length === 0) && (
-                          <Tooltip title="Add new Brand">
-                            <IconButton color="primary" onClick={() => router.push('/admin/brands/add')}>
-                              <Add />
-                            </IconButton>
-                          </Tooltip>
-                        )}
+                        <Tooltip title="Add new Brand">
+                          <IconButton color="primary" onClick={() => router.push('/admin/brands/add')}>
+                            <Add />
+                          </IconButton>
+                        </Tooltip>
                       </Stack>
                       <TextField
                         select

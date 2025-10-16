@@ -124,13 +124,11 @@ export default function AddItemForm({ currentItem, isInitialized = false, isVend
                       <LabelStyle>Select Item</LabelStyle>
 
                       {/* Show plus icon only when itemsData is empty */}
-                      {(!itemsData?.data || itemsData?.data?.length === 0) && (
-                        <Tooltip title="Add new item">
-                          <IconButton color="primary" onClick={() => router.push('/admin/items/add')}>
-                            <Add />
-                          </IconButton>
-                        </Tooltip>
-                      )}
+                      <Tooltip title="Add new item">
+                        <IconButton color="primary" onClick={() => router.push('/admin/items/add')}>
+                          <Add />
+                        </IconButton>
+                      </Tooltip>
                     </Stack>
                     {isInitialized ? (
                       <CircularProgress size={24} />

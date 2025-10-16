@@ -49,12 +49,6 @@ export default function LoginForm() {
       // console.log(data, 'Checking the login data');
       dispatch(setLogin(data.user));
 
-      if (!checkIsAdmin(data.user.role)) {
-        toast.error('Only admin have access to login');
-        setloading(false);
-        return;
-      }
-
       // dispatch(setWishlist(data.user.wishlist));
 
       //await createCookies('token', data.token);
