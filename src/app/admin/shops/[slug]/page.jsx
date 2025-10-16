@@ -25,6 +25,8 @@ import { TbChartArrowsVertical } from 'react-icons/tb';
 import * as api from 'src/services';
 import { useQuery } from 'react-query';
 import ShopSpinList from 'src/components/_admin/shops/shopSpin';
+import AccessDenied from 'src/components/cards/AccessDenied';
+import { UsePermission } from 'src/hooks/usePermission';
 
 Page.propTypes = {
   params: PropTypes.object.isRequired
@@ -85,6 +87,12 @@ export default function Page({ params: { slug } }) {
       viewFunction: () => SetDataType('box')
     }
   ];
+
+  const canView = UsePermission('view_influencer_details'); // check required permission
+
+  if (!canView) {
+    return <AccessDenied message="You are not allowed to manage influencers." redirect="/admin/dashboard" />;
+  }
 
   return (
     <div>
