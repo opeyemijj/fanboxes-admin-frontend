@@ -14,12 +14,15 @@ export const metadata = {
   authors: 'Fanboxes'
 };
 
+// 👇 Add this line
+export const dynamic = 'force-dynamic';
+
 export default async function page() {
   const { data: allBrandsData } = await api.getAllBrandsByAdmin();
-  // const canAdd = UsePermissionServer('add_new_category');
-  // if (!canAdd) {
-  //   return <AccessDenied message="You are not allowed to add Category." redirect="/admin/dashboard" />;
-  // }
+  const canAdd = UsePermissionServer('add_new_brand');
+  if (!canAdd) {
+    return <AccessDenied message="You are not allowed to add Brand." redirect="/admin/dashboard" />;
+  }
 
   return (
     <div>

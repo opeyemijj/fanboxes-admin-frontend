@@ -32,7 +32,7 @@ export default function Page({ params }) {
     isLoading: brandsLoading,
     error
   } = useQuery(['brands'], () => api.getBrandsByAdmin(), {
-    onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
+    onError: (err) => toast.error(err.message || 'Something went wrong!')
   });
 
   const canAdd = UsePermission('edit_item');
