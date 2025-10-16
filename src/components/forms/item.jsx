@@ -17,7 +17,9 @@ import {
   Skeleton,
   InputAdornment,
   MenuItem,
-  Avatar
+  Avatar,
+  Tooltip,
+  IconButton
 } from '@mui/material';
 import * as api from 'src/services';
 import { useMutation } from 'react-query';
@@ -25,6 +27,7 @@ import uploadToSpaces from 'src/utils/upload';
 import parseMongooseError from 'src/utils/errorHandler';
 import { fCurrency } from 'src/utils/formatNumber';
 import UploadMultiFile from 'src/components/upload/UploadMultiFile';
+import { Add } from '@mui/icons-material';
 
 // ----------------------------------------------------------------------
 
@@ -194,7 +197,18 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, bran
 
                     {/* ✅ Brand Dropdown */}
                     <div>
-                      <LabelStyle htmlFor="brand">Brand</LabelStyle>
+                      <Stack direction="row" alignItems="center" justifyContent="space-between">
+                        <LabelStyle>Select Brand</LabelStyle>
+
+                        {/* Show plus icon only when itemsData is empty */}
+                        {(!brands || brands?.length === 0) && (
+                          <Tooltip title="Add new Brand">
+                            <IconButton color="primary" onClick={() => router.push('/admin/brands/add')}>
+                              <Add />
+                            </IconButton>
+                          </Tooltip>
+                        )}
+                      </Stack>
                       <TextField
                         select
                         fullWidth
