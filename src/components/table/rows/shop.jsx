@@ -35,7 +35,8 @@ export default function ProductRow({
   sn,
   selectedRows,
   UpdateSelectedRow,
-  handleClickOpenFeatured
+  handleClickOpenFeatured,
+  handleClickOpenPopular
 }) {
   const router = useRouter();
 
@@ -46,7 +47,13 @@ export default function ProductRow({
   const canBan = UsePermission('ban_unban_influencer');
   const canAssign = UsePermission('assign_influencer_to_user');
 
-  function MoreActionsMenu({ row, handleClickOpenStatus, handleClickOpenBanned, handleClickOpenFeatured }) {
+  function MoreActionsMenu({
+    row,
+    handleClickOpenStatus,
+    handleClickOpenBanned,
+    handleClickOpenFeatured,
+    handleClickOpenPopular
+  }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
@@ -85,7 +92,7 @@ export default function ProductRow({
             <ListItemText sx={{ ml: 1 }}>{row?.isFeatured ? 'Unmark Featured' : 'Mark Featured'}</ListItemText>
           </MenuItem>
 
-          <MenuItem onClick={handleClickOpenStatus(row, 'singleStatus')}>
+          <MenuItem onClick={handleClickOpenPopular(row, 'singlePopular')}>
             {!row.isPopular ? <MdCheckCircle color="green" size={20} /> : <MdCancel color="orange" size={20} />}
             <ListItemText sx={{ ml: 1 }}>{row?.isPopular ? 'Unmark Popular' : 'Mark Popular'}</ListItemText>
           </MenuItem>
@@ -235,6 +242,7 @@ export default function ProductRow({
               handleClickOpenStatus={handleClickOpenStatus}
               handleClickOpenBanned={handleClickOpenBanned}
               handleClickOpenFeatured={handleClickOpenFeatured}
+              handleClickOpenPopular={handleClickOpenPopular}
             />
           </Stack>
         )}

@@ -380,6 +380,11 @@ export const updateShopFeaturedByAdmin = async ({ slug, ...payload }) => {
   return response;
 };
 
+export const updateShopPopularByAdmin = async ({ slug, ...payload }) => {
+  const { data: response } = await http.put(`/admin/shops/popular/${slug || undefined}`, payload);
+  return response;
+};
+
 export const updateItemOddHideShowByAdmin = async ({ slug, ...payload }) => {
   const { data: response } = await http.put(`/admin/products/item-odds-visibility/${slug || undefined}`, payload);
   return response;

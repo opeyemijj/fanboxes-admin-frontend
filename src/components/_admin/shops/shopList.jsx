@@ -97,6 +97,26 @@ export default function AdminShops({ categories }) {
     }
   );
 
+  const { mutate: changePopularMutation, isLoading: popularLoading } = useMutation(
+    api.updateShopPopularByAdmin, // mutation function here
+    {
+      onSuccess: (data) => {
+        toast.success(data.message);
+        handleClose();
+        // ✅ Refetch products list
+        queryClient.invalidateQueries(['admin-shops']);
+      },
+      onError: (error) => {
+        console.log(error);
+        let errorMessage = parseMongooseError(error?.message);
+        toast.error(errorMessage || 'We ran into an issue. Please refresh the page or try again.', {
+          autoClose: false, // Prevents auto-dismissal
+          closeOnClick: true // Allows clicking on the close icon
+        });
+      }
+    }
+  );
+
   const { mutate: bannedShopMutation, isLoading: bannedLoading } = useMutation(
     api.shopBannedByAdmin, // mutation function here
     {
@@ -160,6 +180,15 @@ export default function AdminShops({ categories }) {
     }
   };
 
+  const handleClickOpenPopular = (prop, modalType, activityType) => () => {
+    setMarkShop(prop);
+    setModalType(modalType);
+
+    if (activityType) {
+      setMultipleActionType(activityType);
+    }
+  };
+
   const handleClickOpenBanned = (prop, modalType, activityType) => () => {
     setMarkShop(prop);
     setModalType(modalType);
@@ -195,7 +224,6 @@ export default function AdminShops({ categories }) {
   }
 
   async function changeFeatured() {
-    console.log('Come here');
     if (modalType === 'singleFeatured') {
       try {
         changeFeaturedMutation({
@@ -211,6 +239,31 @@ export default function AdminShops({ categories }) {
         changeFeaturedMutation({
           slug: '',
           isFeatured: multipleActionType === 'active' ? true : false,
+          selectedItems: selectedRows,
+          mutationType: 'multiple'
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
+  async function changePopular() {
+    if (modalType === 'singlePopular') {
+      try {
+        changePopularMutation({
+          slug: markShop.slug,
+          isPopular: markShop.isPopular ? false : true,
+          mutationType: 'single'
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    } else if (modalType === 'multiplePopular') {
+      try {
+        changePopularMutation({
+          slug: '',
+          isPopular: multipleActionType === 'active' ? true : false,
           selectedItems: selectedRows,
           mutationType: 'multiple'
         });
@@ -288,6 +341,7 @@ export default function AdminShops({ categories }) {
         handleClickOpenStatus={handleClickOpenStatus}
         openAssignUsers={openAssignUsers}
         handleClickOpenFeatured={handleClickOpenFeatured}
+        handleClickOpenPopular={handleClickOpenPopular}
         UpdateSelectedRow={UpdateSelectedRow}
         selectedRows={selectedRows}
         bulkAction={[
@@ -325,6 +379,16 @@ export default function AdminShops({ categories }) {
             hasPermission: UsePermission('approve_influencer'),
             actionName: 'Unmark Featured',
             action: handleClickOpenStatus(null, 'multipleFeatured', 'inactive')
+          },
+          {
+            hasPermission: UsePermission('approve_influencer'),
+            actionName: 'Mark Popular',
+            action: handleClickOpenStatus(null, 'multiplePopular', 'active')
+          },
+          {
+            hasPermission: UsePermission('approve_influencer'),
+            actionName: 'Unmark Popular',
+            action: handleClickOpenStatus(null, 'multiplePopular', 'inactive')
           }
         ]}
         isSearch
@@ -507,6 +571,56 @@ export default function AdminShops({ categories }) {
               : multipleActionType === 'unbann'
                 ? 'Yes, Unban'
                 : 'Yes, Ban'}
+          </LoadingButton>
+        </DialogActions>
+      </Dialog>
+
+      {/* Popular modal */}
+      <Dialog
+        onClose={handleClose}
+        open={modalType === 'multiplePopular' || modalType === 'singlePopular'}
+        maxWidth="xs"
+      >
+        <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+          <WarningRoundedIcon sx={{ mr: 1 }} />
+          {modalType === 'singlePopular'
+            ? markShop?.isPopular
+              ? 'Remove Influencer from Popular'
+              : 'Mark Influencer as Popular'
+            : multipleActionType === 'active'
+              ? 'Mark Influencers as Popular'
+              : 'Remove Influencers from Popular'}
+        </DialogTitle>
+
+        <DialogContent>
+          {modalType === 'singlePopular' ? (
+            <DialogContentText>
+              {markShop?.isPopular
+                ? 'Are you sure you want to remove this influencer from the Popular list? You can feature them again anytime.'
+                : 'Would you like to mark this influencer as Popular?'}
+            </DialogContentText>
+          ) : (
+            <DialogContentText>
+              {multipleActionType !== 'active'
+                ? 'Are you sure you want to remove these influencers from the Popular list? You can feature them again anytime.'
+                : 'Would you like to mark these influencers as Popular?'}
+            </DialogContentText>
+          )}
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleClose} color="inherit">
+            No, keep it
+          </Button>
+          <LoadingButton variant="contained" loading={popularLoading} onClick={() => changePopular()}>
+            Yes,&nbsp;
+            {modalType === 'singlePopular'
+              ? markShop?.isPopular
+                ? 'Remove from Popular'
+                : 'Mark as Popular'
+              : multipleActionType !== 'active'
+                ? 'Remove from Popular'
+                : 'Mark as Popular'}
           </LoadingButton>
         </DialogActions>
       </Dialog>
