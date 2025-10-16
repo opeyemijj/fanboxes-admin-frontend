@@ -16,6 +16,7 @@ export const metadata = {
 
 // 👇 Add this line
 export const dynamic = 'force-dynamic';
+export const revalidate = 0; // 👈 add this
 
 export default async function page() {
   const { data: allBrandsData } = await api.getAllBrandsByAdmin();

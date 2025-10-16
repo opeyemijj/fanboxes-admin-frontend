@@ -198,7 +198,11 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, bran
                     {/* ✅ Brand Dropdown */}
                     <div>
                       <Stack direction="row" alignItems="center" justifyContent="space-between">
-                        <LabelStyle>Select Brand</LabelStyle>
+                        {isApiLoading ? (
+                          <Skeleton variant="text" width={140} />
+                        ) : (
+                          <LabelStyle htmlFor="select-brand">{'Select Brand'}</LabelStyle>
+                        )}
 
                         {/* Show plus icon only when itemsData is empty */}
                         <Tooltip title="Add new Brand">
@@ -207,25 +211,30 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, bran
                           </IconButton>
                         </Tooltip>
                       </Stack>
-                      <TextField
-                        select
-                        fullWidth
-                        id="brand"
-                        value={values.brand}
-                        onChange={handleBrandChange}
-                        error={Boolean(touched.brand && errors.brand)}
-                        helperText={touched.brand && errors.brand}
-                      >
-                        <MenuItem value="">Select Brand</MenuItem>
-                        {brands?.map((brand) => (
-                          <MenuItem key={brand._id} value={brand._id}>
-                            <Stack direction="row" alignItems="center" spacing={1}>
-                              <Avatar src={brand.logo?.url} alt={brand.name} sx={{ width: 24, height: 24 }} />
-                              <Typography variant="body2">{brand.name}</Typography>
-                            </Stack>
-                          </MenuItem>
-                        ))}
-                      </TextField>
+
+                      {isApiLoading ? (
+                        <Skeleton variant="rectangular" width="100%" height={56} />
+                      ) : (
+                        <TextField
+                          select
+                          fullWidth
+                          id="brand"
+                          value={values.brand}
+                          onChange={handleBrandChange}
+                          error={Boolean(touched.brand && errors.brand)}
+                          helperText={touched.brand && errors.brand}
+                        >
+                          <MenuItem value="">Select Brand</MenuItem>
+                          {brands?.map((brand) => (
+                            <MenuItem key={brand._id} value={brand._id}>
+                              <Stack direction="row" alignItems="center" spacing={1}>
+                                <Avatar src={brand.logo?.url} alt={brand.name} sx={{ width: 24, height: 24 }} />
+                                <Typography variant="body2">{brand.name}</Typography>
+                              </Stack>
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                      )}
                     </div>
 
                     {/* Description */}

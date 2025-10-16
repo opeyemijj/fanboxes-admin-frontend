@@ -32,6 +32,7 @@ export default function BrandsForm({ data: currentBrand, isLoading: brandLoading
     onSuccess: (data) => {
       toast.success(data.message);
       router.back();
+      setTimeout(() => router.refresh(), 200);
     },
     onError: (error) => {
       console.log(error, 'check the error');
