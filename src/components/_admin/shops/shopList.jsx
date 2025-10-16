@@ -371,22 +371,22 @@ export default function AdminShops({ categories }) {
             action: openAssignUsersForSelectedRecords
           },
           {
-            hasPermission: UsePermission('approve_influencer'),
+            hasPermission: UsePermission('featured_influencer'),
             actionName: 'Mark Featured',
             action: handleClickOpenStatus(null, 'multipleFeatured', 'active')
           },
           {
-            hasPermission: UsePermission('approve_influencer'),
+            hasPermission: UsePermission('featured_influencer'),
             actionName: 'Unmark Featured',
             action: handleClickOpenStatus(null, 'multipleFeatured', 'inactive')
           },
           {
-            hasPermission: UsePermission('approve_influencer'),
+            hasPermission: UsePermission('popular_influencer'),
             actionName: 'Mark Popular',
             action: handleClickOpenStatus(null, 'multiplePopular', 'active')
           },
           {
-            hasPermission: UsePermission('approve_influencer'),
+            hasPermission: UsePermission('popular_influencer'),
             actionName: 'Unmark Popular',
             action: handleClickOpenStatus(null, 'multiplePopular', 'inactive')
           }

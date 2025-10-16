@@ -46,6 +46,8 @@ export default function ProductRow({
   const canApprove = UsePermission('approve_influencer');
   const canBan = UsePermission('ban_unban_influencer');
   const canAssign = UsePermission('assign_influencer_to_user');
+  const canFeatured = UsePermission('featured_influencer');
+  const canPoppular = UsePermission('popular_influencer');
 
   function MoreActionsMenu({
     row,
@@ -87,15 +89,19 @@ export default function ProductRow({
             </MenuItem>
           )}
 
-          <MenuItem onClick={handleClickOpenFeatured(row, 'singleFeatured')}>
-            {!row.isFeatured ? <MdCheckCircle color="green" size={20} /> : <MdCancel color="orange" size={20} />}
-            <ListItemText sx={{ ml: 1 }}>{row?.isFeatured ? 'Unmark Featured' : 'Mark Featured'}</ListItemText>
-          </MenuItem>
+          {canFeatured && (
+            <MenuItem onClick={handleClickOpenFeatured(row, 'singleFeatured')}>
+              {!row.isFeatured ? <MdCheckCircle color="green" size={20} /> : <MdCancel color="orange" size={20} />}
+              <ListItemText sx={{ ml: 1 }}>{row?.isFeatured ? 'Unmark Featured' : 'Mark Featured'}</ListItemText>
+            </MenuItem>
+          )}
 
-          <MenuItem onClick={handleClickOpenPopular(row, 'singlePopular')}>
-            {!row.isPopular ? <MdCheckCircle color="green" size={20} /> : <MdCancel color="orange" size={20} />}
-            <ListItemText sx={{ ml: 1 }}>{row?.isPopular ? 'Unmark Popular' : 'Mark Popular'}</ListItemText>
-          </MenuItem>
+          {canPoppular && (
+            <MenuItem onClick={handleClickOpenPopular(row, 'singlePopular')}>
+              {!row.isPopular ? <MdCheckCircle color="green" size={20} /> : <MdCancel color="orange" size={20} />}
+              <ListItemText sx={{ ml: 1 }}>{row?.isPopular ? 'Unmark Popular' : 'Mark Popular'}</ListItemText>
+            </MenuItem>
+          )}
         </Menu>
       </>
     );
