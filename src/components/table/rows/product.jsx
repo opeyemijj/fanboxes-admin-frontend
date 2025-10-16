@@ -255,7 +255,7 @@ export default function ProductRow({
         {isLoading ? (
           <Skeleton variant="text" />
         ) : (
-          <Link style={{ textDecoration: 'none', color: 'inherit' }} href={`products/box/${row?.slug}`} passHref>
+          <Link style={{ textDecoration: 'none', color: 'inherit' }} href={`/admin/products/box/${row?.slug}`} passHref>
             <Typography
               sx={{
                 color: 'success.light',
