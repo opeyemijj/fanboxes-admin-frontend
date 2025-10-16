@@ -35,6 +35,7 @@ import { LoadingButton } from '@mui/lab';
 // icons
 import { MdOutlineVisibility, MdLock, MdOutlineVisibilityOff } from 'react-icons/md';
 import { IoMdMail } from 'react-icons/io';
+import { checkIsAdmin } from 'src/utils/checkAdmin';
 
 export default function LoginForm() {
   const { push } = useRouter();
@@ -47,6 +48,13 @@ export default function LoginForm() {
     onSuccess: async (data) => {
       // console.log(data, 'Checking the login data');
       dispatch(setLogin(data.user));
+
+      if (!checkIsAdmin(data.user.role)) {
+        toast.error('Only admin have access to login');
+        setloading(false);
+        return;
+      }
+
       // dispatch(setWishlist(data.user.wishlist));
 
       //await createCookies('token', data.token);
