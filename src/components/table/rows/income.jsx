@@ -17,6 +17,7 @@ import { fDateShort } from 'src/utils/formatTime';
 // icons
 import { MdEdit } from 'react-icons/md';
 import { IoBagCheckOutline, IoEye } from 'react-icons/io5';
+import { UsePermission } from 'src/hooks/usePermission';
 
 IncomeList.propTypes = {
   isLoading: PropTypes.bool.isRequired,
@@ -60,6 +61,9 @@ export default function IncomeList({
   slug,
   showMonthlyOrders
 }) {
+  const canView = UsePermission('view_payment_details');
+  const canEdit = UsePermission('edit_payment');
+
   const theme = useTheme();
   const router = useRouter();
   return (
@@ -137,21 +141,29 @@ export default function IncomeList({
             <Skeleton variant="circular" width={34} height={34} sx={{ mr: 1 }} />
           ) : row?.thisMonth ? null : (
             !isVendor && (
-              <Tooltip title="Edit">
-                <IconButton onClick={() => handleClickOpen(row)}>
-                  <MdEdit />
-                </IconButton>
-              </Tooltip>
+              <>
+                {canEdit && (
+                  <Tooltip title="Edit">
+                    <IconButton onClick={() => handleClickOpen(row)}>
+                      <MdEdit />
+                    </IconButton>
+                  </Tooltip>
+                )}
+              </>
             )
           )}
           {isLoading ? (
             <Skeleton variant="circular" width={34} height={34} sx={{ mr: 1 }} />
           ) : row?._id ? (
-            <Tooltip title="Preview">
-              <IconButton onClick={() => router.push(`/${isVendor ? 'vendor' : 'admin'}/payments/${row._id}`)}>
-                <IoEye />
-              </IconButton>
-            </Tooltip>
+            <>
+              {canView && (
+                <Tooltip title="Preview">
+                  <IconButton onClick={() => router.push(`/${isVendor ? 'vendor' : 'admin'}/payments/${row._id}`)}>
+                    <IoEye />
+                  </IconButton>
+                </Tooltip>
+              )}
+            </>
           ) : null}
 
           {isLoading ? (
