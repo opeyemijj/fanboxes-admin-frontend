@@ -31,10 +31,10 @@ export default function BrandList() {
   const [id, setId] = useState(null);
 
   const { data, isLoading, error } = useQuery(
-    ['brands', apicall, searchParam, pageParam],
-    () => api.getCurrenciesByAdmin(+pageParam || 1, searchParam || ''),
+    ['brands', apicall, searchParams.toString()],
+    () => api.getCurrenciesByAdmin(searchParams.toString()),
     {
-      onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
+      onError: (err) => toast.error(err.message || 'Something went wrong!')
     }
   );
 

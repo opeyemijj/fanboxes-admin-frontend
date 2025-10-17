@@ -12,12 +12,17 @@ import Label from 'src/components/label';
 // icons
 import { MdEdit } from 'react-icons/md';
 import { MdDelete } from 'react-icons/md';
+import { UsePermission } from 'src/hooks/usePermission';
 
-export default function BrandsRow({ isLoading, row, handleClickOpen }) {
+export default function BrandsRow({ isLoading, row, handleClickOpen, sn }) {
+  const canEdit = UsePermission('edit_currency');
+  const canDelete = UsePermission('delete_currency');
+
   const router = useRouter();
   const theme = useTheme();
   return (
     <TableRow hover key={Math.random()}>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : row.name + ` (${row.code})`}</TableCell>
 
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <> {row.country} </>}</TableCell>
@@ -45,16 +50,21 @@ export default function BrandsRow({ isLoading, row, handleClickOpen }) {
             </>
           ) : (
             <>
-              <Tooltip title="Edit">
-                <IconButton onClick={() => router.push(`/admin/currencies/${row?._id}`)}>
-                  <MdEdit />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Delete">
-                <IconButton onClick={handleClickOpen(row._id)}>
-                  <MdDelete />
-                </IconButton>
-              </Tooltip>
+              {canEdit && (
+                <Tooltip title="Edit">
+                  <IconButton onClick={() => router.push(`/admin/currencies/${row?._id}`)}>
+                    <MdEdit />
+                  </IconButton>
+                </Tooltip>
+              )}
+
+              {canDelete && (
+                <Tooltip title="Delete">
+                  <IconButton onClick={handleClickOpen(row._id)}>
+                    <MdDelete />
+                  </IconButton>
+                </Tooltip>
+              )}
             </>
           )}
         </Stack>

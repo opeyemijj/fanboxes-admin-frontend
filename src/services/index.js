@@ -559,10 +559,16 @@ export const getAllShopsByAdmin = async () => {
   const { data } = await http.get(`/admin/all-shops`);
   return data;
 };
-export const getCurrenciesByAdmin = async (page, search) => {
-  const { data } = await http.get(`/admin/currencies?page=${page || 1}&search=${search || ''}`);
+export const getCurrenciesByAdmin = async (params) => {
+  const { data } = await http.get(`/admin/currencies?${params}`);
   return data;
 };
+
+export const deleteCurrencyByAdmin = async (id) => {
+  const { data: response } = await http.delete(`/admin/currencies/${id}`);
+  return response;
+};
+
 export const addCurrencyByAdmin = async (payload) => {
   const { data } = await http.post(`/admin/currencies`, payload);
   return data;
