@@ -8,6 +8,8 @@ import * as api from 'src/services';
 import { useQuery } from 'react-query';
 import PropTypes from 'prop-types';
 import { SortArrayAlphabetically } from 'src/utils/sorting';
+import { UsePermission } from 'src/hooks/usePermission';
+import AccessDenied from 'src/components/cards/AccessDenied';
 
 Page.propTypes = {
   params: PropTypes.shape({
@@ -26,6 +28,11 @@ export default function Page({ params }) {
       toast.error(err.response.data.message || 'Something went wrong!');
     }
   });
+
+  const canEdit = UsePermission('edit_coupon_code');
+  if (!canEdit) {
+    return <AccessDenied message="You are not allowed to edit Coupon Code." redirect="/admin/dashboard" />;
+  }
 
   return (
     <div>

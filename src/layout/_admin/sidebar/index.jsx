@@ -209,7 +209,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
       id: 11,
       title: 'Coupon codes',
       slug: 'coupon-codes',
-      hasPermission: UsePermission('view_copon_code_listing'),
+      hasPermission: UsePermission('view_coupon_code_listing'),
       icon: <RiCoupon5Line />,
       isSearch: true
     },
