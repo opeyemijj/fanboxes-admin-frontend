@@ -50,7 +50,16 @@ IncomeList.propTypes = {
   isVendor: PropTypes.bool
 };
 
-export default function IncomeList({ isLoading, row, handleClickOpen, isPayout, isVendor, sn, slug }) {
+export default function IncomeList({
+  isLoading,
+  row,
+  handleClickOpen,
+  isPayout,
+  isVendor,
+  sn,
+  slug,
+  showMonthlyOrders
+}) {
   const theme = useTheme();
   const router = useRouter();
   return (
@@ -148,24 +157,28 @@ export default function IncomeList({ isLoading, row, handleClickOpen, isPayout, 
           {isLoading ? (
             <Skeleton variant="circular" width={34} height={34} sx={{ mr: 1 }} />
           ) : (
-            <Tooltip title="Orders">
-              <IconButton
-                onClick={() => {
-                  const startDate = new Date(row?.date);
-                  const endDate = new Date(startDate);
-                  endDate.setMonth(endDate.getMonth() + 1); // add 1 month
+            <>
+              {showMonthlyOrders && (
+                <Tooltip title="Orders">
+                  <IconButton
+                    onClick={() => {
+                      const startDate = new Date(row?.date);
+                      const endDate = new Date(startDate);
+                      endDate.setMonth(endDate.getMonth() + 1); // add 1 month
 
-                  const start = startDate.toISOString();
-                  const end = endDate.toISOString();
+                      const start = startDate.toISOString();
+                      const end = endDate.toISOString();
 
-                  router.push(
-                    `/${isVendor ? 'vendor' : 'admin'}/shops/orders/${slug}?startDate=${start}&endDate=${end}`
-                  );
-                }}
-              >
-                <IoBagCheckOutline />
-              </IconButton>
-            </Tooltip>
+                      router.push(
+                        `/${isVendor ? 'vendor' : 'admin'}/shops/orders/${slug}?startDate=${start}&endDate=${end}`
+                      );
+                    }}
+                  >
+                    <IoBagCheckOutline />
+                  </IconButton>
+                </Tooltip>
+              )}
+            </>
           )}
         </Stack>
       </TableCell>

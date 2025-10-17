@@ -40,7 +40,7 @@ export default async function page() {
           }
         ]}
       />
-      <PayoutsList shops={SortArrayAlphabetically(shops)} />
+      <PayoutsList shops={SortArrayAlphabetically(shops)} showMonthlyOrders={false} />
     </div>
   );
 }
