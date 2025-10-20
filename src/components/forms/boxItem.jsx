@@ -16,7 +16,10 @@ import {
   CircularProgress,
   InputAdornment,
   Tooltip,
-  IconButton
+  IconButton,
+  FormControl,
+  Select,
+  FormHelperText
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
@@ -65,7 +68,9 @@ export default function AddItemForm({ currentItem, isInitialized = false, isVend
   const Schema = Yup.object().shape({
     item: Yup.object().required('Select an item'),
     weight: Yup.number().max(100, 'Max limit 100').required('Weight is required'),
-    odd: Yup.number().max(1, 'Max limit 1').required('Odd is required')
+    odd: Yup.number().max(1, 'Max limit 1').required('Odd is required'),
+    margin: Yup.string().required('Item margin is required'),
+    sourceType: Yup.string().required('Source type is required')
   });
 
   // 🔹 Find the full item object for initial value (if editing)
@@ -77,7 +82,9 @@ export default function AddItemForm({ currentItem, isInitialized = false, isVend
     initialValues: {
       item: initialItem || null,
       weight: currentItem?.weight || '',
-      odd: currentItem?.odd || ''
+      odd: currentItem?.odd || '',
+      margin: currentItem?.margin || '',
+      sourceType: currentItem?.sourceType || ''
     },
     validationSchema: Schema,
     onSubmit: async (values) => {
@@ -88,6 +95,8 @@ export default function AddItemForm({ currentItem, isInitialized = false, isVend
           slug: values.item.slug,
           weight: values.weight,
           odd: values.odd,
+          sourceType: values.sourceType,
+          margin: values.margin,
           ...(currentItem && { currentSlug: currentItem.slug })
         });
       } catch (error) {
@@ -169,6 +178,33 @@ export default function AddItemForm({ currentItem, isInitialized = false, isVend
                     )}
                   </div>
 
+                  <div>
+                    <FormControl fullWidth>
+                      {isInitialized ? (
+                        <Skeleton variant="text" width={100} />
+                      ) : (
+                        <LabelStyle component={'label'} htmlFor="shop-select">
+                          {'Source Type'}
+                        </LabelStyle>
+                      )}
+
+                      <Select native {...getFieldProps('sourceType')} value={values.sourceType} id="shop-select">
+                        <option value="">-- Select Source Type --</option>
+                        {['Fanboxes', 'Influencer']?.map((item) => (
+                          <option key={item} value={item}>
+                            {item}
+                          </option>
+                        ))}
+                      </Select>
+
+                      {touched.sourceType && errors.sourceType && (
+                        <FormHelperText error sx={{ px: 2, mx: 0 }}>
+                          {touched.sourceType && errors.sourceType}
+                        </FormHelperText>
+                      )}
+                    </FormControl>
+                  </div>
+
                   {/* 🔹 Weight Field */}
                   <div>
                     <LabelStyle>Weight</LabelStyle>
@@ -202,6 +238,20 @@ export default function AddItemForm({ currentItem, isInitialized = false, isVend
                         const val = e.target.value;
                         convertWeightOdd({ odd: val });
                         getFieldProps('odd').onChange(e);
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <LabelStyle>Margin</LabelStyle>
+                    <TextField
+                      fullWidth
+                      {...getFieldProps('margin')}
+                      error={Boolean(touched.margin && errors.margin)}
+                      helperText={touched.margin && errors.margin}
+                      InputProps={{ type: 'number' }}
+                      onChange={(e) => {
+                        getFieldProps('margin').onChange(e);
                       }}
                     />
                   </div>
