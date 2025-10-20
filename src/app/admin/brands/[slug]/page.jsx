@@ -35,7 +35,7 @@ export default function Page({ params }) {
     <div>
       <HeaderBreadcrumbs
         admin
-        heading="Categories List"
+        heading="Update Brand"
         links={[
           {
             name: 'Dashboard',

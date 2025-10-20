@@ -38,7 +38,7 @@ export default function Page({ params }) {
     <div>
       <HeaderBreadcrumbs
         admin
-        heading="Edit Cupon"
+        heading="Edit Coupon"
         links={[
           {
             name: 'Dashboard',
