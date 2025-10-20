@@ -66,6 +66,7 @@ export default function UserRow({
   const canEditAdmin = UsePermission('edit_admin_user');
   const canTopUp = UsePermission('top_up');
   const canApprove = UsePermission('approve_user');
+  const changePassword = UsePermission('change_password');
   const router = useRouter();
 
   const [openMore, setOpenMore] = useState(false);
@@ -190,7 +191,7 @@ export default function UserRow({
                         </IconButton>
                       )}
 
-                      {userType != 'user' && (
+                      {userType != 'user' && changePassword && (
                         <IconButton
                           sx={{ display: 'flex', width: '100%' }}
                           onClick={() => handleClickOpenPassword(row)}
