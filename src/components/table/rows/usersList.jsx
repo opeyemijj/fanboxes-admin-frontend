@@ -24,6 +24,7 @@ import { fDateShort } from 'src/utils/formatTime';
 import BlurImage from 'src/components/blurImage';
 import { UsePermission } from 'src/hooks/usePermission';
 import { useState } from 'react';
+import { Password } from '@mui/icons-material';
 
 UserRow.propTypes = {
   isLoading: PropTypes.bool.isRequired,
@@ -165,10 +166,11 @@ export default function UserRow({ isLoading, row, setId, handleClickOpenStatus, 
                         top: '110%',
                         right: 0,
                         zIndex: 10,
-                        minWidth: 120,
+                        minWidth: 200,
                         p: 1,
                         boxShadow: 3,
                         display: 'flex',
+
                         flexDirection: 'column',
                         gap: 0.5
                       }}
@@ -180,15 +182,22 @@ export default function UserRow({ isLoading, row, setId, handleClickOpenStatus, 
                         </IconButton>
                       )}
 
+                      {userType != 'user' && (
+                        <IconButton sx={{ display: 'flex', width: '100%' }} onClick={() => {}}>
+                          <Password style={{ width: 30 }} size={20} />
+                          <Typography>Change Password</Typography>
+                        </IconButton>
+                      )}
+
                       {canApprove && (
                         <IconButton onClick={handleClickOpenStatus(row)}>
                           {!row?.isActive ? (
-                            <Grid sx={{ display: 'flex' }}>
+                            <Grid sx={{ display: 'flex', width: '100%' }}>
                               <MdCheckCircle style={{ width: 30 }} color="green" size={23} />
                               <Typography>Approve</Typography>
                             </Grid>
                           ) : (
-                            <Grid sx={{ display: 'flex' }}>
+                            <Grid sx={{ display: 'flex', width: '100%' }}>
                               <MdCancel style={{ width: 30 }} color="orange" size={23} />
                               <Typography>Draft</Typography>
                             </Grid>
