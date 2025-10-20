@@ -62,6 +62,7 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, bran
   const NewProductSchema = Yup.object().shape({
     name: Yup.string().max(100, 'Name max limit 100 char').required('Item name is required'),
     value: Yup.string().required('Item value is required'),
+    margin: Yup.string().required('Item margin is required'),
     description: Yup.string().optional(),
     slug: Yup.string().required('Slug is required'),
     images: Yup.array().min(1, 'Image is required'),
@@ -75,6 +76,7 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, bran
       description: currentItem?.description || '',
       slug: currentItem?.slug || '',
       value: currentItem?.value || '',
+      margin: currentItem?.margin || '',
       images: currentItem?.images || [],
       blob: currentItem?.blob || [],
       brand: currentItem?.brand || '',
@@ -303,6 +305,22 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, bran
                       }}
                       error={Boolean(touched.value && errors.value)}
                       helperText={touched.value && errors.value}
+                    />
+                  </div>
+
+                  <div>
+                    <LabelStyle htmlFor="margin">{'Margin'}</LabelStyle>
+                    <TextField
+                      id="margin"
+                      fullWidth
+                      placeholder="0.00"
+                      {...getFieldProps('margin')}
+                      InputProps={{
+                        startAdornment: <InputAdornment position="start">{fCurrency(0)?.split('0')[0]}</InputAdornment>,
+                        type: 'number'
+                      }}
+                      error={Boolean(touched.margin && errors.margin)}
+                      helperText={touched.margin && errors.margin}
                     />
                   </div>
 
