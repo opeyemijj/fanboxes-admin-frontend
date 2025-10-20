@@ -355,6 +355,11 @@ export const updateUserActiveInactiveByAdmin = async ({ _id, ...payload }) => {
   return response;
 };
 
+export const updateUserPasswordByAdmin = async ({ userId, ...payload }) => {
+  const { data: response } = await http.put(`/admin/users/change-password/${userId}`, payload);
+  return response;
+};
+
 export const updateSlideActiveInactiveByAdmin = async ({ slug, ...payload }) => {
   const { data: response } = await http.put(`/admin/slides/active/${slug}`, payload);
   return response;

@@ -53,7 +53,15 @@ const ThumbImgStyle = styled(Box)(({ theme }) => ({
   overflow: 'hidden'
 }));
 
-export default function UserRow({ isLoading, row, setId, handleClickOpenStatus, handleClickOpenTopUp, sn, userType }) {
+export default function UserRow({
+  isLoading,
+  row,
+  handleClickOpenStatus,
+  handleClickOpenTopUp,
+  sn,
+  userType,
+  handleClickOpenPassword
+}) {
   const canViewDetails = UsePermission('view_user_details');
   const canEditAdmin = UsePermission('edit_admin_user');
   const canTopUp = UsePermission('top_up');
@@ -183,7 +191,10 @@ export default function UserRow({ isLoading, row, setId, handleClickOpenStatus, 
                       )}
 
                       {userType != 'user' && (
-                        <IconButton sx={{ display: 'flex', width: '100%' }} onClick={() => {}}>
+                        <IconButton
+                          sx={{ display: 'flex', width: '100%' }}
+                          onClick={() => handleClickOpenPassword(row)}
+                        >
                           <Password style={{ width: 30 }} size={20} />
                           <Typography>Change Password</Typography>
                         </IconButton>
