@@ -144,7 +144,12 @@ export default function IncomeList({
               <>
                 {canEdit && (
                   <Tooltip title="Edit">
-                    <IconButton onClick={() => handleClickOpen(row)}>
+                    <IconButton
+                      onClick={() => {
+                        console.log(row);
+                        handleClickOpen(row);
+                      }}
+                    >
                       <MdEdit />
                     </IconButton>
                   </Tooltip>

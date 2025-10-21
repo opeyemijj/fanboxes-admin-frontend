@@ -36,7 +36,7 @@ const TABLE_HEAD = [
   { id: 'transaction', label: 'Transaction Type', alignRight: false, sort: true }
   // { id: '', label: 'actions', alignRight: true }
 ];
-export default function AccountsAdminList({ isVendor, shops, searchBy }) {
+export default function AccountsAdminList({ accountData, apiLoading, isVendor, shops, searchBy }) {
   const searchParams = useSearchParams();
 
   const params = new URLSearchParams(searchParams);
@@ -254,11 +254,11 @@ export default function AccountsAdminList({ isVendor, shops, searchBy }) {
     <>
       <Table
         headData={TABLE_HEAD}
-        data={data}
-        isLoading={isLoading}
+        data={accountData ? accountData : data}
+        isLoading={apiLoading ? apiLoading : isLoading}
         row={AccountList}
         isVendor={isVendor}
-        isSearch={searchBy ? false : true}
+        isSearch={searchBy || accountData ? false : true}
       />
     </>
   );

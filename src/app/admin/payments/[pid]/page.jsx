@@ -27,6 +27,7 @@ import { useQuery } from 'react-query';
 import parseMongooseError from 'src/utils/errorHandler';
 import { UsePermission } from 'src/hooks/usePermission';
 import AccessDenied from 'src/components/cards/AccessDenied';
+import AccountList from 'src/components/_admin/accounts/accountList';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'User', alignRight: false },
@@ -101,12 +102,19 @@ export default function Page({ params: { pid } }) {
       <ShopDetailCover data={data?.shop} isLoading={isLoading} />
       <ShopDetail data={dataMain} isLoading={isLoading} />
       <br />
-      <Table
+      {/* <Table
         headData={TABLE_HEAD}
         data={data?.data}
         isLoading={isLoading}
         row={OrderList}
         handleClickOpen={() => console.log('clicked')}
+      /> */}
+
+      <AccountList
+        accountData={{ data: data?.payment?.accounts }}
+        apiLoading={isLoading}
+        shops={null}
+        searchBy={null}
       />
     </div>
   );

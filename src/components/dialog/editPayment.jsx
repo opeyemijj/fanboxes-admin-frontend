@@ -100,6 +100,7 @@ export default function FormDialog({ open, handleClose, data, setCount }) {
         ...rest,
         shop: data.shop,
         orders: data.orders,
+        accounts: data.accounts,
         date: data?.date,
         pid: data?._id || null
       });
