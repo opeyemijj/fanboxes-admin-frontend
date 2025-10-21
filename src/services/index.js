@@ -444,6 +444,12 @@ export const getOrdersByAdmin = async (payload) => {
   const { data } = await http.get(`/admin/orders?${payload}`);
   return data;
 };
+
+export const getAccountsByAdmin = async (payload) => {
+  const { data } = await http.get(`/admin/accounts?${payload}`);
+  return data;
+};
+
 export const getOrderByAdmin = async (id) => {
   const { data } = await http.get(`/admin/orders/${id}`);
   return data;

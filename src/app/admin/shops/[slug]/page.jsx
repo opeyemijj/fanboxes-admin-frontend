@@ -27,6 +27,7 @@ import { useQuery } from 'react-query';
 import ShopSpinList from 'src/components/_admin/shops/shopSpin';
 import AccessDenied from 'src/components/cards/AccessDenied';
 import { UsePermission } from 'src/hooks/usePermission';
+import ShopAccountList from 'src/components/_admin/shops/shopAccount';
 
 Page.propTypes = {
   params: PropTypes.object.isRequired
@@ -43,6 +44,7 @@ export default function Page({ params: { slug } }) {
   const [viewSection, setViewSection] = useState('income');
 
   const totalSpins = data?.totalSpins || 0;
+  const totalAccounts = data?.totalAccounts || 0;
 
   const profitLoss = ((data?.totalPriceSale || 0) - (data?.totalValue || 0)).toFixed(2);
 
@@ -73,8 +75,8 @@ export default function Page({ params: { slug } }) {
     },
 
     {
-      name: 'Total Orders',
-      items: data?.totalOrders,
+      name: 'Total Transactions',
+      items: data?.totalAccounts,
       color: theme.palette.secondary.main,
       icon: <HiOutlineClipboardList size={30} />,
       viewFunction: () => SetDataType('order')
@@ -101,7 +103,8 @@ export default function Page({ params: { slug } }) {
 
       {viewSection === 'income' && <ShopIcomeList slug={slug} />}
       {viewSection === 'box' && <ShopProductList slug={slug} />}
-      {viewSection === 'order' && <ShopOrderList slug={slug} />}
+      {/* {viewSection === 'order' && <ShopOrderList slug={slug} />} */}
+      {viewSection === 'order' && <ShopAccountList slug={slug} />}
       {viewSection === 'spin' && <ShopSpinList slug={slug} />}
     </div>
   );
