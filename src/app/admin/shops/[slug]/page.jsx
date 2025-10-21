@@ -44,7 +44,6 @@ export default function Page({ params: { slug } }) {
   const [viewSection, setViewSection] = useState('income');
 
   const totalSpins = data?.totalSpins || 0;
-  const totalAccounts = data?.totalAccounts || 0;
 
   const profitLoss = ((data?.totalPriceSale || 0) - (data?.totalValue || 0)).toFixed(2);
 
@@ -75,8 +74,12 @@ export default function Page({ params: { slug } }) {
     },
 
     {
-      name: 'Total Transactions',
-      items: data?.totalAccounts,
+      name: `Influencer: ${data?.totalInfluencerAmount}, Fanboxes: ${data?.totalFanboxesAmount}`,
+      items: (
+        <>
+          {data?.totalAccounts}/{data?.totalMargin}
+        </>
+      ),
       color: theme.palette.secondary.main,
       icon: <HiOutlineClipboardList size={30} />,
       viewFunction: () => SetDataType('order')

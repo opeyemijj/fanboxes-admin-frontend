@@ -152,7 +152,7 @@ export default function AccountList({ isLoading, row, sn, selectedRows, UpdateSe
       <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.fanboxes_amount}</TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.margin}</TableCell>
 
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : capitalize(row?.transaction_type)}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.transaction_type?.toUpperCase()}</TableCell>
 
       {/* <TableCell align="right">
         <Stack direction="row" justifyContent="flex-end">

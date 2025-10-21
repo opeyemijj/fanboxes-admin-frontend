@@ -29,9 +29,9 @@ const TABLE_HEAD = [
   { id: 'box', label: 'Box', alignRight: false },
   { id: 'items', label: 'item', alignRight: false },
   { id: 'itemPrice', label: 'Item Price', alignRight: false },
-  { id: 'amount', label: 'Amount', alignRight: false },
-  { id: 'influencer_amount', label: 'Influencer Amount', alignRight: false },
-  { id: 'fanboxes_amount', label: 'Fanboxes Amount', alignRight: false },
+  { id: 'amount', label: 'Paid Amount', alignRight: false },
+  { id: 'influencer_amount', label: 'Influencer Comm', alignRight: false },
+  { id: 'fanboxes_amount', label: 'Fanboxes Comm', alignRight: false },
   { id: 'margin', label: 'Margin', alignRight: false },
   { id: 'transaction', label: 'Transaction Type', alignRight: false, sort: true }
   // { id: '', label: 'actions', alignRight: true }
