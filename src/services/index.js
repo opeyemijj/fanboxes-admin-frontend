@@ -61,8 +61,8 @@ export const getNotifications = async (page) => {
   return data;
 };
 
-export const getBrandsByAdmin = async (page, search) => {
-  const { data } = await http.get(`/admin/brands?search=${search}&page=${page}`);
+export const getBrandsByAdmin = async (params) => {
+  const { data } = await http.get(`/admin/brands?${params}`);
   return data;
 };
 export const getBrandByAdmin = async (id) => {
