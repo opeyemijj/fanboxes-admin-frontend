@@ -39,7 +39,7 @@ const TABLE_HEAD = [
   { id: 'visitedCount', label: 'Total Visit', alignRight: false, sort: true },
   { id: 'items', label: 'Items', alignRight: false, sort: true },
   { id: 'price', label: 'Price', alignRight: false, sort: true },
-  { id: 'targetRTP', label: 'Target RTP', alignRight: false, sort: true },
+  { id: 'targetRTP', label: 'TRTP', alignRight: false, sort: true },
   { id: 'status', label: 'Status', alignRight: false, sort: true },
   { id: 'createdAt', label: 'Date Created', alignRight: false, sort: true },
   // { id: 'inventoryType', label: 'Status', alignRight: false, sort: false },

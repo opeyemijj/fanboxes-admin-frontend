@@ -17,7 +17,7 @@ EditProduct.propTypes = {
 
 export default function EditProduct({ brands, categories, slug, shops, isVendor }) {
   const { data, isLoading } = useQuery(
-    ['coupon-codes'],
+    ['signle-product'],
     () => api[isVendor ? 'getVendorProductBySlug' : 'getProductBySlug'](slug),
     {
       onError: (err) => {

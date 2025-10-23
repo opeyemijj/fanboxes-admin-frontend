@@ -107,12 +107,11 @@ export default function AdminBoxeItems({ boxDetails, isVendor }) {
   }
 
   function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP) {
-    if (!boxTargetRTP) {
-      toast.error('This box don`t have any Target RTP');
-      return [];
+    let targetRTP = 0.8;
+    if (boxTargetRTP) {
+      targetRTP = boxTargetRTP / 100;
     }
 
-    const targetRTP = boxTargetRTP / 100;
     console.log(targetRTP, 'OKK SEE the targetRTP');
     const totalItems = items.length;
     const targetEV = (spinPrice * targetRTP) / totalItems;
@@ -146,9 +145,9 @@ export default function AdminBoxeItems({ boxDetails, isVendor }) {
     return items.map((item, i) => {
       return {
         ...item,
-        odd: normalizedResults[0]?.odd,
-        calcProb: normalizedResults[0]?.calcProb,
-        finalProb: normalizedResults[0]?.calcProb
+        odd: normalizedResults[i]?.odd,
+        calcProb: normalizedResults[i]?.calcProb,
+        finalProb: normalizedResults[i]?.calcProb
       };
     });
   }
@@ -156,7 +155,7 @@ export default function AdminBoxeItems({ boxDetails, isVendor }) {
   const TABLE_HEAD = [
     { id: 'name', label: 'Name', alignRight: false, sort: true },
     { id: 'value', label: 'Item Value', alignRight: false, sort: true },
-    { id: 'weight', label: 'Weight', alignRight: false, sort: true },
+
     {
       id: 'odd',
       label: (

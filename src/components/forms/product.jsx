@@ -58,7 +58,8 @@ export default function ProductForm({
   isInitialized = false,
   brands,
   shops,
-  isVendor
+  isVendor,
+  isLoading
 }) {
   const router = useRouter();
   const [loading, setloading] = React.useState(false);

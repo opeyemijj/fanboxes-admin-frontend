@@ -73,12 +73,11 @@ export default function BoxItemRow({ isLoading, row, handleClickOpen, isVendor, 
         <Typography>{formatNumberWithCommas(row?.value)} </Typography>
       </TableCell>
 
-      <TableCell align="left">
-        {isLoading ? <Skeleton variant="text" /> : <Typography>{row.weight} </Typography>}
-      </TableCell>
-
       <TableCell>
-        <Typography>{parseFloat(row?.odd?.toFixed(6)) || ''} </Typography>
+        <Typography>
+          {row?.manualProb ? row?.manualProb + '/' : ''}
+          {parseFloat(row?.odd?.toFixed(6)) || ''}{' '}
+        </Typography>
       </TableCell>
 
       <TableCell align="right">

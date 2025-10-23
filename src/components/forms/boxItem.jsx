@@ -175,7 +175,7 @@ export default function AddItemForm({ currentItem, isInitialized = false, isVend
                   </div>
 
                   {/* 🔹 Weight Field */}
-                  <div>
+                  {/* <div>
                     <LabelStyle>Weight</LabelStyle>
                     <TextField
                       fullWidth
@@ -189,7 +189,7 @@ export default function AddItemForm({ currentItem, isInitialized = false, isVend
                         getFieldProps('weight').onChange(e);
                       }}
                     />
-                  </div>
+                  </div> */}
 
                   {/* 🔹 Odd Field */}
                   <div>
