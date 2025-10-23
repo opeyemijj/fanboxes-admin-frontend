@@ -15,7 +15,9 @@ import Item from 'src/components/table/rows/item';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false, sort: true },
+  { id: 'sourceType', label: 'Source Type', alignRight: false, sort: true },
   { id: 'value', label: 'Item Value', alignRight: false, sort: true },
+  { id: 'margin', label: 'Margin', alignRight: false, sort: true },
   { id: 'createdAt', label: 'Date', alignRight: false, sort: true },
   { id: '', label: 'Actions', alignRight: true }
 ];

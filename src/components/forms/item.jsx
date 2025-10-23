@@ -19,7 +19,9 @@ import {
   MenuItem,
   Avatar,
   Tooltip,
-  IconButton
+  IconButton,
+  FormControl,
+  Select
 } from '@mui/material';
 import * as api from 'src/services';
 import { useMutation } from 'react-query';
@@ -66,7 +68,9 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, bran
     description: Yup.string().optional(),
     slug: Yup.string().required('Slug is required'),
     images: Yup.array().min(1, 'Image is required'),
-    brand: Yup.string().required('Brand is required')
+    brand: Yup.string().required('Brand is required'),
+    margin: Yup.string().required('Item margin is required'),
+    sourceType: Yup.string().required('Source type is required')
   });
 
   const formik = useFormik({
@@ -79,7 +83,9 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, bran
       images: currentItem?.images || [],
       blob: currentItem?.blob || [],
       brand: currentItem?.brand || '',
-      brandDetails: currentItem?.brandDetails || {}
+      brandDetails: currentItem?.brandDetails || {},
+      margin: currentItem?.margin || '',
+      sourceType: currentItem?.sourceType || ''
     },
     validationSchema: NewProductSchema,
     onSubmit: async (values) => {
@@ -196,6 +202,33 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, bran
                       )}
                     </div>
 
+                    <div>
+                      <FormControl fullWidth>
+                        {isApiLoading ? (
+                          <Skeleton variant="text" width={100} />
+                        ) : (
+                          <LabelStyle component={'label'} htmlFor="shop-select">
+                            {'Source Type'}
+                          </LabelStyle>
+                        )}
+
+                        <Select native {...getFieldProps('sourceType')} value={values.sourceType} id="shop-select">
+                          <option value="">-- Select Source Type --</option>
+                          {['Fanboxes', 'Influencer']?.map((item) => (
+                            <option key={item} value={item}>
+                              {item}
+                            </option>
+                          ))}
+                        </Select>
+
+                        {touched.sourceType && errors.sourceType && (
+                          <FormHelperText error sx={{ px: 2, mx: 0 }}>
+                            {touched.sourceType && errors.sourceType}
+                          </FormHelperText>
+                        )}
+                      </FormControl>
+                    </div>
+
                     {/* ✅ Brand Dropdown */}
                     <div>
                       <Stack direction="row" alignItems="center" justifyContent="space-between">
@@ -304,6 +337,20 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, bran
                       }}
                       error={Boolean(touched.value && errors.value)}
                       helperText={touched.value && errors.value}
+                    />
+                  </div>
+
+                  <div>
+                    <LabelStyle>Margin</LabelStyle>
+                    <TextField
+                      fullWidth
+                      {...getFieldProps('margin')}
+                      error={Boolean(touched.margin && errors.margin)}
+                      helperText={touched.margin && errors.margin}
+                      InputProps={{ type: 'number' }}
+                      onChange={(e) => {
+                        getFieldProps('margin').onChange(e);
+                      }}
                     />
                   </div>
 

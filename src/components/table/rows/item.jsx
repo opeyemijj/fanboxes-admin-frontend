@@ -69,10 +69,9 @@ export default function BoxItemRow({ isLoading, row, handleClickOpen, isVendor, 
         </Box>
       </TableCell>
 
-      <TableCell>
-        <Typography>{row?.value} </Typography>
-      </TableCell>
-
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : <> {row?.sourceType} </>}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : <> {row?.value} </>}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : <> {row?.margin} </>}</TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : <> {fDateShort(row.createdAt)} </>}</TableCell>
 
       <TableCell align="right">
