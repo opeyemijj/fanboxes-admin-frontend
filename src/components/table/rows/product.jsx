@@ -278,6 +278,9 @@ export default function ProductRow({
       </TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : fCurrency(row?.priceSale || row?.price)}</TableCell>
       <TableCell>
+        {isLoading ? <Skeleton variant="text" /> : `${row?.targetRTP || ''} ${row?.targetRTP ? '%' : ''}`}
+      </TableCell>
+      <TableCell>
         {isLoading ? (
           <Skeleton variant="text" />
         ) : (

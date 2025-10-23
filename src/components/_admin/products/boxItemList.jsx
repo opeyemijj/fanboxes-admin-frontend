@@ -106,6 +106,53 @@ export default function AdminBoxeItems({ boxDetails, isVendor }) {
     });
   }
 
+  function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP) {
+    if (!boxTargetRTP) {
+      toast.error('This box don`t have any Target RTP');
+      return [];
+    }
+
+    const targetRTP = boxTargetRTP / 100;
+    console.log(targetRTP, 'OKK SEE the targetRTP');
+    const totalItems = items.length;
+    const targetEV = (spinPrice * targetRTP) / totalItems;
+
+    const results = items.map((item) => {
+      const calcProb = targetEV / item.value;
+      const adjProb = item.manualProb ?? null;
+      const finalProb = adjProb !== null ? adjProb : calcProb;
+      const evContrib = item.value * finalProb;
+
+      return {
+        name: item.name,
+        value: item.value,
+        targetEV,
+        calcProb,
+        adjProb,
+        finalProb,
+        evContrib
+      };
+    });
+
+    const totalProbability = results.reduce((sum, r) => sum + r.finalProb, 0);
+    const totalEV = results.reduce((sum, r) => sum + r.evContrib, 0);
+
+    const normalizationFactor = 1 / totalProbability;
+    const normalizedResults = results.map((r) => ({
+      ...r,
+      odd: r.finalProb * normalizationFactor
+    }));
+
+    return items.map((item, i) => {
+      return {
+        ...item,
+        odd: normalizedResults[0]?.odd,
+        calcProb: normalizedResults[0]?.calcProb,
+        finalProb: normalizedResults[0]?.calcProb
+      };
+    });
+  }
+
   const TABLE_HEAD = [
     { id: 'name', label: 'Name', alignRight: false, sort: true },
     { id: 'value', label: 'Item Value', alignRight: false, sort: true },
@@ -123,10 +170,17 @@ export default function AdminBoxeItems({ boxDetails, isVendor }) {
               onClick={() => {
                 // 👇 your refresh logic here
                 if (boxDetails) {
-                  const distributedItem = distributeItems(boxDetails?.itemsData);
-                  const temdata = { data: distributedItem };
-                  UpateItemOdd(temdata);
-                  setData(temdata);
+                  // const distributedItem = distributeItems(boxDetails?.itemsData);
+                  const runningOdsAlgorithm = generateMysteryBoxOdds(
+                    boxDetails?.itemsData,
+                    boxDetails?.priceSale,
+                    boxDetails?.targetRTP
+                  );
+                  if (runningOdsAlgorithm && runningOdsAlgorithm?.length > 0) {
+                    const temdata = { data: runningOdsAlgorithm };
+                    UpateItemOdd(temdata);
+                    setData(temdata);
+                  }
                 }
               }}
             >

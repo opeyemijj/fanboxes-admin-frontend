@@ -68,8 +68,8 @@ export default function AddItemForm({ currentItem, isInitialized = false, isVend
   // 🔹 Form Schema
   const Schema = Yup.object().shape({
     item: Yup.object().required('Select an item'),
-    weight: Yup.number().max(100, 'Max limit 100').required('Weight is required'),
-    odd: Yup.number().max(1, 'Max limit 1').required('Odd is required')
+    weight: Yup.number().max(100, 'Max limit 100'),
+    manualProb: Yup.number().max(1, 'Max limit 1')
   });
 
   // 🔹 Find the full item object for initial value (if editing)
@@ -81,7 +81,7 @@ export default function AddItemForm({ currentItem, isInitialized = false, isVend
     initialValues: {
       item: initialItem || null,
       weight: currentItem?.weight || '',
-      odd: currentItem?.odd || ''
+      manualProb: currentItem?.manualProb || ''
     },
     validationSchema: Schema,
     onSubmit: async (values) => {
@@ -91,8 +91,7 @@ export default function AddItemForm({ currentItem, isInitialized = false, isVend
           itemId: values.item._id,
           slug: values.item.slug,
           weight: values.weight,
-          odd: values.odd,
-          sourceType: values.sourceType,
+          manualProb: values.manualProb,
           margin: values.margin,
           ...(currentItem && { currentSlug: currentItem.slug })
         });
@@ -106,11 +105,11 @@ export default function AddItemForm({ currentItem, isInitialized = false, isVend
   const { errors, values, touched, handleSubmit, setFieldValue, getFieldProps } = formik;
 
   // 🔹 Convert Weight ↔ Odd
-  function convertWeightOdd({ weight = null, odd = null }) {
-    if (weight !== null && odd === null) {
-      setFieldValue('odd', weight / 100);
-    } else if (odd !== null && weight === null) {
-      setFieldValue('weight', odd * 100);
+  function convertWeightOdd({ weight = null, manualProb = null }) {
+    if (weight !== null && manualProb === null) {
+      setFieldValue('manualProb', weight / 100);
+    } else if (manualProb !== null && weight === null) {
+      setFieldValue('weight', manualProb * 100);
     }
   }
 
@@ -194,20 +193,20 @@ export default function AddItemForm({ currentItem, isInitialized = false, isVend
 
                   {/* 🔹 Odd Field */}
                   <div>
-                    <LabelStyle>Odd</LabelStyle>
+                    <LabelStyle>Manual Prob</LabelStyle>
                     <TextField
                       fullWidth
-                      {...getFieldProps('odd')}
-                      error={Boolean(touched.odd && errors.odd)}
-                      helperText={touched.odd && errors.odd}
+                      {...getFieldProps('manualProb')}
+                      error={Boolean(touched.manualProb && errors.manualProb)}
+                      helperText={touched.manualProb && errors.manualProb}
                       InputProps={{
                         type: 'number',
                         endAdornment: <InputAdornment position="end">%</InputAdornment>
                       }}
                       onChange={(e) => {
                         const val = e.target.value;
-                        convertWeightOdd({ odd: val });
-                        getFieldProps('odd').onChange(e);
+                        convertWeightOdd({ manualProb: val });
+                        getFieldProps('manualProb').onChange(e);
                       }}
                     />
                   </div>

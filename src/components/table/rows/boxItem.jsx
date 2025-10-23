@@ -78,7 +78,7 @@ export default function BoxItemRow({ isLoading, row, handleClickOpen, isVendor, 
       </TableCell>
 
       <TableCell>
-        <Typography>{row.odd} </Typography>
+        <Typography>{parseFloat(row?.odd?.toFixed(6)) || ''} </Typography>
       </TableCell>
 
       <TableCell align="right">
