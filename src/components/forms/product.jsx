@@ -109,31 +109,24 @@ export default function ProductForm({
     category: Yup.string().required('Category is required'),
     priceSale: Yup.number().required('Sale price is required'),
     images: Yup.array().min(1, 'Images is required'),
-    ownerType: Yup.string().required('Owner is required')
+    ownerType: Yup.string().required('Owner is required'),
+    targetRTP: Yup.string().required('Target RTP is required')
   });
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
       name: currentProduct?.name || '',
-      category: categories?.some((c) => c._id === currentProduct?.category)
-        ? currentProduct?.category
-        : '',
-      subCategory:
-        currentProduct?.subCategory ||
-        (categories.length && categories[0].subCategories[0]?._id) ||
-        '',
+      category: categories?.some((c) => c._id === currentProduct?.category) ? currentProduct?.category : '',
+      subCategory: currentProduct?.subCategory || (categories.length && categories[0].subCategories[0]?._id) || '',
       description: currentProduct?.description || '',
       slug: currentProduct?.slug || '',
-      shop: isVendor
-        ? null
-        : shops?.some((s) => s._id === currentProduct?.shop)
-          ? currentProduct.shop
-          : '',
+      shop: isVendor ? null : shops?.some((s) => s._id === currentProduct?.shop) ? currentProduct.shop : '',
       priceSale: currentProduct?.priceSale || '',
       images: currentProduct?.images || [],
       blob: currentProduct?.blob || [],
       isFeatured: currentProduct?.isFeatured || false,
+      targetRTP: currentProduct?.targetRTP || null,
       ownerType: currentProduct?.ownerType || 'Admin'
     },
 
@@ -439,13 +432,29 @@ export default function ProductForm({
                       placeholder="0.00"
                       {...getFieldProps('priceSale')}
                       InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">{fCurrency(0)?.split('0')[0]}</InputAdornment>
-                        ),
+                        startAdornment: <InputAdornment position="start">{fCurrency(0)?.split('0')[0]}</InputAdornment>,
                         type: 'number'
                       }}
                       error={Boolean(touched.priceSale && errors.priceSale)}
                       helperText={touched.priceSale && errors.priceSale}
+                    />
+                  </div>
+
+                  <div>
+                    <LabelStyle component={'label'} htmlFor="sale-price">
+                      {'Target RTP '}
+                    </LabelStyle>
+                    <TextField
+                      id="sale-price"
+                      fullWidth
+                      placeholder=""
+                      {...getFieldProps('targetRTP')}
+                      InputProps={{
+                        endAdornment: <InputAdornment position="start">{'%'}</InputAdornment>,
+                        type: 'number'
+                      }}
+                      error={Boolean(touched.targetRTP && errors.targetRTP)}
+                      helperText={touched.targetRTP && errors.targetRTP}
                     />
                   </div>
 
@@ -464,13 +473,7 @@ export default function ProductForm({
                   </div>
 
                   <Stack spacing={2}>
-                    <LoadingButton
-                      type="submit"
-                      variant="contained"
-                      size="large"
-                      fullWidth
-                      loading={updateLoading}
-                    >
+                    <LoadingButton type="submit" variant="contained" size="large" fullWidth loading={updateLoading}>
                       {currentProduct ? 'Update Box' : 'Create Box'}
                     </LoadingButton>
                   </Stack>
