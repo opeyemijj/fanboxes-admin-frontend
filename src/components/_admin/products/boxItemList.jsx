@@ -18,7 +18,7 @@ import parseMongooseError from 'src/utils/errorHandler';
 import { UsePermission } from 'src/hooks/usePermission';
 
 export default function AdminBoxeItems({ boxDetails, isVendor }) {
-  // console.log(boxDetails, 'Check the box details');
+  console.log(boxDetails, 'Check the box details');
   const fullUrl = typeof window !== 'undefined' ? window.location.href : '';
   const lastSegmentForSlug = fullUrl.substring(fullUrl.lastIndexOf('/') + 1).split('?')[0];
 
@@ -112,7 +112,6 @@ export default function AdminBoxeItems({ boxDetails, isVendor }) {
       targetRTP = boxTargetRTP / 100;
     }
 
-    console.log(targetRTP, 'OKK SEE the targetRTP');
     const totalItems = items.length;
     const targetEV = (spinPrice * targetRTP) / totalItems;
 
@@ -155,6 +154,7 @@ export default function AdminBoxeItems({ boxDetails, isVendor }) {
   const TABLE_HEAD = [
     { id: 'name', label: 'Name', alignRight: false, sort: true },
     { id: 'value', label: 'Item Value', alignRight: false, sort: true },
+    { id: 'manualProb', label: 'Manual Prob', alignRight: false, sort: true },
 
     {
       id: 'odd',

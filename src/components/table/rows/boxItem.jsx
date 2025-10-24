@@ -74,10 +74,11 @@ export default function BoxItemRow({ isLoading, row, handleClickOpen, isVendor, 
       </TableCell>
 
       <TableCell>
-        <Typography>
-          {row?.manualProb ? row?.manualProb + '/' : ''}
-          {parseFloat(row?.odd?.toFixed(6)) || ''}{' '}
-        </Typography>
+        <Typography>{row?.manualProb ? row?.manualProb : ''} </Typography>
+      </TableCell>
+
+      <TableCell>
+        <Typography>{parseFloat(row?.odd?.toFixed(6)) || ''} </Typography>
       </TableCell>
 
       <TableCell align="right">

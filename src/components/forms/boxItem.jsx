@@ -73,7 +73,7 @@ export default function AddItemForm({ currentItem, isInitialized = false, isVend
   });
 
   // 🔹 Find the full item object for initial value (if editing)
-  const initialItem = currentItem && itemsData?.data ? itemsData.data.find((i) => i._id === currentItem._id) : null;
+  const initialItem = currentItem && itemsData?.data ? itemsData.data.find((i) => i.slug === currentItem.slug) : null;
 
   // 🔹 Formik setup
   const formik = useFormik({
