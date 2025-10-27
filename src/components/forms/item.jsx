@@ -21,7 +21,8 @@ import {
   Tooltip,
   IconButton,
   FormControl,
-  Select
+  Select,
+  Autocomplete
 } from '@mui/material';
 import * as api from 'src/services';
 import { useMutation } from 'react-query';
@@ -42,6 +43,7 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function AddItemForm({ currentItem, isLoading: isApiLoading, brands }) {
+  console.log(currentItem, 'and', brands);
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
 
@@ -229,7 +231,7 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, bran
                       </FormControl>
                     </div>
 
-                    {/* ✅ Brand Dropdown */}
+                    {/* ✅ Sweet & Searchable Brand Dropdown */}
                     <div>
                       <Stack direction="row" alignItems="center" justifyContent="space-between">
                         {isApiLoading ? (
@@ -238,7 +240,6 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, bran
                           <LabelStyle htmlFor="select-brand">{'Select Brand'}</LabelStyle>
                         )}
 
-                        {/* Show plus icon only when itemsData is empty */}
                         <Tooltip title="Add new Brand">
                           <IconButton color="primary" onClick={() => router.push('/admin/brands/add')}>
                             <Add />
@@ -249,25 +250,45 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, bran
                       {isApiLoading ? (
                         <Skeleton variant="rectangular" width="100%" height={56} />
                       ) : (
-                        <TextField
-                          select
-                          fullWidth
-                          id="brand"
-                          value={values.brand}
-                          onChange={handleBrandChange}
-                          error={Boolean(touched.brand && errors.brand)}
-                          helperText={touched.brand && errors.brand}
-                        >
-                          <MenuItem value="">Select Brand</MenuItem>
-                          {brands?.map((brand) => (
-                            <MenuItem key={brand._id} value={brand._id}>
+                        <Autocomplete
+                          key={brands}
+                          id="select-brand"
+                          options={brands || []}
+                          value={brands.find((b) => b._id?.toString() === values.brand) || null}
+                          onChange={(_, selectedBrand) => {
+                            if (selectedBrand) {
+                              setFieldValue('brand', selectedBrand._id);
+                              setFieldValue('brandDetails', {
+                                logo: selectedBrand.logo,
+                                _id: selectedBrand._id,
+                                name: selectedBrand.name,
+                                slug: selectedBrand.slug
+                              });
+                            } else {
+                              setFieldValue('brand', '');
+                              setFieldValue('brandDetails', {});
+                            }
+                          }}
+                          getOptionLabel={(option) => option.name || ''}
+                          isOptionEqualToValue={(option, value) => option._id === value._id}
+                          renderOption={(props, option) => (
+                            <li {...props} key={option._id}>
                               <Stack direction="row" alignItems="center" spacing={1}>
-                                <Avatar src={brand.logo?.url} alt={brand.name} sx={{ width: 24, height: 24 }} />
-                                <Typography variant="body2">{brand.name}</Typography>
+                                <Avatar src={option.logo?.url} alt={option.name} sx={{ width: 24, height: 24 }} />
+                                <Typography variant="body2">{option.name}</Typography>
                               </Stack>
-                            </MenuItem>
-                          ))}
-                        </TextField>
+                            </li>
+                          )}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              placeholder="Search brand..."
+                              error={Boolean(touched.brand && errors.brand)}
+                              helperText={touched.brand && errors.brand}
+                            />
+                          )}
+                          fullWidth
+                        />
                       )}
                     </div>
 

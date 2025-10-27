@@ -18,7 +18,6 @@ import parseMongooseError from 'src/utils/errorHandler';
 import { UsePermission } from 'src/hooks/usePermission';
 
 export default function AdminBoxeItems({ boxDetails, isVendor }) {
-  console.log(boxDetails, 'Check the box details');
   const fullUrl = typeof window !== 'undefined' ? window.location.href : '';
   const lastSegmentForSlug = fullUrl.substring(fullUrl.lastIndexOf('/') + 1).split('?')[0];
 
@@ -141,7 +140,12 @@ export default function AdminBoxeItems({ boxDetails, isVendor }) {
       odd: r.finalProb * normalizationFactor
     }));
 
-    return items.map((item, i) => {
+    let totalItem = 0;
+    let totalSumOffOdds = 0;
+
+    const returnData = items.map((item, i) => {
+      totalItem = totalItem + 1;
+      totalSumOffOdds = totalSumOffOdds + normalizedResults[i]?.odd;
       return {
         ...item,
         odd: normalizedResults[i]?.odd,
@@ -149,6 +153,10 @@ export default function AdminBoxeItems({ boxDetails, isVendor }) {
         finalProb: normalizedResults[i]?.calcProb
       };
     });
+
+    console.log('Total Items:', totalItem, 'Total Summ Of odds:', totalSumOffOdds);
+
+    return returnData;
   }
 
   const TABLE_HEAD = [
