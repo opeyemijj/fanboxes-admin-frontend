@@ -185,9 +185,11 @@ export default function UserRow({
                       }}
                     >
                       {userType === 'user' && canTopUp && (
-                        <IconButton sx={{ display: 'flex' }} onClick={() => handleClickOpenTopUp(row)}>
-                          <Wallet style={{ width: 30 }} size={20} />
-                          <Typography>Top Up</Typography>
+                        <IconButton onClick={() => handleClickOpenTopUp(row)}>
+                          <Grid sx={{ display: 'flex', width: '100%' }}>
+                            <Wallet style={{ width: 30 }} size={23} />
+                            <Typography>Top Up</Typography>
+                          </Grid>
                         </IconButton>
                       )}
 
