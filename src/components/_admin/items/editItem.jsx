@@ -8,10 +8,10 @@ EditItem.propTypes = {
   isLoading: PropTypes.bool.isRequired
 };
 
-export default function EditItem({ data, isLoading, brands }) {
+export default function EditItem({ data, isLoading, brands, shops }) {
   return (
     <div>
-      <ItemForm currentItem={data} isLoading={isLoading} brands={brands} />
+      <ItemForm currentItem={data} isLoading={isLoading} brands={brands} shops={shops} />
     </div>
   );
 }

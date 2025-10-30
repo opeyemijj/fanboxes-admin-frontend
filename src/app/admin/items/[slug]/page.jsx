@@ -35,6 +35,14 @@ export default function Page({ params }) {
     onError: (err) => toast.error(err.message || 'Something went wrong!')
   });
 
+  const {
+    data: shops,
+    isLoading: shopApiLoading,
+    error: shoperror
+  } = useQuery(['shops'], () => api.getAllShopsByAdmin(), {
+    onError: (err) => toast.error(err.message || 'Something went wrong!')
+  });
+
   const canAdd = UsePermission('edit_item');
   if (!canAdd) {
     return <AccessDenied message="You are not allowed to edit item." redirect="/admin/dashboard" />;
@@ -63,6 +71,7 @@ export default function Page({ params }) {
         isLoading={isLoading || brandsLoading}
         data={data?.data}
         brands={SortArrayAlphabetically(brandsData?.data, 'name')}
+        shops={SortArrayAlphabetically(shops?.data, 'title')}
       />
     </div>
   );

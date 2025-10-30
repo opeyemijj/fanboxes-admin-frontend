@@ -20,6 +20,7 @@ export const revalidate = 0; // 👈 add this
 
 export default async function page() {
   const { data: allBrandsData } = await api.getAllBrandsByAdmin();
+  const { data: shops } = await api.getAllShopsByAdmin();
   const canAdd = UsePermissionServer('add_new_brand');
   if (!canAdd) {
     return <AccessDenied message="You are not allowed to add Brand." redirect="/admin/dashboard" />;
@@ -44,7 +45,10 @@ export default async function page() {
           }
         ]}
       />
-      <AddItem brands={SortArrayAlphabetically(allBrandsData, 'name')} />
+      <AddItem
+        brands={SortArrayAlphabetically(allBrandsData, 'name')}
+        shops={SortArrayAlphabetically(shops, 'title')}
+      />
     </div>
   );
 }

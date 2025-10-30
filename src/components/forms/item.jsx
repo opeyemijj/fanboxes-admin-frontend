@@ -42,7 +42,7 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function AddItemForm({ currentItem, isLoading: isApiLoading, brands }) {
+export default function AddItemForm({ currentItem, isLoading: isApiLoading, brands, shops }) {
   console.log(currentItem, 'and', brands);
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
@@ -72,7 +72,12 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, bran
     images: Yup.array().min(1, 'Image is required'),
     brand: Yup.string().required('Brand is required'),
     margin: Yup.string().required('Item margin is required'),
-    sourceType: Yup.string().required('Source type is required')
+    sourceType: Yup.string().required('Source type is required'),
+    shop: Yup.string().when('sourceType', {
+      is: (val) => val === 'Influencer',
+      then: (schema) => schema.required('Influencer is required'),
+      otherwise: (schema) => schema.notRequired().nullable()
+    })
   });
 
   const formik = useFormik({
@@ -87,13 +92,15 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, bran
       brand: currentItem?.brand || '',
       brandDetails: currentItem?.brandDetails || {},
       margin: currentItem?.margin || '',
-      sourceType: currentItem?.sourceType || ''
+      sourceType: currentItem?.sourceType || '',
+      shop: shops?.some((s) => s._id === currentItem?.shop) ? currentItem.shop : ''
     },
     validationSchema: NewProductSchema,
     onSubmit: async (values) => {
       try {
         mutate({
           ...values,
+          shop: values.sourceType === 'Fanboxes' ? '' : values.shop,
           ...(currentItem && { currentSlug: currentItem.slug })
         });
       } catch (error) {
@@ -230,6 +237,60 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, bran
                         )}
                       </FormControl>
                     </div>
+
+                    {values?.sourceType === 'Influencer' && (
+                      <div>
+                        <Grid item xs={12} md={12}>
+                          {isApiLoading ? (
+                            <Skeleton variant="text" width={120} />
+                          ) : (
+                            <LabelStyle htmlFor="select-shop">{'Select Influencer'}</LabelStyle>
+                          )}
+
+                          {isApiLoading ? (
+                            <Skeleton variant="rectangular" width="100%" height={56} />
+                          ) : (
+                            <Autocomplete
+                              id="select-shop"
+                              options={shops || []}
+                              value={shops.find((s) => s._id?.toString() === values.shop) || null}
+                              onChange={(_, selectedShop) => {
+                                if (selectedShop) {
+                                  setFieldValue('shop', selectedShop._id);
+                                } else {
+                                  setFieldValue('shop', '');
+                                }
+                              }}
+                              getOptionLabel={(option) => option.title || ''}
+                              isOptionEqualToValue={(option, value) => option._id === value._id}
+                              renderOption={(props, option) => (
+                                <li {...props} key={option._id}>
+                                  <Stack direction="row" alignItems="center" spacing={1}>
+                                    {option.logo?.url && (
+                                      <Avatar
+                                        src={option.logo?.url}
+                                        alt={option.title}
+                                        sx={{ width: 24, height: 24 }}
+                                      />
+                                    )}
+                                    <Typography variant="body2">{option.title}</Typography>
+                                  </Stack>
+                                </li>
+                              )}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  placeholder="Search influencer..."
+                                  error={Boolean(touched.shop && errors.shop)}
+                                  helperText={touched.shop && errors.shop}
+                                />
+                              )}
+                              fullWidth
+                            />
+                          )}
+                        </Grid>
+                      </div>
+                    )}
 
                     {/* ✅ Sweet & Searchable Brand Dropdown */}
                     <div>
