@@ -27,8 +27,11 @@ export default function AdminBoxItems() {
 
         // ✅ Reverse the items array
         if (productData?.itemsData) {
-          productData.itemsData = [...productData.itemsData].reverse();
+          // ✅ Sort items by 'value' in descending order (largest first)
+          productData.itemsData = [...productData?.itemsData]?.sort((a, b) => b.value - a.value);
         }
+
+        // console.log(productData, 'Checking the product data');
 
         setProductDetails(productData);
         setBrands(brandData);
