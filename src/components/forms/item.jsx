@@ -22,7 +22,10 @@ import {
   IconButton,
   FormControl,
   Select,
-  Autocomplete
+  Autocomplete,
+  FormControlLabel,
+  Switch,
+  FormGroup
 } from '@mui/material';
 import * as api from 'src/services';
 import { useMutation } from 'react-query';
@@ -93,7 +96,8 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, bran
       brandDetails: currentItem?.brandDetails || {},
       margin: currentItem?.margin || '',
       sourceType: currentItem?.sourceType || '',
-      shop: shops?.some((s) => s._id === currentItem?.shop) ? currentItem.shop : ''
+      shop: shops?.some((s) => s._id === currentItem?.shop) ? currentItem.shop : '',
+      isInStock: currentItem?.isInStock || false
     },
     validationSchema: NewProductSchema,
     onSubmit: async (values) => {
@@ -434,6 +438,18 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, bran
                         getFieldProps('margin').onChange(e);
                       }}
                     />
+
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            onChange={(e) => setFieldValue('isInStock', e.target.checked)}
+                            checked={values.isInStock}
+                          />
+                        }
+                        label={'In Stock'}
+                      />
+                    </FormGroup>
                   </div>
 
                   {/* Submit */}
