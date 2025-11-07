@@ -83,8 +83,21 @@ export default function CustomTable({
   };
 
   const handleChange = (param, val) => {
-    setState({ ...state, [param]: val });
-    push(`${pathname}?` + createQueryString(param, val));
+    // Update local state and reset page to 1
+    const updatedState = { ...state, [param]: val, page: 1 };
+    setState(updatedState);
+
+    // Create a new query string from existing params
+    const params = new URLSearchParams(searchParams);
+
+    // Update the changed parameter
+    params.set(param, val);
+
+    // Always reset page to 1 when filter changes
+    params.set('page', 1);
+
+    // Push the updated URL
+    push(`${pathname}?${params.toString()}`);
   };
 
   // 👇 Add checkbox column if bulkAction exists

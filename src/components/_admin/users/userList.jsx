@@ -27,6 +27,7 @@ import Table from 'src/components/table/table';
 import UserList from 'src/components/table/rows/usersList';
 import RoleDialog from 'src/components/dialog/role';
 import parseMongooseError from 'src/utils/errorHandler';
+import * as Yup from 'yup';
 
 export default function AdminProducts({ userType }) {
   const TABLE_HEAD = [
@@ -39,12 +40,11 @@ export default function AdminProducts({ userType }) {
     { id: '', label: 'Actions', alignRight: true }
   ];
   const searchParams = useSearchParams();
-  const [openStatus, setOpenStatus] = useState(false);
+
+  const [modalType, setModalType] = useState('');
 
   const [markUser, setMarkUser] = useState(null);
   const [markUserCurrentBalance, setMarkUserCurrentBalance] = useState(0);
-  const pageParam = searchParams.get('page');
-  const searchParam = searchParams.get('search');
   const [count, setCount] = useState(0);
 
   // TOP UP STATE
@@ -133,20 +133,83 @@ export default function AdminProducts({ userType }) {
     }
   }
 
+  // ✅ Yup validation schema
+  const passwordSchema = Yup.object().shape({
+    newPassword: Yup.string().required('Password is required.').min(8, 'Password should be 8 characters or longer.'),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref('newPassword'), null], 'Passwords must match.')
+      .required('Confirm Password is required.')
+  });
+
+  // ✅ Change Password Mutation
+  // ✅ Change Password Mutation
+  const { mutate: changePasswordMutation, isLoading: passwordLoading } = useMutation(api.updateUserPasswordByAdmin, {
+    onSuccess: (data) => {
+      toast.success(data.message || 'Password changed successfully');
+      handleClose();
+      queryClient.invalidateQueries(['user']);
+    },
+    onError: (error) => {
+      console.error(error);
+      let errorMessage = parseMongooseError(error?.message);
+      toast.error(errorMessage || 'Something went wrong while changing the password.');
+    }
+  });
+  // password modal states
+
+  // password modal states
+  const [passwordData, setPasswordData] = useState({
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [passwordErrors, setPasswordErrors] = useState({});
+
+  const handlePasswordChange = async () => {
+    try {
+      // Clear previous errors
+      setPasswordErrors({});
+
+      // Validate with Yup
+      await passwordSchema.validate(passwordData, { abortEarly: false });
+
+      // Submit mutation
+      changePasswordMutation({
+        userId: markUser?._id,
+        newPassword: passwordData.newPassword
+      });
+    } catch (error) {
+      if (error.name === 'ValidationError') {
+        const newErrors = {};
+        error.inner.forEach((err) => {
+          newErrors[err.path] = err.message;
+        });
+        setPasswordErrors(newErrors);
+      } else {
+        console.error(error);
+      }
+    }
+  };
+
   const handleClose = () => {
-    setOpenStatus(false);
     setOpenTopUp(false);
+    setModalType('');
     setMarkUser(null);
     setSelectedAmount(null);
     setCustomAmount('');
     setMarkUserCurrentBalance(0);
     setFinalAmmount(0);
+    setPasswordData({ newPassword: '', confirmPassword: '' }); // reset password modal fields
   };
 
   const handleClickOpenStatus = (prop) => () => {
     setMarkUser(prop);
-    setOpenStatus(true);
+    setModalType('status');
   };
+
+  async function handleClickOpenPassword(prop) {
+    setMarkUser(prop);
+    setModalType('change-password');
+  }
 
   async function handleClickOpenTopUp(prop) {
     setMarkUser(prop);
@@ -180,13 +243,14 @@ export default function AdminProducts({ userType }) {
         id={setId}
         handleClickOpenStatus={handleClickOpenStatus}
         handleClickOpenTopUp={handleClickOpenTopUp}
+        handleClickOpenPassword={handleClickOpenPassword}
         isSearch
         userType={userType}
       />
 
       {/* Modals */}
       {/* Active Inacive modal */}
-      <Dialog onClose={handleClose} open={openStatus} maxWidth="xs">
+      <Dialog onClose={handleClose} open={modalType === 'status'} maxWidth="xs">
         <DialogTitle sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
           <WarningRoundedIcon sx={{ mr: 1 }} />
           {markUser?.isActive ? 'Draft User' : 'Approve User'}
@@ -315,6 +379,59 @@ export default function AdminProducts({ userType }) {
             onClick={handleConfirmTopUp}
             loading={topUploading}
             disabled={!customAmount && !selectedAmount}
+          >
+            Confirm
+          </LoadingButton>
+        </DialogActions>
+      </Dialog>
+
+      {/* ✅ CHANGE PASSWORD MODAL */}
+      <Dialog onClose={handleClose} open={modalType === 'change-password'} maxWidth="sm" fullWidth>
+        <DialogTitle mb={2} sx={{ fontWeight: 'bold', fontSize: 20 }}>
+          Change Password
+        </DialogTitle>
+
+        <Divider />
+
+        <DialogContent>
+          <Stack spacing={3}>
+            <Box>
+              <TextField
+                label="New Password"
+                type="password"
+                fullWidth
+                value={passwordData.newPassword}
+                onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                error={Boolean(passwordErrors.newPassword)}
+                helperText={passwordErrors.newPassword}
+                required
+              />
+            </Box>
+
+            <Box>
+              <TextField
+                label="Confirm Password"
+                type="password"
+                fullWidth
+                value={passwordData.confirmPassword}
+                onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                error={Boolean(passwordErrors.confirmPassword)}
+                helperText={passwordErrors.confirmPassword}
+                required
+              />
+            </Box>
+          </Stack>
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleClose} color="inherit">
+            Cancel
+          </Button>
+          <LoadingButton
+            variant="contained"
+            onClick={handlePasswordChange}
+            loading={passwordLoading}
+            disabled={!passwordData.newPassword || !passwordData.confirmPassword}
           >
             Confirm
           </LoadingButton>

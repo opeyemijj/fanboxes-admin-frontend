@@ -25,6 +25,9 @@ import { CiNoWaitingSign } from 'react-icons/ci';
 import * as api from 'src/services';
 import { useQuery } from 'react-query';
 import parseMongooseError from 'src/utils/errorHandler';
+import { UsePermission } from 'src/hooks/usePermission';
+import AccessDenied from 'src/components/cards/AccessDenied';
+import AccountList from 'src/components/_admin/accounts/accountList';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'User', alignRight: false },
@@ -52,8 +55,6 @@ export default function Page({ params: { pid } }) {
       });
     }
   });
-
-  console.log(data, 'OKK Checking the pyament details data');
 
   const dataMain = [
     {
@@ -90,17 +91,30 @@ export default function Page({ params: { pid } }) {
         )
     }
   ];
+
+  const canView = UsePermission('view_payment_details');
+  if (!canView) {
+    return <AccessDenied message="You are not allowed to view payment details." redirect="/admin/dashboard" />;
+  }
+
   return (
     <div>
       <ShopDetailCover data={data?.shop} isLoading={isLoading} />
       <ShopDetail data={dataMain} isLoading={isLoading} />
       <br />
-      <Table
+      {/* <Table
         headData={TABLE_HEAD}
         data={data?.data}
         isLoading={isLoading}
         row={OrderList}
         handleClickOpen={() => console.log('clicked')}
+      /> */}
+
+      <AccountList
+        accountData={{ data: data?.payment?.accounts }}
+        apiLoading={isLoading}
+        shops={null}
+        searchBy={null}
       />
     </div>
   );

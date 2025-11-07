@@ -40,6 +40,7 @@ export default function OrderTrackingModal({ open, onClose, formik, loading, ite
               </Grid>
 
               {/* Shipped Date */}
+              {/* Shipped Date */}
               <Grid item xs={12} md={6}>
                 <TextField
                   label="Shipped"
@@ -48,6 +49,8 @@ export default function OrderTrackingModal({ open, onClose, formik, loading, ite
                   InputLabelProps={{ shrink: true }}
                   value={values.shipped ? dayjs(values.shipped, 'DD/MM/YYYY').format('YYYY-MM-DD') : ''}
                   onChange={(e) => setFieldValue('shipped', dayjs(e.target.value).format('DD/MM/YYYY'))}
+                  onKeyDown={(e) => e.preventDefault()} // ⛔ disables manual typing
+                  onClick={(e) => e.target.showPicker && e.target.showPicker()} // 📅 opens calendar immediately on click (modern browsers)
                   error={Boolean(touched.shipped && errors.shipped)}
                   helperText={touched.shipped && errors.shipped}
                 />
@@ -62,6 +65,8 @@ export default function OrderTrackingModal({ open, onClose, formik, loading, ite
                   InputLabelProps={{ shrink: true }}
                   value={values.expected ? dayjs(values.expected, 'DD/MM/YYYY').format('YYYY-MM-DD') : ''}
                   onChange={(e) => setFieldValue('expected', dayjs(e.target.value).format('DD/MM/YYYY'))}
+                  onKeyDown={(e) => e.preventDefault()} // ⛔ disables manual typing
+                  onClick={(e) => e.target.showPicker && e.target.showPicker()} // 📅 auto-opens picker on click
                   error={Boolean(touched.expected && errors.expected)}
                   helperText={touched.expected && errors.expected}
                 />

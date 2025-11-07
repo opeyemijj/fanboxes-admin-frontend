@@ -255,12 +255,29 @@ export default function ProductRow({
         {isLoading ? (
           <Skeleton variant="text" />
         ) : (
-          <Link style={{ textDecoration: 'none', color: 'inherit' }} href={`products/box/${row?.slug}`} passHref>
-            {row?.items?.length || 0} Item(s)
+          <Link style={{ textDecoration: 'none', color: 'inherit' }} href={`/admin/products/box/${row?.slug}`} passHref>
+            <Typography
+              sx={{
+                color: 'success.light',
+                fontSize: '0.60rem',
+                margin: 0.2,
+                fontSize: 13,
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  boxShadow: '0px 2px 8px rgba(0, 128, 0, 0.4)',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  transform: 'scale(1.03)'
+                }
+              }}
+            >
+              {row?.items_array?.length || 0} Item(s)
+            </Typography>
           </Link>
         )}
       </TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : fCurrency(row?.priceSale || row?.price)}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : `${row?.targetRTP || '80'}%`}</TableCell>
       <TableCell>
         {isLoading ? (
           <Skeleton variant="text" />

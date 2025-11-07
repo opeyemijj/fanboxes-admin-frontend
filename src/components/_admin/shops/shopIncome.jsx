@@ -50,6 +50,8 @@ export default function ShopIcomeList({ slug, isVendor }) {
         data={data}
         isLoading={isLoading}
         row={IncomeList}
+        showMonthlyOrders={true}
+        slug={slug}
         handleClickOpen={(v) => setPayment(v)}
         isVendor={isVendor}
       />

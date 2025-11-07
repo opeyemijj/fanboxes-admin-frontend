@@ -26,6 +26,14 @@ export async function middleware(request) {
     }
   }
 
+  if (pathname.startsWith('/auth/setup-2fa')) {
+    if (!checkIsAdmin(userRole)) {
+      const loginUrl = new URL('/auth/session', request.url);
+      loginUrl.searchParams.set('redirect', pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
   // 4. Vendor route protection
   if (pathname.startsWith('/vendor')) {
     // if (!isAuthenticated || userRole !== 'vendor') {

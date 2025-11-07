@@ -12,6 +12,7 @@ import { fCurrency } from 'src/utils/formatNumber';
 // icons
 import { MdEdit } from 'react-icons/md';
 import { MdDelete } from 'react-icons/md';
+import { UsePermission } from 'src/hooks/usePermission';
 
 CategoryRow.propTypes = {
   isLoading: PropTypes.bool.isRequired,
@@ -30,10 +31,13 @@ function isExpired(expirationDate) {
   const currentDateTime = new Date();
   return currentDateTime >= new Date(expirationDate);
 }
-export default function CategoryRow({ isLoading, row, handleClickOpen }) {
+export default function CategoryRow({ isLoading, row, handleClickOpen, sn }) {
+  const canEdit = UsePermission('edit_coupon_code');
+  const canDelete = UsePermission('delete_coupon_code');
   const router = useRouter();
   return (
     <TableRow hover key={Math.random()}>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
       <TableCell component="th" scope="row">
         <Box
           sx={{
@@ -83,16 +87,21 @@ export default function CategoryRow({ isLoading, row, handleClickOpen }) {
             </>
           ) : (
             <>
-              <Tooltip title="Edit">
-                <IconButton onClick={() => router.push(`/admin/coupon-codes/${row?._id}`)}>
-                  <MdEdit />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Delete">
-                <IconButton onClick={handleClickOpen(row._id)}>
-                  <MdDelete />
-                </IconButton>
-              </Tooltip>
+              {canEdit && (
+                <Tooltip title="Edit">
+                  <IconButton onClick={() => router.push(`/admin/coupon-codes/${row?._id}`)}>
+                    <MdEdit />
+                  </IconButton>
+                </Tooltip>
+              )}
+
+              {canDelete && (
+                <Tooltip title="Delete">
+                  <IconButton onClick={handleClickOpen(row._id)}>
+                    <MdDelete />
+                  </IconButton>
+                </Tooltip>
+              )}
             </>
           )}
         </Stack>

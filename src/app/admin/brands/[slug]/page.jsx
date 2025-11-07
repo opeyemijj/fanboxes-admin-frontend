@@ -10,6 +10,8 @@ import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
 // api
 import { useQuery } from 'react-query';
 import * as api from 'src/services';
+import { UsePermission } from 'src/hooks/usePermission';
+import AccessDenied from 'src/components/cards/AccessDenied';
 
 Page.propTypes = {
   params: PropTypes.shape({
@@ -23,11 +25,17 @@ export default function Page({ params }) {
       toast.error(err.response.data.message || 'Something went wrong!');
     }
   });
+
+  const canAdd = UsePermission('edit_brand');
+  if (!canAdd) {
+    return <AccessDenied message="You are not allowed to edit brand." redirect="/admin/dashboard" />;
+  }
+
   return (
     <div>
       <HeaderBreadcrumbs
         admin
-        heading="Categories List"
+        heading="Update Brand"
         links={[
           {
             name: 'Dashboard',

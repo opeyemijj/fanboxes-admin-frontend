@@ -3,8 +3,6 @@ import React from 'react';
 import { useMutation } from 'react-query';
 import PropTypes from 'prop-types';
 import toast from 'react-hot-toast';
-
-// mui
 import { styled } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
 import {
@@ -19,15 +17,18 @@ import {
   FormControlLabel,
   Radio,
   InputAdornment,
-  RadioGroup
+  RadioGroup,
+  Select,
+  MenuItem,
+  InputLabel,
+  Checkbox,
+  ListItemText,
+  Autocomplete,
+  Chip
 } from '@mui/material';
-// api
 import * as api from 'src/services';
-// next
 import { useRouter } from 'next-nprogress-bar';
-// yup
 import * as Yup from 'yup';
-// formik
 import { Form, FormikProvider, useFormik } from 'formik';
 
 const LabelStyle = styled(Typography)(({ theme }) => ({
@@ -37,20 +38,16 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
   lineHeight: 2.5
 }));
 
-export default function CouponCodeForm({ data: currentCouponCode, isLoading: categoryLoading }) {
+export default function CouponCodeForm({ data: currentCouponCode, isLoading: categoryLoading, shops = [] }) {
   const router = useRouter();
 
   const { mutate, isLoading } = useMutation(
     currentCouponCode ? 'update' : 'new',
     currentCouponCode ? api.updateCouponCodeByAdmin : api.addCouponCodeByAdmin,
     {
-      ...(currentCouponCode && {
-        enabled: Boolean(currentCouponCode)
-      }),
       retry: false,
       onSuccess: (data) => {
         toast.success(data.message);
-
         router.push('/admin/coupon-codes');
       },
       onError: (error) => {
@@ -63,12 +60,16 @@ export default function CouponCodeForm({ data: currentCouponCode, isLoading: cat
     name: Yup.string().required('Name is required'),
     description: Yup.string().required('Description is required'),
     code: Yup.string()
-      .required('Cover is required')
+      .required('Coupon code is required')
       .matches(/^(\S+$)/g, 'Space is not allowed'),
     discount: Yup.number().required('Discount is required'),
-    expire: Yup.date().when('eventStartDate', (eventStartDate, schema) =>
-      schema.min(new Date(), "Expiry date can't be past date.")
-    )
+    expire: Yup.date().min(new Date(), "Expiry date can't be past date."),
+    couponFor: Yup.string().required('Please select a coupon type'),
+    selectedShops: Yup.array().when('couponFor', {
+      is: 'influencer',
+      then: (schema) => schema.min(1, 'Please select at least one influencer'),
+      otherwise: (schema) => schema.notRequired()
+    })
   });
 
   const formik = useFormik({
@@ -78,25 +79,27 @@ export default function CouponCodeForm({ data: currentCouponCode, isLoading: cat
       type: currentCouponCode?.type || 'fixed',
       discount: currentCouponCode?.discount || '',
       expire: currentCouponCode?.expire?.split('T')[0] || '',
-      description: currentCouponCode?.description || ''
+      description: currentCouponCode?.description || '',
+      couponFor: currentCouponCode?.couponFor || 'whole-site',
+      selectedShops: currentCouponCode?.selectedShops || []
     },
     enableReinitialize: true,
     validationSchema: CouponCodeSchema,
     onSubmit: async (values) => {
-      const { ...rest } = values;
+      const payload = {
+        ...values,
+        ...(currentCouponCode && { currentId: currentCouponCode?._id })
+      };
       try {
-        mutate({
-          ...rest,
-          ...(currentCouponCode && {
-            currentId: currentCouponCode?._id
-          })
-        });
+        mutate(payload);
       } catch (error) {
         console.error(error);
       }
     }
   });
+
   const { errors, values, touched, handleSubmit, setFieldValue, getFieldProps } = formik;
+
   return (
     <Box position="relative">
       <FormikProvider value={formik}>
@@ -105,13 +108,13 @@ export default function CouponCodeForm({ data: currentCouponCode, isLoading: cat
             <Grid item xs={12} md={8}>
               <Card sx={{ p: 3 }}>
                 <Stack spacing={3}>
+                  {/* Name */}
                   <div>
                     {categoryLoading ? (
                       <Skeleton variant="text" width={140} />
                     ) : (
-                      <LabelStyle component={'label'} htmlFor="name">
-                        {' '}
-                        {'Name'}{' '}
+                      <LabelStyle component="label" htmlFor="name">
+                        Name
                       </LabelStyle>
                     )}
                     {categoryLoading ? (
@@ -126,12 +129,104 @@ export default function CouponCodeForm({ data: currentCouponCode, isLoading: cat
                       />
                     )}
                   </div>
+
+                  {/* Coupon For (Whole Site or Influencer) */}
+                  <div>
+                    {categoryLoading ? (
+                      <Skeleton variant="text" width={140} />
+                    ) : (
+                      <LabelStyle component="label" htmlFor="name">
+                        Coupon for
+                      </LabelStyle>
+                    )}
+                    {categoryLoading ? (
+                      <Skeleton variant="rectangular" width="100%" height={56} />
+                    ) : (
+                      <>
+                        <FormControl fullWidth>
+                          <Select
+                            id="couponFor"
+                            value={values.couponFor}
+                            onChange={(e) => setFieldValue('couponFor', e.target.value)}
+                            error={Boolean(touched.couponFor && errors.couponFor)}
+                          >
+                            <MenuItem value="whole-site">Whole Site</MenuItem>
+                            <MenuItem value="influencer">Influencer</MenuItem>
+                          </Select>
+                        </FormControl>
+                        {touched.couponFor && errors.couponFor && (
+                          <Typography color="error" variant="caption">
+                            {errors.couponFor}
+                          </Typography>
+                        )}
+                      </>
+                    )}
+                  </div>
+
+                  {/* Influencer Shops Multiselect */}
+                  {values.couponFor === 'influencer' && (
+                    <div>
+                      <LabelStyle component="label" htmlFor="selectedShops">
+                        Select Influencers
+                      </LabelStyle>
+
+                      <FormControl fullWidth>
+                        <Autocomplete
+                          multiple
+                          id="selectedShops"
+                          options={shops}
+                          disableCloseOnSelect
+                          getOptionLabel={(option) => option.title}
+                          value={shops.filter((shop) => values.selectedShops.includes(shop._id))}
+                          onChange={(event, selectedOptions) => {
+                            const selectedIds = selectedOptions.map((option) => option._id);
+                            setFieldValue('selectedShops', selectedIds);
+                          }}
+                          renderOption={(props, option, { selected }) => (
+                            <li {...props}>
+                              <Checkbox checked={selected} sx={{ mr: 1 }} />
+                              {option.title}
+                            </li>
+                          )}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              placeholder="Search influencer..."
+                              error={Boolean(touched.selectedShops && errors.selectedShops)}
+                              helperText={touched.selectedShops && errors.selectedShops}
+                            />
+                          )}
+                          renderTags={(tagValue, getTagProps) =>
+                            tagValue.map((option, index) => (
+                              <Chip
+                                {...getTagProps({ index })}
+                                key={option._id}
+                                label={option.title}
+                                sx={{
+                                  backgroundColor: '#f3f4f6',
+                                  color: '#111827',
+                                  '& .MuiChip-deleteIcon': { color: '#6b7280' }
+                                }}
+                              />
+                            ))
+                          }
+                          sx={{
+                            '& .MuiAutocomplete-inputRoot': {
+                              padding: '6px !important'
+                            }
+                          }}
+                        />
+                      </FormControl>
+                    </div>
+                  )}
+
+                  {/* Coupon Code */}
                   <div>
                     {categoryLoading ? (
                       <Skeleton variant="text" width={100} />
                     ) : (
-                      <LabelStyle component={'label'} htmlFor="coupen-code">
-                        {'Coupon code'}
+                      <LabelStyle component="label" htmlFor="coupen-code">
+                        Coupon code
                       </LabelStyle>
                     )}
                     {categoryLoading ? (
@@ -146,9 +241,11 @@ export default function CouponCodeForm({ data: currentCouponCode, isLoading: cat
                       />
                     )}
                   </div>
+
+                  {/* Discount Type */}
                   <div>
                     <FormControl>
-                      <LabelStyle component={'label'} htmlFor="discount-type">
+                      <LabelStyle component="label" htmlFor="discount-type">
                         Discount type
                       </LabelStyle>
                       <RadioGroup
@@ -162,106 +259,78 @@ export default function CouponCodeForm({ data: currentCouponCode, isLoading: cat
                       </RadioGroup>
                     </FormControl>
                   </div>
+
+                  {/* Discount */}
                   <div>
-                    {categoryLoading ? (
-                      <Skeleton variant="text" width={70} />
-                    ) : (
-                      <LabelStyle component={'label'} htmlFor="discount">
-                        {' '}
-                        {'Discount'}
-                      </LabelStyle>
-                    )}
-                    {categoryLoading ? (
-                      <Skeleton variant="rectangular" width="100%" height={56} />
-                    ) : (
-                      <TextField
-                        id="discount"
-                        fullWidth
-                        {...getFieldProps('discount')}
-                        error={Boolean(touched.discount && errors.discount)}
-                        helperText={touched.discount && errors.discount}
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end">{values.type === 'fixed' ? '$' : '%'}</InputAdornment>
-                          )
-                        }}
-                      />
-                    )}
+                    <LabelStyle component="label" htmlFor="discount">
+                      Discount
+                    </LabelStyle>
+                    <TextField
+                      id="discount"
+                      fullWidth
+                      {...getFieldProps('discount')}
+                      error={Boolean(touched.discount && errors.discount)}
+                      helperText={touched.discount && errors.discount}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">{values.type === 'fixed' ? '$' : '%'}</InputAdornment>
+                        )
+                      }}
+                    />
                   </div>
                 </Stack>
               </Card>
             </Grid>
+
+            {/* Right Section */}
             <Grid item xs={12} md={4}>
-              <div
-                style={{
-                  position: '-webkit-sticky',
-                  position: 'sticky',
-                  top: 0
-                }}
-              >
+              <div style={{ position: 'sticky', top: 0 }}>
                 <Stack spacing={3}>
                   <Card sx={{ p: 3 }}>
                     <Stack spacing={3}>
+                      {/* Description */}
                       <div>
-                        {categoryLoading ? (
-                          <Skeleton variant="text" width={150} />
-                        ) : (
-                          <LabelStyle component={'label'} htmlFor="description">
-                            {' '}
-                            {'Description'}{' '}
-                          </LabelStyle>
-                        )}
-                        {categoryLoading ? (
-                          <Skeleton variant="rectangular" width="100%" height={240} />
-                        ) : (
-                          <TextField
-                            id="description"
-                            fullWidth
-                            {...getFieldProps('description')}
-                            error={Boolean(touched.description && errors.description)}
-                            helperText={touched.description && errors.description}
-                            rows={9}
-                            multiline
-                          />
-                        )}
+                        <LabelStyle component="label" htmlFor="description">
+                          Description
+                        </LabelStyle>
+                        <TextField
+                          id="description"
+                          fullWidth
+                          {...getFieldProps('description')}
+                          error={Boolean(touched.description && errors.description)}
+                          helperText={touched.description && errors.description}
+                          rows={9}
+                          multiline
+                        />
                       </div>
+
+                      {/* Expiry Date */}
                       <div>
-                        {categoryLoading ? (
-                          <Skeleton variant="text" width={70} />
-                        ) : (
-                          <LabelStyle component={'label'} htmlFor="expiry-date">
-                            {' '}
-                            {'Expiry date'}
-                          </LabelStyle>
-                        )}
-                        {categoryLoading ? (
-                          <Skeleton variant="rectangular" width="100%" height={56} />
-                        ) : (
-                          <TextField
-                            id="expiry-date"
-                            type="date"
-                            fullWidth
-                            {...getFieldProps('expire')}
-                            error={Boolean(touched.expire && errors.expire)}
-                            helperText={touched.expire && errors.expire}
-                          />
-                        )}
+                        <LabelStyle component="label" htmlFor="expiry-date">
+                          Expiry date
+                        </LabelStyle>
+                        <TextField
+                          id="expiry-date"
+                          type="date"
+                          fullWidth
+                          {...getFieldProps('expire')}
+                          error={Boolean(touched.expire && errors.expire)}
+                          helperText={touched.expire && errors.expire}
+                        />
                       </div>
                     </Stack>
                   </Card>
-                  {categoryLoading ? (
-                    <Skeleton variant="rectangular" width="100%" height={56} />
-                  ) : (
-                    <LoadingButton
-                      type="submit"
-                      variant="contained"
-                      size="large"
-                      loading={isLoading}
-                      sx={{ ml: 'auto', mt: 3 }}
-                    >
-                      {currentCouponCode ? 'edit coupon code' : 'create coupon code'}
-                    </LoadingButton>
-                  )}
+
+                  {/* Submit Button */}
+                  <LoadingButton
+                    type="submit"
+                    variant="contained"
+                    size="large"
+                    loading={isLoading}
+                    sx={{ ml: 'auto', mt: 3 }}
+                  >
+                    {currentCouponCode ? 'Edit Coupon Code' : 'Create Coupon Code'}
+                  </LoadingButton>
                 </Stack>
               </div>
             </Grid>
@@ -271,7 +340,9 @@ export default function CouponCodeForm({ data: currentCouponCode, isLoading: cat
     </Box>
   );
 }
+
 CouponCodeForm.propTypes = {
-  data: PropTypes.object, // Adjust the type accordingly based on the actual data type
-  isLoading: PropTypes.bool
+  data: PropTypes.object,
+  isLoading: PropTypes.bool,
+  shops: PropTypes.array
 };

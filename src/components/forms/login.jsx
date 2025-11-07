@@ -35,6 +35,7 @@ import { LoadingButton } from '@mui/lab';
 // icons
 import { MdOutlineVisibility, MdLock, MdOutlineVisibilityOff } from 'react-icons/md';
 import { IoMdMail } from 'react-icons/io';
+import { checkIsAdmin } from 'src/utils/checkAdmin';
 
 export default function LoginForm() {
   const { push } = useRouter();
@@ -47,6 +48,7 @@ export default function LoginForm() {
     onSuccess: async (data) => {
       // console.log(data, 'Checking the login data');
       dispatch(setLogin(data.user));
+
       // dispatch(setWishlist(data.user.wishlist));
 
       //await createCookies('token', data.token);
@@ -77,7 +79,8 @@ export default function LoginForm() {
       const isAdmin = data.user.role.includes('admin');
       const isVendor = data.user.role.includes('vendor');
       toast.success('Logged in successfully! ');
-      push(redirect ? redirect : isAdmin ? '/admin/dashboard' : isVendor ? '/vendor/dashboard' : '/');
+      push('/auth/setup-2fa');
+      // push(redirect ? redirect : isAdmin ? '/auth/setup-2fa' : isVendor ? '/auth/setup-2fa' : '/');
     },
     onError: (err) => {
       setloading(false);
@@ -164,19 +167,19 @@ export default function LoginForm() {
               control={<Checkbox {...getFieldProps('remember')} checked={values.remember} />}
               label="Remember me"
             />
-            <Link component={RouterLink} variant="subtitle2" href="/auth/forget-password">
+            {/* <Link component={RouterLink} variant="subtitle2" href="/auth/forget-password">
               Forgot password
-            </Link>
+            </Link> */}
           </Stack>
           <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={loading}>
             login
           </LoadingButton>
-          <Typography variant="subtitle2" mt={3} textAlign="center">
+          {/* <Typography variant="subtitle2" mt={3} textAlign="center">
             Don{`'`}t you have an account? &nbsp;
             <Link href={`/auth/register${redirect ? '?redirect=' + redirect : ''}`} component={RouterLink}>
               Register
             </Link>
-          </Typography>
+          </Typography> */}
         </Form>
       </FormikProvider>
     </>

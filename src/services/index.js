@@ -18,6 +18,27 @@ export const login = async (payload) => {
   return data;
 };
 
+export const generateQr = async () => {
+  const { data } = await http.post(`/auth/generate-qr`);
+  return data;
+};
+
+export const saveRecoveryCode = async (payload) => {
+  console.log(payload, 'check');
+  const { data } = await http.post(`/auth/save-recovery-code`, payload);
+  return data;
+};
+
+export const verify2FALogin = async (payload) => {
+  const { data } = await http.post(`/auth/verify-2fa-login`, payload);
+  return data;
+};
+
+export const verify2FASetup = async (payload) => {
+  const { data } = await http.post(`/auth/verify-2fa-setup`, payload);
+  return data;
+};
+
 export const forgetPassword = async (payload) => {
   const { data } = await http.post('/auth/forget-password', payload);
   return data;
@@ -40,8 +61,8 @@ export const getNotifications = async (page) => {
   return data;
 };
 
-export const getBrandsByAdmin = async (page, search) => {
-  const { data } = await http.get(`/admin/brands?search=${search}&page=${page}`);
+export const getBrandsByAdmin = async (params) => {
+  const { data } = await http.get(`/admin/brands?${params}`);
   return data;
 };
 export const getBrandByAdmin = async (id) => {
@@ -67,6 +88,16 @@ export const deleteBrandByAdmin = async (slug) => {
 
 export const getCategoriesByAdmin = async (params) => {
   const { data } = await http.get(`/admin/categories?${params}`);
+  return data;
+};
+
+export const getItemsByAdmin = async (params) => {
+  const { data } = await http.get(`/admin/items?${params}`);
+  return data;
+};
+
+export const getItemBySlug = async (slug) => {
+  const { data } = await http.get(`admin/items/${slug}`);
   return data;
 };
 
@@ -121,6 +152,11 @@ export const getRoleByAdmin = async (slug) => {
 
 export const deleteCategoryByAdmin = async (slug) => {
   const { data } = await http.delete(`/admin/categories/${slug}`);
+  return data;
+};
+
+export const deleteItemByAdmin = async (slug) => {
+  const { data } = await http.delete(`/admin/items/${slug}`);
   return data;
 };
 
@@ -319,6 +355,11 @@ export const updateUserActiveInactiveByAdmin = async ({ _id, ...payload }) => {
   return response;
 };
 
+export const updateUserPasswordByAdmin = async ({ userId, ...payload }) => {
+  const { data: response } = await http.put(`/admin/users/change-password/${userId}`, payload);
+  return response;
+};
+
 export const updateSlideActiveInactiveByAdmin = async ({ slug, ...payload }) => {
   const { data: response } = await http.put(`/admin/slides/active/${slug}`, payload);
   return response;
@@ -336,6 +377,16 @@ export const getUserWalletBalanceByAdmin = async (userId) => {
 
 export const updateShopActiveInactiveByAdmin = async ({ slug, ...payload }) => {
   const { data: response } = await http.put(`/admin/shops/active/${slug || undefined}`, payload);
+  return response;
+};
+
+export const updateShopFeaturedByAdmin = async ({ slug, ...payload }) => {
+  const { data: response } = await http.put(`/admin/shops/featured/${slug || undefined}`, payload);
+  return response;
+};
+
+export const updateShopPopularByAdmin = async ({ slug, ...payload }) => {
+  const { data: response } = await http.put(`/admin/shops/popular/${slug || undefined}`, payload);
   return response;
 };
 
@@ -393,6 +444,12 @@ export const getOrdersByAdmin = async (payload) => {
   const { data } = await http.get(`/admin/orders?${payload}`);
   return data;
 };
+
+export const getAccountsByAdmin = async (payload) => {
+  const { data } = await http.get(`/admin/accounts?${payload}`);
+  return data;
+};
+
 export const getOrderByAdmin = async (id) => {
   const { data } = await http.get(`/admin/orders/${id}`);
   return data;
@@ -513,10 +570,16 @@ export const getAllShopsByAdmin = async () => {
   const { data } = await http.get(`/admin/all-shops`);
   return data;
 };
-export const getCurrenciesByAdmin = async (page, search) => {
-  const { data } = await http.get(`/admin/currencies?page=${page || 1}&search=${search || ''}`);
+export const getCurrenciesByAdmin = async (params) => {
+  const { data } = await http.get(`/admin/currencies?${params}`);
   return data;
 };
+
+export const deleteCurrencyByAdmin = async (id) => {
+  const { data: response } = await http.delete(`/admin/currencies/${id}`);
+  return response;
+};
+
 export const addCurrencyByAdmin = async (payload) => {
   const { data } = await http.post(`/admin/currencies`, payload);
   return data;
@@ -589,6 +652,16 @@ export const createAdminBoxItem = async (payload) => {
   return response;
 };
 
+export const createAdminItem = async (payload) => {
+  const { data: response } = await http.post(`/admin/items`, payload);
+  return response;
+};
+
+export const updateItemByAdmin = async ({ currentSlug, ...payload }) => {
+  const { data } = await http.put(`/admin/items/${currentSlug}`, payload);
+  return data;
+};
+
 export const updateVendorProduct = async ({ currentSlug, ...payload }) => {
   const { data: response } = await http.put(`/vendor/products/${currentSlug}`, payload);
   return response;
@@ -631,6 +704,11 @@ export const getTransectionsByAdmin = async (params) => {
 
 export const getProductDetails = async (pid) => {
   const { data } = await http.get(`/products/${pid}`);
+  return data;
+};
+
+export const getProductDetailsByAdmin = async (pid) => {
+  const { data } = await http.get(`/admin/products/${pid}`);
   return data;
 };
 
@@ -789,6 +867,11 @@ export const getCart = async (ids) => {
 
 export const getAllCategories = async () => {
   const { data } = await http.get(`/all-categories`);
+  return data;
+};
+
+export const getAllItems = async () => {
+  const { data } = await http.get(`/admin/all-items`);
   return data;
 };
 

@@ -25,7 +25,7 @@ import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { LuLayoutDashboard, LuShield, LuShieldOff } from 'react-icons/lu';
 import { FaRegBuilding, FaSlidersH } from 'react-icons/fa';
 import { TbCategory2 } from 'react-icons/tb';
-import { BsPinAngleFill, BsPlayCircle, BsPlayCircleFill, BsShop } from 'react-icons/bs';
+import { BsFillGiftFill, BsGift, BsPinAngleFill, BsPlayCircle, BsPlayCircleFill, BsShop } from 'react-icons/bs';
 import { BsCart3 } from 'react-icons/bs';
 import { LuUsers } from 'react-icons/lu';
 import { SlEnvolopeLetter } from 'react-icons/sl';
@@ -164,6 +164,15 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
     },
 
     {
+      id: 16,
+      title: 'Items',
+      slug: 'items',
+      hasPermission: UsePermission('view_item_listing'),
+      icon: <BsGift />,
+      isSearch: true
+    },
+
+    {
       id: 10,
       title: 'Orders',
       slug: 'orders',
@@ -200,7 +209,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
       id: 11,
       title: 'Coupon codes',
       slug: 'coupon-codes',
-      hasPermission: UsePermission('view_copon_code_listing'),
+      hasPermission: UsePermission('view_coupon_code_listing'),
       icon: <RiCoupon5Line />,
       isSearch: true
     },

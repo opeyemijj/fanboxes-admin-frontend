@@ -19,13 +19,15 @@ const slice = createSlice({
   reducers: {
     setLogin(state, action) {
       state.user = action.payload;
-      state.isAuthenticated = true;
+      state.isAuthenticated = false;
     },
     setLogout(state) {
       state.user = null;
       state.isAuthenticated = false;
     },
-
+    setAuthPass(state, action) {
+      state.isAuthenticated = true;
+    },
     setCount(state) {
       state.count = state.count + 1;
     },
@@ -60,6 +62,7 @@ export default slice.reducer;
 export const {
   setLogin,
   setLogout,
+  setAuthPass,
   setCount,
   setInitialize,
   updateStatus,

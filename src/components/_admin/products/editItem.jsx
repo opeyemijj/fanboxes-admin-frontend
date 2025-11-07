@@ -16,7 +16,7 @@ export default function EditItem({ selectedBoxAndItemData, brands, categories, s
         shops={null}
         brands={null}
         categories={null}
-        currentProduct={selectedBoxAndItemData.item}
+        currentItem={selectedBoxAndItemData.item}
         isLoading={false}
         // isVendor={isVendor}
         selectedBoxAndItemData

@@ -17,8 +17,7 @@ import { useSearchParams } from 'next/navigation';
 import parseMongooseError from 'src/utils/errorHandler';
 import { UsePermission } from 'src/hooks/usePermission';
 
-export default function AdminBoxeItems({ boxDetails, brands, categories, shops, isVendor }) {
-  // console.log(boxDetails, 'Check the box details');
+export default function AdminBoxeItems({ boxDetails, isVendor }) {
   const fullUrl = typeof window !== 'undefined' ? window.location.href : '';
   const lastSegmentForSlug = fullUrl.substring(fullUrl.lastIndexOf('/') + 1).split('?')[0];
 
@@ -69,11 +68,11 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
 
     const startingRange = limit * (page - 1);
     const endingRange = startingRange + limit;
-    const paginateData = boxDetails.items.slice(startingRange, endingRange);
+    const paginateData = boxDetails.itemsData.slice(startingRange, endingRange);
 
     const temdata = {
       data: paginateData,
-      count: Math.ceil(boxDetails?.items.length / limit),
+      count: Math.ceil(boxDetails?.itemsData.length / limit),
       currentPage: page // 👈 add this
     };
 
@@ -106,11 +105,65 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
     });
   }
 
+  function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP) {
+    let targetRTP = 0.8;
+    if (boxTargetRTP) {
+      targetRTP = boxTargetRTP / 100;
+    }
+
+    const totalItems = items.length;
+    const targetEV = (spinPrice * targetRTP) / totalItems;
+
+    const results = items.map((item) => {
+      const calcProb = targetEV / item.value;
+      const adjProb = item.manualProb ?? null;
+      const finalProb = adjProb !== null ? adjProb : calcProb;
+      const evContrib = item.value * finalProb;
+
+      return {
+        name: item.name,
+        value: item.value,
+        targetEV,
+        calcProb,
+        adjProb,
+        finalProb,
+        evContrib
+      };
+    });
+
+    const totalProbability = results.reduce((sum, r) => sum + r.finalProb, 0);
+    const totalEV = results.reduce((sum, r) => sum + r.evContrib, 0);
+
+    const normalizationFactor = 1 / totalProbability;
+    const normalizedResults = results.map((r) => ({
+      ...r,
+      odd: r.finalProb * normalizationFactor
+    }));
+
+    let totalItem = 0;
+    let totalSumOffOdds = 0;
+
+    const returnData = items.map((item, i) => {
+      totalItem = totalItem + 1;
+      totalSumOffOdds = totalSumOffOdds + normalizedResults[i]?.odd;
+      return {
+        ...item,
+        odd: normalizedResults[i]?.odd,
+        calcProb: normalizedResults[i]?.calcProb,
+        finalProb: normalizedResults[i]?.calcProb
+      };
+    });
+
+    console.log('Total Items:', totalItem, 'Total Summ Of odds:', totalSumOffOdds);
+
+    return returnData;
+  }
+
   const TABLE_HEAD = [
     { id: 'name', label: 'Name', alignRight: false, sort: true },
-    // { id: 'inventoryType', label: 'Status', alignRight: false, sort: false },
     { id: 'value', label: 'Item Value', alignRight: false, sort: true },
-    { id: 'weight', label: 'Weight', alignRight: false, sort: true },
+    { id: 'manualProb', label: 'Manual Prob', alignRight: false, sort: true },
+
     {
       id: 'odd',
       label: (
@@ -124,10 +177,17 @@ export default function AdminBoxeItems({ boxDetails, brands, categories, shops, 
               onClick={() => {
                 // 👇 your refresh logic here
                 if (boxDetails) {
-                  const distributedItem = distributeItems(boxDetails?.items);
-                  const temdata = { data: distributedItem };
-                  UpateItemOdd(temdata);
-                  setData(temdata);
+                  // const distributedItem = distributeItems(boxDetails?.itemsData);
+                  const runningOdsAlgorithm = generateMysteryBoxOdds(
+                    boxDetails?.itemsData,
+                    boxDetails?.priceSale,
+                    boxDetails?.targetRTP
+                  );
+                  if (runningOdsAlgorithm && runningOdsAlgorithm?.length > 0) {
+                    const temdata = { data: runningOdsAlgorithm };
+                    UpateItemOdd(temdata);
+                    setData(temdata);
+                  }
                 }
               }}
             >

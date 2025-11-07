@@ -30,3 +30,8 @@ export function fShortenNumber(number) {
 export function fData(number) {
   return numeral(number).format('0.0 b');
 }
+
+export function formatNumberWithCommas(number) {
+  if (!number) return 0;
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}

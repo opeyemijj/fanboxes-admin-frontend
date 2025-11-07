@@ -120,6 +120,14 @@ export default function AdminShopForm({
         const regex = /^https?:\/\/(www\.)?instagram\.com\/[A-Za-z0-9._%-]+(\/.*)?$/;
         return regex.test(value);
       }),
+    tiktokLink: Yup.string().url('Must be a valid URL').optional().nullable(),
+    snapchatLink: Yup.string().url('Must be a valid URL').optional().nullable(),
+    xLink: Yup.string().url('Must be a valid URL').optional().nullable(),
+    youtubeLink: Yup.string().url('Must be a valid URL').optional().nullable(),
+    kickLink: Yup.string().url('Must be a valid URL').optional().nullable(),
+    twitchLink: Yup.string().url('Must be a valid URL').optional().nullable(),
+    fanboxesLink: Yup.string().url('Must be a valid URL').optional().nullable(),
+    onlyfansLink: Yup.string().url('Must be a valid URL').optional().nullable(),
     paymentInfo: Yup.object().shape({
       holderEmail: Yup.string().required('Holder email is required')
 
@@ -155,12 +163,21 @@ export default function AdminShopForm({
       slug: currentShop?.slug || '',
       phone: currentShop?.phone || Number,
       instagramLink: currentShop?.instagramLink || '',
+      tiktokLink: currentShop?.tiktokLink || '',
+      snapchatLink: currentShop?.snapchatLink || '',
+      xLink: currentShop?.xLink || '',
+      youtubeLink: currentShop?.youtubeLink || '',
+      kickLink: currentShop?.kickLink || '',
+      twitchLink: currentShop?.twitchLink || '',
+      fanboxesLink: currentShop?.fanboxesLink || '',
+      onlyfansLink: currentShop?.onlyfansLink || '',
       paymentInfo: {
         holderEmail: currentShop?.paymentInfo?.holderEmail || ''
         // bankName: currentShop?.paymentInfo?.bankName || '',
         // AccountNo: currentShop?.paymentInfo?.AccountNo || Number
       },
-      isFeatured: currentShop?.isFeatured || false
+      isFeatured: currentShop?.isFeatured || false,
+      isPopular: currentShop?.isPopular || false
       // address: {
       //   country: currentShop?.address?.country || 'Andorra',
       //   city: currentShop?.address?.city || '',
@@ -255,6 +272,8 @@ export default function AdminShopForm({
     formik.handleChange(event); // handle the change in formik
   };
 
+  const socialPlatforms = ['Instagram', 'TikTok', 'Snapchat', 'X', 'YouTube', 'Kick', 'Twitch', 'Fanboxes', 'OnlyFans'];
+
   React.useEffect(() => {
     if (values.status === 'approved' || values.status === 'pending' || values.status === 'in review') {
       setFieldValue('message', ''); // Set message to empty string
@@ -270,30 +289,53 @@ export default function AdminShopForm({
             <Grid item xs={12} md={8}>
               <Card sx={{ p: 3 }}>
                 <Stack direction="row" spacing={3} flexGrow="wrap">
-                  <Box sx={{ width: '100%' }}>
-                    <div>
+                  <Box sx={currentShop ? { width: '100%' } : { width: '50%' }}>
+                    {shopLoading ? (
+                      <Skeleton variant="text" width={140} />
+                    ) : (
+                      <LabelStyle component={'label'} htmlFor="title">
+                        Name
+                      </LabelStyle>
+                    )}
+                    {shopLoading ? (
+                      <Skeleton variant="rectangular" width="100%" height={56} />
+                    ) : (
+                      <TextField
+                        id="title"
+                        fullWidth
+                        {...getFieldProps('title')}
+                        onChange={handleTitleChange} // add onChange handler for name
+                        error={Boolean(touched.title && errors.title)}
+                        helperText={touched.title && errors.title}
+                        sx={{ mt: 1 }}
+                      />
+                    )}
+                  </Box>
+
+                  {!currentShop && (
+                    <Box sx={currentShop ? { width: '100%' } : { width: '50%' }}>
                       {shopLoading ? (
                         <Skeleton variant="text" width={140} />
                       ) : (
                         <LabelStyle component={'label'} htmlFor="title">
-                          Name
+                          Slug
                         </LabelStyle>
                       )}
                       {shopLoading ? (
                         <Skeleton variant="rectangular" width="100%" height={56} />
                       ) : (
                         <TextField
-                          id="title"
+                          id="slug"
                           fullWidth
-                          {...getFieldProps('title')}
-                          onChange={handleTitleChange} // add onChange handler for name
-                          error={Boolean(touched.title && errors.title)}
-                          helperText={touched.title && errors.title}
+                          {...getFieldProps('slug')}
+                          // onChange={handleTitleChange} // add onChange handler for name
+                          error={Boolean(touched.slug && errors.slug)}
+                          helperText={touched.slug && errors.slug}
                           sx={{ mt: 1 }}
                         />
                       )}
-                    </div>
-                  </Box>
+                    </Box>
+                  )}
                 </Stack>
                 <Stack mt={3} direction="row" spacing={3} flexGrow="wrap">
                   <Grid item xs={12} md={6}>
@@ -405,7 +447,7 @@ export default function AdminShopForm({
                     ) : (
                       <LabelStyle component={'label'} htmlFor="description">
                         {' '}
-                        {'Description'}{' '}
+                        {'description'}{' '}
                       </LabelStyle>
                     )}
                     {shopLoading ? (
@@ -430,7 +472,7 @@ export default function AdminShopForm({
                         <Skeleton variant="text" width={150} />
                       ) : (
                         <LabelStyle variant="body1" component={'label'} color="text.primary">
-                          Logo
+                          Logo / Profile Image
                         </LabelStyle>
                       )}
                       {shopLoading ? (
@@ -552,169 +594,35 @@ export default function AdminShopForm({
                         )}
                       </div>
 
-                      <div>
-                        {shopLoading ? (
-                          <Skeleton variant="text" width={150} />
-                        ) : (
-                          <LabelStyle component={'label'} htmlFor="phone">
-                            Instagram link
-                          </LabelStyle>
-                        )}
-                        {shopLoading ? (
-                          <Skeleton variant="rectangular" width="100%" height={240} />
-                        ) : (
-                          <TextField
-                            id="instagramLink"
-                            fullWidth
-                            {...getFieldProps('instagramLink')}
-                            error={Boolean(touched.instagramLink && errors.instagramLink)}
-                            helperText={touched.instagramLink && errors.instagramLink}
-                          />
-                        )}
-                      </div>
+                      <div className="space-y-3">
+                        {socialPlatforms.map((platform) => (
+                          <div key={platform}>
+                            {shopLoading ? (
+                              <Skeleton variant="text" width={150} />
+                            ) : (
+                              <LabelStyle component="label" htmlFor={`${platform.toLowerCase()}Link`}>
+                                {platform} Link
+                              </LabelStyle>
+                            )}
 
-                      {/* <div>
-                        {shopLoading ? (
-                          <Skeleton variant="text" width={150} />
-                        ) : (
-                          <LabelStyle component={'label'} htmlFor="bank-name">
-                            Bank Name
-                          </LabelStyle>
-                        )}
-                        {shopLoading ? (
-                          <Skeleton variant="rectangular" width="100%" height={240} />
-                        ) : (
-                          <TextField
-                            id="bank-name"
-                            fullWidth
-                            {...getFieldProps('paymentInfo.bankName')}
-                            error={Boolean(touched.paymentInfo?.bankName && errors.paymentInfo?.bankName)}
-                            helperText={touched.paymentInfo?.bankName && errors.paymentInfo?.bankName}
-                          />
-                        )}
-                      </div>
-                      <div>
-                        {shopLoading ? (
-                          <Skeleton variant="text" width={150} />
-                        ) : (
-                          <LabelStyle component={'label'} htmlFor="account-number">
-                            Account Number
-                          </LabelStyle>
-                        )}
-                        {shopLoading ? (
-                          <Skeleton variant="rectangular" width="100%" height={240} />
-                        ) : (
-                          <TextField
-                            id="account-number"
-                            fullWidth
-                            {...getFieldProps('paymentInfo.AccountNo')}
-                            error={Boolean(touched.paymentInfo?.AccountNo && errors.paymentInfo?.AccountNo)}
-                            helperText={touched.paymentInfo?.AccountNo && errors.paymentInfo?.AccountNo}
-                          />
-                        )}
-                      </div>
-
-                      <div>
-                        {shopLoading ? (
-                          <Skeleton variant="text" width={150} />
-                        ) : (
-                          <LabelStyle component={'label'} htmlFor="country">
-                            Country
-                          </LabelStyle>
-                        )}
-                        {shopLoading ? (
-                          <Skeleton variant="rectangular" width="100%" height={240} />
-                        ) : (
-                          <TextField
-                            select
-                            fullWidth
-                            placeholder="Country"
-                            {...getFieldProps('address.country')}
-                            SelectProps={{ native: true }}
-                            error={Boolean(touched?.address?.country && errors?.address?.country)}
-                            helperText={touched?.address?.country && errors?.address?.country}
-                          >
-                            {countries.map((option) => (
-                              <option key={option.code} value={option.label}>
-                                {option.label}
-                              </option>
-                            ))}
-                          </TextField>
-                        )}
-                      </div>
-                      <div>
-                        {shopLoading ? (
-                          <Skeleton variant="text" width={150} />
-                        ) : (
-                          <LabelStyle component={'label'} htmlFor="city">
-                            City
-                          </LabelStyle>
-                        )}
-                        {shopLoading ? (
-                          <Skeleton variant="rectangular" width="100%" height={240} />
-                        ) : (
-                          <TextField
-                            id="city"
-                            fullWidth
-                            {...getFieldProps('address.city')}
-                            error={Boolean(touched.address?.city && errors.address?.city)}
-                            helperText={touched.address?.city && errors.address?.city}
-                          />
-                        )}
-                      </div>
-                      <div>
-                        {shopLoading ? (
-                          <Skeleton variant="text" width={150} />
-                        ) : (
-                          <LabelStyle component={'label'} htmlFor="state">
-                            State
-                          </LabelStyle>
-                        )}
-                        {shopLoading ? (
-                          <Skeleton variant="rectangular" width="100%" height={240} />
-                        ) : (
-                          <TextField
-                            id="state"
-                            fullWidth
-                            {...getFieldProps('address.state')}
-                            error={Boolean(touched.address?.state && errors.address?.state)}
-                            helperText={touched.address?.state && errors.address?.state}
-                          />
-                        )}
-                      </div>
-                      <div>
-                        {shopLoading ? (
-                          <Skeleton variant="text" width={150} />
-                        ) : (
-                          <LabelStyle component={'label'} htmlFor="streetAddress">
-                            Street Address
-                          </LabelStyle>
-                        )}
-                        {shopLoading ? (
-                          <Skeleton variant="rectangular" width="100%" height={240} />
-                        ) : (
-                          <TextField
-                            id="streetAddress"
-                            fullWidth
-                            {...getFieldProps('address.streetAddress')}
-                            error={Boolean(touched.address?.streetAddress && errors.address?.streetAddress)}
-                            helperText={touched.address?.streetAddress && errors.address?.streetAddress}
-                          />
-                        )}
-                      </div> */}
-
-                      <div>
-                        <FormGroup>
-                          <FormControlLabel
-                            control={
-                              <Switch
-                                onChange={(e) => setFieldValue('isFeatured', e.target.checked)}
-                                checked={values.isFeatured}
+                            {shopLoading ? (
+                              <Skeleton variant="rectangular" width="100%" height={56} />
+                            ) : (
+                              <TextField
+                                id={`${platform.toLowerCase()}Link`}
+                                fullWidth
+                                placeholder={`Enter ${platform} profile link`}
+                                {...getFieldProps(`${platform.toLowerCase()}Link`)}
+                                error={Boolean(
+                                  touched[`${platform.toLowerCase()}Link`] && errors[`${platform.toLowerCase()}Link`]
+                                )}
+                                helperText={
+                                  touched[`${platform.toLowerCase()}Link`] && errors[`${platform.toLowerCase()}Link`]
+                                }
                               />
-                            }
-                            label={'Featured Influencer'}
-                          />
-                        </FormGroup>
+                            )}
+                          </div>
+                        ))}
                       </div>
                     </Stack>
                   </Card>

@@ -19,6 +19,7 @@ import Label from 'src/components/label';
 // icons
 import { MdEdit } from 'react-icons/md';
 import { MdDelete } from 'react-icons/md';
+import { UsePermission } from 'src/hooks/usePermission';
 
 const ThumbImgStyle = styled(Box)(({ theme }) => ({
   width: 50,
@@ -32,11 +33,15 @@ const ThumbImgStyle = styled(Box)(({ theme }) => ({
   position: 'relative',
   overflow: 'hidden'
 }));
-export default function BrandsRow({ isLoading, row, handleClickOpen }) {
+export default function BrandsRow({ isLoading, row, handleClickOpen, sn }) {
+  const canEdit = UsePermission('edit_brand');
+  const canDelete = UsePermission('delete_brand');
+
   const router = useRouter();
   const theme = useTheme();
   return (
     <TableRow hover key={Math.random()}>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : <>{sn}</>}</TableCell>
       <TableCell component="th" scope="row">
         <Box
           sx={{
@@ -87,16 +92,21 @@ export default function BrandsRow({ isLoading, row, handleClickOpen }) {
             </>
           ) : (
             <>
-              <Tooltip title="Edit">
-                <IconButton onClick={() => router.push(`/admin/brands/${row?.slug}`)}>
-                  <MdEdit />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Delete">
-                <IconButton onClick={handleClickOpen(row.slug)}>
-                  <MdDelete />
-                </IconButton>
-              </Tooltip>
+              {canEdit && (
+                <Tooltip title="Edit">
+                  <IconButton onClick={() => router.push(`/admin/brands/${row?.slug}`)}>
+                    <MdEdit />
+                  </IconButton>
+                </Tooltip>
+              )}
+
+              {canDelete && (
+                <Tooltip title="Delete">
+                  <IconButton onClick={handleClickOpen(row.slug)}>
+                    <MdDelete />
+                  </IconButton>
+                </Tooltip>
+              )}
             </>
           )}
         </Stack>

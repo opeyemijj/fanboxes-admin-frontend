@@ -16,7 +16,8 @@ import { fDateShort } from 'src/utils/formatTime';
 
 // icons
 import { MdEdit } from 'react-icons/md';
-import { IoEye } from 'react-icons/io5';
+import { IoBagCheckOutline, IoEye } from 'react-icons/io5';
+import { UsePermission } from 'src/hooks/usePermission';
 
 IncomeList.propTypes = {
   isLoading: PropTypes.bool.isRequired,
@@ -50,7 +51,19 @@ IncomeList.propTypes = {
   isVendor: PropTypes.bool
 };
 
-export default function IncomeList({ isLoading, row, handleClickOpen, isPayout, isVendor, sn }) {
+export default function IncomeList({
+  isLoading,
+  row,
+  handleClickOpen,
+  isPayout,
+  isVendor,
+  sn,
+  slug,
+  showMonthlyOrders
+}) {
+  const canView = UsePermission('view_payment_details');
+  const canEdit = UsePermission('edit_payment');
+
   const theme = useTheme();
   const router = useRouter();
   return (
@@ -128,22 +141,62 @@ export default function IncomeList({ isLoading, row, handleClickOpen, isPayout, 
             <Skeleton variant="circular" width={34} height={34} sx={{ mr: 1 }} />
           ) : row?.thisMonth ? null : (
             !isVendor && (
-              <Tooltip title="Edit">
-                <IconButton onClick={() => handleClickOpen(row)}>
-                  <MdEdit />
-                </IconButton>
-              </Tooltip>
+              <>
+                {canEdit && (
+                  <Tooltip title="Edit">
+                    <IconButton
+                      onClick={() => {
+                        console.log(row);
+                        handleClickOpen(row);
+                      }}
+                    >
+                      <MdEdit />
+                    </IconButton>
+                  </Tooltip>
+                )}
+              </>
             )
           )}
           {isLoading ? (
             <Skeleton variant="circular" width={34} height={34} sx={{ mr: 1 }} />
           ) : row?._id ? (
-            <Tooltip title="Preview">
-              <IconButton onClick={() => router.push(`/${isVendor ? 'vendor' : 'admin'}/payments/${row._id}`)}>
-                <IoEye />
-              </IconButton>
-            </Tooltip>
+            <>
+              {canView && (
+                <Tooltip title="Preview">
+                  <IconButton onClick={() => router.push(`/${isVendor ? 'vendor' : 'admin'}/payments/${row._id}`)}>
+                    <IoEye />
+                  </IconButton>
+                </Tooltip>
+              )}
+            </>
           ) : null}
+
+          {isLoading ? (
+            <Skeleton variant="circular" width={34} height={34} sx={{ mr: 1 }} />
+          ) : (
+            <>
+              {showMonthlyOrders && (
+                <Tooltip title="Orders">
+                  <IconButton
+                    onClick={() => {
+                      const startDate = new Date(row?.date);
+                      const endDate = new Date(startDate);
+                      endDate.setMonth(endDate.getMonth() + 1); // add 1 month
+
+                      const start = startDate.toISOString();
+                      const end = endDate.toISOString();
+
+                      router.push(
+                        `/${isVendor ? 'vendor' : 'admin'}/shops/orders/${slug}?startDate=${start}&endDate=${end}`
+                      );
+                    }}
+                  >
+                    <IoBagCheckOutline />
+                  </IconButton>
+                </Tooltip>
+              )}
+            </>
+          )}
         </Stack>
       </TableCell>
     </TableRow>

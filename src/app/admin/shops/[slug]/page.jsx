@@ -25,6 +25,9 @@ import { TbChartArrowsVertical } from 'react-icons/tb';
 import * as api from 'src/services';
 import { useQuery } from 'react-query';
 import ShopSpinList from 'src/components/_admin/shops/shopSpin';
+import AccessDenied from 'src/components/cards/AccessDenied';
+import { UsePermission } from 'src/hooks/usePermission';
+import ShopAccountList from 'src/components/_admin/shops/shopAccount';
 
 Page.propTypes = {
   params: PropTypes.object.isRequired
@@ -39,6 +42,10 @@ export default function Page({ params: { slug } }) {
   const { data, isLoading } = useQuery(['shop-by-admin', count], () => api.getShopDetailsByAdmin(slug));
 
   const [viewSection, setViewSection] = useState('income');
+
+  const totalSpins = data?.totalSpins || 0;
+
+  const profitLoss = ((data?.totalPriceSale || 0) - (data?.totalValue || 0)).toFixed(2);
 
   function SetDataType(type) {
     // clear query params and keep only pathname
@@ -56,14 +63,23 @@ export default function Page({ params: { slug } }) {
     },
     {
       name: 'Total Spins',
-      items: `${data?.totalSpins || 0}`,
-      color: theme.palette.success.main,
+      items: (
+        <>
+          {totalSpins}/{profitLoss}
+        </>
+      ),
+      color: theme.palette.secondary.main,
       icon: <TbChartArrowsVertical size={30} />,
       viewFunction: () => SetDataType('spin')
     },
+
     {
-      name: 'Total Orders',
-      items: data?.totalOrders,
+      name: `Influencer: ${data?.totalInfluencerAmount}, Fanboxes: ${data?.totalFanboxesAmount}`,
+      items: (
+        <>
+          {data?.totalAccounts}/{data?.totalMargin}
+        </>
+      ),
       color: theme.palette.secondary.main,
       icon: <HiOutlineClipboardList size={30} />,
       viewFunction: () => SetDataType('order')
@@ -77,6 +93,12 @@ export default function Page({ params: { slug } }) {
     }
   ];
 
+  const canView = UsePermission('view_influencer_details'); // check required permission
+
+  if (!canView) {
+    return <AccessDenied message="You are not allowed to manage influencers." redirect="/admin/dashboard" />;
+  }
+
   return (
     <div>
       <ShopDetailCover data={data?.data} isLoading={isLoading} />
@@ -84,7 +106,8 @@ export default function Page({ params: { slug } }) {
 
       {viewSection === 'income' && <ShopIcomeList slug={slug} />}
       {viewSection === 'box' && <ShopProductList slug={slug} />}
-      {viewSection === 'order' && <ShopOrderList slug={slug} />}
+      {/* {viewSection === 'order' && <ShopOrderList slug={slug} />} */}
+      {viewSection === 'order' && <ShopAccountList slug={slug} />}
       {viewSection === 'spin' && <ShopSpinList slug={slug} />}
     </div>
   );

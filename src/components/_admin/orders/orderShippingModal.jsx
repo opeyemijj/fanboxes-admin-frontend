@@ -155,6 +155,8 @@ export default function OrderShippingModal({ open, onClose, formik, loading, ite
                   onChange={(e) => setFieldValue('statusDate', dayjs(e.target.value).format('DD/MM/YYYY'))}
                   error={Boolean(touched.statusDate && errors.statusDate)}
                   helperText={touched.statusDate && errors.statusDate}
+                  onClick={(e) => e.target.showPicker && e.target.showPicker()} // 📅 opens calendar immediately on click (modern browsers)
+                  onKeyDown={(e) => e.preventDefault()} // ⛔ disables manual typing
                 />
               </Grid>
 

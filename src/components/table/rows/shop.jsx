@@ -34,7 +34,9 @@ export default function ProductRow({
   openAssignUsers,
   sn,
   selectedRows,
-  UpdateSelectedRow
+  UpdateSelectedRow,
+  handleClickOpenFeatured,
+  handleClickOpenPopular
 }) {
   const router = useRouter();
 
@@ -44,8 +46,16 @@ export default function ProductRow({
   const canApprove = UsePermission('approve_influencer');
   const canBan = UsePermission('ban_unban_influencer');
   const canAssign = UsePermission('assign_influencer_to_user');
+  const canFeatured = UsePermission('featured_influencer');
+  const canPoppular = UsePermission('popular_influencer');
 
-  function MoreActionsMenu({ row, handleClickOpenStatus, handleClickOpenBanned }) {
+  function MoreActionsMenu({
+    row,
+    handleClickOpenStatus,
+    handleClickOpenBanned,
+    handleClickOpenFeatured,
+    handleClickOpenPopular
+  }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
@@ -76,6 +86,20 @@ export default function ProductRow({
             <MenuItem style={{ marginLeft: 3 }} onClick={() => openAssignUsers(row)}>
               <GroupAdd style={{ marginRight: 10, width: 30 }} size={25} color="primary" />{' '}
               <ListItemText style={{ marginLeft: 0 }}>Assign To</ListItemText>
+            </MenuItem>
+          )}
+
+          {canFeatured && (
+            <MenuItem onClick={handleClickOpenFeatured(row, 'singleFeatured')}>
+              {!row.isFeatured ? <MdCheckCircle color="green" size={20} /> : <MdCancel color="orange" size={20} />}
+              <ListItemText sx={{ ml: 1 }}>{row?.isFeatured ? 'Unmark Featured' : 'Mark Featured'}</ListItemText>
+            </MenuItem>
+          )}
+
+          {canPoppular && (
+            <MenuItem onClick={handleClickOpenPopular(row, 'singlePopular')}>
+              {!row.isPopular ? <MdCheckCircle color="green" size={20} /> : <MdCancel color="orange" size={20} />}
+              <ListItemText sx={{ ml: 1 }}>{row?.isPopular ? 'Unmark Popular' : 'Mark Popular'}</ListItemText>
             </MenuItem>
           )}
         </Menu>
@@ -223,6 +247,8 @@ export default function ProductRow({
               row={row}
               handleClickOpenStatus={handleClickOpenStatus}
               handleClickOpenBanned={handleClickOpenBanned}
+              handleClickOpenFeatured={handleClickOpenFeatured}
+              handleClickOpenPopular={handleClickOpenPopular}
             />
           </Stack>
         )}

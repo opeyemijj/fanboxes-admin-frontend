@@ -9,6 +9,8 @@ import HeaderBreadcrumbs from 'src/components/headerBreadcrumbs';
 // api
 import * as api from 'src/services';
 import { useQuery } from 'react-query';
+import { UsePermission } from 'src/hooks/usePermission';
+import AccessDenied from 'src/components/cards/AccessDenied';
 
 export default function Page({ params }) {
   const { data, isLoading } = useQuery(['get-admin-currency'], () => api.getCurrencyByAdmin(params.cid), {
@@ -16,6 +18,12 @@ export default function Page({ params }) {
       toast.error(err.response.data.message || 'Something went wrong!');
     }
   });
+
+  const canAdd = UsePermission('edit_currency');
+  if (!canAdd) {
+    return <AccessDenied message="You are not allowed to edit Currency." redirect="/admin/dashboard" />;
+  }
+
   return (
     <div>
       <HeaderBreadcrumbs

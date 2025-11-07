@@ -20,7 +20,7 @@ const TABLE_HEAD = [
   { id: 'createdAt', label: 'Created', alignRight: false },
   { id: '', label: 'actions', alignRight: true }
 ];
-export default function PayoutsList({ shops }) {
+export default function PayoutsList({ shops, showMonthlyOrders }) {
   const searchParams = useSearchParams();
 
   const [payment, setPayment] = useState(null);
@@ -49,6 +49,7 @@ export default function PayoutsList({ shops }) {
         isLoading={isLoading}
         row={PayoutsListRow}
         handleClickOpen={(v) => setPayment(v)}
+        showMonthlyOrders={showMonthlyOrders}
         isPayout
         isSearch
         filters={[

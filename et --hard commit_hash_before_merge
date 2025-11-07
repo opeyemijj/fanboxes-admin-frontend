@@ -1,0 +1,142 @@
+[33mc9c177e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32m2025/10/14/uploading-box-items[m[33m)[m Merge branch 'development' of https://github.com/opeyemijj/fanboxes-admin-frontend into 2025/10/14/uploading-box-items
+[33m2749af6[m[33m ([m[1;31morigin/2025/10/14/uploading-box-items[m[33m)[m Add color to show that box items link is clickable
+[33m9369659[m[33m ([m[1;31morigin/development[m[33m, [m[1;31morigin/HEAD[m[33m)[m cupon codes is working fine
+[33m62d0459[m brand creation is working fine
+[33mc200f8a[m correction profit loss text in influencer details page
+[33mb46d0cf[m 2fa with Recoery code is done
+[33mf86e2f1[m save recoery code UI & function is workign fine
+[33m9847f81[m create auth pass function
+[33m0962245[m seperate 2fa setup component
+[33ma17c54b[m changed erroer message in 2fa
+[33mc0796e6[m fixed cupon code serial issue
+[33m9e75e8d[m fixed customer type error
+[33me0f9921[m fixed tracking date info glitch
+[33m32c51a5[m fixed mobile responsive issue for 2fa screen
+[33m4ca2d43[m fixed filter and url confliction for all table
+[33m7a17604[m fixed transactions spelling mistakes
+[33me11c0f7[m brougth admin-box in box list filter
+[33m6f8686a[m fixed payout edit issue for pending and hold
+[33m4c8d630[m Merge branch '2025/Oct/10/2FA' of shahadath-shoutty:opeyemijj/fanboxes-admin-frontend into development
+[33medfd07b[m 2fa is working fine
+[33m68f8610[m brougth auth pass condition for 2fa page
+[33m6d70f9c[m changed 2fa setup page UI with skip condition
+[33mdca0116[m WIP 2fa authentication
+[33m01a9470[m Merge branch '2025/Oct/09/InfluencerPaymnt' of shahadath-shoutty:Fanboxes-dev/frontend into development
+[33me176613[m wip 2fa setup
+[33m71dc02b[m craete qr code generator function
+[33m2652315[m getting date wise orders
+[33m8ea8102[m correction P/L issue in influncer details page
+[33mb04dad8[m made PL in right color direction
+[33mf7ac8d5[m showed P/L besides spin card in influencer details
+[33mb2801d1[m[33m ([m[1;32mdevelopment[m[33m)[m Merge branch 'main' into prestaging
+[33macaac5f[m finished permissions in static pages
+[33m148157d[m finished permissions for payment gateway
+[33m81062a4[m fixed few QA staffs
+[33m8a2c47d[m brought parseMongooseError in payments query
+[33m1737fa7[m corrected spin listing
+[33m3ef4548[m changed frontend url in env file
+[33m93cbec9[m fixed Ban Unban typo error in bulk action lisitng
+[33mc405994[m broguth all selected bulk action in influencer & boxes list
+[33mbe0695a[m brought all select action in order list
+[33m2774aca[m Merge branch '2025/Oct/03/PayementGateWay' into prestaging
+[33mf5141f2[m updated
+[33m3e52bd1[m updated prestaging backend url
+[33m330e432[m remmoved max limit from tracking number
+[33m59f54e6[m remmoved max limit from tracking number
+[33m523292c[m changed primary key to public key
+[33m0c3c1b0[m delete static page is working fine
+[33ma8766a2[m update static page is working
+[33me881b55[m complete static page listing
+[33m817338c[m static page data is saving
+[33m74100e2[m delete payment gateway is working
+[33m2a32f50[m correction payment gate way settings
+[33ma211a06[m edit payemnt gateway is working fine
+[33mc197a77[m create payment gate way function is woking fine
+[33mde271cd[m[33m ([m[1;31morigin/main[m[33m)[m brought permissions in all bulk action
+[33ma404938[m brought permissions in boxes bulk action
+[33m4ca56c1[m assign buld actin is working for influencers
+[33mcfedfc3[m finished bann unbann bulk action
+[33m7d32e12[m finished draft approve builk action influencers
+[33m9fdd40a[m fixed  currency to -zsh
+[33m94bd55d[m users assigned for box nulk action is working fine
+[33mcfbf6cc[m odds hide show bulk action done
+[33m94d1443[m finished banned unbanned bluk action in boxes
+[33m1ffff01[m correction approve draft content in dialog
+[33mc5a64f0[m income edit query is working fine
+[33m5ceef5a[m finish apporve draft bulk action in box list
+[33m81ab7cc[m made multiple box active with bulk action
+[33m740e294[m cleaned all states in box listing
+[33mfbd5f2b[m finished influencer details
+[33m85f93bd[m hide total commission from income list
+[33mf9002aa[m convert editshop to save
+[33mecf75ca[m removed % from total commission value
+[33md346f89[m brought totalcommisions
+[33m11d8956[m finished order and box for influencer details page
+[33m4d08208[m made commistino requred for influencer add/edit
+[33mc3122aa[m use pure go back in influencer and box edit time
+[33m75d71ed[m brought 3 dots action button besided input search field
+[33m45fa5da[m assinged bulk action is working for order's
+[33m85edebd[m cliend all modals stats in order list
+[33m5ad51da[m pass bulk actino as array of object
+[33m18459be[m made check box aligned wiht sn
+[33m1606f5e[m finihsed order tale in influencer details page
+[33maaf3dc8[m brought the commision for insluencer
+[33m6250521[m skip bulk action for now
+[33me342029[m  made shop wise product lising in influencer page
+[33mb5de89a[m hide other actino from order listing under user details
+[33m9156b44[m brought emtpy value for category and influencer listing
+[33m5d4f1aa[m brought empty category value in box & influencer form
+[33m4b1a3d4[m made All text samll in filter dropdwon
+[33m59168db[m made box item listing sort lates wise
+[33m8911f10[m hide order details action tool bar
+[33mac54a9f[m fixed table serial number issue
+[33m85c0bb5[m brought categroy filter in influencer
+[33m3a94389[m made catefory and influecner listing short for products add and edit
+[33m9ed9b91[m link user details page from transation table
+[33ma08cff2[m hide undefined firstName in order listing
+[33m93254fa[m brought search section for spin table
+[33m677753d[m link user deatils page form spin user column
+[33md4eb866[m hide pagination and row count for ods mapping in verify spin page
+[33m058cea5[m hide pagination and row count for shipping info
+[33m66255e0[m fixed box item delete mutation
+[33md48e854[m tabe row is working for box items
+[33mc235258[m brought influencer details page from spin lisitng influencer click
+[33m7c38e26[m brought the user details page
+[33mfab72b2[m finished auto complete filter items
+[33m2f01c6f[m aligned table bottom rows count
+[33m9326c77[m brought table rows in all config table
+[33mbd8a1fb[m brougth row count in all user listing
+[33mf868ada[m birng row count in logs tables
+[33m0127fb0[m fixed limit cleaning issue
+[33mc3f8e0e[m fixed category rows number issue
+[33m600058f[m brought rows number in table
+[33m58c9251[m opne frontend form spin lisitng box click
+[33m65e5d64[m made box influecer click and effect the filter
+[33mbc349e5[m order filter with status is wroking
+[33mc13179e[m linked influencer to box with count
+[33maf30191[m influencer search funcion is working
+[33m1393f3b[m fixed shop text in order tabe
+[33m572a49b[m changed influencer delete warning
+[33m7cc8db6[m made category and influencer lisitng sort in box filter
+[33ma710598[m brought the table filter section in box lisitng
+[33m1352efc[m finished order listing table and details page
+[33md99291a[m fixed order status issue
+[33m3811746[m finished slide active inactive functionality with permissions
+[33m065fe92[m brought array sorting in all dorpdonw
+[33mca3bd0f[m fixed few QA'a issue
+[33m676a98e[m brought all missin permissinos for order action and view
+[33me2f075c[m made shipping modal perfect aligned
+[33m2d729a8[m finished shipping info modal
+[33m39e6713[m refactored shipping modal ui and user formik response
+[33m808e7e5[m finished shipping item mutation
+[33m8e5dfee[m sepearte tracking info modal
+[33m4568e66[m tracking info is passing successfully in backend
+[33mcc03085[m build tracking umber modal UI
+[33m81d7c9d[m finished order table
+[33m1ba8fea[m Assigned user function is working fine
+[33mf2109e4[m Correction 2 QA's staffs
+[33m0b2956c[m correction from review
+[33m11fea75[m finished transection list correction
+[33m62ced96[m fixed transections table data undefined issue
+[33mc8f0643[m correct add conversion form
+[33m27f8af0[m change

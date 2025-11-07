@@ -6,7 +6,6 @@ export function SortArrayAlphabetically(arr, key) {
 
   try {
     if (key) {
-      // check if key exists in objects
       const keyExists = arr.every((item) => item && typeof item === 'object' && key in item);
       if (!keyExists) {
         console.error(`❌ Error: Key "${key}" does not exist in all objects`);
@@ -15,8 +14,25 @@ export function SortArrayAlphabetically(arr, key) {
     }
 
     return arr.slice().sort((a, b) => {
-      const valA = key ? String(a[key] ?? '').toLowerCase() : String(a).toLowerCase();
-      const valB = key ? String(b[key] ?? '').toLowerCase() : String(b).toLowerCase();
+      const valA = key
+        ? String(a[key] ?? '')
+            .trim()
+            .toLowerCase()
+        : String(a).trim().toLowerCase();
+      const valB = key
+        ? String(b[key] ?? '')
+            .trim()
+            .toLowerCase()
+        : String(b).trim().toLowerCase();
+
+      const startsWithNumberA = /^\d/.test(valA);
+      const startsWithNumberB = /^\d/.test(valB);
+
+      // ✅ Alphabetic values come first
+      if (startsWithNumberA && !startsWithNumberB) return 1;
+      if (!startsWithNumberA && startsWithNumberB) return -1;
+
+      // ✅ Otherwise, normal alphabetical sort
       return valA.localeCompare(valB);
     });
   } catch (err) {

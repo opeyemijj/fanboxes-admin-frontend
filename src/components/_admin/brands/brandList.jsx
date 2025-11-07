@@ -30,8 +30,8 @@ export default function BrandList() {
   const [id, setId] = useState(null);
 
   const { data, isLoading, error } = useQuery(
-    ['brands', apicall, searchParam, pageParam],
-    () => api.getBrandsByAdmin(+pageParam || 1, searchParam || ''),
+    ['brands', apicall, searchParams.toString()],
+    () => api.getBrandsByAdmin(searchParams.toString()),
     {
       onError: (err) => toast.error(err.response.data.message || 'Something went wrong!')
     }

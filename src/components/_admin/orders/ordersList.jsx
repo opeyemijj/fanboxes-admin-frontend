@@ -45,8 +45,10 @@ export default function OrdersAdminList({ isVendor, shops, searchBy }) {
   const params = new URLSearchParams(searchParams);
 
   // always set searchBy (replace if exists, add if not)
-  if (searchBy) {
-    params.set(searchBy.key, searchBy.value);
+  if (searchBy && searchBy.length > 0) {
+    for (let i = 0; i < searchBy.length; i++) {
+      params.set(searchBy[i].key, searchBy[i].value);
+    }
   }
 
   const queryClient = useQueryClient();
