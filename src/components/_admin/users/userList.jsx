@@ -55,6 +55,7 @@ export default function AdminProducts({ userType }) {
   const [finalAmount, setFinalAmmount] = useState(0);
 
   const queryClient = useQueryClient();
+  const pageParam = searchParams.get('page');
 
   const { data, isLoading } = useQuery(
     ['user', searchParams.toString()],
@@ -236,7 +237,11 @@ export default function AdminProducts({ userType }) {
       <RoleDialog open={Boolean(id)} onClose={() => setId(null)} onClick={() => mutate(id)} loading={roleLoading} />
       <Table
         headData={TABLE_HEAD}
-        data={data ?? { success: true, data: [], total: 0, count: 0, currentPage: 1 }}
+        data={
+          data
+            ? { ...data, currentPage: Number(pageParam) }
+            : { success: true, data: [], total: 0, count: 0, currentPage: 1 }
+        }
         isLoading={isLoading}
         row={UserList}
         setId={setId}

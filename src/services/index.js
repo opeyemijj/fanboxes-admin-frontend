@@ -463,7 +463,9 @@ export const updateOrderStatus = async ({ id, ...payload }) => {
   return data;
 };
 export const getUserByAdminsByAdmin = async (params, userType) => {
-  const { data: response } = await http.get(`/admin/users?${params}&userType=${userType}`);
+  const url = `/admin/users?${params}&userType=${userType}`;
+  console.log({ url });
+  const { data: response } = await http.get(url);
   return response;
 };
 
