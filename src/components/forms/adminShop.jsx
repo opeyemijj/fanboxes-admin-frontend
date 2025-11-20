@@ -447,7 +447,7 @@ export default function AdminShopForm({
                     ) : (
                       <LabelStyle component={'label'} htmlFor="description">
                         {' '}
-                        {'description'}{' '}
+                        {'Description'}{' '}
                       </LabelStyle>
                     )}
                     {shopLoading ? (
@@ -455,7 +455,7 @@ export default function AdminShopForm({
                     ) : (
                       <TextField
                         fullWidth
-                        id="description"
+                        id="Description"
                         {...getFieldProps('description')}
                         error={Boolean(touched.description && errors.description)}
                         helperText={touched.description && errors.description}
