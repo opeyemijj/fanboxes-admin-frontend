@@ -164,20 +164,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
     },
 
     {
-<<<<<<< HEAD
-      id: 16,
-      title: 'Items',
-      slug: 'items',
-      hasPermission: UsePermission('view_item_listing'),
-      icon: <BsGift />,
-      isSearch: true
-    },
-
-    {
-      id: 10,
-=======
       id: 6,
->>>>>>> 2025/nov/27/analytics
       title: 'Orders',
       slug: 'orders',
       hasPermission: UsePermission('view_order_listing'),
