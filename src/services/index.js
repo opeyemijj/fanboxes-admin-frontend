@@ -931,3 +931,40 @@ export const followShop = async (shopId) => {
 //   const { data } = await http.post(`/contact-us`, payload);
 //   return data;
 // };
+
+
+/*
+==============================
+Analytics
+==============================
+*/
+
+export const getStats = async (timeFilter = 'TODAY') => {
+  const { data } = await http.get(`/admin/analytics_stats?timeFilter=${timeFilter}`);
+  return data;
+};
+
+export const getTopBoxes = async (timeFilter = 'TODAY') => {
+  const { data } = await http.get(`/admin/analytics_boxes?timeFilter=${timeFilter}`);
+  return data;
+};
+
+export const getTopInfluencers = async (timeFilter = 'TODAY') => {
+  const { data } = await http.get(`/admin/analytics_influencers?timeFilter=${timeFilter}`);
+  return data;
+};
+
+export const getTopClaimedItems = async (timeFilter = 'TODAY') => {
+  const { data } = await http.get(`/admin/analytics_claimed?timeFilter=${timeFilter}`);
+  return data;
+};
+
+export const getTopWonItems = async (timeFilter = 'TODAY') => {
+  const { data } = await http.get(`/admin/analytics_won?timeFilter=${timeFilter}`);
+  return data;
+};
+
+export const getTopResoldItems = async (timeFilter = 'TODAY') => {
+  const { data } = await http.get(`/admin/analytics_resold?timeFilter=${timeFilter}`);
+  return data;
+};
