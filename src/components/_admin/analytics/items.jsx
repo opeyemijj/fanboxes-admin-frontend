@@ -36,6 +36,8 @@ const ItemsAnalytics = () => {
         `${moment().format('MMM D, YYYY')} - ${moment().format('MMM D, YYYY')}`
     );
 
+    const [timeFilter, setTimeFilter] = useState('TODAY');
+
     // Initialize DateRangePicker
     useEffect(() => {
         if (!datePickerRef.current) return;
@@ -66,12 +68,23 @@ const ItemsAnalytics = () => {
                     'All Time': [moment('2000-01-01'), moment()]
                 }
             },
-            (start, end) => {
+            (start, end, label) => {
                 setSelectedRange({ startDate: start, endDate: end });
-
                 setDisplayDateRange(
                     `${start.format('MMM D, YYYY')} - ${end.format('MMM D, YYYY')}`
                 );
+                
+                // Set timeFilter based on the selected range label
+                const rangeMap = {
+                    'Today': 'TODAY',
+                    'Yesterday': 'TODAY', // You might want to handle this differently
+                    'Last 7 Days': 'WEEK',
+                    'Last 30 Days': 'MONTH',
+                    'This Month': 'MONTH',
+                    'Last Month': 'MONTH',
+                    'All Time': 'ALL'
+                };
+                setTimeFilter(rangeMap[label] || 'CUSTOM');
             }
         );
     }, []);
@@ -80,18 +93,14 @@ const ItemsAnalytics = () => {
     const { data, isLoading } = useQuery(
         [
             'itemsAnalytics',
-            selectedRange.startDate.format('YYYY-MM-DD'),
-            selectedRange.endDate.format('YYYY-MM-DD'),
+            timeFilter,
             searchParam
         ],
         async () => {
-            const startDate = selectedRange.startDate.format('YYYY-MM-DD');
-            const endDate = selectedRange.endDate.format('YYYY-MM-DD');
-
             const [claimedRes, wonRes, resoldRes] = await Promise.all([
-                api.getTopClaimedItems({ startDate, endDate, search: searchParam }),
-                api.getTopWonItems({ startDate, endDate, search: searchParam }),
-                api.getTopResoldItems({ startDate, endDate, search: searchParam })
+                api.getTopClaimedItems(timeFilter),
+                api.getTopWonItems(timeFilter),
+                api.getTopResoldItems(timeFilter)
             ]);
 
             return {
