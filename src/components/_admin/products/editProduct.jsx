@@ -25,6 +25,8 @@ export default function EditProduct({ brands, categories, slug, shops, isVendor 
       }
     }
   );
+
+  console.log('product data', data);
   return (
     <div>
       <ProductForm

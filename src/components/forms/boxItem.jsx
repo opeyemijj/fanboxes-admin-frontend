@@ -44,6 +44,8 @@ export default function AddItemForm({ currentItem, isInitialized = false, isVend
     onError: (err) => toast.error(err.message || 'Failed to load items')
   });
 
+  console.log("Current box", currentItem)
+
   const { mutate, isLoading: saving } = useMutation(
     currentItem ? 'update' : 'new',
     currentItem
@@ -96,6 +98,8 @@ export default function AddItemForm({ currentItem, isInitialized = false, isVend
           ...(currentItem && { currentSlug: currentItem.slug })
         });
       } catch (error) {
+
+        console.log('Error submitting form', error);
         const errorMessage = parseMongooseError(error?.message);
         toast.error(errorMessage || 'We ran into an issue.');
       }
