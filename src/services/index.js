@@ -1053,8 +1053,3 @@ export const getTopResoldItems = async (timeFilter = 'TODAY') => {
   const { data } = await http.get(`/admin/analytics_resold?timeFilter=${timeFilter}`);
   return data;
 };
-
-export const getDecisionFunnel = async (timeFilter = 'TODAY') => {
-  const { data } = await http.get(`/admin/decision_funnel?timeFilter=${timeFilter}`);
-  return data;
-};

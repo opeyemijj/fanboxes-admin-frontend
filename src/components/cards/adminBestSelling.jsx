@@ -68,7 +68,7 @@ export default function AdminBestSelling({ ...props }) {
                         noWrap
                         color="text.primary"
                       >
-                        {/* {loading ? <Skeleton variant="text" width={160} /> : value.name.slice(0, 18)} */}
+                        {loading ? <Skeleton variant="text" width={160} /> : value.name.slice(0, 18)}
                       </Typography>
                       <Typography variant="body2" fontWeight={600} color="text.secondary">
                         {loading ? <Skeleton variant="text" width={60} /> : <> {value.sold} sold</>}

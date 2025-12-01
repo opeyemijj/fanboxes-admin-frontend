@@ -5,17 +5,28 @@ import {
     CardHeader,
     Grid,
     Typography,
+    TextField,
     Skeleton
 } from '@mui/material';
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useQuery } from 'react-query';
 import toast from 'react-hot-toast';
 import * as api from 'src/services';
 
-const BoxesAnalytics = ({ filter }) => {
-    const { timeFilter, dateRange } = filter;
+import 'bootstrap-daterangepicker/daterangepicker.css';
 
-    const { data, isLoading } = useQuery(
+const BoxesAnalytics = () => {
+    const searchParams = useSearchParams();
+    const [timeFilter, setTimeFilter] = useState('CUSTOM');
+    const [dateRange, setDateRange] = useState({
+        startDate: new Date(),
+        endDate: new Date()
+    });
+    const [displayDateRange, setDisplayDateRange] = useState('Today');
+    const datePickerRef = useRef(null);
+
+    const { data, isLoading, refetch } = useQuery(
         ['topBoxes', timeFilter, dateRange],
         () => api.getTopBoxes(timeFilter, dateRange),
         {
@@ -25,6 +36,7 @@ const BoxesAnalytics = ({ filter }) => {
     );
 
     const boxesData = data?.data || [];
+    console.log("Boxes: ", data);
 
     const formatCurrency = (amount) =>
         new Intl.NumberFormat('en-US', {
@@ -37,17 +49,86 @@ const BoxesAnalytics = ({ filter }) => {
     const formatNumber = (num) =>
         new Intl.NumberFormat('en-US').format(num || 0);
 
+    // Initialize DateRangePicker
+    useEffect(() => {
+        const loadDateRangePicker = async () => {
+            const { default: $ } = await import('jquery');
+            const { default: moment } = await import('moment');
+            await import('bootstrap-daterangepicker');
+
+            if (datePickerRef.current) {
+                $(datePickerRef.current).daterangepicker(
+                    {
+                        startDate: moment(),
+                        endDate: moment(),
+                        ranges: {
+                            Today: [moment(), moment()],
+                            Yesterday: [
+                                moment().subtract(1, 'days'),
+                                moment().subtract(1, 'days')
+                            ],
+                            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                            'This Month': [
+                                moment().startOf('month'),
+                                moment().endOf('month')
+                            ],
+                            'Last Month': [
+                                moment().subtract(1, 'month').startOf('month'),
+                                moment().subtract(1, 'month').endOf('month')
+                            ],
+                            'All Time': [moment('2000-01-01'), moment()]
+                        },
+                        opens: 'left',
+                        locale: { format: 'MMM D, YYYY' },
+                        autoUpdateInput: true
+                    },
+                    (start, end, label) => {
+                        const startDate = start.startOf('day').toDate();
+                        const endDate = end.endOf('day').toDate();
+
+                        setDateRange({ startDate, endDate });
+                        setDisplayDateRange(
+                            `${start.format('MMM D, YYYY')} - ${end.format('MMM D, YYYY')}`
+                        );
+
+                        setTimeFilter(label === 'Today' ? 'TODAY' :
+                            label === 'Last 7 Days' ? 'WEEK' :
+                                label === 'Last 30 Days' ? 'MONTH' :
+                                    label === 'All Time' ? 'ALL' :
+                                        'CUSTOM');
+
+                        setTimeout(() => refetch(), 50);
+                    }
+                );
+            }
+        };
+
+        loadDateRangePicker();
+    }, [refetch]);
+
     return (
         <Grid item xs={12} sm={6} md={6}>
             <Card sx={{ borderRadius: 2, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
                 <CardHeader
                     title="Top-Performing Boxes"
                     subheader={
-                        <Typography variant="body2" sx={{ mt: 1 }}>
-                            {timeFilter === 'CUSTOM'
-                                ? `${new Date(dateRange.startDate).toLocaleDateString()} - ${new Date(dateRange.endDate).toLocaleDateString()}`
-                                : timeFilter}
-                        </Typography>
+                        <Box sx={{ mt: 1 }}>
+                            {/* DATE RANGE FILTER ONLY */}
+                            <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+                                <TextField
+                                    inputRef={datePickerRef}
+                                    label="Date Range"
+                                    value={displayDateRange}
+                                    InputProps={{ readOnly: true }}
+                                    size="small"
+                                    sx={{
+                                        minWidth: 240,
+                                        '& input': { cursor: 'pointer' }
+                                    }}
+                                />
+                            </Box>
+                        </Box>
                     }
                 />
 
