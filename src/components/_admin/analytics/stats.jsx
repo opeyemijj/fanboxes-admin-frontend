@@ -1,21 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     Grid,
     Card,
     CardContent,
     Typography,
-    Box,
-    Chip,
-    FormControl,
-    Select,
-    MenuItem
+    Box
 } from '@mui/material';
 import { useSearchParams } from 'next/navigation';
 import { useQuery } from 'react-query';
 import toast from 'react-hot-toast';
 import * as api from 'src/services';
 
-// Styled components
 const MetricCard = ({ children }) => (
     <Card sx={{ height: '100%', transition: 'all 0.3s ease', '&:hover': { transform: 'translateY(-2px)' } }}>
         {children}
@@ -28,23 +23,35 @@ const StatBox = ({ children }) => (
     </Box>
 );
 
-const AnalyticsStats = () => {
+const AnalyticsStats = ({ filter }) => {
     const searchParams = useSearchParams();
-    const [timeFilter, setTimeFilter] = useState('TODAY');
     const searchParam = searchParams.get('search');
 
+    const { timeFilter, dateRange } = filter;
+
+    const queryKey = [
+        'stats',
+        timeFilter,
+        dateRange?.startDate ? new Date(dateRange.startDate).toISOString() : null,
+        dateRange?.endDate ? new Date(dateRange.endDate).toISOString() : null
+    ];
+
     const { data } = useQuery(
-        ['stats', timeFilter],
-        () => api.getStats(timeFilter),
+        queryKey,
+        () =>
+            api.getStats(timeFilter, {
+                startDate: dateRange?.startDate,
+                endDate: dateRange?.endDate
+            }),
         {
-            onError: (err) => toast.error(err.response?.data?.message || 'Something went wrong!')
+            onError: (err) =>
+                toast.error(err.response?.data?.message || 'Something went wrong!')
         }
     );
 
-    console.log("Stats:", data?.data);
     const statData = data?.data || {};
+    console.log("Stats: ", statData);
 
-    // Default data structure with all fields set to 0
     const defaultData = {
         totalRevenue: 0,
         totalProfit: 0,
@@ -70,103 +77,31 @@ const AnalyticsStats = () => {
         boxRTPDeviation: 0
     };
 
-    // Merge API data with defaults
     const currentData = {
         ...defaultData,
         ...statData,
         chargebacks: { ...defaultData.chargebacks, ...statData.chargebacks }
     };
 
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('en-US', {
+    const formatCurrency = (amount) =>
+        new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD',
             minimumFractionDigits: 0,
             maximumFractionDigits: 0
         }).format(amount || 0);
-    };
 
-    const formatNumber = (num) => {
-        return new Intl.NumberFormat('en-US').format(num || 0);
-    };
+    const formatNumber = (num) => new Intl.NumberFormat('en-US').format(num || 0);
 
-    const formatPercentage = (num) => {
-        return `${num || 0}%`;
-    };
-
-    const handleTimeFilterChange = (newFilter) => {
-        setTimeFilter(newFilter);
-    };
+    const formatPercentage = (num) => `${num || 0}%`;
 
     return (
         <Grid item xs={12}>
             <MetricCard>
                 <CardContent>
-                    {/* Filters */}
-                    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center', mb: 3 }}>
-                        {['TODAY', 'ALL'].map((period) => (
-                            <Chip
-                                key={period}
-                                label={period}
-                                onClick={() => handleTimeFilterChange(period)}
-                                color={timeFilter === period ? 'primary' : 'default'}
-                                variant={timeFilter === period ? 'filled' : 'outlined'}
-                            />
-                        ))}
-
-                        <FormControl size="small" sx={{ minWidth: 160 }}>
-                            <Select
-                                value={timeFilter.startsWith('WEEK_') ? timeFilter : ''}
-                                displayEmpty
-                                onChange={(e) => handleTimeFilterChange(e.target.value)}
-                                renderValue={(selected) => {
-                                    if (!selected) return 'Select Week';
-                                    const weekRange = selected.replace('WEEK_', '');
-                                    return `Week: ${weekRange}`;
-                                }}
-                            >
-                                {[
-                                    "WEEK_Dec 18 - Dec 24",
-                                    "WEEK_Dec 11 - Dec 17",
-                                    "WEEK_Dec 4 - Dec 10",
-                                    "WEEK_Nov 27 - Dec 3"
-                                ].map((week) => (
-                                    <MenuItem key={week} value={week}>
-                                        {week.replace('WEEK_', '')}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-
-                        <FormControl size="small" sx={{ minWidth: 140 }}>
-                            <Select
-                                value={timeFilter.startsWith('MONTH_') ? timeFilter : ''}
-                                displayEmpty
-                                onChange={(e) => handleTimeFilterChange(e.target.value)}
-                                renderValue={(selected) => {
-                                    if (!selected) return 'Select Month';
-                                    const monthName = selected.replace('MONTH_', '');
-                                    return monthName;
-                                }}
-                            >
-                                {[
-                                    "MONTH_December 2024",
-                                    "MONTH_November 2024",
-                                    "MONTH_October 2024",
-                                    "MONTH_September 2024",
-                                    "MONTH_August 2024",
-                                    "MONTH_July 2024"
-                                ].map((month) => (
-                                    <MenuItem key={month} value={month}>
-                                        {month.replace('MONTH_', '')}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Box>
-
-                    {/* Stats Grid - All fields maintained */}
                     <Grid container spacing={2}>
+
+                        {/* Total Revenue */}
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Total Revenue</Typography>
@@ -176,6 +111,7 @@ const AnalyticsStats = () => {
                             </StatBox>
                         </Grid>
 
+                        {/* Total Profit */}
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Total Profit</Typography>
@@ -185,6 +121,7 @@ const AnalyticsStats = () => {
                             </StatBox>
                         </Grid>
 
+                        {/* Total Boxes Spins */}
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Total Boxes Spins</Typography>
@@ -194,6 +131,7 @@ const AnalyticsStats = () => {
                             </StatBox>
                         </Grid>
 
+                        {/* Total Items Purchased */}
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Total Items Purchased</Typography>
@@ -203,6 +141,7 @@ const AnalyticsStats = () => {
                             </StatBox>
                         </Grid>
 
+                        {/* Average Spend */}
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Average Spend (Per user)</Typography>
@@ -212,6 +151,7 @@ const AnalyticsStats = () => {
                             </StatBox>
                         </Grid>
 
+                        {/* Average Profit */}
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Average Profit (Per box)</Typography>
@@ -221,6 +161,7 @@ const AnalyticsStats = () => {
                             </StatBox>
                         </Grid>
 
+                        {/* Active Users */}
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Active Users</Typography>
@@ -230,6 +171,7 @@ const AnalyticsStats = () => {
                             </StatBox>
                         </Grid>
 
+                        {/* Retention Rate */}
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Retention Rate</Typography>
@@ -239,6 +181,7 @@ const AnalyticsStats = () => {
                             </StatBox>
                         </Grid>
 
+                        {/* Avg Session Time */}
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Avg. Session Time</Typography>
@@ -248,6 +191,7 @@ const AnalyticsStats = () => {
                             </StatBox>
                         </Grid>
 
+                        {/* Avg Boxes */}
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Avg. Boxes Opened (Per user)</Typography>
@@ -257,6 +201,7 @@ const AnalyticsStats = () => {
                             </StatBox>
                         </Grid>
 
+                        {/* Outstanding Liability */}
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Outstanding Liability</Typography>
@@ -266,6 +211,7 @@ const AnalyticsStats = () => {
                             </StatBox>
                         </Grid>
 
+                        {/* Pending Orders */}
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Pending Orders</Typography>
@@ -275,6 +221,7 @@ const AnalyticsStats = () => {
                             </StatBox>
                         </Grid>
 
+                        {/* Expected Payout */}
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Expected Payout</Typography>
@@ -284,6 +231,7 @@ const AnalyticsStats = () => {
                             </StatBox>
                         </Grid>
 
+                        {/* Actual Payout */}
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Actual Payout</Typography>
@@ -293,6 +241,7 @@ const AnalyticsStats = () => {
                             </StatBox>
                         </Grid>
 
+                        {/* Site Credit Issued */}
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Site Credit Issued</Typography>
@@ -302,6 +251,7 @@ const AnalyticsStats = () => {
                             </StatBox>
                         </Grid>
 
+                        {/* Site Credit Redeemed */}
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Site Credit Redeemed</Typography>
@@ -311,6 +261,7 @@ const AnalyticsStats = () => {
                             </StatBox>
                         </Grid>
 
+                        {/* Net Spin Profit */}
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Net Spin Profit</Typography>
@@ -320,6 +271,7 @@ const AnalyticsStats = () => {
                             </StatBox>
                         </Grid>
 
+                        {/* Shipping Fee */}
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Shipping Fee Collected</Typography>
@@ -329,6 +281,7 @@ const AnalyticsStats = () => {
                             </StatBox>
                         </Grid>
 
+                        {/* Pending Fulfillment */}
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Items Pending Fulfillment Cost</Typography>
@@ -338,6 +291,7 @@ const AnalyticsStats = () => {
                             </StatBox>
                         </Grid>
 
+                        {/* Influencer Revenue */}
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Influencer Revenue Share</Typography>
@@ -347,6 +301,7 @@ const AnalyticsStats = () => {
                             </StatBox>
                         </Grid>
 
+                        {/* Chargebacks */}
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Chargebacks (Count + Value)</Typography>
@@ -356,6 +311,7 @@ const AnalyticsStats = () => {
                             </StatBox>
                         </Grid>
 
+                        {/* RTP Deviation */}
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Box RTP Deviation</Typography>
