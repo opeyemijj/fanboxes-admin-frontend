@@ -13,7 +13,6 @@ import { useQuery } from 'react-query';
 import { useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 import * as api from 'src/services';
-import moment from 'moment';
 
 const ItemsAnalytics = ({ filter }) => {
     const searchParams = useSearchParams();
