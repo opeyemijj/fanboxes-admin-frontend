@@ -297,7 +297,7 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, bran
                     )}
 
                     {/* ✅ Sweet & Searchable Brand Dropdown */}
-                    <div>
+                    {/* <div>
                       <Stack direction="row" alignItems="center" justifyContent="space-between">
                         {isApiLoading ? (
                           <Skeleton variant="text" width={140} />
@@ -355,7 +355,49 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, bran
                           fullWidth
                         />
                       )}
-                    </div>
+                    </div> */}
+
+                    <Autocomplete
+                      id="select-brand"
+                      options={(brands || []).sort((a, b) => a.name.localeCompare(b.name))}
+                      filterOptions={(options, state) =>
+                        options.filter((option) => option.name.toLowerCase().startsWith(state.inputValue.toLowerCase()))
+                      }
+                      value={brands.find((b) => b._id?.toString() === values.brand) || null}
+                      onChange={(_, selectedBrand) => {
+                        if (selectedBrand) {
+                          setFieldValue('brand', selectedBrand._id);
+                          setFieldValue('brandDetails', {
+                            logo: selectedBrand.logo,
+                            _id: selectedBrand._id,
+                            name: selectedBrand.name,
+                            slug: selectedBrand.slug
+                          });
+                        } else {
+                          setFieldValue('brand', '');
+                          setFieldValue('brandDetails', {});
+                        }
+                      }}
+                      getOptionLabel={(option) => option.name || ''}
+                      isOptionEqualToValue={(option, value) => option._id === value._id}
+                      renderOption={(props, option) => (
+                        <li {...props} key={option._id}>
+                          <Stack direction="row" alignItems="center" spacing={1}>
+                            <Avatar src={option.logo?.url} alt={option.name} sx={{ width: 24, height: 24 }} />
+                            <Typography variant="body2">{option.name}</Typography>
+                          </Stack>
+                        </li>
+                      )}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          placeholder="Search brand..."
+                          error={Boolean(touched.brand && errors.brand)}
+                          helperText={touched.brand && errors.brand}
+                        />
+                      )}
+                      fullWidth
+                    />
 
                     {/* Description */}
                     <div>
