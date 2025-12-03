@@ -30,9 +30,10 @@ const TABLE_HEAD = [
 export default function UserProfile({ id }) {
   const searchParams = useSearchParams();
   const pageParam = searchParams.get('page');
+  console.log({ searchParams: searchParams.toString() });
   const { data, isLoading } = useQuery(
-    ['user-details', id, pageParam],
-    () => api.getUserByAdmin(id + `?page=${pageParam || 1}`),
+    ['user-details', id, searchParams.toString()],
+    () => api.getUserByAdmin(id + `?${searchParams.toString()}`),
     {
       enabled: Boolean(id),
       retry: false
@@ -42,7 +43,7 @@ export default function UserProfile({ id }) {
     if (isLoading) {
       return null;
     } else {
-      console.log(data, 'dadsasdas');
+      // console.log(data, 'dadsasdas');
       const { user } = data;
       return user;
     }
@@ -55,7 +56,7 @@ export default function UserProfile({ id }) {
       return orders;
     }
   })();
-  const tableData = { data: orders, count: data?.count };
+  const tableData = { data: orders, count: data?.count, currentPage: Number(pageParam) || 1 };
 
   return (
     <>

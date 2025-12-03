@@ -23,7 +23,7 @@ import MuiDrawer from '@mui/material/Drawer';
 // icons
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { LuLayoutDashboard, LuShield, LuShieldOff } from 'react-icons/lu';
-import { FaRegBuilding, FaSlidersH } from 'react-icons/fa';
+import { FaRegBuilding, FaSlidersH, FaChartPie } from 'react-icons/fa';
 import { TbCategory2 } from 'react-icons/tb';
 import { BsFillGiftFill, BsGift, BsPinAngleFill, BsPlayCircle, BsPlayCircleFill, BsShop } from 'react-icons/bs';
 import { BsCart3 } from 'react-icons/bs';
@@ -164,16 +164,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
     },
 
     {
-      id: 16,
-      title: 'Items',
-      slug: 'items',
-      hasPermission: UsePermission('view_item_listing'),
-      icon: <BsGift />,
-      isSearch: true
-    },
-
-    {
-      id: 10,
+      id: 6,
       title: 'Orders',
       slug: 'orders',
       hasPermission: UsePermission('view_order_listing'),
@@ -182,12 +173,20 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
     },
 
     {
-      id: 8,
+      id: 7,
       title: 'Payouts',
       slug: 'payouts',
       hasPermission: UsePermission('view_payout_listing'),
       icon: <BsCashCoin />,
       isSearch: false
+    },
+    {
+      id: 8,
+      title: 'Analytics',
+      slug: 'analytics',
+      hasPermission: UsePermission('view_brand_listing'),
+      icon: <FaChartPie />,
+      isSearch: true
     },
     {
       id: 9,
@@ -198,7 +197,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
       isSearch: true
     },
     {
-      id: 12,
+      id: 10,
       title: 'Currencies',
       slug: 'currencies',
       hasPermission: UsePermission('view_currency_listing'),
@@ -215,7 +214,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
     },
 
     {
-      id: 15,
+      id: 12,
       title: 'Logs',
       slug: 'logs',
       hasPermission: CheckMulitplePermission(['view_spin_listing', 'view_transections_listing']),
@@ -225,7 +224,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
       isSearch: false,
       children: [
         {
-          id: '15-1',
+          id: '12-1',
           title: 'Spins',
           slug: 'spins',
           hasPermission: UsePermission('view_spin_listing'),
@@ -233,7 +232,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
           isSearch: true
         },
         {
-          id: '15-2',
+          id: '12-2',
           title: 'Transactions',
           slug: 'transections',
           hasPermission: UsePermission('view_transections_listing'),
@@ -244,7 +243,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
     },
 
     {
-      id: 7,
+      id: 13,
       title: 'User Management',
       slug: 'user-management',
       icon: <LuUsers />,
@@ -258,7 +257,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
       isSearch: true,
       children: [
         {
-          id: '7-1',
+          id: '13-1',
           title: 'Roles',
           slug: 'roles',
           hasPermission: UsePermission('view_role_listing'),
@@ -266,21 +265,21 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
           isSearch: true
         },
         {
-          id: '7-2',
+          id: '13-2',
           title: 'User',
           slug: 'users',
           hasPermission: UsePermission('view_user_listing'),
           icon: <User size={18} />
         },
         {
-          id: '7-3',
+          id: '13-3',
           title: 'Admin',
           slug: 'admin-users',
           hasPermission: UsePermission('view_admin_listing'),
           icon: <Security size={18} />
         },
         {
-          id: '7-4',
+          id: '13-4',
           title: 'Influencer',
           slug: 'influencer-users',
           hasPermission: UsePermission('view_influencer_user_listing'),
@@ -290,7 +289,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
     },
 
     {
-      id: 13,
+      id: 14,
       title: 'Settings',
       slug: 'settings',
       hasPermission: UsePermission('settings'),
@@ -299,7 +298,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
     },
 
     {
-      id: 14,
+      id: 15,
       title: 'Configuration',
       slug: 'configuration',
       hasPermission: CheckMulitplePermission([
@@ -312,7 +311,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
       isSearch: false,
       children: [
         {
-          id: '14-1',
+          id: '15-1',
           title: 'Slides',
           slug: 'slides',
           hasPermission: UsePermission('view_slide_listing'),
@@ -320,7 +319,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
           isSearch: true
         },
         {
-          id: '14-2',
+          id: '15-2',
           title: 'Credits & Conversion',
           slug: 'credits',
           hasPermission: UsePermission('view_conversion_listing'),
@@ -328,7 +327,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
           isSearch: true
         },
         {
-          id: '14-3',
+          id: '15-3',
           title: 'Payment Gateway',
           slug: 'payment-gateway',
           hasPermission: UsePermission('view_payment_gateway_listing'), // UsePermission('view_conversion_listing'),
@@ -336,7 +335,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
           isSearch: true
         },
         {
-          id: '14-4',
+          id: '15-4',
           title: 'Static Page',
           slug: 'static-page',
           hasPermission: UsePermission('view_static_page_listing'), // UsePermission('view_conversion_listing'),
@@ -437,13 +436,13 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
                       border: `1px solid transparent`,
                       ...(active === '/admin/' + item.slug &&
                         initial && {
-                          bgcolor: (theme) => alpha(theme.palette.primary.main, 0.2),
-                          border: (theme) => `1px solid ${theme.palette.primary.main}`,
-                          color: theme.palette.primary.main,
-                          '& .MuiTypography-root': {
-                            fontWeight: 600
-                          }
-                        })
+                        bgcolor: (theme) => alpha(theme.palette.primary.main, 0.2),
+                        border: (theme) => `1px solid ${theme.palette.primary.main}`,
+                        color: theme.palette.primary.main,
+                        '& .MuiTypography-root': {
+                          fontWeight: 600
+                        }
+                      })
                     }}
                   >
                     <Tooltip title={open ? '' : item.title} placement="left" arrow leaveDelay={200}>

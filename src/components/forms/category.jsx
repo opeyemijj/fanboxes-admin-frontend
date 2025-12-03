@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { useRouter } from 'next-nprogress-bar';
 import PropTypes from 'prop-types';
@@ -166,6 +166,9 @@ export default function CategoryForm({ data: currentCategory, isLoading: categor
     formik.setFieldValue('slug', slug); // set the value of slug in the formik state
     formik.handleChange(event); // handle the change in formik
   };
+
+
+
   return (
     <Box position="relative">
       <FormikProvider value={formik}>

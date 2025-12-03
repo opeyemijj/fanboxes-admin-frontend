@@ -60,6 +60,7 @@ export default function CustomTable({
   ...props
 }) {
   const { headData, data, isLoading, heading, isSearch, row, ...rest } = props;
+
   const { push } = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
