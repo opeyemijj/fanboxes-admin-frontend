@@ -52,6 +52,8 @@ export default function AdminBoxeItems({ boxDetails, isVendor }) {
     }
   );
 
+  // Added: UpateItemOdd
+
   async function UpateItemOdd(passingItems) {
     try {
       updateItemsOdd({
