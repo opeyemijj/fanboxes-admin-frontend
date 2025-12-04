@@ -4,6 +4,7 @@ import {
 import React from 'react';
 
 import AnalyticsScreen from 'src/components/_admin/analytics/analytics';
+import AccessDenied from 'src/components/cards/AccessDenied';
 import { UsePermissionServer } from 'src/hooks/usePermissionServer';
 
 const Page = () => {
