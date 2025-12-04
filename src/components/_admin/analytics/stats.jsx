@@ -36,7 +36,7 @@ const AnalyticsStats = ({ filter }) => {
 
     const statData = data?.data || {};
 
-    console.log("Stats: ", statData);
+    // console.log("Stats: ", statData);
 
     // Default data structure for all fields
     const defaultData = {
