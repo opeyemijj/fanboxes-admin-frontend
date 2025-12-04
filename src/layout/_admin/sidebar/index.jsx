@@ -131,6 +131,14 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
     },
     {
       id: 2,
+      title: 'Analytics',
+      slug: 'analytics',
+      hasPermission: UsePermission('view_analytic_details'),
+      icon: <FaChartPie />,
+      isSearch: true
+    },
+    {
+      id: 3,
       title: 'Categories',
       slug: 'categories',
       hasPermission: UsePermission('view_category_listing'),
@@ -138,7 +146,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
       isSearch: true
     },
     {
-      id: 3,
+      id: 4,
       title: 'Sub Categories',
       slug: 'sub-categories',
       hasPermission: UsePermission('view_subcategory_listing'),
@@ -147,7 +155,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
     },
 
     {
-      id: 4,
+      id: 5,
       title: 'Influencers',
       slug: 'shops',
       hasPermission: UsePermission('view_influencer_listing'),
@@ -155,7 +163,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
       isSearch: true
     },
     {
-      id: 5,
+      id: 6,
       title: 'Boxes',
       slug: 'products',
       hasPermission: UsePermission('view_box_listing'),
@@ -164,7 +172,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
     },
 
     {
-      id: 6,
+      id: 7,
       title: 'Orders',
       slug: 'orders',
       hasPermission: UsePermission('view_order_listing'),
@@ -173,7 +181,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
     },
 
     {
-      id: 7,
+      id: 8,
       title: 'Payouts',
       slug: 'payouts',
       hasPermission: UsePermission('view_payout_listing'),
@@ -181,15 +189,15 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
       isSearch: false
     },
     {
-      id: 8,
-      title: 'Analytics',
-      slug: 'analytics',
-      hasPermission: UsePermission('view_brand_listing'),
-      icon: <FaChartPie />,
+      id: 9,
+      title: 'Items',
+      slug: 'items',
+      hasPermission: UsePermission('view_item_listing'),
+      icon: <FaRegBuilding />,
       isSearch: true
     },
     {
-      id: 9,
+      id: 10,
       title: 'Brands',
       slug: 'brands',
       hasPermission: UsePermission('view_brand_listing'),
@@ -197,7 +205,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
       isSearch: true
     },
     {
-      id: 10,
+      id: 11,
       title: 'Currencies',
       slug: 'currencies',
       hasPermission: UsePermission('view_currency_listing'),
@@ -205,7 +213,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
       isSearch: true
     },
     {
-      id: 11,
+      id: 12,
       title: 'Coupon codes',
       slug: 'coupon-codes',
       hasPermission: UsePermission('view_coupon_code_listing'),
@@ -214,7 +222,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
     },
 
     {
-      id: 12,
+      id: 13,
       title: 'Logs',
       slug: 'logs',
       hasPermission: CheckMulitplePermission(['view_spin_listing', 'view_transections_listing']),
@@ -224,7 +232,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
       isSearch: false,
       children: [
         {
-          id: '12-1',
+          id: '13-1',
           title: 'Spins',
           slug: 'spins',
           hasPermission: UsePermission('view_spin_listing'),
@@ -232,7 +240,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
           isSearch: true
         },
         {
-          id: '12-2',
+          id: '13-2',
           title: 'Transactions',
           slug: 'transections',
           hasPermission: UsePermission('view_transections_listing'),
@@ -243,7 +251,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
     },
 
     {
-      id: 13,
+      id: 14,
       title: 'User Management',
       slug: 'user-management',
       icon: <LuUsers />,
@@ -257,7 +265,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
       isSearch: true,
       children: [
         {
-          id: '13-1',
+          id: '14-1',
           title: 'Roles',
           slug: 'roles',
           hasPermission: UsePermission('view_role_listing'),
@@ -265,14 +273,14 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
           isSearch: true
         },
         {
-          id: '13-2',
+          id: '14-2',
           title: 'User',
           slug: 'users',
           hasPermission: UsePermission('view_user_listing'),
           icon: <User size={18} />
         },
         {
-          id: '13-3',
+          id: '14-3',
           title: 'Admin',
           slug: 'admin-users',
           hasPermission: UsePermission('view_admin_listing'),
@@ -289,7 +297,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
     },
 
     {
-      id: 14,
+      id: 15,
       title: 'Settings',
       slug: 'settings',
       hasPermission: UsePermission('settings'),
@@ -298,7 +306,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
     },
 
     {
-      id: 15,
+      id: 16,
       title: 'Configuration',
       slug: 'configuration',
       hasPermission: CheckMulitplePermission([
@@ -311,7 +319,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
       isSearch: false,
       children: [
         {
-          id: '15-1',
+          id: '16-1',
           title: 'Slides',
           slug: 'slides',
           hasPermission: UsePermission('view_slide_listing'),
@@ -319,7 +327,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
           isSearch: true
         },
         {
-          id: '15-2',
+          id: '16-2',
           title: 'Credits & Conversion',
           slug: 'credits',
           hasPermission: UsePermission('view_conversion_listing'),
@@ -327,7 +335,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
           isSearch: true
         },
         {
-          id: '15-3',
+          id: '16-3',
           title: 'Payment Gateway',
           slug: 'payment-gateway',
           hasPermission: UsePermission('view_payment_gateway_listing'), // UsePermission('view_conversion_listing'),
@@ -335,7 +343,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
           isSearch: true
         },
         {
-          id: '15-4',
+          id: '16-4',
           title: 'Static Page',
           slug: 'static-page',
           hasPermission: UsePermission('view_static_page_listing'), // UsePermission('view_conversion_listing'),
