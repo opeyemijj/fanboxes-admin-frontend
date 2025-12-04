@@ -23,6 +23,8 @@ const BoxesAnalytics = ({ filter }) => {
     const { data, isLoading } = useQuery(
         ['topBoxes', timeFilter, dateRange, searchParam],
         async () => {
+            // Add artificial delay for better UX
+            await new Promise(resolve => setTimeout(resolve, 800));
             const res = await api.getTopBoxes(timeFilter, dateRange);
             return res.data || [];
         },
@@ -120,12 +122,30 @@ const BoxesAnalytics = ({ filter }) => {
     // Skeleton Loader
     const renderSkeleton = () => (
         <Box>
-            {[1, 2, 3].map((i) => (
-                <Box key={i} sx={{ display: 'flex', mb: 2 }}>
-                    <Skeleton variant="rounded" width={60} height={60} sx={{ mr: 2, borderRadius: 2 }} />
+            {[1, 2, 3, 4, 5].map((i) => (
+                <Box key={i} sx={{ display: 'flex', alignItems: 'center', mb: 2.5 }}>
+                    <Skeleton
+                        variant="rounded"
+                        width={60}
+                        height={60}
+                        sx={{
+                            mr: 2,
+                            borderRadius: 2,
+                            flexShrink: 0
+                        }}
+                    />
                     <Box sx={{ width: '100%' }}>
-                        <Skeleton width="50%" height={24} />
-                        <Skeleton width="40%" height={18} />
+                        <Skeleton
+                            variant="text"
+                            width="70%"
+                            height={24}
+                            sx={{ mb: 0.5 }}
+                        />
+                        <Skeleton
+                            variant="text"
+                            width="50%"
+                            height={18}
+                        />
                     </Box>
                 </Box>
             ))}
@@ -135,7 +155,15 @@ const BoxesAnalytics = ({ filter }) => {
     return (
         <Grid item xs={12} sm={6} md={6}>
             <Card sx={{ borderRadius: 2, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
-                <CardHeader title="Top-Performing Boxes" />
+                <CardHeader
+                    title={
+                        isLoading ? (
+                            <Skeleton variant="text" width="60%" height={32} />
+                        ) : (
+                            "Top-Performing Boxes"
+                        )
+                    }
+                />
                 <CardContent>
                     {isLoading ? renderSkeleton() : renderList(boxes)}
                 </CardContent>

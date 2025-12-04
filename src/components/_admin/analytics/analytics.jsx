@@ -1,3 +1,4 @@
+"use client"
 import { Grid } from '@mui/material'
 import React, { useState } from 'react'
 import AnalyticsStats from './stats'

@@ -5,6 +5,7 @@ import {
     CardContent,
     Typography,
     Box,
+    Skeleton
 } from '@mui/material';
 import { useQuery } from 'react-query';
 import toast from 'react-hot-toast';
@@ -26,9 +27,13 @@ const StatBox = ({ children }) => (
 const AnalyticsStats = ({ filter }) => {
     const { timeFilter } = filter;
 
-    const { data } = useQuery(
+    const { data, isLoading, isFetching } = useQuery(
         ['stats', timeFilter],
-        () => api.getStats(timeFilter),
+        async () => {
+            // Add artificial delay for better UX
+            await new Promise(resolve => setTimeout(resolve, 800));
+            return api.getStats(timeFilter);
+        },
         {
             onError: (err) => toast.error(err.response?.data?.message || 'Something went wrong!')
         }
@@ -83,6 +88,8 @@ const AnalyticsStats = ({ filter }) => {
 
     const formatPercentage = (num) => `${num || 0}%`;
 
+    const loading = isLoading || isFetching;
+
     return (
         <Grid item xs={12}>
             <MetricCard>
@@ -93,9 +100,13 @@ const AnalyticsStats = ({ filter }) => {
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Total Revenue</Typography>
-                                <Typography variant="h6">
-                                    {formatCurrency(currentData.totalRevenue)}
-                                </Typography>
+                                {loading ? (
+                                    <Skeleton variant="text" width="60%" height={32} sx={{ mx: 'auto' }} />
+                                ) : (
+                                    <Typography variant="h6">
+                                        {formatCurrency(currentData.totalRevenue)}
+                                    </Typography>
+                                )}
                             </StatBox>
                         </Grid>
 
@@ -103,9 +114,13 @@ const AnalyticsStats = ({ filter }) => {
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Total Profit</Typography>
-                                <Typography variant="h6">
-                                    {formatCurrency(currentData.totalProfit)}
-                                </Typography>
+                                {loading ? (
+                                    <Skeleton variant="text" width="60%" height={32} sx={{ mx: 'auto' }} />
+                                ) : (
+                                    <Typography variant="h6">
+                                        {formatCurrency(currentData.totalProfit)}
+                                    </Typography>
+                                )}
                             </StatBox>
                         </Grid>
 
@@ -113,9 +128,13 @@ const AnalyticsStats = ({ filter }) => {
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Total Boxes Spins</Typography>
-                                <Typography variant="h6">
-                                    {formatNumber(currentData.totalBoxSpins)}
-                                </Typography>
+                                {loading ? (
+                                    <Skeleton variant="text" width="60%" height={32} sx={{ mx: 'auto' }} />
+                                ) : (
+                                    <Typography variant="h6">
+                                        {formatNumber(currentData.totalBoxSpins)}
+                                    </Typography>
+                                )}
                             </StatBox>
                         </Grid>
 
@@ -123,9 +142,13 @@ const AnalyticsStats = ({ filter }) => {
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Total Items Purchased</Typography>
-                                <Typography variant="h6">
-                                    {formatNumber(currentData.totalItemsPurchased)}
-                                </Typography>
+                                {loading ? (
+                                    <Skeleton variant="text" width="60%" height={32} sx={{ mx: 'auto' }} />
+                                ) : (
+                                    <Typography variant="h6">
+                                        {formatNumber(currentData.totalItemsPurchased)}
+                                    </Typography>
+                                )}
                             </StatBox>
                         </Grid>
 
@@ -133,9 +156,13 @@ const AnalyticsStats = ({ filter }) => {
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Average Spend (Per user)</Typography>
-                                <Typography variant="h6">
-                                    {formatCurrency(currentData.avgSpend)}
-                                </Typography>
+                                {loading ? (
+                                    <Skeleton variant="text" width="60%" height={32} sx={{ mx: 'auto' }} />
+                                ) : (
+                                    <Typography variant="h6">
+                                        {formatCurrency(currentData.avgSpend)}
+                                    </Typography>
+                                )}
                             </StatBox>
                         </Grid>
 
@@ -143,9 +170,13 @@ const AnalyticsStats = ({ filter }) => {
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Average Profit (Per box)</Typography>
-                                <Typography variant="h6">
-                                    {formatCurrency(currentData.avgProfitPerBox)}
-                                </Typography>
+                                {loading ? (
+                                    <Skeleton variant="text" width="60%" height={32} sx={{ mx: 'auto' }} />
+                                ) : (
+                                    <Typography variant="h6">
+                                        {formatCurrency(currentData.avgProfitPerBox)}
+                                    </Typography>
+                                )}
                             </StatBox>
                         </Grid>
 
@@ -153,9 +184,13 @@ const AnalyticsStats = ({ filter }) => {
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Active Users</Typography>
-                                <Typography variant="h6">
-                                    {formatNumber(currentData.activeUsers)}
-                                </Typography>
+                                {loading ? (
+                                    <Skeleton variant="text" width="60%" height={32} sx={{ mx: 'auto' }} />
+                                ) : (
+                                    <Typography variant="h6">
+                                        {formatNumber(currentData.activeUsers)}
+                                    </Typography>
+                                )}
                             </StatBox>
                         </Grid>
 
@@ -163,9 +198,13 @@ const AnalyticsStats = ({ filter }) => {
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Retention Rate</Typography>
-                                <Typography variant="h6">
-                                    {formatPercentage(currentData.retentionRate)}
-                                </Typography>
+                                {loading ? (
+                                    <Skeleton variant="text" width="60%" height={32} sx={{ mx: 'auto' }} />
+                                ) : (
+                                    <Typography variant="h6">
+                                        {formatPercentage(currentData.retentionRate)}
+                                    </Typography>
+                                )}
                             </StatBox>
                         </Grid>
 
@@ -173,9 +212,13 @@ const AnalyticsStats = ({ filter }) => {
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Avg. Session Time</Typography>
-                                <Typography variant="h6">
-                                    {currentData.avgSessionTime}m
-                                </Typography>
+                                {loading ? (
+                                    <Skeleton variant="text" width="60%" height={32} sx={{ mx: 'auto' }} />
+                                ) : (
+                                    <Typography variant="h6">
+                                        {currentData.avgSessionTime}m
+                                    </Typography>
+                                )}
                             </StatBox>
                         </Grid>
 
@@ -183,7 +226,11 @@ const AnalyticsStats = ({ filter }) => {
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Avg. Boxes Opened (Per user)</Typography>
-                                <Typography variant="h6">{currentData.avgBoxesPerUser}</Typography>
+                                {loading ? (
+                                    <Skeleton variant="text" width="60%" height={32} sx={{ mx: 'auto' }} />
+                                ) : (
+                                    <Typography variant="h6">{currentData.avgBoxesPerUser}</Typography>
+                                )}
                             </StatBox>
                         </Grid>
 
@@ -191,9 +238,13 @@ const AnalyticsStats = ({ filter }) => {
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Outstanding Liability</Typography>
-                                <Typography variant="h6">
-                                    {formatCurrency(currentData.outstandingLiability)}
-                                </Typography>
+                                {loading ? (
+                                    <Skeleton variant="text" width="60%" height={32} sx={{ mx: 'auto' }} />
+                                ) : (
+                                    <Typography variant="h6">
+                                        {formatCurrency(currentData.outstandingLiability)}
+                                    </Typography>
+                                )}
                             </StatBox>
                         </Grid>
 
@@ -201,9 +252,13 @@ const AnalyticsStats = ({ filter }) => {
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Pending Orders</Typography>
-                                <Typography variant="h6">
-                                    {formatNumber(currentData.pendingOrders)}
-                                </Typography>
+                                {loading ? (
+                                    <Skeleton variant="text" width="60%" height={32} sx={{ mx: 'auto' }} />
+                                ) : (
+                                    <Typography variant="h6">
+                                        {formatNumber(currentData.pendingOrders)}
+                                    </Typography>
+                                )}
                             </StatBox>
                         </Grid>
 
@@ -211,9 +266,13 @@ const AnalyticsStats = ({ filter }) => {
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Expected Payout</Typography>
-                                <Typography variant="h6">
-                                    {formatCurrency(currentData.expectedPayout)}
-                                </Typography>
+                                {loading ? (
+                                    <Skeleton variant="text" width="60%" height={32} sx={{ mx: 'auto' }} />
+                                ) : (
+                                    <Typography variant="h6">
+                                        {formatCurrency(currentData.expectedPayout)}
+                                    </Typography>
+                                )}
                             </StatBox>
                         </Grid>
 
@@ -221,9 +280,13 @@ const AnalyticsStats = ({ filter }) => {
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Actual Payout</Typography>
-                                <Typography variant="h6">
-                                    {formatCurrency(currentData.actualPayout)}
-                                </Typography>
+                                {loading ? (
+                                    <Skeleton variant="text" width="60%" height={32} sx={{ mx: 'auto' }} />
+                                ) : (
+                                    <Typography variant="h6">
+                                        {formatCurrency(currentData.actualPayout)}
+                                    </Typography>
+                                )}
                             </StatBox>
                         </Grid>
 
@@ -231,9 +294,13 @@ const AnalyticsStats = ({ filter }) => {
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Site Credit Issued</Typography>
-                                <Typography variant="h6">
-                                    {formatCurrency(currentData.siteCreditIssued)}
-                                </Typography>
+                                {loading ? (
+                                    <Skeleton variant="text" width="60%" height={32} sx={{ mx: 'auto' }} />
+                                ) : (
+                                    <Typography variant="h6">
+                                        {formatCurrency(currentData.siteCreditIssued)}
+                                    </Typography>
+                                )}
                             </StatBox>
                         </Grid>
 
@@ -241,9 +308,13 @@ const AnalyticsStats = ({ filter }) => {
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Site Credit Redeemed</Typography>
-                                <Typography variant="h6">
-                                    {formatCurrency(currentData.siteCreditRedeemed)}
-                                </Typography>
+                                {loading ? (
+                                    <Skeleton variant="text" width="60%" height={32} sx={{ mx: 'auto' }} />
+                                ) : (
+                                    <Typography variant="h6">
+                                        {formatCurrency(currentData.siteCreditRedeemed)}
+                                    </Typography>
+                                )}
                             </StatBox>
                         </Grid>
 
@@ -251,9 +322,13 @@ const AnalyticsStats = ({ filter }) => {
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Net Spin Profit</Typography>
-                                <Typography variant="h6">
-                                    {formatCurrency(currentData.netSpinProfit)}
-                                </Typography>
+                                {loading ? (
+                                    <Skeleton variant="text" width="60%" height={32} sx={{ mx: 'auto' }} />
+                                ) : (
+                                    <Typography variant="h6">
+                                        {formatCurrency(currentData.netSpinProfit)}
+                                    </Typography>
+                                )}
                             </StatBox>
                         </Grid>
 
@@ -261,9 +336,13 @@ const AnalyticsStats = ({ filter }) => {
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Shipping Fee Collected</Typography>
-                                <Typography variant="h6">
-                                    {formatCurrency(currentData.shippingFee)}
-                                </Typography>
+                                {loading ? (
+                                    <Skeleton variant="text" width="60%" height={32} sx={{ mx: 'auto' }} />
+                                ) : (
+                                    <Typography variant="h6">
+                                        {formatCurrency(currentData.shippingFee)}
+                                    </Typography>
+                                )}
                             </StatBox>
                         </Grid>
 
@@ -271,9 +350,13 @@ const AnalyticsStats = ({ filter }) => {
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Items Pending Fulfillment Cost</Typography>
-                                <Typography variant="h6">
-                                    {formatCurrency(currentData.pendingFulfillmentCost)}
-                                </Typography>
+                                {loading ? (
+                                    <Skeleton variant="text" width="60%" height={32} sx={{ mx: 'auto' }} />
+                                ) : (
+                                    <Typography variant="h6">
+                                        {formatCurrency(currentData.pendingFulfillmentCost)}
+                                    </Typography>
+                                )}
                             </StatBox>
                         </Grid>
 
@@ -281,9 +364,13 @@ const AnalyticsStats = ({ filter }) => {
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Influencer Revenue Share</Typography>
-                                <Typography variant="h6">
-                                    {formatCurrency(currentData.influencerRevenue)}
-                                </Typography>
+                                {loading ? (
+                                    <Skeleton variant="text" width="60%" height={32} sx={{ mx: 'auto' }} />
+                                ) : (
+                                    <Typography variant="h6">
+                                        {formatCurrency(currentData.influencerRevenue)}
+                                    </Typography>
+                                )}
                             </StatBox>
                         </Grid>
 
@@ -291,9 +378,13 @@ const AnalyticsStats = ({ filter }) => {
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Chargebacks (Count + Value)</Typography>
-                                <Typography variant="h6">
-                                    {currentData.chargebacks.count} {formatCurrency(currentData.chargebacks.value)}
-                                </Typography>
+                                {loading ? (
+                                    <Skeleton variant="text" width="80%" height={32} sx={{ mx: 'auto' }} />
+                                ) : (
+                                    <Typography variant="h6">
+                                        {currentData.chargebacks.count} {formatCurrency(currentData.chargebacks.value)}
+                                    </Typography>
+                                )}
                             </StatBox>
                         </Grid>
 
@@ -301,9 +392,13 @@ const AnalyticsStats = ({ filter }) => {
                         <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Box RTP Deviation</Typography>
-                                <Typography variant="h6">
-                                    {currentData.boxRTPDeviation}%
-                                </Typography>
+                                {loading ? (
+                                    <Skeleton variant="text" width="60%" height={32} sx={{ mx: 'auto' }} />
+                                ) : (
+                                    <Typography variant="h6">
+                                        {currentData.boxRTPDeviation}%
+                                    </Typography>
+                                )}
                             </StatBox>
                         </Grid>
 

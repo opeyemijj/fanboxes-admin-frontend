@@ -24,6 +24,8 @@ const InfluencersAnalytics = ({ filter }) => {
     const { data, isLoading } = useQuery(
         ['topInfluencers', timeFilter, dateRange, searchParam],
         async () => {
+            // Add artificial delay for better UX
+            await new Promise(resolve => setTimeout(resolve, 800));
             const res = await api.getTopInfluencers({
                 timeFilter,
                 dateRange,
@@ -53,17 +55,42 @@ const InfluencersAnalytics = ({ filter }) => {
 
     const renderSkeleton = () => (
         <Box>
-            {[1, 2, 3].map((i) => (
-                <Box key={i} sx={{ display: 'flex', mb: 2 }}>
+            {[1, 2, 3, 4, 5].map((i) => (
+                <Box key={i} sx={{ display: 'flex', alignItems: 'center', mb: 2.5 }}>
                     <Skeleton
                         variant="circular"
                         width={60}
                         height={60}
-                        sx={{ mr: 2 }}
+                        sx={{ mr: 2, flexShrink: 0 }}
                     />
-                    <Box sx={{ width: '100%' }}>
-                        <Skeleton width="50%" height={24} />
-                        <Skeleton width="40%" height={18} />
+                    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
+                        <Box sx={{ flex: 1 }}>
+                            <Skeleton
+                                variant="text"
+                                width="60%"
+                                height={24}
+                                sx={{ mb: 0.5 }}
+                            />
+                            <Skeleton
+                                variant="text"
+                                width="40%"
+                                height={18}
+                            />
+                        </Box>
+                        <Box sx={{ textAlign: 'right', minWidth: 80 }}>
+                            <Skeleton
+                                variant="text"
+                                width="70%"
+                                height={24}
+                                sx={{ mb: 0.5, ml: 'auto' }}
+                            />
+                            <Skeleton
+                                variant="text"
+                                width="50%"
+                                height={18}
+                                sx={{ ml: 'auto' }}
+                            />
+                        </Box>
                     </Box>
                 </Box>
             ))}
@@ -192,7 +219,15 @@ const InfluencersAnalytics = ({ filter }) => {
                     boxShadow: '0 2px 10px rgba(0,0,0,0.06)'
                 }}
             >
-                <CardHeader title="Top-Performing Influencers" />
+                <CardHeader
+                    title={
+                        isLoading ? (
+                            <Skeleton variant="text" width="65%" height={32} />
+                        ) : (
+                            "Top-Performing Influencers"
+                        )
+                    }
+                />
                 <CardContent>
                     {isLoading ? renderSkeleton() : renderList()}
                 </CardContent>
