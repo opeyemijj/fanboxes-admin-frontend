@@ -1025,7 +1025,7 @@ Analytics
 */
 
 export const getStats = async (timeFilter = 'TODAY') => {
-  const { data } = await http.get(`/admin/analytics_stats?timeFilter=${timeFilter}`);
+  const { data } = await http.get(`/admin/analytics?timeFilter=${timeFilter}`);
   return data;
 };
 
