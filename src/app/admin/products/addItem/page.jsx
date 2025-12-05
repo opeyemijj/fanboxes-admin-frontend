@@ -22,7 +22,9 @@ export default function Page() {
 
     async function fetchData() {
       try {
-        const { data: productData } = await api.getProductDetails(slug);
+        const { data: productData } = await api.getProductDetailsByAdmin(slug);
+
+        
 
         setProductDetails(productData);
       } catch (error) {
