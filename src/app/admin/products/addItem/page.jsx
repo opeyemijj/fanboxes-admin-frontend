@@ -24,6 +24,8 @@ export default function Page() {
       try {
         const { data: productData } = await api.getProductDetailsByAdmin(slug);
 
+        
+
         setProductDetails(productData);
       } catch (error) {
         console.error('Error fetching data:', error);
