@@ -25,9 +25,9 @@ const ItemsAnalytics = ({ filter }) => {
         ['itemsAnalytics', timeFilter, dateRange, searchParam],
         async () => {
             const [claimedRes, wonRes, resoldRes] = await Promise.all([
-                api.getTopClaimedItems(timeFilter, dateRange),
-                api.getTopWonItems(timeFilter, dateRange),
-                api.getTopResoldItems(timeFilter, dateRange)
+                api.getTopClaimedItems(timeFilter, dateRange, searchParam),
+                api.getTopWonItems(timeFilter, dateRange, searchParam),
+                api.getTopResoldItems(timeFilter, dateRange, searchParam)
             ]);
 
             return {
@@ -88,9 +88,9 @@ const ItemsAnalytics = ({ filter }) => {
                         flexShrink: 0
                     }}
                 >
-                    {item.itemImage ? (
+                    {item?.itemImage ? (
                         <img
-                            src={item.itemImage}
+                            src={item?.itemImage?.url}
                             alt={item.itemName}
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
