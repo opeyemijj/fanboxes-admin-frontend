@@ -18,7 +18,7 @@ EditProduct.propTypes = {
 export default function EditProduct({ brands, categories, slug, shops, isVendor }) {
   const { data, isLoading } = useQuery(
     ['signle-product'],
-    () => api[isVendor ? 'getVendorProductBySlug' : 'getProductBySlug'](slug),
+    () => api[isVendor ? 'getVendorProductBySlug' : 'getOneProductByAdmin'](slug),
     {
       onError: (err) => {
         toast.error(err.message || 'Something went wrong!');
