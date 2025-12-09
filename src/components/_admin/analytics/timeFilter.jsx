@@ -236,7 +236,7 @@ const TimeFilter = ({ timeFilter, dateRange, onChange }) => {
     }, [timeFilter, dateRange, pickerInitialized]);
 
     return (
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 1, p: 3 }}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 1 }}>
             <TextField
                 inputRef={datePickerRef}
                 label="Date Range"

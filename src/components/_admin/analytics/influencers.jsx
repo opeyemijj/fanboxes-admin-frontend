@@ -20,17 +20,14 @@ const InfluencersAnalytics = ({ filter }) => {
 
     const { timeFilter, dateRange } = filter;
 
-    // Fetch Top Influencers
+    // Fetch Top Influencers (aligned with BoxesAnalytics pattern)
     const { data, isLoading } = useQuery(
         ['topInfluencers', timeFilter, dateRange, searchParam],
         async () => {
-            // Add artificial delay for better UX
             await new Promise(resolve => setTimeout(resolve, 800));
-            const res = await api.getTopInfluencers({
-                timeFilter,
-                dateRange,
-                search: searchParam
-            });
+
+            // Match the template: direct arguments, no nested object
+            const res = await api.getTopInfluencers(timeFilter, dateRange, searchParam);
 
             return res.data || [];
         },
@@ -65,31 +62,12 @@ const InfluencersAnalytics = ({ filter }) => {
                     />
                     <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
                         <Box sx={{ flex: 1 }}>
-                            <Skeleton
-                                variant="text"
-                                width="60%"
-                                height={24}
-                                sx={{ mb: 0.5 }}
-                            />
-                            <Skeleton
-                                variant="text"
-                                width="40%"
-                                height={18}
-                            />
+                            <Skeleton variant="text" width="60%" height={24} sx={{ mb: 0.5 }} />
+                            <Skeleton variant="text" width="40%" height={18} />
                         </Box>
                         <Box sx={{ textAlign: 'right', minWidth: 80 }}>
-                            <Skeleton
-                                variant="text"
-                                width="70%"
-                                height={24}
-                                sx={{ mb: 0.5, ml: 'auto' }}
-                            />
-                            <Skeleton
-                                variant="text"
-                                width="50%"
-                                height={18}
-                                sx={{ ml: 'auto' }}
-                            />
+                            <Skeleton variant="text" width="70%" height={24} sx={{ mb: 0.5, ml: 'auto' }} />
+                            <Skeleton variant="text" width="50%" height={18} sx={{ ml: 'auto' }} />
                         </Box>
                     </Box>
                 </Box>
@@ -104,11 +82,7 @@ const InfluencersAnalytics = ({ filter }) => {
                     <Typography variant="body1" color="text.secondary">
                         No influencer data available
                     </Typography>
-                    <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ mt: 1 }}
-                    >
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
                         Try selecting a different date range
                     </Typography>
                 </Box>
@@ -123,8 +97,7 @@ const InfluencersAnalytics = ({ filter }) => {
                     alignItems: 'center',
                     mb: 1.5,
                     pb: 1.5,
-                    borderBottom:
-                        index < influencers.length - 1 ? 1 : 0,
+                    borderBottom: index < influencers.length - 1 ? 1 : 0,
                     borderColor: 'divider',
                     transition: '0.2s ease',
                     '&:hover': { backgroundColor: 'grey.50' }
@@ -169,20 +142,12 @@ const InfluencersAnalytics = ({ filter }) => {
                     }}
                 >
                     <Box>
-                        <Typography
-                            variant="subtitle1"
-                            sx={{ fontWeight: 600 }}
-                        >
-                            {influencer.influencerName ||
-                                'Unnamed Influencer'}
+                        <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                            {influencer.influencerName || 'Unnamed Influencer'}
                         </Typography>
 
-                        <Typography
-                            variant="caption"
-                            color="text.secondary"
-                        >
-                            {formatCurrency(influencer.totalRevenue)}{' '}
-                            revenue
+                        <Typography variant="caption" color="text.secondary">
+                            {formatCurrency(influencer.totalRevenue)} revenue
                         </Typography>
                     </Box>
 
@@ -199,10 +164,7 @@ const InfluencersAnalytics = ({ filter }) => {
                         >
                             {formatCurrency(influencer.totalCommission)}
                         </Typography>
-                        <Typography
-                            variant="caption"
-                            color="text.secondary"
-                        >
+                        <Typography variant="caption" color="text.secondary">
                             Commission
                         </Typography>
                     </Box>
@@ -213,12 +175,7 @@ const InfluencersAnalytics = ({ filter }) => {
 
     return (
         <Grid item xs={12} sm={6} md={6}>
-            <Card
-                sx={{
-                    borderRadius: 2,
-                    boxShadow: '0 2px 10px rgba(0,0,0,0.06)'
-                }}
-            >
+            <Card sx={{ borderRadius: 2, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
                 <CardHeader
                     title={
                         isLoading ? (

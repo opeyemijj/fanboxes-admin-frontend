@@ -10,6 +10,7 @@ import {
 import { useQuery } from 'react-query';
 import toast from 'react-hot-toast';
 import * as api from 'src/services';
+import { useCurrencyConvert } from 'src/hooks/convertCurrency';
 
 // Styled components
 const MetricCard = ({ children }) => (
@@ -24,8 +25,13 @@ const StatBox = ({ children }) => (
     </Box>
 );
 
-const AnalyticsStats = ({ filter }) => {
+const AnalyticsStats = ({ filter, currency }) => {
     const { timeFilter } = filter;
+    const code = typeof currency === 'string' ? currency : currency.code;
+    const cCurrency = useCurrencyConvert();
+
+
+    console.log("Currency: ", code);
 
     const { data, isLoading, isFetching } = useQuery(
         ['stats', timeFilter],
@@ -79,10 +85,11 @@ const AnalyticsStats = ({ filter }) => {
     const formatCurrency = (amount) =>
         new Intl.NumberFormat('en-US', {
             style: 'currency',
-            currency: 'USD',
+            currency: code,
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
-        }).format(amount || 0);
+        }).format(cCurrency(amount || 0));
+
 
     const formatNumber = (num) => new Intl.NumberFormat('en-US').format(num || 0);
 
@@ -209,7 +216,7 @@ const AnalyticsStats = ({ filter }) => {
                         </Grid>
 
                         {/* Avg Session Time */}
-                        <Grid item xs={6} lg={3}>
+                        {/* <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Avg. Session Time</Typography>
                                 {loading ? (
@@ -220,7 +227,7 @@ const AnalyticsStats = ({ filter }) => {
                                     </Typography>
                                 )}
                             </StatBox>
-                        </Grid>
+                        </Grid> */}
 
                         {/* Avg Boxes Per User */}
                         <Grid item xs={6} lg={3}>

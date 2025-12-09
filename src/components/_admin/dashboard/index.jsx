@@ -9,6 +9,7 @@ import DashboardCard from 'src/components/_admin/dashboard/dashboardCard';
 import LowStockProducts from 'src/components/_admin/dashboard/lowStockProducts';
 import OrderChart from 'src/components/charts/order';
 import SaleChart from 'src/components/charts/sale';
+import SpinChart from 'src/components/charts/spin';
 import IncomeChart from 'src/components/charts/income';
 import BestSelling from './bestSelling';
 // icon
@@ -37,11 +38,15 @@ export default function Dashboard({ isVendor }) {
   );
 
   const data = dashboard?.data || {};
+  
+  console.log(data);
+
   const daily_earning = data?.dailyEarning;
   const daily_orders = data?.dailyOrders;
   const daily_users = data?.totalUsers;
   const totalProducts = data?.totalProducts;
   const sales_report = data?.salesReport;
+  const spin_report = data?.spinReport;
   const income_report = data?.incomeReport;
   const commission_report = data?.commissionReport;
   const orders_report = data?.ordersReport;
@@ -55,7 +60,7 @@ export default function Dashboard({ isVendor }) {
   return (
     <Box>
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={6} md={3}>
+        {/* <Grid item xs={12} sm={6} md={3}>
           <DashboardCard
             color="primary"
             isAmount
@@ -64,8 +69,8 @@ export default function Dashboard({ isVendor }) {
             value={daily_earning}
             isLoading={isLoading}
           />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        </Grid> */}
+        <Grid item xs={12} sm={6} md={4}>
           <DashboardCard
             color="secondary"
             title="Daily Orders"
@@ -75,7 +80,7 @@ export default function Dashboard({ isVendor }) {
           />
         </Grid>
         {!isVendor && (
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={4}>
             <DashboardCard
               color="warning"
               title="Total Users"
@@ -86,7 +91,7 @@ export default function Dashboard({ isVendor }) {
           </Grid>
         )}
 
-        <Grid item xs={12} sm={isVendor ? 12 : 6} md={3}>
+        <Grid item xs={12} sm={isVendor ? 12 : 6} md={4}>
           <DashboardCard
             color="error"
             title="Total Boxes"
@@ -96,7 +101,7 @@ export default function Dashboard({ isVendor }) {
           />
         </Grid>
         {!isVendor && (
-          <Grid item xs={12} sm={isVendor ? 12 : 6} md={3}>
+          <Grid item xs={12} sm={isVendor ? 12 : 6} md={4}>
             <DashboardCard
               color="success"
               title="Total Influencers"
@@ -107,7 +112,7 @@ export default function Dashboard({ isVendor }) {
           </Grid>
         )}
         {!isVendor && (
-          <Grid item xs={12} sm={isVendor ? 12 : 6} md={3}>
+          <Grid item xs={12} sm={isVendor ? 12 : 6} md={4}>
             <DashboardCard
               color="info"
               title="Total Spins"
@@ -118,7 +123,7 @@ export default function Dashboard({ isVendor }) {
           </Grid>
         )}
 
-        <Grid item xs={12} sm={isVendor ? 12 : 6} md={3}>
+        <Grid item xs={12} sm={isVendor ? 12 : 6} md={4}>
           <DashboardCard
             color="#01838F"
             title="Pending Orders"
@@ -127,7 +132,7 @@ export default function Dashboard({ isVendor }) {
             isLoading={isLoading}
           />
         </Grid>
-        {!isVendor && (
+        {/* {!isVendor && (
           <Grid item xs={12} sm={isVendor ? 12 : 6} md={3}>
             <DashboardCard
               color="#AFB42B"
@@ -137,12 +142,17 @@ export default function Dashboard({ isVendor }) {
               isLoading={isLoading}
             />
           </Grid>
-        )}
+        )} */}
 
-        <Grid item xs={12} md={7} lg={7}>
+        <Grid item xs={12}>
           <SaleChart data={sales_report} isLoading={isLoading} />
         </Grid>
-        <Grid item xs={12} md={5} lg={5}>
+
+        <Grid item xs={12}>
+          <SpinChart data={spin_report} isLoading={isLoading} />
+        </Grid>
+
+        {/* <Grid item xs={12} md={5} lg={5}>
           <OrderChart data={orders_report} isLoading={isLoading} />
         </Grid>
         <Grid item xs={12} md={4} lg={4}>
@@ -158,7 +168,7 @@ export default function Dashboard({ isVendor }) {
         </Grid>
         <Grid item xs={12}>
           <LowStockProducts isVendor={isVendor} />
-        </Grid>
+        </Grid> */}
       </Grid>
     </Box>
   );
