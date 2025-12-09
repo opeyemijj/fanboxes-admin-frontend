@@ -1,5 +1,5 @@
 "use client"
-import { Grid } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import React, { useState } from 'react'
 import AnalyticsStats from './stats'
 import ItemsAnalytics from './items'
@@ -8,6 +8,7 @@ import BoxesAnalytics from './boxes'
 import DecisionAnalytics from './decisions'
 import LocationAnalytics from './locations'
 import TimeFilter from './timeFilter'
+import CurrencyConverter from './Currency'
 
 const AnalyticsScreen = () => {
   const [filterState, setFilterState] = useState({
@@ -18,21 +19,45 @@ const AnalyticsScreen = () => {
     }
   })
 
+  const [selectedCurrency, setSelectedCurrency] = useState('USD') // default currency
+
   const handleFilterChange = (newFilter) => {
     // newFilter = { timeFilter, dateRange }
     setFilterState(newFilter)
   }
 
+  const handleChangeCurrency = (currency) => {
+    setSelectedCurrency(currency) // update state
+    console.log('Selected currency inside handler:', currency)
+  }
+
   return (
     <Grid container spacing={2} sx={{ p: 3 }}>
 
-      <TimeFilter
-        timeFilter={filterState.timeFilter}
-        dateRange={filterState.dateRange}
-        onChange={handleFilterChange}
-      />
+      <Box sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%',
+        p: 3,
+        bgColor: "blue"
+      }}
+      >
+        <TimeFilter
+          timeFilter={filterState.timeFilter}
+          dateRange={filterState.dateRange}
+          onChange={handleFilterChange}
+        />
 
-      <AnalyticsStats filter={filterState} />
+        <CurrencyConverter
+          onCurrencyChange={(currency) => {
+            console.log('Selected currency:', currency);
+            handleChangeCurrency(currency);
+          }}
+        />
+      </Box>
+
+      <AnalyticsStats filter={filterState} currency={selectedCurrency} />
       <BoxesAnalytics filter={filterState} />
       <InfluencersAnalytics filter={filterState} />
       <ItemsAnalytics filter={filterState} />
