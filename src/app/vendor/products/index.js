@@ -403,6 +403,11 @@ export const getProductBySlug = async (slug) => {
   return data;
 };
 
+export const getOneProductByAdmin = async (slug) => {
+  const { data } = await http.get(`/admin/products/${slug}`);
+  return data;
+};
+
 export const getProductReviews = async (pid) => {
   const { data } = await http.get(`/reviews/${pid}`);
   return data;
