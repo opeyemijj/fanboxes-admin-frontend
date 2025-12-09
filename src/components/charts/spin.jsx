@@ -33,7 +33,7 @@ export default function Income({ data, isLoading }) {
 
   return (
     <Card sx={{ pb: 1.5 }}>
-      <CardHeader title={'spin Report'} />
+      <CardHeader title={'Spin Report'} />
 
       {isLoading ? (
         <Box mx={3}>

@@ -38,12 +38,15 @@ export default function Dashboard({ isVendor }) {
   );
 
   const data = dashboard?.data || {};
+  
+  console.log(data);
+
   const daily_earning = data?.dailyEarning;
   const daily_orders = data?.dailyOrders;
   const daily_users = data?.totalUsers;
   const totalProducts = data?.totalProducts;
   const sales_report = data?.salesReport;
-  const spin_report = data?.salesReport;
+  const spin_report = data?.spinReport;
   const income_report = data?.incomeReport;
   const commission_report = data?.commissionReport;
   const orders_report = data?.ordersReport;
