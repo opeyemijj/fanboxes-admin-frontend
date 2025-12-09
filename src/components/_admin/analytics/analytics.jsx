@@ -62,7 +62,7 @@ const AnalyticsScreen = () => {
       <InfluencersAnalytics filter={filterState} />
       <ItemsAnalytics filter={filterState} />
       <DecisionAnalytics filter={filterState} />
-      <LocationAnalytics />
+      {/* <LocationAnalytics /> */}
     </Grid>
   )
 }

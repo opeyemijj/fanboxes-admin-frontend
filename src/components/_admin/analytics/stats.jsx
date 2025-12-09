@@ -216,7 +216,7 @@ const AnalyticsStats = ({ filter, currency }) => {
                         </Grid>
 
                         {/* Avg Session Time */}
-                        <Grid item xs={6} lg={3}>
+                        {/* <Grid item xs={6} lg={3}>
                             <StatBox>
                                 <Typography variant="body2">Avg. Session Time</Typography>
                                 {loading ? (
@@ -227,7 +227,7 @@ const AnalyticsStats = ({ filter, currency }) => {
                                     </Typography>
                                 )}
                             </StatBox>
-                        </Grid>
+                        </Grid> */}
 
                         {/* Avg Boxes Per User */}
                         <Grid item xs={6} lg={3}>
