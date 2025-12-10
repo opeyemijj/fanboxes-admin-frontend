@@ -102,7 +102,15 @@ const ItemsAnalytics = ({ filter }) => {
                 </Box>
 
                 <Box sx={{ width: '100%' }}>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                    <Typography
+                        sx={{
+                            fontSize: '14px',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                        }}
+                    >
                         {item.itemName || 'Unnamed Item'}
                     </Typography>
 
@@ -132,9 +140,15 @@ const ItemsAnalytics = ({ filter }) => {
         <>
             {/* Claimed Items */}
             <Grid item xs={12} sm={6} md={3}>
-                <Card sx={{ borderRadius: 2, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+                <Card sx={{
+                    borderRadius: 2,
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.06)',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column'
+                }}>
                     <CardHeader title="Most Claimed Items" />
-                    <CardContent>
+                    <CardContent sx={{ flexGrow: 1 }}>
                         {isLoading ? renderSkeleton() : renderList(claimed, 'claims')}
                     </CardContent>
                 </Card>
@@ -142,9 +156,15 @@ const ItemsAnalytics = ({ filter }) => {
 
             {/* Won Items */}
             <Grid item xs={12} sm={6} md={3}>
-                <Card sx={{ borderRadius: 2, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+                <Card sx={{
+                    borderRadius: 2,
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.06)',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column'
+                }}>
                     <CardHeader title="Most Won Items" />
-                    <CardContent>
+                    <CardContent sx={{ flexGrow: 1 }}>
                         {isLoading ? renderSkeleton() : renderList(won, 'count')}
                     </CardContent>
                 </Card>
@@ -152,9 +172,15 @@ const ItemsAnalytics = ({ filter }) => {
 
             {/* Resold Items */}
             <Grid item xs={12} sm={6} md={3}>
-                <Card sx={{ borderRadius: 2, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+                <Card sx={{
+                    borderRadius: 2,
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.06)',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column'
+                }}>
                     <CardHeader title="Top Resold Items" />
-                    <CardContent>
+                    <CardContent sx={{ flexGrow: 1 }}>
                         {isLoading ? renderSkeleton() : renderList(resold, 'resoldCount')}
                     </CardContent>
                 </Card>

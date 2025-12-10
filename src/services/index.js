@@ -1030,37 +1030,85 @@ Analytics
 ==============================
 */
 
-export const getStats = async (timeFilter = 'TODAY') => {
-  const { data } = await http.get(`/admin/analytics?timeFilter=${timeFilter}`);
+export const getStats = async (timeFilter = 'TODAY', dateRange) => {
+  const { startDate, endDate } = dateRange || {};
+
+  const url = `/admin/analytics?timeFilter=${timeFilter}`
+    + (startDate ? `&startDate=${startDate}` : '')
+    + (endDate ? `&endDate=${endDate}` : '');
+
+  const { data } = await http.get(url);
   return data;
 };
 
-export const getTopBoxes = async (timeFilter = 'TODAY') => {
-  const { data } = await http.get(`/admin/analytics_boxes?timeFilter=${timeFilter}`);
+export const getTopBoxes = async (timeFilter = 'TODAY', dateRange) => {
+  const { startDate, endDate } = dateRange || {};
+
+  const url = `/admin/analytics_boxes?timeFilter=${timeFilter}`
+    + (startDate ? `&startDate=${startDate}` : '')
+    + (endDate ? `&endDate=${endDate}` : '');
+
+  const { data } = await http.get(url);
   return data;
 };
 
-export const getTopInfluencers = async (timeFilter = 'TODAY') => {
-  const { data } = await http.get(`/admin/analytics_influencers?timeFilter=${timeFilter}`);
+
+export const getTopInfluencers = async (timeFilter = 'TODAY', dateRange) => {
+  const { startDate, endDate } = dateRange || {};
+
+  const url = `/admin/analytics_influencers?timeFilter=${timeFilter}`
+    + (startDate ? `&startDate=${startDate}` : '')
+    + (endDate ? `&endDate=${endDate}` : '');
+
+  const { data } = await http.get(url);
   return data;
 };
 
-export const getTopClaimedItems = async (timeFilter = 'TODAY') => {
-  const { data } = await http.get(`/admin/analytics_claimed?timeFilter=${timeFilter}`);
+
+export const getTopClaimedItems = async (timeFilter = 'TODAY', dateRange) => {
+  const { startDate, endDate } = dateRange || {};
+
+  const url = `/admin/analytics_claimed?timeFilter=${timeFilter}`
+    + (startDate ? `&startDate=${startDate}` : '')
+    + (endDate ? `&endDate=${endDate}` : '');
+
+  const { data } = await http.get(url);
   return data;
 };
 
-export const getTopWonItems = async (timeFilter = 'TODAY') => {
-  const { data } = await http.get(`/admin/analytics_won?timeFilter=${timeFilter}`);
+
+export const getTopWonItems = async (timeFilter = 'TODAY', dateRange) => {
+  const { startDate, endDate } = dateRange || {};
+
+  const url = `/admin/analytics_won?timeFilter=${timeFilter}`
+    + (startDate ? `&startDate=${startDate}` : '')
+    + (endDate ? `&endDate=${endDate}` : '');
+
+  const { data } = await http.get(url);
   return data;
 };
 
-export const getTopResoldItems = async (timeFilter = 'TODAY') => {
-  const { data } = await http.get(`/admin/analytics_resold?timeFilter=${timeFilter}`);
+
+export const getTopResoldItems = async (timeFilter = 'TODAY', dateRange) => {
+  const { startDate, endDate } = dateRange || {};
+
+  const url = `/admin/analytics_resold?timeFilter=${timeFilter}`
+    + (startDate ? `&startDate=${startDate}` : '')
+    + (endDate ? `&endDate=${endDate}` : '');
+
+  const { data } = await http.get(url);
   return data;
 };
 
-export const getDecisionFunnel = async (timeFilter = 'TODAY') => {
-  const { data } = await http.get(`/admin/decision_funnel?timeFilter=${timeFilter}`);
+
+export const getDecisionFunnel = async (timeFilter = 'TODAY', dateRange) => {
+  const { startDate, endDate } = dateRange || {};
+
+  const url = `/admin/decision_funnel?timeFilter=${timeFilter}`
+    + (startDate ? `&startDate=${startDate}` : '')
+    + (endDate ? `&endDate=${endDate}` : '');
+
+  const { data } = await http.get(url);
   return data;
 };
+

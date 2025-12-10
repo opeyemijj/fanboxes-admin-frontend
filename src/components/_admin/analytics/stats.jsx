@@ -26,19 +26,19 @@ const StatBox = ({ children }) => (
 );
 
 const AnalyticsStats = ({ filter, currency }) => {
-    const { timeFilter } = filter;
+    const { timeFilter, dateRange } = filter;
     const code = typeof currency === 'string' ? currency : currency.code;
     const cCurrency = useCurrencyConvert();
 
 
-    console.log("Currency: ", code);
+    console.log("Filter: ", filter);
 
     const { data, isLoading, isFetching } = useQuery(
-        ['stats', timeFilter],
+        ['stats', timeFilter, dateRange],
         async () => {
             // Add artificial delay for better UX
             await new Promise(resolve => setTimeout(resolve, 800));
-            return api.getStats(timeFilter);
+            return api.getStats(timeFilter, dateRange);
         },
         {
             onError: (err) => toast.error(err.response?.data?.message || 'Something went wrong!')

@@ -9,13 +9,14 @@ import DecisionAnalytics from './decisions'
 import LocationAnalytics from './locations'
 import TimeFilter from './timeFilter'
 import CurrencyConverter from './Currency'
+import moment from 'moment';
 
 const AnalyticsScreen = () => {
   const [filterState, setFilterState] = useState({
     timeFilter: 'TODAY',
     dateRange: {
-      startDate: null,
-      endDate: null
+      startDate: moment().startOf('day'),
+      endDate: moment().endOf('day')
     }
   })
 
@@ -32,7 +33,7 @@ const AnalyticsScreen = () => {
   }
 
   return (
-    <Grid container spacing={2} sx={{ p: 3 }}>
+    <Grid container spacing={2} sx={{ p: 3 }} alignItems="stretch">
 
       <Box sx={{
         display: 'flex',
@@ -58,8 +59,8 @@ const AnalyticsScreen = () => {
       </Box>
 
       <AnalyticsStats filter={filterState} currency={selectedCurrency} />
-      <BoxesAnalytics filter={filterState} />
-      <InfluencersAnalytics filter={filterState} />
+      <BoxesAnalytics filter={filterState} currency={selectedCurrency} />
+      <InfluencersAnalytics filter={filterState} currency={selectedCurrency} />
       <ItemsAnalytics filter={filterState} />
       <DecisionAnalytics filter={filterState} />
       {/* <LocationAnalytics /> */}

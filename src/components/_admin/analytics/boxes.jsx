@@ -9,21 +9,15 @@ import {
 } from '@mui/material';
 import React from 'react';
 import { useQuery } from 'react-query';
-import { useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 import * as api from 'src/services';
 
 const BoxesAnalytics = ({ filter }) => {
-    const searchParams = useSearchParams();
-    const searchParam = searchParams.get('search');
-
     const { timeFilter, dateRange } = filter;
 
-    // Fetch Box Analytics (single API call just like getTopBoxes)
     const { data, isLoading } = useQuery(
-        ['topBoxes', timeFilter, dateRange, searchParam],
+        ['topBoxes', timeFilter, dateRange],
         async () => {
-            // Add artificial delay for better UX
             await new Promise(resolve => setTimeout(resolve, 800));
             const res = await api.getTopBoxes(timeFilter, dateRange);
             return res.data || [];
@@ -36,7 +30,6 @@ const BoxesAnalytics = ({ filter }) => {
 
     const boxes = data || [];
 
-    // Format helpers
     const formatCurrency = (amount) =>
         new Intl.NumberFormat('en-US', {
             style: 'currency',
@@ -48,7 +41,6 @@ const BoxesAnalytics = ({ filter }) => {
     const formatNumber = (num) =>
         new Intl.NumberFormat('en-US').format(num || 0);
 
-    // Render list
     const renderList = (items) => {
         if (items.length === 0) {
             return (
@@ -77,7 +69,6 @@ const BoxesAnalytics = ({ filter }) => {
                     '&:hover': { backgroundColor: 'grey.50' }
                 }}
             >
-                {/* Image */}
                 <Box
                     sx={{
                         width: 60,
@@ -105,12 +96,10 @@ const BoxesAnalytics = ({ filter }) => {
                     )}
                 </Box>
 
-                {/* Info */}
                 <Box sx={{ width: '100%' }}>
                     <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                         {box.boxName || 'Unnamed Box'}
                     </Typography>
-
                     <Typography variant="caption" color="text.secondary">
                         {formatCurrency(box.totalRevenue)} revenue • {formatNumber(box.totalSpins)} spins
                     </Typography>
@@ -119,7 +108,6 @@ const BoxesAnalytics = ({ filter }) => {
         ));
     };
 
-    // Skeleton Loader
     const renderSkeleton = () => (
         <Box>
             {[1, 2, 3, 4, 5].map((i) => (
@@ -128,24 +116,11 @@ const BoxesAnalytics = ({ filter }) => {
                         variant="rounded"
                         width={60}
                         height={60}
-                        sx={{
-                            mr: 2,
-                            borderRadius: 2,
-                            flexShrink: 0
-                        }}
+                        sx={{ mr: 2, borderRadius: 2, flexShrink: 0 }}
                     />
                     <Box sx={{ width: '100%' }}>
-                        <Skeleton
-                            variant="text"
-                            width="70%"
-                            height={24}
-                            sx={{ mb: 0.5 }}
-                        />
-                        <Skeleton
-                            variant="text"
-                            width="50%"
-                            height={18}
-                        />
+                        <Skeleton variant="text" width="70%" height={24} sx={{ mb: 0.5 }} />
+                        <Skeleton variant="text" width="50%" height={18} />
                     </Box>
                 </Box>
             ))}
@@ -154,7 +129,15 @@ const BoxesAnalytics = ({ filter }) => {
 
     return (
         <Grid item xs={12} sm={6} md={6}>
-            <Card sx={{ borderRadius: 2, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+            <Card
+                sx={{
+                    borderRadius: 2,
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.06)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '100%'
+                }}
+            >
                 <CardHeader
                     title={
                         isLoading ? (
@@ -164,7 +147,7 @@ const BoxesAnalytics = ({ filter }) => {
                         )
                     }
                 />
-                <CardContent>
+                <CardContent sx={{ flexGrow: 1 }}>
                     {isLoading ? renderSkeleton() : renderList(boxes)}
                 </CardContent>
             </Card>
