@@ -64,7 +64,7 @@ export default function Income({ data, isLoading }) {
             type="bar"
             series={[
               {
-                name: 'Sales',
+                name: 'Spin',
                 data
               }
             ]}
