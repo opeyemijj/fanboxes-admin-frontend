@@ -12,18 +12,19 @@ import { useQuery } from 'react-query';
 import { useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 import * as api from 'src/services';
+import { useCurrencyConvert } from 'src/hooks/convertCurrency';
 
-const InfluencersAnalytics = ({ filter }) => {
-    const searchParams = useSearchParams();
-    const searchParam = searchParams.get('search');
-
+const InfluencersAnalytics = ({ filter, currency }) => {
+    
     const { timeFilter, dateRange } = filter;
+    const code = typeof currency === 'string' ? currency : currency.code;
+    const cCurrency = useCurrencyConvert();
 
     const { data, isLoading } = useQuery(
-        ['topInfluencers', timeFilter, dateRange, searchParam],
+        ['topInfluencers', timeFilter, dateRange],
         async () => {
             await new Promise(resolve => setTimeout(resolve, 800));
-            const res = await api.getTopInfluencers(timeFilter, dateRange, searchParam);
+            const res = await api.getTopInfluencers(timeFilter, dateRange);
             return res.data || [];
         },
         {
@@ -37,10 +38,10 @@ const InfluencersAnalytics = ({ filter }) => {
     const formatCurrency = (amount) =>
         new Intl.NumberFormat('en-US', {
             style: 'currency',
-            currency: 'USD',
+            currency: code,
             minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        }).format(amount || 0);
+            maximumFractionDigits: 0,
+        }).format(cCurrency(amount || 0));
 
     const renderSkeleton = () => (
         <Box>

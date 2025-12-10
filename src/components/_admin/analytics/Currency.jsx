@@ -199,8 +199,9 @@ export default function CurrencyConverter({ onCurrencyChange, initialCurrency = 
                                             </Typography>
                                         )}
                                         <Stack>
+                                            {/* ${cur.name} */}
                                             <Typography variant="subtitle2" noWrap>
-                                                {isLoading ? <Skeleton variant="text" width={120} /> : `${cur.name} (${cur.code})`}
+                                                {isLoading ? <Skeleton variant="text" width={120} /> : `${cur.code}`}
                                             </Typography>
                                             <Typography variant="body2" noWrap>
                                                 {isLoading ? <Skeleton variant="text" width={60} /> : cur.country}

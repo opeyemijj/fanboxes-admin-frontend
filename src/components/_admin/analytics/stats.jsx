@@ -236,7 +236,7 @@ const AnalyticsStats = ({ filter, currency }) => {
                                 {loading ? (
                                     <Skeleton variant="text" width="60%" height={32} sx={{ mx: 'auto' }} />
                                 ) : (
-                                    <Typography variant="h6">{currentData.avgBoxesPerUser}</Typography>
+                                    <Typography variant="h6">{Number(currentData.avgBoxesPerUser).toFixed(2)}</Typography>
                                 )}
                             </StatBox>
                         </Grid>

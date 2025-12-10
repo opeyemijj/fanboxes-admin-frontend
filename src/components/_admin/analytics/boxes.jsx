@@ -11,9 +11,13 @@ import React from 'react';
 import { useQuery } from 'react-query';
 import toast from 'react-hot-toast';
 import * as api from 'src/services';
+import { useCurrencyConvert } from 'src/hooks/convertCurrency';
 
-const BoxesAnalytics = ({ filter }) => {
+const BoxesAnalytics = ({ filter, currency }) => {
     const { timeFilter, dateRange } = filter;
+    const code = typeof currency === 'string' ? currency : currency.code;
+    const cCurrency = useCurrencyConvert();
+
 
     const { data, isLoading } = useQuery(
         ['topBoxes', timeFilter, dateRange],
@@ -33,10 +37,10 @@ const BoxesAnalytics = ({ filter }) => {
     const formatCurrency = (amount) =>
         new Intl.NumberFormat('en-US', {
             style: 'currency',
-            currency: 'USD',
+            currency: code,
             minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        }).format(amount || 0);
+            maximumFractionDigits: 0,
+        }).format(cCurrency(amount || 0));
 
     const formatNumber = (num) =>
         new Intl.NumberFormat('en-US').format(num || 0);
