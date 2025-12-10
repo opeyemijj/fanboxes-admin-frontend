@@ -139,7 +139,7 @@ const ItemsAnalytics = ({ filter }) => {
     return (
         <>
             {/* Claimed Items */}
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6}>
                 <Card sx={{
                     borderRadius: 2,
                     boxShadow: '0 2px 10px rgba(0,0,0,0.06)',
@@ -155,7 +155,7 @@ const ItemsAnalytics = ({ filter }) => {
             </Grid>
 
             {/* Won Items */}
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6}>
                 <Card sx={{
                     borderRadius: 2,
                     boxShadow: '0 2px 10px rgba(0,0,0,0.06)',
@@ -171,7 +171,7 @@ const ItemsAnalytics = ({ filter }) => {
             </Grid>
 
             {/* Resold Items */}
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6}>
                 <Card sx={{
                     borderRadius: 2,
                     boxShadow: '0 2px 10px rgba(0,0,0,0.06)',
