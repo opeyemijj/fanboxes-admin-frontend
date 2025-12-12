@@ -380,7 +380,7 @@ export default function BrandsForm({ data: currentCurrency, isLoading: currencyL
                   loading={isLoading}
                   sx={{ ml: 'auto', mt: 3 }}
                 >
-                  {currentCurrency ? 'Edit Currency' : 'Create Curreny'}
+                  {currentCurrency ? 'Edit Currency' : 'Create Currency'}
                 </LoadingButton>
               )}
             </Grid>

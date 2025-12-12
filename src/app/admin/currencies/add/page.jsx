@@ -16,7 +16,7 @@ export default function page() {
     <div>
       <HeaderBreadcrumbs
         admin
-        heading="Currency List"
+        heading="Currency"
         links={[
           {
             name: 'Dashboard',

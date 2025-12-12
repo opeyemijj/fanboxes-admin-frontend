@@ -122,7 +122,7 @@ export default function TermsForm({ data: currentTerms, isLoading: formLoading }
                   {/* HTML Editor */}
                   <Grid item xs={12}>
                     <LabelStyle component="label" htmlFor="htmlContent">
-                      Terms & Conditions Content
+                      Content
                     </LabelStyle>
                     <ReactQuill
                       theme="snow"
