@@ -31,7 +31,7 @@ export default function Page({ params }) {
     data: brandsData,
     isLoading: brandsLoading,
     error
-  } = useQuery(['brands'], () => api.getBrandsByAdmin(), {
+  } = useQuery(['brands'], () => api.getAllBrandsByAdmin(), {
     onError: (err) => toast.error(err.message || 'Something went wrong!')
   });
 
