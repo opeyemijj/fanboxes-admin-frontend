@@ -359,11 +359,13 @@ export default function AddItemForm({ currentItem, isLoading: isApiLoading, bran
 
                     <Autocomplete
                       id="select-brand"
-                      options={(brands || []).sort((a, b) => a.name.localeCompare(b.name))}
+                      options={(brands || []).sort((a, b) => a?.name.localeCompare(b.name))}
                       filterOptions={(options, state) =>
-                        options.filter((option) => option.name.toLowerCase().startsWith(state.inputValue.toLowerCase()))
+                        options.filter((option) =>
+                          option?.name?.toLowerCase().startsWith(state.inputValue.toLowerCase())
+                        )
                       }
-                      value={brands.find((b) => b._id?.toString() === values.brand) || null}
+                      value={brands?.find((b) => b._id?.toString() === values.brand) || null}
                       onChange={(_, selectedBrand) => {
                         if (selectedBrand) {
                           setFieldValue('brand', selectedBrand._id);
