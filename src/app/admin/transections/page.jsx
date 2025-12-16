@@ -14,7 +14,7 @@ export const metadata = {
 };
 
 export default async function AdminProducts() {
-  const canView = UsePermissionServer('view_transections_listing'); // check required permission
+  const canView = UsePermissionServer('view_transactions_listing'); // check required permission
 
   if (!canView) {
     return <AccessDenied message="You are not allowed to see transection." redirect="/admin/dashboard" />;

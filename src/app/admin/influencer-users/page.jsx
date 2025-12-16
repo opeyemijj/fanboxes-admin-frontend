@@ -8,7 +8,7 @@ import AccessDenied from 'src/components/cards/AccessDenied';
 
 // Meta information
 export const metadata = {
-  title: 'User - Fanboxes',
+  title: 'Influencer - Fanboxes',
   applicationName: 'Fanboxes',
   authors: 'Fanboxes'
 };

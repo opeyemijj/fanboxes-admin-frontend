@@ -113,7 +113,7 @@ const currencyToCountryMap = {
     XPF: 'PF' // CFP Franc → French Polynesia
 };
 
-export default function CurrencyConverter({ onCurrencyChange }) {
+export default function CurrencyConverter() {
     const dispatch = useDispatch();
     const { currency } = useSelector(({ settings }) => settings);
     const [open, setOpen] = React.useState(false);
@@ -154,8 +154,6 @@ export default function CurrencyConverter({ onCurrencyChange }) {
                 selectedCountry: cur.countryCode
             })
         );
-        // Send selected currency out of component
-        if (onCurrencyChange) onCurrencyChange(cur);
         handleClose();
     };
 
@@ -216,7 +214,7 @@ export default function CurrencyConverter({ onCurrencyChange }) {
                                         )}
                                         <Stack>
                                             <Typography variant="subtitle2" noWrap>
-                                                {isLoading ? <Skeleton variant="text" width={120} /> : `${cur.name} (${cur.code})`}
+                                                {isLoading ? <Skeleton variant="text" width={120} /> : `${cur.code}`}
                                             </Typography>
                                             <Typography variant="body2" noWrap>
                                                 {isLoading ? <Skeleton variant="text" width={60} /> : cur.country}

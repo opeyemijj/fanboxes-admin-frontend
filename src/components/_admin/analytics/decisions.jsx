@@ -47,8 +47,14 @@ const DecisionAnalytics = ({ filter }) => {
     ];
 
     return (
-        <Grid item xs={12} sm={6} md={3}>
-            <Card>
+        <Grid item xs={12} sm={6}>
+            <Card sx={{
+                borderRadius: 2,
+                boxShadow: '0 2px 10px rgba(0,0,0,0.06)',
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column'
+            }}>
                 <CardHeader title="Decision Funnel" />
                 <CardContent>
                     {items.map((item, index) => (
@@ -63,7 +69,7 @@ const DecisionAnalytics = ({ filter }) => {
                                 alignItems="center"
                                 mr={2}
                             >
-                               
+
                             </Box>
                             <Box flexGrow={1} display="flex" justifyContent="space-between" alignItems="center">
                                 <Typography variant="h6">{item.title}</Typography>

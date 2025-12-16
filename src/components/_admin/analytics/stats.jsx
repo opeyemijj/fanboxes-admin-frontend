@@ -26,19 +26,19 @@ const StatBox = ({ children }) => (
 );
 
 const AnalyticsStats = ({ filter, currency }) => {
-    const { timeFilter } = filter;
+    const { timeFilter, dateRange } = filter;
     const code = typeof currency === 'string' ? currency : currency.code;
     const cCurrency = useCurrencyConvert();
 
 
-    console.log("Currency: ", code);
+    console.log("Filter: ", filter);
 
     const { data, isLoading, isFetching } = useQuery(
-        ['stats', timeFilter],
+        ['stats', timeFilter, dateRange],
         async () => {
             // Add artificial delay for better UX
             await new Promise(resolve => setTimeout(resolve, 800));
-            return api.getStats(timeFilter);
+            return api.getStats(timeFilter, dateRange);
         },
         {
             onError: (err) => toast.error(err.response?.data?.message || 'Something went wrong!')
@@ -236,7 +236,7 @@ const AnalyticsStats = ({ filter, currency }) => {
                                 {loading ? (
                                     <Skeleton variant="text" width="60%" height={32} sx={{ mx: 'auto' }} />
                                 ) : (
-                                    <Typography variant="h6">{currentData.avgBoxesPerUser}</Typography>
+                                    <Typography variant="h6">{Number(currentData.avgBoxesPerUser).toFixed(2)}</Typography>
                                 )}
                             </StatBox>
                         </Grid>

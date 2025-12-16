@@ -9,30 +9,29 @@ import DecisionAnalytics from './decisions'
 import LocationAnalytics from './locations'
 import TimeFilter from './timeFilter'
 import CurrencyConverter from './Currency'
+import moment from 'moment';
+import { useSelector } from 'react-redux'
 
 const AnalyticsScreen = () => {
   const [filterState, setFilterState] = useState({
     timeFilter: 'TODAY',
     dateRange: {
-      startDate: null,
-      endDate: null
+      startDate: moment().startOf('day'),
+      endDate: moment().endOf('day')
     }
   })
 
-  const [selectedCurrency, setSelectedCurrency] = useState('USD') // default currency
+  // const [selectedCurrency, setSelectedCurrency] = useState('USD') // default currency
+  const { currency } = useSelector((state) => state.settings);
 
   const handleFilterChange = (newFilter) => {
     // newFilter = { timeFilter, dateRange }
     setFilterState(newFilter)
   }
 
-  const handleChangeCurrency = (currency) => {
-    setSelectedCurrency(currency) // update state
-    console.log('Selected currency inside handler:', currency)
-  }
 
   return (
-    <Grid container spacing={2} sx={{ p: 3 }}>
+    <Grid container spacing={2} sx={{ p: 3 }} alignItems="stretch">
 
       <Box sx={{
         display: 'flex',
@@ -49,17 +48,12 @@ const AnalyticsScreen = () => {
           onChange={handleFilterChange}
         />
 
-        <CurrencyConverter
-          onCurrencyChange={(currency) => {
-            console.log('Selected currency:', currency);
-            handleChangeCurrency(currency);
-          }}
-        />
+        <CurrencyConverter/>
       </Box>
 
-      <AnalyticsStats filter={filterState} currency={selectedCurrency} />
-      <BoxesAnalytics filter={filterState} />
-      <InfluencersAnalytics filter={filterState} />
+      <AnalyticsStats filter={filterState} currency={currency} />
+      <BoxesAnalytics filter={filterState} currency={currency} />
+      <InfluencersAnalytics filter={filterState} currency={currency} />
       <ItemsAnalytics filter={filterState} />
       <DecisionAnalytics filter={filterState} />
       {/* <LocationAnalytics /> */}

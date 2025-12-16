@@ -7,36 +7,29 @@ import {
     Typography,
     Skeleton
 } from '@mui/material';
-
 import React from 'react';
 import { useQuery } from 'react-query';
 import { useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 import * as api from 'src/services';
+import { useCurrencyConvert } from 'src/hooks/convertCurrency';
 
-const InfluencersAnalytics = ({ filter }) => {
-    const searchParams = useSearchParams();
-    const searchParam = searchParams.get('search');
-
+const InfluencersAnalytics = ({ filter, currency }) => {
+    
     const { timeFilter, dateRange } = filter;
+    const code = typeof currency === 'string' ? currency : currency.code;
+    const cCurrency = useCurrencyConvert();
 
-    // Fetch Top Influencers (aligned with BoxesAnalytics pattern)
     const { data, isLoading } = useQuery(
-        ['topInfluencers', timeFilter, dateRange, searchParam],
+        ['topInfluencers', timeFilter, dateRange],
         async () => {
             await new Promise(resolve => setTimeout(resolve, 800));
-
-            // Match the template: direct arguments, no nested object
-            const res = await api.getTopInfluencers(timeFilter, dateRange, searchParam);
-
+            const res = await api.getTopInfluencers(timeFilter, dateRange);
             return res.data || [];
         },
         {
             onError: (err) =>
-                toast.error(
-                    err.response?.data?.message ||
-                    'Failed to load influencer analytics'
-                )
+                toast.error(err.response?.data?.message || 'Failed to load influencer analytics')
         }
     );
 
@@ -45,10 +38,10 @@ const InfluencersAnalytics = ({ filter }) => {
     const formatCurrency = (amount) =>
         new Intl.NumberFormat('en-US', {
             style: 'currency',
-            currency: 'USD',
+            currency: code,
             minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        }).format(amount || 0);
+            maximumFractionDigits: 0,
+        }).format(cCurrency(amount || 0));
 
     const renderSkeleton = () => (
         <Box>
@@ -121,11 +114,7 @@ const InfluencersAnalytics = ({ filter }) => {
                         <img
                             src={influencer.influencerImage}
                             alt={influencer.influencerName}
-                            style={{
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover'
-                            }}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
                     ) : (
                         <Typography variant="h6" color="text.secondary">
@@ -134,18 +123,11 @@ const InfluencersAnalytics = ({ filter }) => {
                     )}
                 </Box>
 
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        width: '100%'
-                    }}
-                >
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                     <Box>
                         <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                             {influencer.influencerName || 'Unnamed Influencer'}
                         </Typography>
-
                         <Typography variant="caption" color="text.secondary">
                             {formatCurrency(influencer.totalRevenue)} revenue
                         </Typography>
@@ -156,10 +138,7 @@ const InfluencersAnalytics = ({ filter }) => {
                             variant="body1"
                             sx={{
                                 fontWeight: 600,
-                                color:
-                                    influencer.totalCommission >= 0
-                                        ? 'success.main'
-                                        : 'error.main'
+                                color: influencer.totalCommission >= 0 ? 'success.main' : 'error.main'
                             }}
                         >
                             {formatCurrency(influencer.totalCommission)}
@@ -175,17 +154,21 @@ const InfluencersAnalytics = ({ filter }) => {
 
     return (
         <Grid item xs={12} sm={6} md={6}>
-            <Card sx={{ borderRadius: 2, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+            <Card
+                sx={{
+                    borderRadius: 2,
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.06)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '100%'
+                }}
+            >
                 <CardHeader
                     title={
-                        isLoading ? (
-                            <Skeleton variant="text" width="65%" height={32} />
-                        ) : (
-                            "Top-Performing Influencers"
-                        )
+                        isLoading ? <Skeleton variant="text" width="65%" height={32} /> : "Top-Performing Influencers"
                     }
                 />
-                <CardContent>
+                <CardContent sx={{ flexGrow: 1 }}>
                     {isLoading ? renderSkeleton() : renderList()}
                 </CardContent>
             </Card>

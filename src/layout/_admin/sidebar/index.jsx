@@ -243,7 +243,7 @@ export default function Sidebar({ handleDrawerClose, handleDrawerOpen, open }) {
           id: '13-2',
           title: 'Transactions',
           slug: 'transections',
-          hasPermission: UsePermission('view_transections_listing'),
+          hasPermission: UsePermission('view_transactions_listing'),
           icon: <SyncAlt size={18} />,
           isSearch: true
         }
