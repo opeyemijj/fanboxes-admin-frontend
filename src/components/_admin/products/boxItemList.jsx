@@ -108,56 +108,96 @@ export default function AdminBoxeItems({ boxDetails, isVendor }) {
     });
   }
 
+  // function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP) {
+  //   let targetRTP = 0.8;
+  //   if (boxTargetRTP) {
+  //     targetRTP = boxTargetRTP / 100;
+  //   }
+
+  //   const totalItems = items.length;
+  //   const targetEV = (spinPrice * targetRTP) / totalItems;
+
+  //   const results = items.map((item) => {
+  //     const calcProb = targetEV / item.value;
+  //     const adjProb = item.manualProb ?? null;
+  //     const finalProb = adjProb !== null ? adjProb : calcProb;
+  //     const evContrib = item.value * finalProb;
+
+  //     return {
+  //       name: item.name,
+  //       value: item.value,
+  //       targetEV,
+  //       calcProb,
+  //       adjProb,
+  //       finalProb,
+  //       evContrib
+  //     };
+  //   });
+
+  //   const totalProbability = results.reduce((sum, r) => sum + r.finalProb, 0);
+  //   const totalEV = results.reduce((sum, r) => sum + r.evContrib, 0);
+
+  //   const normalizationFactor = 1 / totalProbability;
+  //   const normalizedResults = results.map((r) => ({
+  //     ...r,
+  //     odd: r.finalProb * normalizationFactor
+  //   }));
+
+  //   let totalItem = 0;
+  //   let totalSumOffOdds = 0;
+
+  //   const returnData = items.map((item, i) => {
+  //     totalItem = totalItem + 1;
+  //     totalSumOffOdds = totalSumOffOdds + normalizedResults[i]?.odd;
+  //     return {
+  //       ...item,
+  //       odd: normalizedResults[i]?.odd,
+  //       calcProb: normalizedResults[i]?.calcProb,
+  //       finalProb: normalizedResults[i]?.calcProb
+  //     };
+  //   });
+
+  //   console.log('Total Items:', totalItem, 'Total Summ Of odds:', totalSumOffOdds);
+
+  //   return returnData;
+  // }
+
   function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP) {
-    let targetRTP = 0.8;
-    if (boxTargetRTP) {
-      targetRTP = boxTargetRTP / 100;
-    }
+    // Default RTP = 80%
+    const targetRTP = boxTargetRTP ? boxTargetRTP / 100 : 0.8;
 
     const totalItems = items.length;
     const targetEV = (spinPrice * targetRTP) / totalItems;
 
+    // Step 1: Calculate base probabilities
     const results = items.map((item) => {
-      const calcProb = targetEV / item.value;
-      const adjProb = item.manualProb ?? null;
-      const finalProb = adjProb !== null ? adjProb : calcProb;
-      const evContrib = item.value * finalProb;
+      const calcProb = item.value > 0 ? targetEV / item.value : 0;
 
-      return {
-        name: item.name,
-        value: item.value,
-        targetEV,
-        calcProb,
-        adjProb,
-        finalProb,
-        evContrib
-      };
-    });
+      // Treat manualProb ONLY if it's a positive number
+      const finalProb = typeof item.manualProb === 'number' && item.manualProb > 0 ? item.manualProb : calcProb;
 
-    const totalProbability = results.reduce((sum, r) => sum + r.finalProb, 0);
-    const totalEV = results.reduce((sum, r) => sum + r.evContrib, 0);
-
-    const normalizationFactor = 1 / totalProbability;
-    const normalizedResults = results.map((r) => ({
-      ...r,
-      odd: r.finalProb * normalizationFactor
-    }));
-
-    let totalItem = 0;
-    let totalSumOffOdds = 0;
-
-    const returnData = items.map((item, i) => {
-      totalItem = totalItem + 1;
-      totalSumOffOdds = totalSumOffOdds + normalizedResults[i]?.odd;
       return {
         ...item,
-        odd: normalizedResults[i]?.odd,
-        calcProb: normalizedResults[i]?.calcProb,
-        finalProb: normalizedResults[i]?.calcProb
+        calcProb,
+        finalProb,
+        evContrib: item.value * finalProb
       };
     });
 
-    console.log('Total Items:', totalItem, 'Total Summ Of odds:', totalSumOffOdds);
+    // Step 2: Normalize probabilities
+    const totalProbability = results.reduce((sum, r) => sum + r.finalProb, 0);
+
+    const normalizationFactor = totalProbability > 0 ? 1 / totalProbability : 0;
+
+    // Step 3: Apply normalized odds
+    const returnData = results.map((item) => ({
+      ...item,
+      odd: item.finalProb * normalizationFactor
+    }));
+
+    // Debug safety check
+    const totalOdds = returnData.reduce((s, i) => s + i.odd, 0);
+    console.log('Total Items:', returnData.length, 'Total Odds:', totalOdds);
 
     return returnData;
   }
