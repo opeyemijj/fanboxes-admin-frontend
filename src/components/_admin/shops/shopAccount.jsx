@@ -15,7 +15,7 @@ export default function ShopAccountList({ slug }) {
     <>
       <Box display="flex" flexDirection="column" my={2}>
         <Typography variant="h5" color="text.primary">
-          My Transections
+          My Transactions
         </Typography>
       </Box>
 
