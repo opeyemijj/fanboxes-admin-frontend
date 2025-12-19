@@ -149,7 +149,7 @@ export default function ProductRow({
         <Link
           style={{ textDecoration: 'none', color: 'inherit' }}
           target="_blank"
-          href={`${process.env.NEXT_PUBLIC_USER_FRONTEND_URL}/boxes/${row?.slug}`}
+          href={`${process.env.USER_FRONTEND_URL}/boxes/${row?.slug}`}
         >
           <Box
             sx={{

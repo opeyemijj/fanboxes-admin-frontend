@@ -16,7 +16,7 @@ const nextConfig = {
     DO_SPACES_BUCKET: process.env.DO_SPACES_BUCKET,
     DO_SPACES_KEY: process.env.DO_SPACES_KEY,
     DO_SPACES_SECRET: process.env.DO_SPACES_SECRET,
-    NEXT_PUBLIC_USER_FRONTEND_URL: process.env.NEXT_PUBLIC_USER_FRONTEND_URL
+    USER_FRONTEND_URL: process.env.USER_FRONTEND_URL
   },
   images: {
     unoptimized: true
