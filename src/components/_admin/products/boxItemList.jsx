@@ -4,7 +4,16 @@ import PropTypes from 'prop-types';
 import toast from 'react-hot-toast';
 
 // mui
-import { Dialog, IconButton, Stack } from '@mui/material';
+import {
+  Dialog,
+  IconButton,
+  Stack,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button
+} from '@mui/material';
 import DeleteDialog from 'src/components/dialog/delete';
 // components
 import Table from 'src/components/table/table';
@@ -16,6 +25,8 @@ import { Refresh } from '@mui/icons-material';
 import { useSearchParams } from 'next/navigation';
 import parseMongooseError from 'src/utils/errorHandler';
 import { UsePermission } from 'src/hooks/usePermission';
+
+import { generateMysteryBoxOdds } from 'src/helper/generateMysteryBoxOdds';
 
 export default function AdminBoxeItems({ boxDetails, isVendor }) {
   const fullUrl = typeof window !== 'undefined' ? window.location.href : '';
@@ -33,6 +44,9 @@ export default function AdminBoxeItems({ boxDetails, isVendor }) {
   const [data, setData] = useState(null);
 
   const canCalculateItemOdds = UsePermission('auto_calculate_item_odds');
+
+  const [errorDialogOpen, setErrorDialogOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   // prettier-ignore
   const { mutate: updateItemsOdd, isLoading: loadingUpdateOdd } = useMutation(
@@ -162,7 +176,7 @@ export default function AdminBoxeItems({ boxDetails, isVendor }) {
   //   return returnData;
   // }
 
-  function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP) {
+  function generateMysteryBoxOddsOld(items, spinPrice, boxTargetRTP) {
     // Default RTP = 80%
     const targetRTP = boxTargetRTP ? boxTargetRTP / 100 : 0.8;
 
@@ -196,8 +210,9 @@ export default function AdminBoxeItems({ boxDetails, isVendor }) {
     }));
 
     // Debug safety check
-    const totalOdds = returnData.reduce((s, i) => s + i.odd, 0);
-    console.log('Total Items:', returnData.length, 'Total Odds:', totalOdds);
+    //const totalOdds = returnData.reduce((s, i) => s + i.odd, 0);
+    // console.log('Total Items:', returnData.length, 'Total Odds:', totalOdds);
+    // console.log('returnData', returnData);
 
     return returnData;
   }
@@ -218,19 +233,24 @@ export default function AdminBoxeItems({ boxDetails, isVendor }) {
               style={{ color: 'white' }}
               size="small"
               onClick={() => {
-                // 👇 your refresh logic here
-                if (boxDetails) {
-                  // const distributedItem = distributeItems(boxDetails?.itemsData);
-                  const runningOdsAlgorithm = generateMysteryBoxOdds(
+                if (!boxDetails) return;
+
+                try {
+                  const runningOddsAlgorithm = generateMysteryBoxOdds(
                     boxDetails?.itemsData,
                     boxDetails?.priceSale,
                     boxDetails?.targetRTP
                   );
-                  if (runningOdsAlgorithm && runningOdsAlgorithm?.length > 0) {
-                    const temdata = { data: runningOdsAlgorithm };
-                    UpateItemOdd(temdata);
-                    setData(temdata);
+
+                  if (runningOddsAlgorithm?.items?.length > 0) {
+                    const tempData = { data: runningOddsAlgorithm };
+                    UpateItemOdd(tempData);
+                    setData(tempData);
                   }
+                } catch (err) {
+                  // Show the error in a dialog
+                  setErrorMessage(err.message);
+                  setErrorDialogOpen(true);
                 }
               }}
             >
@@ -267,6 +287,17 @@ export default function AdminBoxeItems({ boxDetails, isVendor }) {
           }
           willReloadPage={true}
         />
+      </Dialog>
+      <Dialog open={errorDialogOpen} onClose={() => setErrorDialogOpen(false)}>
+        <DialogTitle>Error Generating Odds</DialogTitle>
+        <DialogContent>
+          <DialogContentText style={{ whiteSpace: 'pre-line' }}>{errorMessage}</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setErrorDialogOpen(false)} color="primary">
+            Close
+          </Button>
+        </DialogActions>
       </Dialog>
       <Stack spacing={2} direction="row" alignItems="center" justifyContent="space-between" mb={2}>
         {}
