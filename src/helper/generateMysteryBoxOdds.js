@@ -1,86 +1,75 @@
 export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
-  if (!Array.isArray(items) || items.length === 0) {
-    throw new Error('No items provided');
-  }
+  if (!Array.isArray(items) || items.length === 0) throw new Error('No items provided');
   if (spinPrice <= 0) throw new Error('spinPrice must be positive');
 
   const targetEV = spinPrice * (boxTargetRTP / 100);
 
-  // Sort items by value (descending)
-  const sortedItems = [...items].sort((a, b) => b.value - a.value);
-  const n = sortedItems.length;
-
-  // Step 1: Create base probabilities that are inversely proportional to value
-  const baseProbs = sortedItems.map((item) => {
-    // Higher value items get exponentially lower probability
-    const maxValue = sortedItems[0].value;
-    const minValue = sortedItems[n - 1].value;
-    const normalizedValue = (item.value - minValue) / (maxValue - minValue || 1);
-
-    // Probability = 1 / (value^exponent)
-    // Adjust exponent to control how steep the decrease is
-    const exponent = 1.5;
-    return 1 / Math.pow(item.value + 1, exponent);
+  // Validate item values
+  items.forEach((i) => {
+    if (!i.value || i.value <= 0) throw new Error(`Invalid value for item ${i.name}`);
   });
 
-  // Normalize base probabilities
-  const totalBaseProb = baseProbs.reduce((sum, p) => sum + p, 0);
-  let probabilities = baseProbs.map((p) => p / totalBaseProb);
+  // 1️⃣ Initial inverse-value weights
+  let weights = items.map((i) => 1 / i.value);
+  let weightSum = weights.reduce((a, b) => a + b, 0);
+  let probs = weights.map((w) => w / weightSum);
 
-  // Step 2: Adjust to meet target EV
-  // We'll use the principle that adjusting probabilities while maintaining
-  // their relative proportions can help achieve the target EV
+  // 2️⃣ Iteratively scale and normalize until EV matches target
+  let iteration = 0;
+  let maxIterations = 1000;
+  let tolerance = 0.01; // Allow small EV deviation
 
-  const maxIterations = 100;
-  let currentEV = probabilities.reduce((sum, p, idx) => sum + p * sortedItems[idx].value, 0);
+  while (iteration < maxIterations) {
+    iteration++;
 
-  for (let iter = 0; iter < maxIterations; iter++) {
-    if (Math.abs(currentEV - targetEV) < 0.001) break;
+    // Scale probabilities to match target EV
+    let currentEV = items.reduce((sum, item, idx) => sum + probs[idx] * item.value, 0);
+    let scale = targetEV / currentEV;
+    probs = probs.map((p) => p * scale);
 
-    // Calculate adjustment factor
-    const adjustment = targetEV / currentEV;
-
-    // Adjust probabilities while maintaining their relative ratios
-    // Higher value items get larger adjustments when we need to reduce EV
-    probabilities = probabilities.map((p, idx) => {
-      const itemValue = sortedItems[idx].value;
-      const maxValue = sortedItems[0].value;
-
-      // Weight adjustment by value ratio
-      const valueRatio = itemValue / maxValue;
-
-      if (adjustment < 1) {
-        // Need to reduce EV: reduce probability more for high-value items
-        return p * (1 - (1 - adjustment) * valueRatio * 0.5);
-      } else {
-        // Need to increase EV: increase probability more for low-value items
-        return p * (1 + (adjustment - 1) * (1 - valueRatio) * 0.5);
+    // Cap probabilities at 1
+    let excess = 0;
+    probs = probs.map((p) => {
+      if (p > 1) {
+        excess += p - 1;
+        return 1;
       }
+      return p;
     });
 
-    // Ensure positive probabilities and renormalize
-    probabilities = probabilities.map((p) => Math.max(0.000001, p));
-    const totalProb = probabilities.reduce((sum, p) => sum + p, 0);
-    probabilities = probabilities.map((p) => p / totalProb);
+    // Redistribute excess proportionally among items under 1
+    let underCapIndices = probs.map((p, i) => (p < 1 ? i : -1)).filter((i) => i >= 0);
+    if (underCapIndices.length > 0 && excess > 0) {
+      let totalUnder = underCapIndices.reduce((sum, i) => sum + probs[i], 0);
+      underCapIndices.forEach((i) => {
+        probs[i] += (probs[i] / totalUnder) * excess;
+      });
+    }
 
-    // Recalculate EV
-    currentEV = probabilities.reduce((sum, p, idx) => sum + p * sortedItems[idx].value, 0);
+    // Normalize total probability = 1
+    let totalProb = probs.reduce((a, b) => a + b, 0);
+    if (Math.abs(totalProb - 1) > 0.000001) {
+      // Adjust smallest-value item to fix sum = 1
+      let minIndex = items.reduce((minI, item, idx) => (items[idx].value < items[minI].value ? idx : minI), 0);
+      probs[minIndex] += 1 - totalProb;
+    }
+
+    // Check if EV is within tolerance
+    currentEV = items.reduce((sum, item, idx) => sum + probs[idx] * item.value, 0);
+    if (Math.abs(currentEV - targetEV) <= tolerance) break;
   }
 
-  // Step 3: Final normalization and rounding
-  const finalTotal = probabilities.reduce((sum, p) => sum + p, 0);
-  probabilities = probabilities.map((p) => Number((p / finalTotal).toFixed(8)));
+  // Final odds
+  const finalOdds = items.map((item, idx) => ({
+    ...item,
+    odd: Number(probs[idx].toFixed(6))
+  }));
 
-  // Create result in original order
-  const resultMap = new Map();
-  sortedItems.forEach((item, idx) => {
-    resultMap.set(item._id, {
-      ...item,
-      odd: probabilities[idx]
-    });
-  });
+  // ✅ Verification
+  const totalOddCheck = finalOdds.reduce((s, i) => s + i.odd, 0);
+  const totalEVCheck = finalOdds.reduce((s, i) => s + i.odd * i.value, 0);
+  console.log('Total odd sum:', totalOddCheck.toFixed(6));
+  console.log('Total EV:', totalEVCheck.toFixed(2), 'Target EV:', targetEV);
 
-  const result = items.map((item) => resultMap.get(item._id));
-
-  return result;
+  return finalOdds;
 }
