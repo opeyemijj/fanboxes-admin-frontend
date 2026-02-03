@@ -1,167 +1,96 @@
-export function generateMysteryBoxOdds(
-  items,
-  spinPrice,
-  targetRTP // percent (e.g. 80)
-) {
-  // -----------------------------
-  // Basic validation
-  // -----------------------------
+export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP) {
+  console.group('[MysteryBoxOdds] generateMysteryBoxOdds');
+
   if (!Array.isArray(items) || items.length === 0) {
-    throw new Error('Items list must be a non-empty array.');
+    console.error('No items provided');
+    console.groupEnd();
+    throw new Error('Mystery box must contain at least one item.');
   }
 
-  if (spinPrice <= 0) {
-    throw new Error('Spin price must be greater than 0.');
+  if (typeof spinPrice !== 'number' || spinPrice <= 0) {
+    console.error('Invalid spin price:', spinPrice);
+    console.groupEnd();
+    throw new Error('spinPrice must be a positive number.');
   }
 
-  if (targetRTP <= 0 || targetRTP > 100) {
-    throw new Error('Target RTP must be between 0 and 100.');
-  }
+  const targetRTP = boxTargetRTP != null ? boxTargetRTP / 100 : 0.8;
+  const targetEV = spinPrice * targetRTP;
 
-  const targetEV = spinPrice * (targetRTP / 100);
-
-  // -----------------------------
-  // Validate item values
-  // -----------------------------
-  items.forEach((it) => {
-    if (it.value <= 0) {
-      throw new Error(`Item "${it.name}" has invalid value (${it.value}).`);
-    }
-  });
+  console.log('Target RTP:', targetRTP, 'Target EV:', targetEV);
 
   // -----------------------------
-  // RULE 1: No EV-dominating items
+  // Split manual vs auto items
   // -----------------------------
-  const dominatingItems = items.filter((it) => it.value >= targetEV);
+  const manual = items.filter((i) => typeof i.manualProb === 'number' && i.manualProb > 0);
+  const auto = items.filter((i) => !manual.includes(i));
 
-  if (dominatingItems.length > 0) {
-    throw new Error(
-      `Invalid Mystery Box configuration:\n\n` +
-        `Some items are worth more than or equal to the maximum payout per spin.\n\n` +
-        `Spin price: $${spinPrice}\n` +
-        `RTP: ${targetRTP}% → max payout: $${targetEV}\n\n` +
-        `Problematic items:\n` +
-        dominatingItems.map((it) => `- ${it.name} ($${it.value})`).join('\n') +
-        `\n\nFix:\n` +
-        `- Increase spin price\n` +
-        `- Change RTP\n` +
-        `- Replace or remove expensive items`
-    );
-  }
-
-  // -----------------------------
-  // Manual probability validation
-  // -----------------------------
-  let manualProbSum = 0;
   let manualEV = 0;
-
-  items.forEach((it) => {
-    if (it.manualProb != null) {
-      if (it.manualProb <= 0 || it.manualProb >= 1) {
-        throw new Error(`Item "${it.name}" has invalid manual probability (${it.manualProb}).`);
-      }
-      manualProbSum += it.manualProb;
-      manualEV += it.manualProb * it.value;
-    }
-  });
-
-  if (manualProbSum >= 1) {
-    throw new Error(`Total manual probability (${manualProbSum}) must be less than 1.`);
-  }
-
-  if (manualEV > targetEV) {
-    throw new Error(
-      `Manual probabilities already exceed target RTP.\n\n` +
-        `Manual EV: $${manualEV.toFixed(2)}\n` +
-        `Target EV: $${targetEV.toFixed(2)}`
-    );
-  }
-
-  // -----------------------------
-  // Auto items feasibility check
-  // -----------------------------
-  const autoItems = items.filter((it) => it.manualProb == null);
-  const remainingProb = 1 - manualProbSum;
+  manual.forEach((i) => (manualEV += i.value * i.manualProb));
   const remainingEV = targetEV - manualEV;
 
-  if (autoItems.length > 0) {
-    const minAutoValue = Math.min(...autoItems.map((it) => it.value));
+  console.log('Manual EV:', manualEV, 'Remaining EV for auto items:', remainingEV);
 
-    // If this fails, at least one auto item MUST have 0 probability
-    if (remainingEV <= remainingProb * minAutoValue) {
-      throw new Error(
-        `Invalid Mystery Box configuration:\n\n` +
-          `This setup would force some items to have 0% chance.\n\n` +
-          `Remaining EV: $${remainingEV.toFixed(2)}\n` +
-          `Remaining probability: ${remainingProb}\n` +
-          `Cheapest item: $${minAutoValue}\n\n` +
-          `Fix:\n` +
-          `- Increase spin price\n` +
-          `- Reduce RTP\n` +
-          `- Add cheaper items`
-      );
-    }
+  if (manualEV > targetEV) {
+    console.error('Manual EV exceeds target EV', { manualEV, targetEV });
+    console.groupEnd();
+    throw new Error(
+      `Manual items exceed target EV.\nManual EV: $${manualEV.toFixed(2)}\nTarget EV: $${targetEV.toFixed(2)}`
+    );
   }
 
   // -----------------------------
-  // Probability calculation
-  // Strategy: value-weighted inverse (fair + stable)
+  // Assign auto probabilities (inverse value weighting)
   // -----------------------------
-  const weighted = autoItems.map((it) => ({
-    ...it,
-    weight: 1 / it.value
-  }));
+  const autoValues = auto.map((i) => i.value);
+  const invSum = autoValues.reduce((sum, v) => sum + 1 / v, 0);
 
-  const weightSum = weighted.reduce((s, it) => s + it.weight, 0);
-
-  const results = items.map((it) => {
-    let finalProb;
-
-    if (it.manualProb != null) {
-      finalProb = it.manualProb;
-    } else {
-      const w = weighted.find((wi) => wi._id === it._id);
-      finalProb = (w.weight / weightSum) * remainingProb;
-    }
-
-    if (finalProb <= 0) {
-      throw new Error(`Internal error: item "${it.name}" resulted in 0 probability.`);
-    }
-
-    return {
-      ...it,
-      finalProb,
-      odd: finalProb,
-      evContrib: finalProb * it.value
-    };
+  auto.forEach((i) => {
+    i._calcProb = (1 / i.value / invSum) * remainingEV;
+    console.log('Auto pre-normalized prob for', i.name, i._calcProb);
   });
 
   // -----------------------------
-  // Final integrity checks
+  // Merge manual + auto, ensure total EV <= targetEV
   // -----------------------------
-  const totalProb = results.reduce((s, it) => s + it.finalProb, 0);
-  const totalEV = results.reduce((s, it) => s + it.evContrib, 0);
+  const allItems = [...manual, ...auto];
+  let totalEV = allItems.reduce((sum, i) => sum + (i.manualProb ?? i._calcProb ?? 0) * i.value, 0);
 
-  const EPS = 1e-9;
-
-  if (Math.abs(totalProb - 1) > EPS) {
-    throw new Error('Probability normalization failed.');
+  // If EV > targetEV, scale all odds proportionally
+  if (totalEV > targetEV) {
+    const scale = targetEV / totalEV;
+    allItems.forEach((i) => {
+      if (i.manualProb != null) i.manualProb *= scale;
+      if (i._calcProb != null) i._calcProb *= scale;
+    });
+    totalEV = targetEV;
   }
 
-  if (Math.abs(totalEV - targetEV) > 0.01) {
-    throw new Error('EV mismatch after calculation.');
-  }
+  // -----------------------------
+  // Final normalization to ensure sum of odds = 1
+  // -----------------------------
+  const totalRawProb = allItems.reduce((sum, i) => sum + (i.manualProb ?? i._calcProb ?? 0), 0);
+  const normalizationFactor = totalRawProb > 0 ? 1 / totalRawProb : 1;
+
+  console.log('Normalization factor applied to ensure total odds = 1:', normalizationFactor);
+
+  const returnData = allItems.map((i) => {
+    const odd = (i.manualProb ?? i._calcProb ?? 0) * normalizationFactor;
+    const evContrib = i.value * odd;
+    console.log('Final item', i.name, 'odd:', odd, 'evContrib:', evContrib);
+    return { ...i, odd, evContrib };
+  });
 
   // -----------------------------
-  // Return result
+  // Final checks
   // -----------------------------
-  return {
-    items: results,
-    summary: {
-      spinPrice,
-      targetRTP,
-      totalProbability: totalProb,
-      totalEV
-    }
-  };
+  const totalOddCheck = returnData.reduce((s, i) => s + i.odd, 0);
+  const totalEVCheck = returnData.reduce((s, i) => s + i.evContrib, 0);
+
+  console.log('Total odd sum after normalization:', totalOddCheck);
+  console.log('Total EV after normalization:', totalEVCheck, 'Target EV:', targetEV);
+
+  console.groupEnd();
+
+  console.log('returnData', returnData);
+  return returnData;
 }
