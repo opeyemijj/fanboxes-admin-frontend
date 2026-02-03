@@ -242,7 +242,9 @@ export default function AdminBoxeItems({ boxDetails, isVendor }) {
                     boxDetails?.targetRTP
                   );
 
-                  if (runningOddsAlgorithm?.items?.length > 0) {
+                  console.log('passingItems', runningOddsAlgorithm);
+
+                  if (runningOddsAlgorithm?.length > 0) {
                     const tempData = { data: runningOddsAlgorithm };
                     UpateItemOdd(tempData);
                     setData(tempData);
