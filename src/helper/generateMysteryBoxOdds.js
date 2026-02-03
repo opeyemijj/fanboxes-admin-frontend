@@ -24,11 +24,22 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP) {
   const manual = items.filter((i) => typeof i.manualProb === 'number' && i.manualProb > 0);
   const auto = items.filter((i) => !manual.includes(i));
 
+  // -----------------------------
+  // Manual EV
+  // -----------------------------
   let manualEV = 0;
-  manual.forEach((i) => (manualEV += i.value * i.manualProb));
-  const remainingEV = targetEV - manualEV;
+  let manualProbSum = 0;
 
-  console.log('Manual EV:', manualEV, 'Remaining EV for auto items:', remainingEV);
+  manual.forEach((i) => {
+    manualEV += i.value * i.manualProb;
+    manualProbSum += i.manualProb;
+  });
+
+  if (manualProbSum >= 1) {
+    console.error('Manual probabilities sum >= 1', manualProbSum);
+    console.groupEnd();
+    throw new Error('Manual probabilities must sum to less than 1.');
+  }
 
   if (manualEV > targetEV) {
     console.error('Manual EV exceeds target EV', { manualEV, targetEV });
@@ -38,45 +49,72 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP) {
     );
   }
 
-  // -----------------------------
-  // Assign auto probabilities (inverse value weighting)
-  // -----------------------------
-  const autoValues = auto.map((i) => i.value);
-  const invSum = autoValues.reduce((sum, v) => sum + 1 / v, 0);
+  const remainingEV = targetEV - manualEV;
+  const remainingProb = 1 - manualProbSum;
 
-  auto.forEach((i) => {
-    i._calcProb = (1 / i.value / invSum) * remainingEV;
-    console.log('Auto pre-normalized prob for', i.name, i._calcProb);
+  console.log('Manual EV:', manualEV, 'Remaining EV:', remainingEV, 'Remaining Prob:', remainingProb);
+
+  // -----------------------------
+  // Auto items: inverse-value rarity weights
+  // -----------------------------
+  const weights = auto.map((i) => {
+    if (i.value <= 0) {
+      throw new Error(`Invalid value for item ${i.name}`);
+    }
+    return 1 / i.value;
   });
 
-  // -----------------------------
-  // Merge manual + auto, ensure total EV <= targetEV
-  // -----------------------------
-  const allItems = [...manual, ...auto];
-  let totalEV = allItems.reduce((sum, i) => sum + (i.manualProb ?? i._calcProb ?? 0) * i.value, 0);
+  const weightSum = weights.reduce((a, b) => a + b, 0);
 
-  // If EV > targetEV, scale all odds proportionally
-  if (totalEV > targetEV) {
-    const scale = targetEV / totalEV;
-    allItems.forEach((i) => {
-      if (i.manualProb != null) i.manualProb *= scale;
-      if (i._calcProb != null) i._calcProb *= scale;
-    });
-    totalEV = targetEV;
+  // Base probabilities (shape only)
+  auto.forEach((i, idx) => {
+    i._baseProb = weights[idx] / weightSum;
+  });
+
+  // EV at base distribution
+  const baseAutoEV = auto.reduce((sum, i) => sum + i._baseProb * i.value, 0);
+
+  if (baseAutoEV <= 0) {
+    console.error('Base auto EV invalid');
+    console.groupEnd();
+    throw new Error('Invalid auto EV');
   }
 
   // -----------------------------
-  // Final normalization to ensure sum of odds = 1
+  // Scale auto probs to match remaining EV
   // -----------------------------
-  const totalRawProb = allItems.reduce((sum, i) => sum + (i.manualProb ?? i._calcProb ?? 0), 0);
-  const normalizationFactor = totalRawProb > 0 ? 1 / totalRawProb : 1;
+  const evScale = remainingEV / baseAutoEV;
 
-  console.log('Normalization factor applied to ensure total odds = 1:', normalizationFactor);
+  auto.forEach((i) => {
+    i._scaledProb = i._baseProb * evScale;
+  });
+
+  // -----------------------------
+  // Normalize auto probs to remaining probability mass
+  // -----------------------------
+  const scaledProbSum = auto.reduce((sum, i) => sum + i._scaledProb, 0);
+
+  if (scaledProbSum <= 0) {
+    console.error('Scaled probability sum invalid');
+    console.groupEnd();
+    throw new Error('Invalid probability scaling');
+  }
+
+  auto.forEach((i) => {
+    i._calcProb = (i._scaledProb / scaledProbSum) * remainingProb;
+  });
+
+  // -----------------------------
+  // Merge manual + auto
+  // -----------------------------
+  const allItems = [...manual, ...auto];
 
   const returnData = allItems.map((i) => {
-    const odd = (i.manualProb ?? i._calcProb ?? 0) * normalizationFactor;
-    const evContrib = i.value * odd;
+    const odd = i.manualProb ?? i._calcProb ?? 0;
+    const evContrib = odd * i.value;
+
     console.log('Final item', i.name, 'odd:', odd, 'evContrib:', evContrib);
+
     return { ...i, odd, evContrib };
   });
 
@@ -86,11 +124,10 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP) {
   const totalOddCheck = returnData.reduce((s, i) => s + i.odd, 0);
   const totalEVCheck = returnData.reduce((s, i) => s + i.evContrib, 0);
 
-  console.log('Total odd sum after normalization:', totalOddCheck);
-  console.log('Total EV after normalization:', totalEVCheck, 'Target EV:', targetEV);
+  console.log('Total odd sum:', totalOddCheck);
+  console.log('Total EV:', totalEVCheck, 'Target EV:', targetEV);
 
   console.groupEnd();
 
-  console.log('returnData', returnData);
   return returnData;
 }
