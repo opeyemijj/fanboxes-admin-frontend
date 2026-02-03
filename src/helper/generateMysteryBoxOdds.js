@@ -6,55 +6,81 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
 
   const targetEV = spinPrice * (boxTargetRTP / 100);
 
-  // 1️⃣ Compute inverse-value weights
-  const weights = items.map((i) => {
-    if (!i.value || i.value <= 0) throw new Error(`Invalid value for item ${i.name}`);
-    return 1 / i.value;
+  // Sort items by value (descending)
+  const sortedItems = [...items].sort((a, b) => b.value - a.value);
+  const n = sortedItems.length;
+
+  // Step 1: Create base probabilities that are inversely proportional to value
+  const baseProbs = sortedItems.map((item) => {
+    // Higher value items get exponentially lower probability
+    const maxValue = sortedItems[0].value;
+    const minValue = sortedItems[n - 1].value;
+    const normalizedValue = (item.value - minValue) / (maxValue - minValue || 1);
+
+    // Probability = 1 / (value^exponent)
+    // Adjust exponent to control how steep the decrease is
+    const exponent = 1.5;
+    return 1 / Math.pow(item.value + 1, exponent);
   });
-  const weightSum = weights.reduce((a, b) => a + b, 0);
 
-  // 2️⃣ Base probabilities
-  let baseProbs = weights.map((w) => w / weightSum);
+  // Normalize base probabilities
+  const totalBaseProb = baseProbs.reduce((sum, p) => sum + p, 0);
+  let probabilities = baseProbs.map((p) => p / totalBaseProb);
 
-  // 3️⃣ Base EV
-  const baseEV = items.reduce((sum, item, idx) => sum + baseProbs[idx] * item.value, 0);
-  if (baseEV <= 0) throw new Error('Base EV invalid');
+  // Step 2: Adjust to meet target EV
+  // We'll use the principle that adjusting probabilities while maintaining
+  // their relative proportions can help achieve the target EV
 
-  // 4️⃣ Scale probabilities to hit target EV
-  let scaledProbs = baseProbs.map((p) => p * (targetEV / baseEV));
+  const maxIterations = 100;
+  let currentEV = probabilities.reduce((sum, p, idx) => sum + p * sortedItems[idx].value, 0);
 
-  // 5️⃣ Cap probability to 1 and redistribute excess
-  const cappedProbs = scaledProbs.map((p) => Math.min(p, 1));
-  let excess = scaledProbs.reduce((sum, p) => sum + Math.max(0, p - 1), 0);
+  for (let iter = 0; iter < maxIterations; iter++) {
+    if (Math.abs(currentEV - targetEV) < 0.001) break;
 
-  // Redistribute excess proportionally among items under 1 probability
-  const underCapIndices = cappedProbs.map((p, i) => (p < 1 ? i : -1)).filter((i) => i >= 0);
-  if (underCapIndices.length > 0 && excess > 0) {
-    const totalUnder = underCapIndices.reduce((sum, i) => sum + cappedProbs[i], 0);
-    underCapIndices.forEach((i) => {
-      cappedProbs[i] += (cappedProbs[i] / totalUnder) * excess;
+    // Calculate adjustment factor
+    const adjustment = targetEV / currentEV;
+
+    // Adjust probabilities while maintaining their relative ratios
+    // Higher value items get larger adjustments when we need to reduce EV
+    probabilities = probabilities.map((p, idx) => {
+      const itemValue = sortedItems[idx].value;
+      const maxValue = sortedItems[0].value;
+
+      // Weight adjustment by value ratio
+      const valueRatio = itemValue / maxValue;
+
+      if (adjustment < 1) {
+        // Need to reduce EV: reduce probability more for high-value items
+        return p * (1 - (1 - adjustment) * valueRatio * 0.5);
+      } else {
+        // Need to increase EV: increase probability more for low-value items
+        return p * (1 + (adjustment - 1) * (1 - valueRatio) * 0.5);
+      }
     });
+
+    // Ensure positive probabilities and renormalize
+    probabilities = probabilities.map((p) => Math.max(0.000001, p));
+    const totalProb = probabilities.reduce((sum, p) => sum + p, 0);
+    probabilities = probabilities.map((p) => p / totalProb);
+
+    // Recalculate EV
+    currentEV = probabilities.reduce((sum, p, idx) => sum + p * sortedItems[idx].value, 0);
   }
 
-  // 6️⃣ Normalize total probability = 1
-  const totalProb = cappedProbs.reduce((a, b) => a + b, 0);
-  let minIndex = 0;
-  for (let i = 1; i < items.length; i++) {
-    if (items[i].value < items[minIndex].value) minIndex = i;
-  }
-  cappedProbs[minIndex] += 1 - totalProb;
+  // Step 3: Final normalization and rounding
+  const finalTotal = probabilities.reduce((sum, p) => sum + p, 0);
+  probabilities = probabilities.map((p) => Number((p / finalTotal).toFixed(8)));
 
-  // 7️⃣ Final odds
-  const finalOdds = items.map((item, idx) => ({
-    ...item,
-    odd: Number(cappedProbs[idx].toFixed(6))
-  }));
+  // Create result in original order
+  const resultMap = new Map();
+  sortedItems.forEach((item, idx) => {
+    resultMap.set(item._id, {
+      ...item,
+      odd: probabilities[idx]
+    });
+  });
 
-  // ✅ Optional: debug check
-  const totalOddCheck = finalOdds.reduce((s, i) => s + i.odd, 0);
-  const totalEVCheck = finalOdds.reduce((s, i) => s + i.odd * i.value, 0);
-  console.log('Total odd sum:', totalOddCheck);
-  console.log('Total EV:', totalEVCheck, 'Target EV:', targetEV);
+  const result = items.map((item) => resultMap.get(item._id));
 
-  return finalOdds;
+  return result;
 }
