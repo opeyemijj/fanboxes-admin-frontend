@@ -1,75 +1,214 @@
 export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
-  if (!Array.isArray(items) || items.length === 0) throw new Error('No items provided');
-  if (spinPrice <= 0) throw new Error('spinPrice must be positive');
-
-  const targetEV = spinPrice * (boxTargetRTP / 100);
-
-  // Validate item values
-  items.forEach((i) => {
-    if (!i.value || i.value <= 0) throw new Error(`Invalid value for item ${i.name}`);
-  });
-
-  // 1️⃣ Initial inverse-value weights
-  let weights = items.map((i) => 1 / i.value);
-  let weightSum = weights.reduce((a, b) => a + b, 0);
-  let probs = weights.map((w) => w / weightSum);
-
-  // 2️⃣ Iteratively scale and normalize until EV matches target
-  let iteration = 0;
-  let maxIterations = 1000;
-  let tolerance = 0.01; // Allow small EV deviation
-
-  while (iteration < maxIterations) {
-    iteration++;
-
-    // Scale probabilities to match target EV
-    let currentEV = items.reduce((sum, item, idx) => sum + probs[idx] * item.value, 0);
-    let scale = targetEV / currentEV;
-    probs = probs.map((p) => p * scale);
-
-    // Cap probabilities at 1
-    let excess = 0;
-    probs = probs.map((p) => {
-      if (p > 1) {
-        excess += p - 1;
-        return 1;
-      }
-      return p;
-    });
-
-    // Redistribute excess proportionally among items under 1
-    let underCapIndices = probs.map((p, i) => (p < 1 ? i : -1)).filter((i) => i >= 0);
-    if (underCapIndices.length > 0 && excess > 0) {
-      let totalUnder = underCapIndices.reduce((sum, i) => sum + probs[i], 0);
-      underCapIndices.forEach((i) => {
-        probs[i] += (probs[i] / totalUnder) * excess;
-      });
-    }
-
-    // Normalize total probability = 1
-    let totalProb = probs.reduce((a, b) => a + b, 0);
-    if (Math.abs(totalProb - 1) > 0.000001) {
-      // Adjust smallest-value item to fix sum = 1
-      let minIndex = items.reduce((minI, item, idx) => (items[idx].value < items[minI].value ? idx : minI), 0);
-      probs[minIndex] += 1 - totalProb;
-    }
-
-    // Check if EV is within tolerance
-    currentEV = items.reduce((sum, item, idx) => sum + probs[idx] * item.value, 0);
-    if (Math.abs(currentEV - targetEV) <= tolerance) break;
+  if (!Array.isArray(items) || items.length === 0) {
+    throw new Error('No items provided');
+  }
+  if (spinPrice <= 0) {
+    throw new Error('spinPrice must be positive');
   }
 
-  // Final odds
-  const finalOdds = items.map((item, idx) => ({
-    ...item,
-    odd: Number(probs[idx].toFixed(6))
+  items.forEach((i) => {
+    if (!i.value || i.value <= 0) {
+      throw new Error(`Invalid value for item ${i.name}`);
+    }
+  });
+
+  const targetEV = spinPrice * (boxTargetRTP / 100);
+  const values = items.map((i) => i.value);
+  const minValue = Math.min(...values);
+  const maxValue = Math.max(...values);
+  const varianceRatio = maxValue / minValue;
+
+  let enforceEV = true;
+  let strategy;
+  let strategyReason;
+
+  // -----------------------------------
+  // 🚨 EV FEASIBILITY CHECK
+  // -----------------------------------
+  if (targetEV < minValue || targetEV > maxValue) {
+    const proceed =
+      typeof window !== 'undefined'
+        ? window.confirm(
+            `⚠️ Target EV is mathematically impossible.\n\n` +
+              `Target EV: ${targetEV.toFixed(2)}\n` +
+              `Item range: ${minValue} – ${maxValue}\n\n` +
+              `Would you like to continue using value-based odds instead?`
+          )
+        : false;
+
+    if (!proceed) {
+      throw new Error('Target EV is mathematically impossible');
+    }
+
+    enforceEV = false;
+    strategy = 'Pure Value-Based Distribution';
+    strategyReason =
+      'Target EV falls outside the minimum and maximum item values, making exact RTP enforcement impossible.';
+  }
+
+  // -----------------------------------
+  // 🧠 STRATEGY SELECTION
+  // -----------------------------------
+  if (enforceEV) {
+    if (varianceRatio > 100) {
+      strategy = 'Log-Scaled Weighting (Extreme Variance)';
+      strategyReason = 'Item values have extreme variance, which would destabilize inverse or exact EV methods.';
+    } else if (varianceRatio > 20) {
+      strategy = 'Soft Inverse Weighting';
+      strategyReason = 'Item values vary significantly, but not enough to require logarithmic scaling.';
+    } else if (isClustered(values)) {
+      strategy = 'Rank-Based Distribution';
+      strategyReason =
+        'Item values are tightly clustered, making rank-based weighting more stable than value-based math.';
+    } else {
+      strategy = 'Exact EV Solver (Mass Transfer)';
+      strategyReason = 'Target EV is achievable and item values are well-distributed for precise RTP enforcement.';
+    }
+  }
+
+  // -----------------------------------
+  // 📣 USER CONFIRMATION
+  // -----------------------------------
+  const proceed =
+    typeof window !== 'undefined'
+      ? window.confirm(
+          `🎰 Mystery Box Odds Generation\n\n` +
+            `Spin Price: ${spinPrice}\n` +
+            `Target RTP: ${boxTargetRTP}%\n` +
+            `Target EV: ${targetEV.toFixed(2)}\n\n` +
+            `Chosen Strategy:\n${strategy}\n\n` +
+            `Reason:\n${strategyReason}\n\n` +
+            `Do you want to continue?`
+        )
+      : true;
+
+  if (!proceed) {
+    throw new Error('Odds generation cancelled by user');
+  }
+
+  // -----------------------------------
+  // ⚙️ EXECUTE STRATEGY
+  // -----------------------------------
+  let probs;
+
+  switch (strategy) {
+    case 'Exact EV Solver (Mass Transfer)':
+      probs = exactEV(items, targetEV);
+      break;
+    case 'Soft Inverse Weighting':
+      probs = softInverse(items);
+      break;
+    case 'Log-Scaled Weighting (Extreme Variance)':
+      probs = logScaled(items);
+      break;
+    case 'Rank-Based Distribution':
+      probs = rankBased(items);
+      break;
+    case 'Pure Value-Based Distribution':
+    default:
+      probs = valueBased(items);
+  }
+
+  normalize(probs);
+
+  // -----------------------------------
+  // 📦 FINAL OUTPUT
+  // -----------------------------------
+  const finalOdds = probs.map((p, i) => ({
+    ...items[i],
+    odd: Number(p.toFixed(6))
   }));
 
-  // ✅ Verification
-  const totalOddCheck = finalOdds.reduce((s, i) => s + i.odd, 0);
-  const totalEVCheck = finalOdds.reduce((s, i) => s + i.odd * i.value, 0);
-  console.log('Total odd sum:', totalOddCheck.toFixed(6));
-  console.log('Total EV:', totalEVCheck.toFixed(2), 'Target EV:', targetEV);
+  const totalEV = finalOdds.reduce((s, i) => s + i.odd * i.value, 0);
+  console.log('Final EV:', totalEV.toFixed(4), 'Target EV:', targetEV.toFixed(4));
+  console.log('Strategy used:', strategy);
 
   return finalOdds;
+
+  // =====================================================
+  // ================= STRATEGIES ========================
+  // =====================================================
+
+  function exactEV(items, targetEV) {
+    let odds = softInverse(items);
+    let ev = calcEV(odds);
+    let guard = 0;
+
+    while (Math.abs(ev - targetEV) > 1e-6) {
+      guard++;
+      if (guard > 10000) break;
+
+      const low = indexOfMin(items);
+      const high = indexOfMax(items);
+      const delta = Math.min(0.0001, odds[low]);
+
+      if (ev < targetEV) {
+        odds[low] -= delta;
+        odds[high] += delta;
+      } else {
+        odds[high] -= delta;
+        odds[low] += delta;
+      }
+
+      normalize(odds);
+      ev = calcEV(odds);
+    }
+
+    return odds;
+  }
+
+  function softInverse(items) {
+    const EXP = 0.75;
+    const w = items.map((i) => Math.pow(1 / i.value, EXP));
+    return normalize(w);
+  }
+
+  function logScaled(items) {
+    const w = items.map((i) => 1 / Math.log(i.value + 2));
+    return normalize(w);
+  }
+
+  function rankBased(items) {
+    const sorted = [...items].sort((a, b) => a.value - b.value);
+    const w = new Array(items.length);
+
+    sorted.forEach((item, rank) => {
+      const idx = items.indexOf(item);
+      w[idx] = items.length - rank;
+    });
+
+    return normalize(w);
+  }
+
+  function valueBased(items) {
+    const w = items.map((i) => 1 / i.value);
+    return normalize(w);
+  }
+
+  // =====================================================
+  // ================= HELPERS ===========================
+  // =====================================================
+
+  function normalize(arr) {
+    const sum = arr.reduce((s, x) => s + x, 0);
+    return arr.map((x) => x / sum);
+  }
+
+  function calcEV(arr) {
+    return arr.reduce((s, p, i) => s + p * items[i].value, 0);
+  }
+
+  function indexOfMin(items) {
+    return items.reduce((m, x, i, a) => (x.value < a[m].value ? i : m), 0);
+  }
+
+  function indexOfMax(items) {
+    return items.reduce((m, x, i, a) => (x.value > a[m].value ? i : m), 0);
+  }
+
+  function isClustered(values) {
+    const mean = values.reduce((a, b) => a + b, 0) / values.length;
+    const variance = values.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / values.length;
+    return Math.sqrt(variance) / mean < 0.3;
+  }
 }
