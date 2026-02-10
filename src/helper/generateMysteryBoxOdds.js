@@ -18,15 +18,24 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
   const maxValue = Math.max(...values);
   const varianceRatio = maxValue / minValue;
 
+  const STRATEGIES = [
+    'AUTO',
+    'Exact EV Solver (Mass Transfer)',
+    'Soft Inverse Weighting',
+    'Log-Scaled Weighting (Extreme Variance)',
+    'Rank-Based Distribution',
+    'Pure Value-Based Distribution'
+  ];
+
   let enforceEV = true;
-  let strategy;
-  let strategyReason;
+  let chosenStrategy = null;
+  let strategyReason = '';
   let attempt = 0;
   let finalOdds = null;
 
-  // -----------------------------------
+  // --------------------------------------------------
   // 🚨 EV FEASIBILITY CHECK
-  // -----------------------------------
+  // --------------------------------------------------
   if (targetEV < minValue || targetEV > maxValue) {
     const proceed =
       typeof window !== 'undefined'
@@ -34,7 +43,7 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
             `⚠️ Target EV is mathematically impossible.\n\n` +
               `Target EV: ${targetEV.toFixed(2)}\n` +
               `Item range: ${minValue} – ${maxValue}\n\n` +
-              `Would you like to continue using value-based odds instead?`
+              `Continue with value-based odds instead?`
           )
         : false;
 
@@ -43,56 +52,69 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
     }
 
     enforceEV = false;
-    strategy = 'Pure Value-Based Distribution';
-    strategyReason =
-      'Target EV falls outside the minimum and maximum item values, making exact RTP enforcement impossible.';
+    chosenStrategy = 'Pure Value-Based Distribution';
+    strategyReason = 'Target EV lies outside achievable item value range.';
   }
 
-  // -----------------------------------
-  // 🧠 STRATEGY SELECTION LOOP
-  // -----------------------------------
-  const strategies = [
-    'Exact EV Solver (Mass Transfer)',
-    'Soft Inverse Weighting',
-    'Log-Scaled Weighting (Extreme Variance)',
-    'Rank-Based Distribution',
-    'Pure Value-Based Distribution'
-  ];
+  // --------------------------------------------------
+  // 🧠 USER STRATEGY CHOICE
+  // --------------------------------------------------
+  if (typeof window !== 'undefined') {
+    const choice = window.prompt(
+      `Choose odds strategy:\n\n` +
+        STRATEGIES.map((s, i) => `${i}: ${s}`).join('\n') +
+        `\n\nEnter number (default = 0 / AUTO):`,
+      '0'
+    );
 
+    const index = Number(choice);
+    if (!Number.isNaN(index) && STRATEGIES[index]) {
+      chosenStrategy = STRATEGIES[index];
+    }
+  }
+
+  // --------------------------------------------------
+  // 🔁 STRATEGY ATTEMPT LOOP (ANTI-NEGATIVE)
+  // --------------------------------------------------
   while (attempt < 3 && !finalOdds) {
-    // Auto-select strategy if not already
-    if (!strategy || attempt > 0) {
-      if (varianceRatio > 100) {
+    attempt++;
+
+    let strategy = chosenStrategy;
+    let reason = '';
+
+    if (strategy === 'AUTO' || !strategy) {
+      if (!enforceEV) {
+        strategy = 'Pure Value-Based Distribution';
+        reason = 'EV enforcement disabled.';
+      } else if (varianceRatio > 100) {
         strategy = 'Log-Scaled Weighting (Extreme Variance)';
-        strategyReason = 'Item values have extreme variance, which destabilizes inverse or exact EV methods.';
+        reason = 'Extreme value variance detected.';
       } else if (varianceRatio > 20) {
         strategy = 'Soft Inverse Weighting';
-        strategyReason = 'Item values vary significantly but do not require logarithmic scaling.';
+        reason = 'High variance, softening inverse bias.';
       } else if (isClustered(values)) {
         strategy = 'Rank-Based Distribution';
-        strategyReason = 'Item values are tightly clustered; rank-based weighting is more stable.';
+        reason = 'Values clustered tightly.';
       } else {
-        strategy = strategies[attempt]; // fallback strategy
-        strategyReason = 'Attempting alternative strategy to prevent negative odds.';
+        strategy = 'Exact EV Solver (Mass Transfer)';
+        reason = 'EV is achievable with stable values.';
       }
     }
 
     const proceed =
       typeof window !== 'undefined'
         ? window.confirm(
-            `🎰 Mystery Box Odds Generation Attempt ${attempt + 1}\n\n` +
+            `🎰 Odds Generation (Attempt ${attempt})\n\n` +
+              `Strategy: ${strategy}\n` +
+              `Reason: ${reason}\n\n` +
               `Spin Price: ${spinPrice}\n` +
               `Target RTP: ${boxTargetRTP}%\n` +
               `Target EV: ${targetEV.toFixed(2)}\n\n` +
-              `Chosen Strategy:\n${strategy}\n\n` +
-              `Reason:\n${strategyReason}\n\n` +
-              `Do you want to continue with this strategy?`
+              `Continue?`
           )
         : true;
 
-    if (!proceed) {
-      throw new Error('Odds generation cancelled by user');
-    }
+    if (!proceed) throw new Error('Odds generation cancelled by user');
 
     let probs;
     switch (strategy) {
@@ -108,17 +130,14 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
       case 'Rank-Based Distribution':
         probs = rankBased(items);
         break;
-      case 'Pure Value-Based Distribution':
       default:
         probs = valueBased(items);
     }
 
     probs = normalize(probs);
 
-    // Check for negative odds
     if (probs.some((p) => p < 0)) {
-      attempt++;
-      strategy = null; // force alternative strategy next
+      chosenStrategy = 'AUTO';
       continue;
     }
 
@@ -126,47 +145,49 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
       ...item,
       odd: Number(probs[i].toFixed(6))
     }));
+
+    strategyReason = reason;
+    chosenStrategy = strategy;
   }
 
-  // Final fallback if all attempts failed
+  // --------------------------------------------------
+  // 🛑 FINAL FALLBACK
+  // --------------------------------------------------
   if (!finalOdds) {
     const proceed =
       typeof window !== 'undefined'
-        ? window.confirm(
-            `⚠️ All strategies produced negative odds. Falling back to equal distribution.\n\n` +
-              `Do you want to continue with fallback distribution?`
-          )
+        ? window.confirm(`⚠️ All strategies failed.\n\nFallback to equal distribution?`)
         : true;
 
-    if (!proceed) throw new Error('Odds generation cancelled by user');
+    if (!proceed) throw new Error('Odds generation cancelled');
 
     finalOdds = items.map((item) => ({
       ...item,
       odd: Number((1 / items.length).toFixed(6))
     }));
 
-    strategy = 'Fallback Equal Distribution';
-    strategyReason = 'All advanced strategies failed; using equal probability fallback.';
+    chosenStrategy = 'Fallback Equal Distribution';
+    strategyReason = 'All adaptive strategies failed.';
   }
 
   const totalEV = finalOdds.reduce((s, i) => s + i.odd * i.value, 0);
+
+  console.log('Strategy used:', chosenStrategy);
+  console.log('Reason:', strategyReason);
   console.log('Final EV:', totalEV.toFixed(4), 'Target EV:', targetEV.toFixed(4));
-  console.log('Strategy used:', strategy);
 
   return finalOdds;
 
-  // =====================================================
-  // ================= STRATEGIES ========================
-  // =====================================================
+  // ===================================================
+  // ================= STRATEGIES ======================
+  // ===================================================
   function exactEV(items, targetEV) {
     let odds = softInverse(items);
     let ev = calcEV(odds);
     let guard = 0;
 
-    while (Math.abs(ev - targetEV) > 1e-6) {
+    while (Math.abs(ev - targetEV) > 1e-6 && guard < 10000) {
       guard++;
-      if (guard > 10000) break;
-
       const low = indexOfMin(items);
       const high = indexOfMax(items);
       const delta = Math.min(0.0001, odds[low]);
@@ -179,7 +200,7 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
         odds[low] += delta;
       }
 
-      normalize(odds);
+      odds = normalize(odds);
       ev = calcEV(odds);
     }
 
@@ -188,33 +209,29 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
 
   function softInverse(items) {
     const EXP = 0.75;
-    const w = items.map((i) => Math.pow(1 / i.value, EXP));
-    return normalize(w);
+    return normalize(items.map((i) => Math.pow(1 / i.value, EXP)));
   }
 
   function logScaled(items) {
-    const w = items.map((i) => 1 / Math.log(i.value + 2));
-    return normalize(w);
+    return normalize(items.map((i) => 1 / Math.log(i.value + 2)));
   }
 
   function rankBased(items) {
     const sorted = [...items].sort((a, b) => a.value - b.value);
     const w = new Array(items.length);
     sorted.forEach((item, rank) => {
-      const idx = items.indexOf(item);
-      w[idx] = items.length - rank;
+      w[items.indexOf(item)] = items.length - rank;
     });
     return normalize(w);
   }
 
   function valueBased(items) {
-    const w = items.map((i) => 1 / i.value);
-    return normalize(w);
+    return normalize(items.map((i) => 1 / i.value));
   }
 
-  // =====================================================
-  // ================= HELPERS ===========================
-  // =====================================================
+  // ===================================================
+  // ================= HELPERS =========================
+  // ===================================================
   function normalize(arr) {
     const sum = arr.reduce((s, x) => s + x, 0);
     return arr.map((x) => x / sum);
