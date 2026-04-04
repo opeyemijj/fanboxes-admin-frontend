@@ -11,7 +11,7 @@ import AWS from 'aws-sdk';
 const uploadToSpaces = (file, onProgress) => {
   console.log('buckets', process.env.DO_SPACES_SECRET, process.env.DO_SPACES_BUCKET);
 
-  const spaceEndpoint = new AWS.Endpoint('nyc3.digitaloceanspaces.com'); // Change region if needed
+  const spaceEndpoint = new AWS.Endpoint('lon1.digitaloceanspaces.com'); // Change region if needed
 
   const s3 = new AWS.S3({
     endpoint: spaceEndpoint,
