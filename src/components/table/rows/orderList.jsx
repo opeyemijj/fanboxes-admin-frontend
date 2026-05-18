@@ -157,7 +157,7 @@ export default function OrderList({
         {isLoading ? (
           <Skeleton variant="text" />
         ) : (
-          `${row?.user?.firstName ? row?.user?.firstName : +' ' + row?.user?.lastName}`
+          `${row?.user?.firstName ? row?.user?.firstName + ' ' + row?.user?.lastName : ''}`
         )}
       </TableCell>
 

@@ -30,19 +30,9 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
   const sortedAsc = [...enriched].sort((a, b) => a.value - b.value);
 
   // --------------------------------------------------
-  // 3. TIER ASSIGNMENT
+  // 3. IDENTIFY JACKPOT ITEMS (top 2 values)
   // --------------------------------------------------
   const jackpotItems = sortedDesc.slice(0, 2);
-  const bottomItems = sortedAsc.slice(0, Math.min(4, itemCount));
-  const otherItems = enriched.filter(
-    (item) =>
-      !jackpotItems.some((j) => j.originalIndex === item.originalIndex) &&
-      !bottomItems.some((b) => b.originalIndex === item.originalIndex)
-  );
-
-  // --------------------------------------------------
-  // 4. FIXED JACKPOT PROBABILITIES
-  // --------------------------------------------------
   const jackpotProbsPercent = [0.001, 0.025];
   const sortedJackpot = [...jackpotItems].sort((a, b) => b.value - a.value);
   const jackpotAssignments = sortedJackpot.map((item, idx) => ({
@@ -50,101 +40,161 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
     probPercent: jackpotProbsPercent[idx] || 0.001
   }));
 
-  const totalJackpotProbPercent = jackpotAssignments.reduce((sum, j) => sum + j.probPercent, 0);
-  const totalJackpotProbDecimal = totalJackpotProbPercent / 100;
-  const jackpotWV = jackpotAssignments.reduce(
-    (sum, { item, probPercent }) => sum + (probPercent / 100) * item.value,
-    0
-  );
-
   // --------------------------------------------------
-  // 5. RAW WEIGHTS FOR OTHER ITEMS (inverse value weighting)
+  // 4. COLLECT FIXED PROBABILITIES (jackpot + manual overrides)
   // --------------------------------------------------
-  const otherWithWeight = otherItems.map((item) => ({
-    item,
-    rawWeight: 1 / item.value
-  }));
+  const fixedMap = new Map(); // originalIndex -> decimal probability
 
-  const A = otherWithWeight.reduce((sum, w) => sum + w.rawWeight, 0);
-  const B = otherWithWeight.reduce((sum, w) => sum + w.rawWeight * w.item.value, 0);
+  // Jackpot items (always fixed, ignore manualProb)
+  jackpotAssignments.forEach(({ item, probPercent }) => {
+    fixedMap.set(item.originalIndex, probPercent / 100);
+  });
 
-  // --------------------------------------------------
-  // 6. BOTTOM ITEMS
-  // --------------------------------------------------
-  const bottomCount = bottomItems.length;
-  const bottomValues = bottomItems.map((i) => i.value);
-  const avgBottomValue = bottomValues.reduce((a, b) => a + b, 0) / bottomCount;
-
-  // --------------------------------------------------
-  // 7. SOLVE FOR SCALING FACTOR 's' AND BOTTOM PROBABILITY
-  // --------------------------------------------------
-  const C = 1 - totalJackpotProbDecimal;
-  const D = targetEV - jackpotWV;
-
-  let s, totalBottomProbDecimal;
-  const denominator = B - A * avgBottomValue;
-
-  if (Math.abs(denominator) < 1e-9) {
-    const remainingItems = [...otherItems, ...bottomItems];
-    const equalProb = C / remainingItems.length;
-    s = 0;
-    totalBottomProbDecimal = equalProb * bottomCount;
-    otherWithWeight.forEach((w) => (w.finalProbDecimal = equalProb));
-    bottomItems.forEach((b) => (b.finalProbDecimal = equalProb));
-  } else {
-    s = (D - C * avgBottomValue) / denominator;
-    s = Math.max(0, Math.min(s, C / A));
-    totalBottomProbDecimal = C - s * A;
-    if (totalBottomProbDecimal < 0) {
-      s = C / A;
-      totalBottomProbDecimal = 0;
+  // Manual overrides for non‑jackpot items
+  for (const item of enriched) {
+    const isJackpot = jackpotItems.some((j) => j.originalIndex === item.originalIndex);
+    if (!isJackpot && typeof item.manualProb === 'number' && !isNaN(item.manualProb)) {
+      let manualPercent = item.manualProb;
+      manualPercent = Math.min(100, Math.max(0, manualPercent));
+      fixedMap.set(item.originalIndex, manualPercent / 100);
     }
+  }
+
+  // Compute total fixed probability and fixed EV contribution
+  let totalFixedProb = 0;
+  let totalFixedEV = 0;
+  for (const [idx, probDec] of fixedMap.entries()) {
+    const item = enriched.find((i) => i.originalIndex === idx);
+    totalFixedProb += probDec;
+    totalFixedEV += probDec * item.value;
+  }
+
+  // Validate fixed probabilities
+  if (totalFixedProb > 1 + 1e-9) {
+    throw new Error(`Total manual + jackpot probabilities exceed 100% (${(totalFixedProb * 100).toFixed(2)}%)`);
+  }
+  if (totalFixedEV > targetEV + 1e-9) {
+    throw new Error(`Fixed items already exceed target EV (${totalFixedEV.toFixed(2)} > ${targetEV.toFixed(2)})`);
+  }
+
+  // Remaining probability and EV target
+  const remainingProb = Math.max(0, 1 - totalFixedProb);
+  const remainingEV = Math.max(0, targetEV - totalFixedEV);
+
+  // --------------------------------------------------
+  // 5. PREPARE REMAINING ITEMS (non‑fixed)
+  // --------------------------------------------------
+  const remainingItems = enriched.filter((item) => !fixedMap.has(item.originalIndex));
+  const remainingCount = remainingItems.length;
+
+  let finalProbs = new Array(itemCount).fill(0);
+
+  // If no remaining items, just use fixed probabilities (must sum to 1)
+  if (remainingCount === 0) {
+    if (Math.abs(totalFixedProb - 1) > 1e-6) {
+      throw new Error('Fixed probabilities do not sum to 100% and no items left to adjust');
+    }
+    for (const [idx, prob] of fixedMap.entries()) {
+      finalProbs[idx] = prob;
+    }
+  } else {
+    // --------------------------------------------------
+    // 6. TWO‑GROUP SOLVER ON REMAINING ITEMS
+    // --------------------------------------------------
+    const remainingSortedDesc = [...remainingItems].sort((a, b) => b.value - a.value);
+    const remainingSortedAsc = [...remainingItems].sort((a, b) => a.value - b.value);
+
+    // Bottom cluster: up to 4 lowest‑value remaining items
+    const bottomRemaining = remainingSortedAsc.slice(0, Math.min(4, remainingCount));
+    const otherRemaining = remainingItems.filter(
+      (item) => !bottomRemaining.some((b) => b.originalIndex === item.originalIndex)
+    );
+
+    const bottomCount = bottomRemaining.length;
+    const avgBottomValue = bottomRemaining.reduce((sum, i) => sum + i.value, 0) / bottomCount;
+
+    // Raw weights for "other" items (inverse value)
+    const otherWithWeight = otherRemaining.map((item) => ({
+      item,
+      rawWeight: 1 / item.value
+    }));
+
+    const A = otherWithWeight.reduce((sum, w) => sum + w.rawWeight, 0);
+    const B = otherWithWeight.reduce((sum, w) => sum + w.rawWeight * w.item.value, 0);
+
+    const C = remainingProb;
+    const D = remainingEV;
+    const denom = B - A * avgBottomValue;
+
+    let s, totalBottomProbDecimal;
+
+    if (Math.abs(denom) < 1e-9 || bottomCount === 0) {
+      // Degenerate case – use pure inverse weighting (no bottom cluster)
+      const totalRawWeight = otherWithWeight.reduce((s, w) => s + w.rawWeight, 0);
+      s = remainingProb / totalRawWeight;
+      totalBottomProbDecimal = 0;
+      otherWithWeight.forEach((w) => {
+        w.finalProbDecimal = s * w.rawWeight;
+      });
+      bottomRemaining.forEach((b) => {
+        b.finalProbDecimal = 0;
+      });
+      // Note: EV may not be exact; log warning to console
+      console.warn('Manual override solver degenerated – EV may deviate from target');
+    } else {
+      s = (D - C * avgBottomValue) / denom;
+      s = Math.max(0, Math.min(s, C / A));
+      totalBottomProbDecimal = C - s * A;
+      if (totalBottomProbDecimal < 0) {
+        s = C / A;
+        totalBottomProbDecimal = 0;
+        console.warn('Manual override: bottom probability negative, set to zero');
+      }
+      otherWithWeight.forEach((w) => {
+        w.finalProbDecimal = s * w.rawWeight;
+      });
+      const bottomEach = totalBottomProbDecimal / bottomCount;
+      bottomRemaining.forEach((b) => {
+        b.finalProbDecimal = bottomEach;
+      });
+    }
+
+    // Clamp to zero
     otherWithWeight.forEach((w) => {
-      w.finalProbDecimal = s * w.rawWeight;
+      w.finalProbDecimal = Math.max(0, w.finalProbDecimal);
     });
-    const bottomProbEach = totalBottomProbDecimal / bottomCount;
-    bottomItems.forEach((b) => {
-      b.finalProbDecimal = bottomProbEach;
+    bottomRemaining.forEach((b) => {
+      b.finalProbDecimal = Math.max(0, b.finalProbDecimal);
+    });
+
+    // Build final probability array
+    // Fixed
+    for (const [idx, prob] of fixedMap.entries()) {
+      finalProbs[idx] = prob;
+    }
+    // Other remaining
+    otherWithWeight.forEach(({ item, finalProbDecimal }) => {
+      finalProbs[item.originalIndex] = finalProbDecimal;
+    });
+    // Bottom remaining
+    bottomRemaining.forEach((item) => {
+      finalProbs[item.originalIndex] = item.finalProbDecimal;
     });
   }
 
-  otherWithWeight.forEach((w) => {
-    w.finalProbDecimal = Math.max(0, w.finalProbDecimal);
-  });
-  bottomItems.forEach((b) => {
-    b.finalProbDecimal = Math.max(0, b.finalProbDecimal);
-  });
-
   // --------------------------------------------------
-  // 8. BUILD FINAL PROBABILITIES ARRAY
+  // 7. NORMALIZE (safety)
   // --------------------------------------------------
-  const finalProbs = new Array(itemCount).fill(0);
-
-  jackpotAssignments.forEach(({ item, probPercent }) => {
-    finalProbs[item.originalIndex] = probPercent / 100;
-  });
-
-  otherWithWeight.forEach(({ item, finalProbDecimal }) => {
-    finalProbs[item.originalIndex] = finalProbDecimal;
-  });
-
-  bottomItems.forEach((item) => {
-    finalProbs[item.originalIndex] = item.finalProbDecimal;
-  });
-
-  // --------------------------------------------------
-  // 9. NORMALIZE TO ENSURE EXACT SUM = 1
-  // --------------------------------------------------
-  let totalProb = finalProbs.reduce((sum, p) => sum + p, 0);
+  let totalProb = finalProbs.reduce((s, p) => s + p, 0);
   if (Math.abs(totalProb - 1) > 1e-7) {
     for (let i = 0; i < finalProbs.length; i++) {
-      finalProbs[i] = finalProbs[i] / totalProb;
+      finalProbs[i] /= totalProb;
     }
   }
-  totalProb = finalProbs.reduce((sum, p) => sum + p, 0);
+  totalProb = finalProbs.reduce((s, p) => s + p, 0);
 
   // --------------------------------------------------
-  // 10. BUILD OUTPUT ARRAY
+  // 8. BUILD OUTPUT ARRAY
   // --------------------------------------------------
   const finalOdds = items.map((item, idx) => ({
     ...item,
@@ -152,7 +202,7 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
   }));
 
   // --------------------------------------------------
-  // 11. COMPUTE ADDITIONAL METRICS
+  // 9. COMPUTE METRICS (unchanged from base version)
   // --------------------------------------------------
   const actualEV = finalOdds.reduce((sum, item) => sum + item.odd * item.value, 0);
   const statedRTP = (actualEV / spinPrice) * 100;
@@ -173,9 +223,12 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
   const winsGeSpinPrice = finalOdds.filter((item) => item.value >= spinPrice);
   const winsGeSpinPricePercent = winsGeSpinPrice.reduce((sum, item) => sum + item.odd, 0) * 100;
 
-  const bottomItemValues = bottomItems.map((b) => b.value);
+  // Bottom cluster (original lowest 4 values overall)
+  const bottomOriginal = sortedAsc.slice(0, Math.min(4, itemCount));
+  const bottomOriginalValues = bottomOriginal.map((b) => b.value);
   const bottomClusterProb =
-    finalOdds.filter((item) => bottomItemValues.includes(item.value)).reduce((sum, item) => sum + item.odd, 0) * 100;
+    finalOdds.filter((item) => bottomOriginalValues.includes(item.value)).reduce((sum, item) => sum + item.odd, 0) *
+    100;
 
   const statusLine = `Stated RTP: ${statedRTP.toFixed(1)}% | Practical RTP: ${practicalRTP.toFixed(1)}% | Profit: $${profitPerSpin.toFixed(2)}/spin (spin $${spinPrice} − weighted avg $${actualEV.toFixed(2)}) | Wins ≥ spin price: ${winsGeSpinPricePercent.toFixed(1)}% | Bottom cluster: ${bottomClusterProb.toFixed(1)}% | Prob: ${(totalProb * 100).toFixed(3)}%`;
 
@@ -205,8 +258,8 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
     targetRTP: boxTargetRTP,
     spinPrice,
     jackpotCount: jackpotItems.length,
-    bottomCount: bottomItems.length,
-    otherCount: otherItems.length,
+    bottomCount: bottomOriginal.length,
+    otherCount: itemCount - jackpotItems.length - bottomOriginal.length,
     winsGeSpinPricePercent,
     bottomClusterPercent: bottomClusterProb,
     statusLine,
@@ -220,12 +273,11 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
     writable: false
   });
 
-  console.log('Strategy used: HypeDrop Model (Jackpot + Inverse Weight + Bottom)');
+  console.log('Strategy used: HypeDrop Model with manual overrides');
   console.log(`Final EV: ${actualEV.toFixed(4)} | Target EV: ${targetEV.toFixed(4)}`);
-  console.log(`Stated RTP: ${statedRTP.toFixed(2)}% | Practical RTP: ${practicalRTP.toFixed(2)}%`);
 
   // --------------------------------------------------
-  // 12. DISPLAY MODAL SUMMARY (only in browser)
+  // 10. DISPLAY MODAL SUMMARY (only in browser)
   // --------------------------------------------------
   if (typeof window !== 'undefined') {
     showSummaryModal(additionalData);
@@ -234,7 +286,7 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
   return finalOdds;
 
   // --------------------------------------------------
-  // Helper
+  // Helper functions
   // --------------------------------------------------
   function getTier(value, spinPrice) {
     const mult = value / spinPrice;
@@ -245,15 +297,14 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
     return 'BOTTOM';
   }
 
-  // --------------------------------------------------
-  // Plain JS Modal (no external libraries)
-  // --------------------------------------------------
   function showSummaryModal(data) {
-    // Remove existing modal if any
+    // (same modal as in the base version – omitted for brevity)
+    // Include the exact modal code from the user's provided function.
+    // It is identical to the one already shown.
+    // For completeness, I will paste it again here, but you can keep it as is.
     const existingModal = document.getElementById('mystery-box-summary-modal');
     if (existingModal) existingModal.remove();
 
-    // Create modal overlay
     const modal = document.createElement('div');
     modal.id = 'mystery-box-summary-modal';
     modal.style.cssText = `
@@ -270,7 +321,6 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
     `;
 
-    // Modal content container
     const modalContent = document.createElement('div');
     modalContent.style.cssText = `
       background: #0a0a0f;
@@ -285,7 +335,6 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
       box-shadow: 0 20px 35px rgba(0,0,0,0.5);
     `;
 
-    // Close button
     const closeBtn = document.createElement('button');
     closeBtn.textContent = '✕';
     closeBtn.style.cssText = `
@@ -303,7 +352,6 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
     closeBtn.onmouseout = () => (closeBtn.style.color = '#6b6b80');
     closeBtn.onclick = () => modal.remove();
 
-    // Title
     const title = document.createElement('h2');
     title.textContent = '🎁 Mystery Box Odds Summary';
     title.style.cssText = `
@@ -316,7 +364,6 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
     `;
     title.appendChild(closeBtn);
 
-    // Status line box
     const statusBox = document.createElement('div');
     statusBox.style.cssText = `
       background: rgba(0,229,160,0.06);
@@ -331,7 +378,6 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
     `;
     statusBox.textContent = data.statusLine;
 
-    // Metrics grid
     const metricsGrid = document.createElement('div');
     metricsGrid.style.cssText = `
       display: grid;
@@ -383,7 +429,6 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
       metricsGrid.appendChild(card);
     });
 
-    // Median description box
     const medianDesc = document.createElement('div');
     medianDesc.style.cssText = `
       background: #111118;
@@ -398,7 +443,6 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
     `;
     medianDesc.textContent = data.medianDescription;
 
-    // Projections title
     const projTitle = document.createElement('div');
     projTitle.style.cssText = `
       font-family: monospace;
@@ -410,7 +454,6 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
     `;
     projTitle.textContent = 'PROFIT PER 1,000 SPINS — spin price minus weighted average item cost';
 
-    // Projections grid
     const projGrid = document.createElement('div');
     projGrid.style.cssText = `
       display: grid;
@@ -435,7 +478,6 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
       projGrid.appendChild(card);
     });
 
-    // Footer note
     const note = document.createElement('div');
     note.style.cssText = `
       font-family: monospace;
@@ -451,7 +493,6 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
     Jackpot odds fixed at 0.001% and 0.025% — exact HypeDrop values.<br>
     Profit projections use practical RTP (median item) not stated RTP. Stated RTP accounts for rare expensive wins which reduce long-run average.`;
 
-    // Assemble modal
     modalContent.appendChild(title);
     modalContent.appendChild(statusBox);
     modalContent.appendChild(metricsGrid);
@@ -462,7 +503,6 @@ export function generateMysteryBoxOdds(items, spinPrice, boxTargetRTP = 80) {
     modal.appendChild(modalContent);
     document.body.appendChild(modal);
 
-    // Close on backdrop click
     modal.addEventListener('click', (e) => {
       if (e.target === modal) modal.remove();
     });
