@@ -52,7 +52,7 @@ export default function Details({ ...props }) {
                 ) : (
                   <>
                     <Typography variant="body2">
-                      <strong>Name</strong>: {user?.firstName || '' + ' ' + user?.lastName}
+                      <strong>Name</strong>: {user?.firstName + ' ' + user?.lastName}
                     </Typography>
                     <Typography variant="body2">
                       <strong>Phone</strong>: {user?.phone}
