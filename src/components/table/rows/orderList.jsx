@@ -161,7 +161,7 @@ export default function OrderList({
         )}
       </TableCell>
 
-      <TableCell>{isLoading ? <Skeleton variant="text" /> : capitalize(row?.transaction?.category)}</TableCell>
+      <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.spinData ? ' From Spin ' : ' Direct Buy'}</TableCell>
       <TableCell>{isLoading ? <Skeleton variant="text" /> : row?.transaction?.amount}</TableCell>
       <TableCell>
         {isLoading ? <Skeleton variant="text" /> : capitalize(row?.transaction?.paymentMethod?.replace(/_/g, ' '))}
