@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ $# -ne 0 ]]; then
+  echo "Usage: npm run check"
+  exit 2
+fi
+
+echo "==> Linting admin frontend"
+npm run lint
+
+echo "==> Building admin frontend"
+npm run build
+
+echo "==> Admin frontend check passed"
